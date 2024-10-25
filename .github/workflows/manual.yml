@@ -22,6 +22,7 @@ jobs:
     env:
       SPECS_TYPE: ${{ github.event.inputs.SPECS_TYPE }}
       SPEC_NAMES: ${{ github.event.inputs.SPEC_NAMES }}
+      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.44.1-jammy
