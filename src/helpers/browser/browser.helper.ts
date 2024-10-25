@@ -16,8 +16,8 @@ export interface IBrowser {
 }
 
 export class Browser implements IBrowser {
-  public pwPage: Page = null;
-  public context: BrowserContext = null;
+  private pwPage: Page = null;
+  private context: BrowserContext = null;
 
   constructor(args: IBrowserArgs) {
     const { pwPage, context } = args;
@@ -52,5 +52,9 @@ export class Browser implements IBrowser {
 
   async pause(): Promise<void> {
     return this.pwPage.pause();
+  }
+
+  async refresh(): Promise<void> {
+    await this.pwPage.reload();
   }
 }

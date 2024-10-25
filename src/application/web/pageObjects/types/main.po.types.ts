@@ -1,4 +1,4 @@
-import { Button } from "@web/pageElements/button";
+import { Button } from "@pageElements/button";
 
 export interface MainPoInterface {
   connectButton: Button;

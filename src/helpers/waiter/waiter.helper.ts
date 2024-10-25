@@ -8,9 +8,9 @@ export const waiterHelper = {
   sleep(timeout: number, options: ISleepOptions = {}): Promise<void> {
     const { sleepReason, ignoreReason = false } = options;
     ignoreReason ||
-      logger.info(
-        `Sleeping: ${timeout / 1000} seconds${
-          sleepReason ? `. Due to: ${sleepReason}` : ""
+      logger.warn(
+        `Sleeping ${timeout / 1000} seconds${
+          sleepReason ? ` due to: ${sleepReason}` : ""
         }`,
       );
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -48,7 +48,7 @@ export const waiterHelper = {
       await this.logErrorAndSleep(errorMessage, caughtError, interval);
     } while (retryCount--);
     throwError && logRetryFailedAndThrow(errorMessage, caughtError);
-    logger.warn(`${errorMessage}: ${caughtError}`);
+    logger.warn(`${errorMessage}: ${caughtError.message}`);
   },
 
   async logErrorAndSleep(
@@ -57,7 +57,7 @@ export const waiterHelper = {
     interval: number,
   ): Promise<void> {
     if (err || errorMessage) {
-      logger.warn(`${errorMessage}: ${err}`);
+      logger.warn(`${errorMessage}: ${err.message}`);
     }
     logger.warn(`Retrying...`);
     await this.sleep(interval, { ignoreReason: true });
@@ -73,7 +73,7 @@ function logRetryFailedAndThrow(
   caughtError: Error,
 ): never {
   const message = `Retry failed: ${errorMessage}
-      ${caughtError || ""}`;
+      ${caughtError.message || ""}`;
   logger.error(message);
   throw new Error(message);
 }

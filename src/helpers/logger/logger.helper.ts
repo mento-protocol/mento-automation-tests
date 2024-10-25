@@ -7,8 +7,11 @@ import {
   LogType,
 } from "@helpers/logger/logger.types";
 import { magicStrings } from "@constants/magic-strings.constants";
+import { processEnv } from "@helpers/processEnv/processEnv.helper";
 
 class LoggerHelper {
+  private readonly logLevel = processEnv.LOG_LEVEL || "ALL";
+
   constructor() {
     configure({
       appenders: {
@@ -30,7 +33,9 @@ class LoggerHelper {
           type: "file",
         },
       },
-      categories: { default: { appenders: ["console", "file"], level: "ALL" } },
+      categories: {
+        default: { appenders: ["console", "file"], level: this.logLevel },
+      },
     });
   }
 

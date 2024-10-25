@@ -1,17 +1,32 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import { Input } from "../pageElements/input";
-import { Button } from "../pageElements/button";
-import { Label } from "../pageElements/label";
-import { Dropdown } from "@web/pageElements/dropdown";
-import { ElementsList } from "@web/pageElements/element-list.pe";
+import { Input } from "@pageElements/input";
+import { Button } from "@pageElements/button";
+import { Label } from "@pageElements/label";
+import { Dropdown } from "@pageElements/dropdown";
+import { ElementsList } from "@pageElements/element-list.pe";
+import { BasePo } from "@pageObjects/base.po";
+import { ITokenDropdownOptions } from "@pageObjects/types/swap.po.types";
 
 export interface ISwapPo {
-  fromDropdown: Dropdown;
+  fromTokenDropdown: Dropdown<ITokenDropdownOptions>;
+  toTokenDropdown: Dropdown<ITokenDropdownOptions>;
 }
 
-export class SwapPo implements ISwapPo {
-  constructor(protected ef: ElementFinderHelper) {}
+export class SwapPo extends BasePo implements ISwapPo {
+  constructor(protected override ef: ElementFinderHelper) {
+    super(ef);
+  }
 
+  private get tokenDropdownOptions(): ITokenDropdownOptions {
+    return {
+      CELO: new Button(this.ef.pw.role("option", { name: "CELO" })),
+      cEUR: new Button(this.ef.pw.role("option", { name: "cEUR" })),
+      cUSD: new Button(this.ef.pw.role("option", { name: "cUSD" })),
+      cREAL: new Button(this.ef.pw.role("option", { name: "cREAL" })),
+    };
+  }
+
+  headerLabel = new Label(this.ef.pw.text("Swap"));
   settingsButton = new Button(this.ef.title("Settings"));
   swapInputsButton = new Button(this.ef.title("Swap inputs"));
   showSlippageButton = new Button(this.ef.pw.role("switch"));
@@ -27,23 +42,13 @@ export class SwapPo implements ISwapPo {
   continueButton = new Button(this.ef.pw.text("Continue"));
   fromAmountInput = new Input(this.ef.name("amount-in"));
   toAmountInput = new Input(this.ef.name("amount-out"));
-  fromDropdown = new Dropdown({
-    dropdownButton: this.ef.id("headlessui-listbox-button-:r2:"),
-    options: {
-      CELO: new Button(this.ef.pw.role("option", { name: "CELO" })),
-      cEUR: new Button(this.ef.pw.role("option", { name: "cEUR" })),
-      cUSD: new Button(this.ef.pw.role("option", { name: "cUSD" })),
-      cREAL: new Button(this.ef.pw.role("option", { name: "cREAL" })),
-    },
+  fromTokenDropdown = new Dropdown<ITokenDropdownOptions>({
+    dropdownButton: this.ef.pw.role("button", { name: "From Token" }),
+    options: this.tokenDropdownOptions,
   });
-  toDropdown = new Dropdown({
-    dropdownButton: this.ef.id("headlessui-listbox-button-:r3:"),
-    options: {
-      CELO: new Button(this.ef.pw.role("option", { name: "CELO" })),
-      cEUR: new Button(this.ef.pw.role("option", { name: "cEUR" })),
-      cUSD: new Button(this.ef.pw.role("option", { name: "cUSD" })),
-      cREAL: new Button(this.ef.pw.role("option", { name: "cREAL" })),
-    },
+  toTokenDropdown = new Dropdown<ITokenDropdownOptions>({
+    dropdownButton: this.ef.pw.role("button", { name: "To Token" }),
+    options: this.tokenDropdownOptions,
   });
 
   currentPriceLabel = new Label(
@@ -61,4 +66,6 @@ export class SwapPo implements ISwapPo {
   amountExceedsBalanceButton = new Button(
     this.ef.pw.role("button", { name: "Amount exceeds balance" }),
   );
+
+  staticElements = [this.headerLabel];
 }

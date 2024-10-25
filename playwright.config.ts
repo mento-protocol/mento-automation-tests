@@ -1,17 +1,18 @@
 import { defineConfig, devices } from "@playwright/test";
 
 import { configHelper } from "@helpers/config/config.helper";
-import { envHelper } from "@helpers/env/env.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
+import { timeouts } from "@constants/timeouts.constants";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
+import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 export default defineConfig({
-  timeout: envHelper.isCI() ? 160_000 : 100_000,
+  timeout: timeouts.testRunner,
   testDir: configHelper.getTestDirPath(),
   testMatch: configHelper.getSpecs(),
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: 0,
+  forbidOnly: primitiveHelper.string.toBoolean(processEnv.CI),
+  retries: configHelper.getTestRetry(),
   workers: 1,
   reporter: [
     [

@@ -1,16 +1,21 @@
 import { BaseService } from "./base.service";
-import { MainPo } from "../pageObjects/main.po";
-import { IMainService, IMainServiceArgs } from "./types/main.service.types";
+import { MainPo } from "@pageObjects/main.po";
+import { IMainServiceArgs } from "@services/types/main.service.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { IWallet } from "@fixtures/common.fixture";
-import { envHelper } from "@helpers/env/env.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 
 const logger = loggerHelper.get("MainService");
 
+export interface IMainService {
+  openAppWithConnectedWallet: (wallet: IWallet) => Promise<void>;
+  connectMetamaskWallet: (wallet: IWallet) => Promise<void>;
+  isWalletConnected: () => Promise<boolean>;
+}
+
 @ClassLog
 export class MainService extends BaseService implements IMainService {
-  protected page: MainPo = null;
+  protected override page: MainPo = null;
 
   constructor(args: IMainServiceArgs) {
     const { page } = args;
@@ -18,22 +23,19 @@ export class MainService extends BaseService implements IMainService {
     this.page = page;
   }
 
-  async setupPlatformPreconditions(wallet: IWallet): Promise<void> {
-    await this.openUrl(envHelper.getBaseWebUrl());
-    !(await this.isWalletConnected()) &&
-      (await this.connectMetamaskWallet(wallet));
+  async openAppWithConnectedWallet(wallet: IWallet): Promise<void> {
+    await this.navigateToApp();
+    if (!(await this.isWalletConnected())) {
+      return await this.connectMetamaskWallet(wallet);
+    }
+    logger.debug("Wallet is already connected");
   }
 
   async connectMetamaskWallet(wallet: IWallet): Promise<void> {
-    logger.debug("Connecting Metamask wallet...");
     await this.page.connectButton.click();
     const firstWallet = this.page.walletTypeButtons.getElementByIndex(0);
     await firstWallet.click();
-    console.log({ wallet });
     await wallet.metamask.approve();
-    logger.info("Metamask wallet has been successfully connected", {
-      shouldAddStep: true,
-    });
   }
 
   async isWalletConnected(): Promise<boolean> {

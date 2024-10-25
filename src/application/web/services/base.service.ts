@@ -1,22 +1,23 @@
 import { Browser } from "@helpers/browser/browser.helper";
+import { envHelper } from "@helpers/env/env.helper";
+import { BasePo } from "@pageObjects/base.po";
+import { IBaseServiceArgs } from "@services/types/base.service.types";
 
 export class BaseService {
-  protected browser: Browser = null;
+  // change browser to protected or move it completely
+  public browser: Browser = null;
+  protected page: BasePo = null;
 
   constructor(args: IBaseServiceArgs) {
     const { browser } = args;
     this.browser = browser;
   }
 
-  async openUrl(url: string): Promise<void> {
-    return this.browser.openUrl(url);
+  async navigateToApp(): Promise<void> {
+    return this.browser.openUrl(envHelper.getBaseWebUrl());
   }
 
   async getPageTitle(): Promise<string> {
     return this.browser.getTitle();
   }
-}
-
-export interface IBaseServiceArgs {
-  browser: Browser;
 }

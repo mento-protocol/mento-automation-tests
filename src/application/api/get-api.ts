@@ -4,7 +4,6 @@ import { request } from "@playwright/test";
 import { GenericHttpClient } from "@api/http/generic-http.client";
 import { BaseHttpClient } from "@api/http/base-http.client";
 import { AuthController } from "@api/controllers/auth/auth.controller";
-import { TodoController } from "@api/controllers/todo/todo.controller";
 
 export function getApi(
   testApiModulePromise: Promise<APIRequestContext>,
@@ -26,7 +25,6 @@ const utils = {
     const genericHttpClient = utils.getGenericHttpByModule(apiModulePromise);
     return {
       auth: new AuthController(genericHttpClient),
-      todo: new TodoController(genericHttpClient),
     };
   },
 
@@ -47,5 +45,4 @@ export const externalApi = getExternalApi();
 
 export interface IGetApi {
   auth: AuthController;
-  todo: TodoController;
 }

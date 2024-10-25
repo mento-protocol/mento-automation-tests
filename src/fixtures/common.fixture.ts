@@ -1,7 +1,7 @@
 import { BrowserContext, test as base } from "@playwright/test";
 import dappwright, { Dappwright, MetaMaskWallet } from "@tenkeylabs/dappwright";
 
-import { IGetWebServices } from "@web/services/types/get-web-services.types";
+import { IGetWebServices } from "@services/types/get-web-services.types";
 import { IGetApi } from "@api/get-api";
 import { init } from "@helpers/init/init.helper";
 import { MetamaskWalletHelper } from "@helpers/wallet/metamask-wallet.helper";
@@ -20,22 +20,12 @@ type MyFixtures = {
 };
 
 export const testFixture = base.extend<MyFixtures>({
-  web: async ({ browser, page }, use) => {
-    const web = await init.web(browser, page);
-    await use(web);
-  },
-  api: async ({ playwright: { request } }, use) => {
-    const api = await init.api(request);
-    await use(api);
-  },
-
   context: async ({}, use) => {
     // Launch context with extension
     const [wallet, page, context] = await dappwright.bootstrap("", {
       wallet: "metamask",
       version: MetaMaskWallet.recommendedVersion,
-      // I do not pass such data directly in repo - usually I pass it by env variables
-      seed: "strike this hockey lazy ritual fragile fee inform gadget baby endless resemble",
+      seed: envHelper.getSeedPhrase(),
       // unable to run without because of issue with Metamask for GitHub Actions - running with 'xvfb'
       headless: false,
     });
@@ -52,6 +42,16 @@ export const testFixture = base.extend<MyFixtures>({
     const metamask = await dappwright.getWallet("metamask", context);
     const helper = new MetamaskWalletHelper(metamask);
     await use({ metamask, helper });
+  },
+
+  web: async ({ context, page }, use) => {
+    const web = await init.web(context, page);
+    await use(web);
+  },
+
+  api: async ({ playwright: { request } }, use) => {
+    const api = await init.api(request);
+    await use(api);
   },
 });
 

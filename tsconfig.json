@@ -19,10 +19,9 @@
     "emitDecoratorMetadata": true,
     "paths": {
       "@api/*": ["./src/application/api/*"],
-      "@web/*": ["./src/application/web/*"],
-      "@pageObjects/*": ["./src/application/pageObjects/*"],
-      "@pageElements/*": ["./src/application/pageElements/*"],
-      "@services/*": ["./src/application/services/*"],
+      "@services/*": ["./src/application/web/services/*"],
+      "@pageObjects/*": ["./src/application/web/pageObjects/*"],
+      "@pageElements/*": ["./src/application/web/pageElements/*"],
       "@helpers/*": ["./src/helpers/*"],
       "@constants/*": ["./src/constants/*"],
       "@fixtures/*": ["./src/fixtures/*"],

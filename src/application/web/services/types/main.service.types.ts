@@ -1,11 +1,6 @@
-import { MainPo } from "@web/pageObjects/main.po";
-import { IBaseServiceArgs } from "../base.service";
-import { IWallet } from "@fixtures/common.fixture";
+import { MainPo } from "@pageObjects/main.po";
+import { IBaseServiceArgs } from "@services/types/base.service.types";
 
 export interface IMainServiceArgs extends IBaseServiceArgs {
   page: MainPo;
-}
-
-export interface IMainService {
-  connectMetamaskWallet: (wallet: IWallet) => Promise<void>;
 }

@@ -1,4 +1,15 @@
+import { processEnv } from "@helpers/processEnv/processEnv.helper";
+import { envHelper } from "@helpers/env/env.helper";
+
 export const timeouts = {
+  get testRunner(): number {
+    return envHelper.isCI()
+      ? 120_000
+      : Number(processEnv.TEST_RUNNER_TIMEOUT) || 90_000;
+  },
+  get isOpenPage(): number {
+    return this.m;
+  },
   animation: 250,
   xxxxs: 500,
   xxxs: 1_000,

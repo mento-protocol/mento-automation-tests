@@ -1,7 +1,8 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import { Label } from "@web/pageElements/label";
-import { Button } from "@web/pageElements/button";
-import { ElementsList } from "@web/pageElements/element-list.pe";
+import { Label } from "@pageElements/label";
+import { Button } from "@pageElements/button";
+import { ElementsList } from "@pageElements/element-list.pe";
+import { BasePo } from "@pageObjects/base.po";
 
 export interface IConfirmSwapPo {
   swapInfo: {
@@ -10,8 +11,10 @@ export interface IConfirmSwapPo {
   };
 }
 
-export class ConfirmSwapPo implements IConfirmSwapPo {
-  constructor(protected ef: ElementFinderHelper) {}
+export class ConfirmSwapPo extends BasePo implements IConfirmSwapPo {
+  constructor(protected override ef: ElementFinderHelper) {
+    super(ef);
+  }
 
   swapPerformingPopupLabel = new Label(this.ef.pw.text("Performing Swap"));
   swapPerformingPopupCloseButton = new Button(
@@ -53,4 +56,6 @@ export class ConfirmSwapPo implements IConfirmSwapPo {
   rejectedTransactionNotificationLabel = new Label(
     this.ef.pw.text("Unable to execute approval transaction"),
   );
+
+  staticElements = [this.headerLabel];
 }

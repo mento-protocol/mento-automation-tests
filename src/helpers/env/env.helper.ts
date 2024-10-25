@@ -17,6 +17,11 @@ export class EnvHelper {
     return magicStrings.url.api[this.getEnv()].base;
   }
 
+  getSeedPhrase(): string {
+    if (!processEnv.SEED_PHRASE) throw new Error("Seed phrase isn't provided");
+    return processEnv.SEED_PHRASE;
+  }
+
   isCI(): boolean {
     return primitiveHelper.string.toBoolean(CI);
   }

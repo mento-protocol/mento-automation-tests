@@ -7,7 +7,7 @@ export class Input extends BaseElementPe implements IInput {
     super(elementSearcher);
   }
 
-  async enterText(text: string, options?): Promise<void> {
+  async enterText(text: string, options?: { timeout: number }): Promise<void> {
     return (await this.element).fill(text, options);
   }
 }

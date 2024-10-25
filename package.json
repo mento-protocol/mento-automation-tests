@@ -2,20 +2,16 @@
   "name": "mento-automation-tests",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "playwright test --headed --config=./configs/playwright.config.ts",
-    "test:ui": "playwright test --ui --config=./configs/playwright.config.ts",
-    "test:debug": "playwright test --debug --config=./configs/playwright.config.ts",
-    "test:headless": "playwright test --config=./configs/playwright.config.ts",
+    "test": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:headless": "playwright test",
     "lint:staged": "eslint '*.ts' --fix",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "prepare": "husky install",
     "postinstall": "npx ts-node src/tools/env.tool.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "engines": {
     "node": ">=18.20.0"
   },

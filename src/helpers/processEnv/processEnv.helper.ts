@@ -9,6 +9,9 @@ interface IProcessEnvHelper {
   SPECS_TYPE: string;
   CI: string;
   SEED_PHRASE: string;
+  TEST_RUNNER_TIMEOUT: string;
+  LOG_LEVEL: string;
+  TEST_RETRY: string;
 }
 
 export const processEnv = process.env as unknown as IProcessEnvHelper;

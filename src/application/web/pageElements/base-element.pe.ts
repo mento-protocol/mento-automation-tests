@@ -14,7 +14,7 @@ export abstract class BaseElementPe implements IBaseElementPe {
     return this.elementSearcher.findElement();
   }
 
-  async click(options = {}): Promise<void> {
+  async click(options: { timeout?: number } = {}): Promise<void> {
     return (await this.element).click(options);
   }
 
@@ -45,7 +45,7 @@ export abstract class BaseElementPe implements IBaseElementPe {
       await (await this.element).waitFor({ timeout, state: "visible" });
       return true;
     } catch (error) {
-      logger.error(`${errorMessage}: ${this.elementSearcher.locator}`);
+      logger.warn(`${errorMessage}: ${this.elementSearcher.locator}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }
@@ -66,6 +66,25 @@ export abstract class BaseElementPe implements IBaseElementPe {
       return true;
     } catch (error) {
       console.error(`${errorMessage}: ${this.elementSearcher.locator}`);
+      if (throwError) {
+        throw { ...error, message: `${errorMessage}: ${error.message}}` };
+      }
+      return false;
+    }
+  }
+
+  async waitUntilExist(
+    timeout: number,
+    params: IWaitUntilDisplayed = {},
+  ): Promise<boolean> {
+    const { throwError = true, errorMessage = "failed to wait for element" } =
+      params;
+
+    try {
+      await (await this.element).waitFor({ timeout, state: "attached" });
+      return true;
+    } catch (error) {
+      logger.error(`${errorMessage}: ${this.elementSearcher.locator}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }

@@ -1,19 +1,21 @@
-import { Browser as IPwBrowser } from "playwright-core";
-import { APIRequest, Page } from "@playwright/test";
+import { APIRequest, BrowserContext, Page } from "@playwright/test";
 
-import { getWeb } from "@web/get-web";
 import { getApi, IGetApi } from "@api/get-api";
 import { current } from "@helpers/current/current.helper";
 import { Browser } from "@helpers/browser/browser.helper";
-import { IGetWebServices } from "@web/services/types/get-web-services.types";
+import { IGetWebServices } from "@services/types/get-web-services.types";
 import { IInitBrowser } from "@helpers/init/init.types";
+import { getWeb } from "../../application/web/get-web";
 
 export const init = {
   async web(
-    pwBrowser: IPwBrowser,
+    existingContext?: BrowserContext,
     existingPwPage?: Page,
   ): Promise<IGetWebServices> {
-    const { browser, pwPage } = await this.browser(pwBrowser, existingPwPage);
+    const { browser, pwPage } = await this.browser(
+      existingContext,
+      existingPwPage,
+    );
     return getWeb({ pwPage, browser });
   },
 
@@ -26,14 +28,11 @@ export const init = {
   },
 
   async browser(
-    pwBrowser: IPwBrowser,
+    existingContext?: BrowserContext,
     existingPwPage?: Page,
   ): Promise<IInitBrowser> {
-    const context = await pwBrowser.newContext({
-      viewport: { width: 1920, height: 1080 },
-    });
-    const pwPage = existingPwPage ?? (await context.newPage());
-    const browser = new Browser({ pwPage, context });
+    const pwPage = existingPwPage ?? (await existingContext.newPage());
+    const browser = new Browser({ pwPage, context: existingContext });
     // @ts-ignore
     current.browsers.push(browser);
     current.browsers.shift();

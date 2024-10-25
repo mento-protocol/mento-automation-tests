@@ -3,6 +3,7 @@ import { Browser } from "@helpers/browser/browser.helper";
 import { MainService } from "../main.service";
 import { SwapService } from "../swap.service";
 import { Token } from "@constants/token.constants";
+import { CeloExplorerService } from "@services/celo-explorer.service";
 
 export interface IGetServicesArgs {
   pwPage: Page;
@@ -12,8 +13,9 @@ export interface IGetServicesArgs {
 export interface IGetWebServices {
   main: MainService;
   swap: SwapService;
+  celoExplorer: CeloExplorerService;
 }
-export interface IFillFromOptions {
+export interface IFillFromOpts {
   fromAmount?: string;
   toAmount?: string;
   tokens?: ISelectTokensArgs;

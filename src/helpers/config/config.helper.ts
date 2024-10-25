@@ -1,5 +1,6 @@
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
+import { envHelper } from "@helpers/env/env.helper";
 
 const { SPEC_NAMES, SPECS_TYPE } = processEnv;
 
@@ -23,6 +24,11 @@ class ConfigHelper {
       default:
         throw new Error(`Please specify SPECS_TYPE via: web, api or all`);
     }
+  }
+
+  getTestRetry(): number {
+    const localRetry = Number(processEnv.TEST_RETRY) || 0;
+    return envHelper.isCI() ? 1 : localRetry;
   }
 }
 

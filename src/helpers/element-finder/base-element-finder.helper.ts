@@ -42,6 +42,10 @@ export abstract class BaseElementFinderHelper<T>
     return this.getLocator({ ...options, name: "class", value: locatorName });
   }
 
+  role(locatorName: string, options: SearchOptions<T> = {}): T {
+    return this.getLocator({ ...options, name: "role", value: locatorName });
+  }
+
   areaLabel(locatorName: string, options: SearchOptions<T> = {}): T {
     return this.getLocator({
       ...options,

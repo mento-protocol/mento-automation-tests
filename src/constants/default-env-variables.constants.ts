@@ -1,12 +1,16 @@
 export const defaultEnvVariables = `ENV=prod
 
-#USER_PASSWORD=
+SEED_PHRASE=
 
-#SPECS_TYPE=all
+SPECS_TYPE=all
 
-#SPEC_NAMES=slippage
-#healthcheck
+SPEC_NAMES=wallet
+#wallet
 #incorrect-inputs
 #slippage
 #price
+
+#TEST_RUNNER_TIMEOUT=
+#LOG_LEVEL=ALL
+#TEST_RETRY=0
 `;
