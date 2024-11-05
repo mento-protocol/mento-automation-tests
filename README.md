@@ -1,41 +1,56 @@
-# Mento automation tests framework
+# Mento Automation Tests
 
-#### .env file creates automatically on npm install. Check the following .env variable declarations:
+## Summary
 
-- ENV - running on certain env. Can be passed: prod
-- SPECS_TYPE running spec/s type. Can be passed: all | web | api
-- SPEC_NAMES - running spec name/s. Can be passed name/s without extension by comma separated: sport,todos
+### Test automation framework repo to execute described tests against mento-web and other possible projects
 
-## To execute test/s in different mods:
+### Here you can find more detailed overview of [test automation](https://www.notion.so/mentolabs/Test-Automation-12da2148cc5c8010bae9cf8150e5c13f)
 
-- ##### _headed_ (can be shortened to "npm t")
+## Pre-requisites
 
-```
- npm run test
-```
+- [node.js](https://nodejs.org/en) >= 18.20.0
+- [npm](https://nodejs.org/en) >= 10.5.0
 
-- ##### _ui_
+## Pre-conditions
 
-```
- npm run test:ui
-```
+1. Execute `npm install`
+2. Paste a seed phrase into the `SEED_PHRASE` variable (can be taken from [CI](https://github.com/mento-protocol/mento-automation-tests/settings/secrets/actions))
 
-- ##### _debug_
+## Environment Variables
 
-```
- npm run test:debug
-```
+#### .env file creates automatically as a "postinstall" on `npm install` command execution
 
-- ##### _headless_
+| Variable            | Example           | Description                                                                                                                  |
+| ------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| \*ENV               | `prod`            | required env, default `prod`                                                                                                 |
+| \*SPECS_TYPE        | `web`             | required specs type to run. Can be: `all` or `web` or `api`                                                                  |
+| SPEC_NAMES          | `wallet,slippage` | specs names separated by comma which will be executed locally, if no or disabled will execute all specs, disabled by default |
+| TEST_RETRY          | `1`               | retries N times if test fails, disabled by default                                                                           |
+| \*SEED_PHRASE       | `'seed phrase'`   | required seed phrase for connection of metamask wallet                                                                       |
+| TEST_RUNNER_TIMEOUT | `120_000`         | custom test runner timeout, disabled by default                                                                              |
+| LOG_LEVEL           | `DEBUG`           | desired log level, disabled by default. Can be: ALL, TRACE, INFO, DEBUG                                                      |
 
-```
- npm run test:headless
-```
+## Local test/s execution by mods:
 
-## To run tests from CI:
+- _**headed**_ - with opening browser (command can be shortened to `npm t`)
 
-Please, navigate to the Actions page and select the Manual Test Run workflow - there you can find the "event trigger" that can be configurable this way:
+`npm run test`
 
-- branch
-- Spec names of running tests - to pass test names by comma-separated
-- Specs type to run exact type of tests - to select spec type from dropdown (all, web, api)
+- _**ui**_ - with opening browser in specified app with all devtools, traces, and other playwright features
+
+`npm run test:ui`
+
+- _**debug**_ - with opening browser and specified debug app to pause/resume test
+
+`npm run test:debug`
+
+- _**headless**_ - without opening browser and other playwright features
+
+`npm run test:headless`
+
+## CI test/s execution by the "Manual Test Run" trigger:
+
+1. Navigate to the [CI](https://github.com/mento-protocol/mento-automation-tests/actions)
+2. Select the "Manual Test Run" workflow
+3. Click on the "Run workflow" drop-down
+4. Select a branch, write a spec name/s, and select specs type
