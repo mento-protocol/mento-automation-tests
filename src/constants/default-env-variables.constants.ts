@@ -4,7 +4,7 @@ SEED_PHRASE=
 
 SPECS_TYPE=all
 
-SPEC_NAMES=wallet
+SPEC_NAMES=
 #wallet
 #incorrect-inputs
 #slippage

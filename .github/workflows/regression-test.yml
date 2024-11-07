@@ -10,8 +10,7 @@ jobs:
     name: "Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPEC_NAMES: ${{ github.event.inputs.SPEC_NAMES }}
-      SPECS_TYPE: ${{ github.event.inputs.SPECS_TYPE }}
+      SPECS_TYPE: ${{ 'all' }}
       REPORT_FLAG: ${{ 'failure' }}
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
