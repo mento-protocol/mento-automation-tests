@@ -1,0 +1,27 @@
+name: Specific Test Run
+
+on:
+  workflow_dispatch:
+    inputs:
+      SPEC_NAMES:
+        description: "Spec names of running test/s"
+        required: true
+      SPECS_TYPE:
+        type: choice
+        description: "Specs type of running test/s"
+        default: all
+        options:
+          - all
+          - web
+          - api
+
+jobs:
+  test:
+    name: "Specific Test Run"
+    uses: ./.github/workflows/common-test.yml
+    with:
+      SPEC_NAMES: ${{ github.event.inputs.SPEC_NAMES }}
+      SPECS_TYPE: ${{ github.event.inputs.SPECS_TYPE }}
+      REPORT_FLAG: ${{ 'always' }}
+    secrets:
+      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}

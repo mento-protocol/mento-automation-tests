@@ -48,9 +48,9 @@
 
 `npm run test:headless`
 
-## CI test/s execution by the "Manual Test Run" trigger:
+## CI test/s execution by the "Specific Test Run" trigger:
 
 1. Navigate to the [CI](https://github.com/mento-protocol/mento-automation-tests/actions)
-2. Select the "Manual Test Run" workflow
+2. Select the "Specific Test Run" workflow
 3. Click on the "Run workflow" drop-down
 4. Select a branch, write a spec name/s, and select specs type
