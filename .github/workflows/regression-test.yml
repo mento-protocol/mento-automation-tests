@@ -1,0 +1,16 @@
+name: Regression Test Run
+
+on:
+  schedule:
+    - cron: "0 4 * * *" # Every night at 4:00 AM UTC
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    name: "Regression Test Run"
+    uses: ./.github/workflows/common-test.yml
+    with:
+      SPECS_TYPE: ${{ 'all' }}
+      REPORT_FLAG: ${{ 'failure' }}
+    secrets:
+      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
