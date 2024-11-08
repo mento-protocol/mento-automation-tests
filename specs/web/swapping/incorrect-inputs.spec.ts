@@ -21,8 +21,8 @@ suite({
     {
       name: "with an exceeds balance",
       test: async ({ web }) => {
+        await web.swap.fillForm({ fromAmount: "100" });
         await web.swap.continueToConfirmation();
-        await web.swap.fillForm({ fromAmount: "5" });
         expect(await web.swap.isAmountExceedValidationThere()).toBeTruthy();
       },
     },
