@@ -25,6 +25,7 @@ export interface ISwapService {
   continueToConfirmation: () => Promise<void>;
   swapInputs: () => Promise<ISwapInputs>;
   getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
+  getCurrentToTokenName: () => Promise<string>;
   isAmountRequiredValidationThere: () => Promise<boolean>;
   isAmountExceedValidationThere: () => Promise<boolean>;
   isCurrentPriceThere: () => Promise<boolean>;
@@ -34,7 +35,7 @@ export interface ISwapService {
 
 @ClassLog
 export class SwapService extends BaseService implements ISwapService {
-  protected override page: SwapPo = null;
+  public override page: SwapPo = null;
   public confirm: ConfirmSwapService = null;
 
   constructor(args: ISwapServiceArgs) {
@@ -105,6 +106,13 @@ export class SwapService extends BaseService implements ISwapService {
         sleepReason: "re-calculating after swapping inputs",
       }));
     return this.page.currentPriceLabel.getText();
+  }
+
+  async getCurrentToTokenName(): Promise<string> {
+    return (await this.page.toTokenDropdown.getText()).replaceAll(
+      "To Token",
+      "",
+    );
   }
 
   async useFullBalance(): Promise<void> {

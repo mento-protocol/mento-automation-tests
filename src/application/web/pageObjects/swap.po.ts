@@ -5,12 +5,11 @@ import { Label } from "@pageElements/label";
 import { Dropdown } from "@pageElements/dropdown";
 import { ElementsList } from "@pageElements/element-list.pe";
 import { BasePo } from "@pageObjects/base.po";
-import { ITokenDropdownOptions } from "@pageObjects/types/swap.po.types";
-
-export interface ISwapPo {
-  fromTokenDropdown: Dropdown<ITokenDropdownOptions>;
-  toTokenDropdown: Dropdown<ITokenDropdownOptions>;
-}
+import {
+  ISwapPo,
+  ITokenDropdownOptions,
+} from "@pageObjects/types/swap.po.types";
+import { Token } from "@constants/token.constants";
 
 export class SwapPo extends BasePo implements ISwapPo {
   constructor(protected override ef: ElementFinderHelper) {
@@ -19,10 +18,28 @@ export class SwapPo extends BasePo implements ISwapPo {
 
   private get tokenDropdownOptions(): ITokenDropdownOptions {
     return {
-      CELO: new Button(this.ef.pw.role("option", { name: "CELO" })),
-      cEUR: new Button(this.ef.pw.role("option", { name: "cEUR" })),
-      cUSD: new Button(this.ef.pw.role("option", { name: "cUSD" })),
-      cREAL: new Button(this.ef.pw.role("option", { name: "cREAL" })),
+      [Token.CELO]: new Button(this.ef.pw.role("option", { name: Token.CELO })),
+      [Token.cEUR]: new Button(this.ef.pw.role("option", { name: Token.cEUR })),
+      [Token.cUSD]: new Button(this.ef.pw.role("option", { name: Token.cUSD })),
+      [Token.cREAL]: new Button(
+        this.ef.pw.role("option", { name: Token.cREAL }),
+      ),
+      [Token.cCOP]: new Button(this.ef.pw.role("option", { name: Token.cCOP })),
+      [Token.USDC]: new Button(
+        this.ef.pw.role("option", { name: Token.USDC, exact: true }),
+      ),
+      [Token.USDT]: new Button(
+        this.ef.pw.role("option", { name: Token.USDT, exact: true }),
+      ),
+      [Token.axlUSDC]: new Button(
+        this.ef.pw.role("option", { name: Token.axlUSDC, exact: true }),
+      ),
+      [Token.axlEUROC]: new Button(
+        this.ef.pw.role("option", { name: Token.axlEUROC, exact: true }),
+      ),
+      [Token.eXOF]: new Button(this.ef.pw.role("option", { name: Token.eXOF })),
+      [Token.cKES]: new Button(this.ef.pw.role("option", { name: Token.cKES })),
+      [Token.PUSO]: new Button(this.ef.pw.role("option", { name: Token.PUSO })),
     };
   }
 
