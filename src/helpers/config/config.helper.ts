@@ -33,7 +33,7 @@ class ConfigHelper {
   }
 
   getReportersList(): unknown {
-    const commonReporters = [
+    const commonReporters: unknown[] = [
       [
         "html",
         {
@@ -42,20 +42,19 @@ class ConfigHelper {
       ],
       ["list"],
     ];
-    if (this.shouldRunTestomatReport() && !envHelper.isCI()) {
+    if (!envHelper.isCI() && this.shouldRunTestomatReport()) {
       processEnv.TESTOMATIO_TITLE = `Local at: ${primitiveHelper.getCurrentDateTime()}`;
     }
-    return envHelper.isCI() || this.shouldRunTestomatReport()
-      ? [
-          ...commonReporters,
-          [
-            "@testomatio/reporter/lib/adapter/playwright.js",
-            {
-              apiKey: processEnv.TESTOMAT_API_KEY,
-            },
-          ],
-        ]
-      : commonReporters;
+    if (this.shouldRunTestomatReport()) {
+      commonReporters.push([
+        "@testomatio/reporter/lib/adapter/playwright.js",
+        {
+          apiKey: processEnv.TESTOMAT_API_KEY,
+        },
+      ]);
+    }
+
+    return commonReporters;
   }
 
   shouldRunTestomatReport(): boolean {

@@ -59,16 +59,13 @@ jobs:
 
       - name: Set current datetime
         run: |
-          NOW=$(date +"%Y-%m-%d %H:%M:%S")
-          echo "$CURRENT_DATETIME=$NOW" >> $env:GITHUB_ENV
-
-      - name: Set job author
-        run: echo "$JOB_AUTHOR=$GITHUB_ACTOR" >> $env:GITHUB_ENV
+          CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
+          echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
 
       - name: Run Playwright tests
         run: xvfb-run npx playwright test
         env:
-          TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ env.JOB_AUTHOR }} at: ${{ env.CURRENT_DATETIME }}"
+          TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
