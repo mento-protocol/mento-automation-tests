@@ -1,10 +1,12 @@
 import {
   ConditionFunction,
+  IDisable,
   IExecution,
   IRunTestArgs,
   IRunTestsArgs,
   IRunTestWithWebArgs,
   ISuiteArgs,
+  ITest,
 } from "@helpers/suite/suite.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { envHelper } from "@helpers/env/env.helper";
@@ -28,6 +30,11 @@ export function suite(args: ISuiteArgs): void {
   );
 
   testFixture.describe(name, () => {
+    utils.areAllTestsDisabled(tests) &&
+      testFixture.skip(
+        true,
+        "All tests are skipped - please check their disable blocks",
+      );
     utils.runBeforeAll(beforeAll);
     utils.runTests({
       beforeEach,
@@ -54,7 +61,14 @@ class Utils {
   runTests(args: IRunTestsArgs): void {
     const { beforeEach, afterEach, tests } = args;
     tests.forEach(suiteTest => {
-      const { test, name, disable, isNewWebContext = false } = suiteTest;
+      const {
+        test,
+        name,
+        disable,
+        isNewWebContext = false,
+        testCaseId,
+      } = suiteTest;
+
       this.runTestWithWeb({
         test,
         name,
@@ -62,25 +76,44 @@ class Utils {
         beforeEach,
         afterEach,
         disable,
+        testCaseId,
       });
     });
   }
 
+  areAllTestsDisabled(tests: ITest[]): boolean {
+    return tests.every(({ disable }) => this.isDisabled(disable));
+  }
+
   private runTestWithWeb(args: IRunTestWithWebArgs): void {
-    const { test, name, isNewWebContext, beforeEach, afterEach, disable } =
-      args;
+    const {
+      test,
+      name,
+      isNewWebContext,
+      beforeEach,
+      afterEach,
+      disable,
+      testCaseId,
+    } = args;
+
+    const testName = `${name} [${testCaseId}]`;
 
     return isNewWebContext
-      ? testFixture(name, async ({ context, page }) => {
-          Boolean(disable) && testFixture.skip(true, disable?.reason);
+      ? testFixture(testName, async ({ context, page }) => {
+          this.isDisabled(disable) && this.disable(disable);
           executionArgs = {
             web: await init.web(context, page),
             wallet: executionArgs.wallet,
           };
-          await this.runTest({ test, beforeEach, afterEach, disable });
+          await this.runTest({
+            test,
+            beforeEach,
+            afterEach,
+            disable,
+          });
         })
-      : testFixture(name, async ({}) => {
-          Boolean(disable) && testFixture.skip(true, disable?.reason);
+      : testFixture(testName, async ({}) => {
+          this.isDisabled(disable) && this.disable(disable);
           executionArgs = {
             web: executionArgs.web,
             wallet: executionArgs.wallet,
@@ -90,10 +123,38 @@ class Utils {
   }
 
   private async runTest(args: IRunTestArgs): Promise<void> {
-    const { test, beforeEach, afterEach, disable } = args;
+    const { test, beforeEach, afterEach } = args;
     beforeEach && (await beforeEach(executionArgs));
     await test(executionArgs);
     afterEach && (await afterEach(executionArgs));
+  }
+
+  private isDisabled(disable: IDisable): boolean {
+    if (!disable) {
+      return false;
+    }
+    if (!disable.env) {
+      return true;
+    }
+    return disable.env === envHelper.getEnv();
+  }
+
+  private disable(disable: IDisable): void {
+    this.addDisableAnnotations(disable);
+    testFixture.skip(true, `Please check the disable details above ⬆️`);
+  }
+
+  private addDisableAnnotations(disable: IDisable): void {
+    testFixture.info().annotations.push(
+      {
+        type: `Reason`,
+        description: disable?.reason,
+      },
+      disable?.link && {
+        type: "Link",
+        description: disable?.link,
+      },
+    );
   }
 }
 

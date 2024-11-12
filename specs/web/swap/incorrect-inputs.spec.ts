@@ -13,6 +13,7 @@ suite({
   tests: [
     {
       name: "with an empty amount",
+      testCaseId: "@Tcc0fa75f",
       test: async ({ web }) => {
         await web.swap.continueToConfirmation();
         expect(await web.swap.isAmountRequiredValidationThere()).toBeTruthy();
@@ -20,6 +21,7 @@ suite({
     },
     {
       name: "with an exceeds balance",
+      testCaseId: "@T2a671992",
       test: async ({ web }) => {
         await web.swap.fillForm({ fromAmount: "100" });
         await web.swap.continueToConfirmation();
@@ -28,6 +30,7 @@ suite({
     },
     {
       name: "reject transaction",
+      testCaseId: "@Td5aa1954",
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.cEUR, to: Token.CELO },

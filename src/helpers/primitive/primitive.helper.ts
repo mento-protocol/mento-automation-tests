@@ -32,6 +32,17 @@ class PrimitiveHelper {
     return values[randomInt(values.length)];
   }
 
+  getCurrentDateTime(): string {
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(new Date());
+  }
+
   jsonStringify(value: unknown, options: IJsonStringifyOptions = {}): string {
     const { replacer = null, spaces = 2 } = options;
     return JSON.stringify(value, replacer, spaces);

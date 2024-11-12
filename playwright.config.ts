@@ -10,19 +10,9 @@ export default defineConfig({
   timeout: timeouts.testRunner,
   testDir: configHelper.getTestDirPath(),
   testMatch: configHelper.getSpecs(),
-  fullyParallel: true,
   forbidOnly: primitiveHelper.string.toBoolean(processEnv.CI),
   retries: configHelper.getTestRetry(),
   workers: 1,
-  reporter: [
-    [
-      "html",
-      {
-        outputFolder: `${magicStrings.path.artifacts}/reports/playwright-report`,
-      },
-    ],
-    ["list"],
-  ],
   outputDir: `${magicStrings.path.artifacts}/test-results`,
   use: {
     trace: "on",
@@ -34,4 +24,6 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
+  // @ts-ignore
+  reporter: configHelper.getReportersList(),
 });

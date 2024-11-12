@@ -14,6 +14,7 @@ suite({
   tests: [
     {
       name: "perform with default slippage",
+      testCaseId: "@T751161b4",
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.cEUR },
@@ -32,6 +33,7 @@ suite({
     },
     {
       name: "perform with lowest slippage",
+      testCaseId: "@T0046ec8d",
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           slippage: Slippage["0.5%"],
@@ -45,6 +47,7 @@ suite({
     },
     {
       name: "perform with highest slippage",
+      testCaseId: "@Tb9505e3a",
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           slippage: Slippage["1.5%"],

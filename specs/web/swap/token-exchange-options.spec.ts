@@ -9,6 +9,7 @@ const testCases = [
   {
     token: Token.CELO,
     exchangeOptions: [Token.cUSD, Token.cEUR, Token.cREAL, Token.eXOF],
+    id: "@T61ff6eca",
   },
   {
     token: Token.cUSD,
@@ -21,46 +22,57 @@ const testCases = [
       Token.PUSO,
       Token.cCOP,
     ],
+    id: "@T4cf1f159",
   },
   {
     token: Token.cEUR,
     exchangeOptions: [Token.CELO, Token.USDC, Token.axlUSDC, Token.axlEUROC],
+    id: "@T55e5689d",
   },
   {
     token: Token.cREAL,
     exchangeOptions: [Token.CELO, Token.USDC, Token.axlUSDC],
+    id: "@T1cdcec6e",
   },
   {
     token: Token.USDC,
     exchangeOptions: [Token.cUSD, Token.cEUR, Token.cREAL],
+    id: "@T65b923f0",
   },
   {
     token: Token.USDT,
     exchangeOptions: [Token.cUSD],
+    id: "@T1728aaf3",
   },
   {
     token: Token.axlUSDC,
     exchangeOptions: [Token.cUSD, Token.cEUR, Token.cREAL],
+    id: "@T3842f1e6",
   },
   {
     token: Token.axlEUROC,
     exchangeOptions: [Token.cEUR, Token.eXOF],
+    id: "@T1b2d5431",
   },
   {
     token: Token.eXOF,
     exchangeOptions: [Token.CELO, Token.axlEUROC],
+    id: "@T8b44f3ea",
   },
   {
     token: Token.cKES,
     exchangeOptions: [Token.cUSD],
+    id: "@Tdf1f8d60",
   },
   {
     token: Token.PUSO,
     exchangeOptions: [Token.cUSD],
+    id: "@Td740bfbf",
   },
   {
     token: Token.cCOP,
     exchangeOptions: [Token.cUSD],
+    id: "@T7a80e866",
   },
 ];
 
@@ -75,6 +87,7 @@ suite({
   tests: [
     {
       name: 'pre-defining a default selected token after changing the "From Token"',
+      testCaseId: "@T093c401d",
       test: async ({ web }) => {
         await web.swap.selectTokens({ from: Token.axlEUROC });
         expect(await web.swap.getCurrentToTokenName()).toEqual(Token.cEUR);
@@ -83,6 +96,7 @@ suite({
     ...testCases.map(testCase => {
       return {
         name: `from ${testCase.token} token`,
+        testCaseId: testCase.id,
         test: async ({ web }: IExecution) => {
           await web.swap.selectTokens({ from: testCase.token });
           await web.swap.page.toTokenDropdown.click();

@@ -14,6 +14,21 @@ on:
           - all
           - web
           - api
+      HTML_REPORT_GENERATION:
+        type: choice
+        description: "Flag to configure html report generation"
+        default: "onFailure"
+        options:
+          - "true"
+          - "false"
+          - "onFailure"
+      TESTOMAT_REPORT_GENERATION:
+        type: choice
+        description: "Flag to configure testomat test run report generation"
+        default: "true"
+        options:
+          - "true"
+          - "false"
 
 jobs:
   test:
@@ -22,6 +37,9 @@ jobs:
     with:
       SPEC_NAMES: ${{ github.event.inputs.SPEC_NAMES }}
       SPECS_TYPE: ${{ github.event.inputs.SPECS_TYPE }}
-      REPORT_FLAG: ${{ 'always' }}
+      HTML_REPORT_GENERATION: ${{ github.event.inputs.SHOULD_REPORT }}
+      TESTOMAT_REPORT_GENERATION: "true"
+      TESTOMATIO_TITLE: "Specific"
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}

@@ -3,7 +3,23 @@ name: Regression Test Run
 on:
   schedule:
     - cron: "0 4 * * 1-5" # Monday to Friday at 4:00 AM UTC
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      HTML_REPORT_GENERATION:
+        type: choice
+        description: "Flag to configure html report generation"
+        default: "onFailure"
+        options:
+          - "true"
+          - "false"
+          - "onFailure"
+      TESTOMAT_REPORT_GENERATION:
+        type: choice
+        description: "Flag to configure testomat test run report generation"
+        default: "true"
+        options:
+          - "true"
+          - "false"
 
 jobs:
   test:
@@ -11,6 +27,10 @@ jobs:
     uses: ./.github/workflows/common-test.yml
     with:
       SPECS_TYPE: ${{ 'all' }}
-      REPORT_FLAG: ${{ 'failure' }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMATIO_TITLE: "Regression"
+
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
