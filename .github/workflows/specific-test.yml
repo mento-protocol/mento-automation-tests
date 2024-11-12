@@ -35,10 +35,10 @@ jobs:
     name: "Specific Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPEC_NAMES: ${{ github.event.inputs.SPEC_NAMES }}
-      SPECS_TYPE: ${{ github.event.inputs.SPECS_TYPE }}
-      HTML_REPORT_GENERATION: ${{ github.event.inputs.SHOULD_REPORT }}
-      TESTOMAT_REPORT_GENERATION: "true"
+      SPEC_NAMES: ${{ inputs.SPEC_NAMES }}
+      SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
       TESTOMATIO_TITLE: "Specific"
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}

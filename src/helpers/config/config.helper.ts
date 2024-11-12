@@ -43,7 +43,7 @@ class ConfigHelper {
       ["list"],
     ];
     if (this.shouldRunTestomatReport() && !envHelper.isCI()) {
-      processEnv.TESTOMATIO_TITLE = `Local at ${primitiveHelper.getCurrentDateTime()}`;
+      processEnv.TESTOMATIO_TITLE = `Local at: ${primitiveHelper.getCurrentDateTime()}`;
     }
     return envHelper.isCI() || this.shouldRunTestomatReport()
       ? [
