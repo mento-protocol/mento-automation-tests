@@ -14,14 +14,32 @@ on:
           - all
           - web
           - api
+      HTML_REPORT_GENERATION:
+        type: choice
+        description: "Configuration of HTML report generation"
+        default: "onFailure"
+        options:
+          - "true"
+          - "false"
+          - "onFailure"
+      TESTOMAT_REPORT_GENERATION:
+        type: choice
+        description: "Configuration of Testomat test run report generation"
+        default: "true"
+        options:
+          - "true"
+          - "false"
 
 jobs:
   test:
     name: "Specific Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPEC_NAMES: ${{ github.event.inputs.SPEC_NAMES }}
-      SPECS_TYPE: ${{ github.event.inputs.SPECS_TYPE }}
-      REPORT_FLAG: ${{ 'always' }}
+      SPEC_NAMES: ${{ inputs.SPEC_NAMES }}
+      SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMATIO_TITLE: "Specific"
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}

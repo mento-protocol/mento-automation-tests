@@ -1,3 +1,4 @@
+# Generic workflow to build all test's workflows
 name: Common Test Run
 
 on:
@@ -11,13 +12,24 @@ on:
         description: "Spec type of running tests"
         required: false
         type: string
-      REPORT_FLAG:
-        description: "Flag to configure report generating"
+      HTML_REPORT_GENERATION:
+        description: "Flag to configure html report generation"
+        required: true
+        type: string
+      TESTOMAT_REPORT_GENERATION:
+        description: "Flag to configure testomat test run report generation"
+        required: true
+        type: string
+      TESTOMATIO_TITLE:
+        description: "Title of test run in the test management system"
         required: true
         type: string
     secrets:
       SEED_PHRASE:
         description: "Seed phrase to connect wallet"
+        required: true
+      TESTOMAT_API_KEY:
+        description: "Testomat api key for defining test management system account"
         required: true
 
 jobs:
@@ -26,7 +38,10 @@ jobs:
     env:
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
       SPEC_NAMES: ${{ inputs.SPEC_NAMES }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.44.1-jammy
@@ -43,12 +58,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set current datetime
+        run: |
+          CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
+          echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
+
       - name: Run Playwright tests
         run: xvfb-run npx playwright test
+        env:
+          TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
-        if: ${{ inputs.REPORT_FLAG == 'always' && always() || (inputs.REPORT_FLAG == 'success' && success()) || (inputs.REPORT_FLAG == 'failure' && failure()) }}
+        if: ${{ success() && inputs.HTML_REPORT_GENERATION == 'true' || success() && inputs.HTML_REPORT_GENERATION == 'onFailure' && failure() }}
         with:
           name: playwright-report
           path: artifacts/reports/playwright-report/

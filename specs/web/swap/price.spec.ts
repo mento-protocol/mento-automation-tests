@@ -14,6 +14,7 @@ suite({
   tests: [
     {
       name: "prices are equal on all stages and correct",
+      testCaseId: "@T2332ee03",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { from: Token.cEUR, to: Token.CELO },
@@ -30,6 +31,7 @@ suite({
     },
     {
       name: "'From' field is auto-calculating when 'to' is filled`",
+      testCaseId: "@T9906952e",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { to: Token.cUSD },
@@ -39,7 +41,8 @@ suite({
       },
     },
     {
-      name: `Use full balance using '${Token.CELO}' as 'from'`,
+      name: `Use full balance using '${Token.CELO}' as 'From Token'`,
+      testCaseId: "@Ta34f8bd6",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { from: Token.CELO },
@@ -50,6 +53,7 @@ suite({
     },
     {
       name: `Use full balance using anything as 'from' besides '${Token.CELO}'`,
+      testCaseId: "@T80d4fbc3",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { from: primitiveHelper.getRandomFrom(cTokens) },

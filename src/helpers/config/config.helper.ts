@@ -1,6 +1,7 @@
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
 import { envHelper } from "@helpers/env/env.helper";
+import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 const { SPEC_NAMES, SPECS_TYPE } = processEnv;
 
@@ -29,6 +30,37 @@ class ConfigHelper {
   getTestRetry(): number {
     const localRetry = Number(processEnv.TEST_RETRY) || 0;
     return envHelper.isCI() ? 1 : localRetry;
+  }
+
+  getReportersList(): unknown {
+    const commonReporters: unknown[] = [
+      [
+        "html",
+        {
+          outputFolder: `${magicStrings.path.artifacts}/reports/playwright-report`,
+        },
+      ],
+      ["list"],
+    ];
+    if (!envHelper.isCI() && this.shouldRunTestomatReport()) {
+      processEnv.TESTOMATIO_TITLE = `Local at: ${primitiveHelper.getCurrentDateTime()}`;
+    }
+    if (this.shouldRunTestomatReport()) {
+      commonReporters.push([
+        "@testomatio/reporter/lib/adapter/playwright.js",
+        {
+          apiKey: processEnv.TESTOMAT_API_KEY,
+        },
+      ]);
+    }
+
+    return commonReporters;
+  }
+
+  shouldRunTestomatReport(): boolean {
+    return primitiveHelper.string.toBoolean(
+      processEnv.TESTOMAT_REPORT_GENERATION,
+    );
   }
 }
 

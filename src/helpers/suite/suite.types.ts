@@ -19,6 +19,7 @@ export interface ISuiteArgs {
 
 export interface ITest {
   name: string;
+  testCaseId: string;
   test: (args: IExecution) => Promise<void>;
   xname?: string;
   fname?: string;
@@ -50,4 +51,5 @@ export interface IRunTestArgs {
 export interface IRunTestWithWebArgs extends IRunTestArgs {
   name: string;
   isNewWebContext: boolean;
+  testCaseId: string;
 }

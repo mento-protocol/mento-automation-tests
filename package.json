@@ -7,8 +7,10 @@
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
     "test:headless": "playwright test",
+    "linter": "eslint . --ext .ts",
     "lint:staged": "eslint '*.ts' --fix",
     "lint": "eslint 'src/**/*.{js,ts}'",
+    "codeCheck": "tsc && npm run linter",
     "prepare": "husky install",
     "postinstall": "npx ts-node src/tools/env.tool.ts"
   },
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.44.1",
+    "@testomatio/reporter": "1.5.3",
     "@types/lodash": "4.14.202",
     "@types/node": "20.14.5",
     "@typescript-eslint/eslint-plugin": "6.0.0",
