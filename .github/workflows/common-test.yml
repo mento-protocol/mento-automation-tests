@@ -59,7 +59,7 @@ jobs:
 
       - name: Set current datetime
         run: |
-          $NOW=$(date +"%Y-%m-%d %H:%M:%S")
+          NOW=$(date +"%Y-%m-%d %H:%M:%S")
           echo "$CURRENT_DATETIME=$NOW" >> $env:GITHUB_ENV
 
       - name: Set job author
