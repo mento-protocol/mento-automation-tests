@@ -1,3 +1,4 @@
+# Generic workflow to build all test's workflows
 name: Common Test Run
 
 on:

@@ -7,7 +7,7 @@ on:
     inputs:
       HTML_REPORT_GENERATION:
         type: choice
-        description: "Flag to configure html report generation"
+        description: "Configuration of HTML report generation"
         default: "onFailure"
         options:
           - "true"
@@ -15,7 +15,7 @@ on:
           - "onFailure"
       TESTOMAT_REPORT_GENERATION:
         type: choice
-        description: "Flag to configure testomat test run report generation"
+        description: "Configuration of Testomat test run report generation"
         default: "true"
         options:
           - "true"
