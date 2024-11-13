@@ -13,15 +13,15 @@ on:
         required: false
         type: string
       HTML_REPORT_GENERATION:
-        description: "Flag to configure html report generation"
+        description: "HTML report generation"
         required: true
         type: string
       TESTOMAT_REPORT_GENERATION:
-        description: "Flag to configure testomat test run report generation"
+        description: "Testomat test run report generation"
         required: true
         type: string
       TESTOMATIO_TITLE:
-        description: "Title of test run in the test management system"
+        description: "Title of test run in the Testomat"
         required: true
         type: string
     secrets:
@@ -29,7 +29,7 @@ on:
         description: "Seed phrase to connect wallet"
         required: true
       TESTOMAT_API_KEY:
-        description: "Testomat api key for defining test management system account"
+        description: "API key to sync with Testomat account"
         required: true
 
 jobs:
@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
-        if: ${{ success() && inputs.HTML_REPORT_GENERATION == 'true' || success() && inputs.HTML_REPORT_GENERATION == 'onFailure' && failure() }}
+        if: ${{ (success() && inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
         with:
           name: playwright-report
           path: artifacts/reports/playwright-report/

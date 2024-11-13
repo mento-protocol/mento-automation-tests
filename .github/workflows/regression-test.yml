@@ -7,7 +7,7 @@ on:
     inputs:
       HTML_REPORT_GENERATION:
         type: choice
-        description: "Configuration of HTML report generation"
+        description: "HTML report generation"
         default: "onFailure"
         options:
           - "true"
@@ -15,7 +15,7 @@ on:
           - "onFailure"
       TESTOMAT_REPORT_GENERATION:
         type: choice
-        description: "Configuration of Testomat test run report generation"
+        description: "Testomat test run report generation"
         default: "true"
         options:
           - "true"
@@ -27,8 +27,8 @@ jobs:
     uses: ./.github/workflows/common-test.yml
     with:
       SPECS_TYPE: ${{ 'all' }}
-      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
-      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      HTML_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false", "onFailure"]'), inputs.HTML_REPORT_GENERATION) || 'onFailure' }}
+      TESTOMAT_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false"]'), inputs.TESTOMAT_REPORT_GENERATION) || 'true' }}
       TESTOMATIO_TITLE: "Regression"
 
     secrets:
