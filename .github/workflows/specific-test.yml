@@ -16,7 +16,7 @@ on:
           - api
       HTML_REPORT_GENERATION:
         type: choice
-        description: "Configuration of HTML report generation"
+        description: "HTML report generation"
         default: "onFailure"
         options:
           - "true"
@@ -24,7 +24,7 @@ on:
           - "onFailure"
       TESTOMAT_REPORT_GENERATION:
         type: choice
-        description: "Configuration of Testomat test run report generation"
+        description: "Testomat test run report generation"
         default: "true"
         options:
           - "true"
