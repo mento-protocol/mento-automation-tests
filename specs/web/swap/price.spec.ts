@@ -13,7 +13,7 @@ suite({
   },
   tests: [
     {
-      name: "prices are equal on all stages and correct",
+      name: "Prices are equal on all stages and correct",
       testCaseId: "@T2332ee03",
       test: async ({ web }) => {
         await web.swap.fillForm({

@@ -15,6 +15,10 @@ suite({
     {
       name: "perform with default slippage",
       testCaseId: "@T751161b4",
+      disable: {
+        reason:
+          "We have specified swap by token pair with a usage of default slippage all time",
+      },
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.cEUR },
@@ -32,7 +36,7 @@ suite({
       },
     },
     {
-      name: "perform with lowest slippage",
+      name: "perform with a minimal slippage",
       testCaseId: "@T0046ec8d",
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
@@ -46,7 +50,7 @@ suite({
       },
     },
     {
-      name: "perform with highest slippage",
+      name: "perform with a max slippage",
       testCaseId: "@Tb9505e3a",
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({

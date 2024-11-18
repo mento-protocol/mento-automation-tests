@@ -131,6 +131,10 @@ export class SwapService extends BaseService implements ISwapService {
     return this.page.amountExceedsBalanceButton.isDisplayed();
   }
 
+  async isAmountTooSmallValidationThere(): Promise<boolean> {
+    return this.page.amountTooSmallButton.isDisplayed();
+  }
+
   async isCurrentPriceThere(): Promise<boolean> {
     return this.page.currentPriceLabel.isDisplayed();
   }

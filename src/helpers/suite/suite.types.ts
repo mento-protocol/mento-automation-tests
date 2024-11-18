@@ -29,7 +29,7 @@ export interface ITest {
 
 export interface IDisable {
   reason: string;
-  link: string;
+  link?: string;
   env?: string;
 }
 

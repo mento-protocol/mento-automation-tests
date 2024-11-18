@@ -12,7 +12,7 @@ suite({
   },
   tests: [
     {
-      name: "with an empty amount",
+      name: "Confirm swap with an empty amount",
       testCaseId: "@Tcc0fa75f",
       test: async ({ web }) => {
         await web.swap.continueToConfirmation();
@@ -20,7 +20,7 @@ suite({
       },
     },
     {
-      name: "with an exceeds balance",
+      name: "Confirm swap with an exceeds balance",
       testCaseId: "@T2a671992",
       test: async ({ web }) => {
         await web.swap.fillForm({ fromAmount: "100" });
@@ -29,7 +29,16 @@ suite({
       },
     },
     {
-      name: "reject transaction",
+      name: "Confirm swap with a too small amount",
+      testCaseId: "@T8a97541b",
+      test: async ({ web }) => {
+        await web.swap.fillForm({ fromAmount: "00" });
+        await web.swap.continueToConfirmation();
+        expect(await web.swap.isAmountTooSmallValidationThere()).toBeTruthy();
+      },
+    },
+    {
+      name: "Reject approval transaction",
       testCaseId: "@Td5aa1954",
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
