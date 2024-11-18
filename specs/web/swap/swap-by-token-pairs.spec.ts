@@ -61,7 +61,7 @@ const testCases = [
   },
   // axlUSDC
   {
-    fromToken: Token.axlEUROC,
+    fromToken: Token.axlUSDC,
     toToken: primitiveHelper.getRandomFrom([
       Token.cEUR,
       Token.cUSD,
