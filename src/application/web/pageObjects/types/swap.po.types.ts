@@ -37,4 +37,5 @@ export interface ISwapPo {
   considerKeepNotificationLabel: Label;
   amountRequiredButton: Button;
   amountExceedsBalanceButton: Button;
+  amountTooSmallButton: Button;
 }

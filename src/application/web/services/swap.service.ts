@@ -28,6 +28,7 @@ export interface ISwapService {
   getCurrentToTokenName: () => Promise<string>;
   isAmountRequiredValidationThere: () => Promise<boolean>;
   isAmountExceedValidationThere: () => Promise<boolean>;
+  isAmountTooSmallValidationThere: () => Promise<boolean>;
   isCurrentPriceThere: () => Promise<boolean>;
   isConsiderKeepNotificationThere: () => Promise<boolean>;
   isFromInputEmpty: () => Promise<boolean>;
