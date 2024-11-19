@@ -3,6 +3,10 @@ import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
+const disable = {
+  reason: "No valid median for a bunch of tokens",
+  link: "https://app.zenhub.com/workspaces/sprint-6458911097b7ec002c15f0d6/issues/gh/mento-protocol/mento-web/152",
+};
 const testCases = [
   // CELO
   {
@@ -30,12 +34,14 @@ const testCases = [
     fromToken: Token.USDT,
     toToken: Token.cUSD,
     id: "@T2511996c",
+    disable,
   },
   // cKES
   {
     fromToken: Token.cKES,
     toToken: Token.cUSD,
     id: "@Tbe02fb8d",
+    disable,
   },
   // PUSO
   {
@@ -58,6 +64,7 @@ const testCases = [
       Token.cREAL,
     ]),
     id: "@Ta9f2be1e",
+    disable,
   },
   // axlUSDC
   {
@@ -68,12 +75,14 @@ const testCases = [
       Token.cREAL,
     ]),
     id: "@T635a15c9",
+    disable,
   },
   // axlEUROC
   {
     fromToken: Token.axlEUROC,
     toToken: primitiveHelper.getRandomFrom([Token.cEUR, Token.eXOF]),
     id: "@T92258405",
+    disable,
   },
 ];
 
@@ -90,6 +99,7 @@ suite({
       return {
         name: `from ${testCase.fromToken} to ${testCase.toToken}`,
         testCaseId: testCase.id,
+        disable: testCase?.disable,
         test: async ({ web, wallet }: IExecution) => {
           await web.swap.fillForm({
             tokens: { from: testCase.fromToken, to: testCase.toToken },
