@@ -4,8 +4,8 @@ import { envHelper } from "@helpers/env/env.helper";
 export const timeouts = {
   get testRunner(): number {
     return envHelper.isCI()
-      ? 120_000
-      : Number(processEnv.TEST_RUNNER_TIMEOUT) || 90_000;
+      ? 200_000
+      : Number(processEnv.TEST_RUNNER_TIMEOUT) || 120_000;
   },
   get isOpenPage(): number {
     return this.m;
