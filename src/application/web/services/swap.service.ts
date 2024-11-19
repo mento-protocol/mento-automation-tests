@@ -28,6 +28,7 @@ export interface ISwapService {
   getCurrentToTokenName: () => Promise<string>;
   isAmountRequiredValidationThere: () => Promise<boolean>;
   isAmountExceedValidationThere: () => Promise<boolean>;
+  isAmountTooSmallValidationThere: () => Promise<boolean>;
   isCurrentPriceThere: () => Promise<boolean>;
   isConsiderKeepNotificationThere: () => Promise<boolean>;
   isFromInputEmpty: () => Promise<boolean>;
@@ -129,6 +130,10 @@ export class SwapService extends BaseService implements ISwapService {
 
   async isAmountExceedValidationThere(): Promise<boolean> {
     return this.page.amountExceedsBalanceButton.isDisplayed();
+  }
+
+  async isAmountTooSmallValidationThere(): Promise<boolean> {
+    return this.page.amountTooSmallButton.isDisplayed();
   }
 
   async isCurrentPriceThere(): Promise<boolean> {

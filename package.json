@@ -6,7 +6,6 @@
     "test": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
-    "test:headless": "playwright test",
     "linter": "eslint . --ext .ts",
     "lint:staged": "eslint '*.ts' --fix",
     "lint": "eslint 'src/**/*.{js,ts}'",
