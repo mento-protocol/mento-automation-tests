@@ -145,16 +145,15 @@ class Utils {
   }
 
   private addDisableAnnotations(disable: IDisable): void {
-    testFixture.info().annotations.push(
-      {
-        type: `Reason`,
-        description: disable?.reason,
-      },
-      disable?.link && {
+    testFixture.info().annotations.push({
+      type: "Reason",
+      description: disable.reason,
+    });
+    disable?.link &&
+      testFixture.info().annotations.push({
         type: "Link",
         description: disable?.link,
-      },
-    );
+      });
   }
 }
 

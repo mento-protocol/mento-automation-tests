@@ -21,3 +21,8 @@ export interface ISwapInputs {
   beforeSwapPrice: string;
   afterSwapPrice: string;
 }
+
+export enum AmountType {
+  In = "In",
+  Out = "Out",
+}

@@ -4,6 +4,7 @@ import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import {
+  AmountType,
   ISwapInputs,
   ISwapServiceArgs,
 } from "@services/types/swap.service.types";
@@ -26,6 +27,7 @@ export interface ISwapService {
   swapInputs: () => Promise<ISwapInputs>;
   getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
   getCurrentToTokenName: () => Promise<string>;
+  getAmountByType: (amountType: AmountType) => Promise<string>;
   isAmountRequiredValidationThere: () => Promise<boolean>;
   isAmountExceedValidationThere: () => Promise<boolean>;
   isAmountTooSmallValidationThere: () => Promise<boolean>;
@@ -114,6 +116,14 @@ export class SwapService extends BaseService implements ISwapService {
       "To Token",
       "",
     );
+  }
+
+  async getAmountByType(amountType: AmountType): Promise<string> {
+    const amountInput =
+      amountType === AmountType.In
+        ? this.page.fromAmountInput
+        : this.page.toAmountInput;
+    return amountInput.getValue();
   }
 
   async useFullBalance(): Promise<void> {
