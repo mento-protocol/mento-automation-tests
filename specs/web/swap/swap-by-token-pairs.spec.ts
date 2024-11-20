@@ -2,6 +2,7 @@ import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
+import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
 
 const disable = {
   reason: "No valid median for a bunch of tokens",
@@ -58,18 +59,14 @@ const testCases = [
   // USDC
   {
     fromToken: Token.USDC,
-    toToken: primitiveHelper.getRandomFrom([
-      Token.cEUR,
-      Token.cUSD,
-      Token.cREAL,
-    ]),
+    toToken: getRandomToken(Token.USDC, [Token.cEUR, Token.cUSD, Token.cREAL]),
     id: "@Ta9f2be1e",
     disable,
   },
   // axlUSDC
   {
     fromToken: Token.axlUSDC,
-    toToken: primitiveHelper.getRandomFrom([
+    toToken: getRandomToken(Token.axlUSDC, [
       Token.cEUR,
       Token.cUSD,
       Token.cREAL,
@@ -80,7 +77,7 @@ const testCases = [
   // axlEUROC
   {
     fromToken: Token.axlEUROC,
-    toToken: primitiveHelper.getRandomFrom([Token.cEUR, Token.eXOF]),
+    toToken: getRandomToken(Token.axlEUROC, [Token.cEUR, Token.eXOF]),
     id: "@T92258405",
     disable,
   },
@@ -113,3 +110,12 @@ suite({
     }),
   ],
 });
+
+function getRandomToken(fromToken: Token, toTokens: Token[]): Token {
+  if (!retryDataHelper.isExistByName(fromToken)) {
+    const randomToken = primitiveHelper.getRandomFrom(toTokens);
+    retryDataHelper.create({ fromToken, toToken: randomToken }, fromToken);
+    return randomToken;
+  }
+  return retryDataHelper.getByName<Token>(fromToken).toToken;
+}
