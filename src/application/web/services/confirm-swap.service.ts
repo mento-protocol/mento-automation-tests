@@ -33,6 +33,11 @@ export class ConfirmSwapService
     return this.page.currentPriceLabel.getText();
   }
 
+  async finish(wallet: any): Promise<void> {
+    await wallet.helper.approveTransactionTwice();
+    await wallet.metamask.confirmTransaction();
+  }
+
   async expectSuccessfulTransaction(): Promise<void> {
     expect
       .soft(
@@ -73,7 +78,11 @@ export class ConfirmSwapService
     );
   }
 
-  async isRejectedTransactionNotificationThere(): Promise<boolean> {
-    return this.page.rejectedTransactionNotificationLabel.isDisplayed();
+  async isRejectApprovalTransactionNotificationThere(): Promise<boolean> {
+    return this.page.rejectApprovalTransactionNotificationLabel.isDisplayed();
+  }
+
+  async isRejectSwapTransactionNotificationThere(): Promise<boolean> {
+    return this.page.rejectSwapTransactionNotificationLabel.isDisplayed();
   }
 }

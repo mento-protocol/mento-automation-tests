@@ -28,7 +28,7 @@ suite({
           )
           .toBeGreaterThan(0);
         await web.swap.start();
-        await wallet.helper.approveTransactionTwice();
+        await web.swap.confirm.finish(wallet);
         await web.swap.confirm.expectSuccessfulTransaction();
       },
     },
@@ -45,7 +45,7 @@ suite({
           "swap-in amount is not calculated",
         ).toBeGreaterThan(0);
         await web.swap.start();
-        await wallet.helper.approveTransactionTwice();
+        await web.swap.confirm.finish(wallet);
         await web.swap.confirm.expectSuccessfulTransaction();
       },
     },

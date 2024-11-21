@@ -38,4 +38,6 @@ export interface ISwapPo {
   amountRequiredButton: Button;
   amountExceedsBalanceButton: Button;
   amountTooSmallButton: Button;
+  errorButton: Button;
+  exceedsTradingLimitErrorLabel: Label;
 }

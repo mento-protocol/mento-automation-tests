@@ -10,6 +10,11 @@ export class MetamaskWalletHelper {
     await popup.getByRole("button", { name: "Next" }).click();
     await waiterHelper.waitForAnimation();
     await popup.getByRole("button", { name: "Approve" }).click();
-    await this.wallet.confirmTransaction();
+  }
+
+  async rejectSwapTransaction(): Promise<void> {
+    await this.approveTransactionTwice();
+    const popup = await this.wallet.page.context().waitForEvent("page");
+    await popup.getByTestId("page-container-footer-cancel").click();
   }
 }

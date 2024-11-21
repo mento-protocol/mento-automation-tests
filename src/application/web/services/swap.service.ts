@@ -28,12 +28,15 @@ export interface ISwapService {
   getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
   getCurrentToTokenName: () => Promise<string>;
   getAmountByType: (amountType: AmountType) => Promise<string>;
+  isContinueButtonThere: () => Promise<boolean>;
   isAmountRequiredValidationThere: () => Promise<boolean>;
   isAmountExceedValidationThere: () => Promise<boolean>;
   isAmountTooSmallValidationThere: () => Promise<boolean>;
   isCurrentPriceThere: () => Promise<boolean>;
   isConsiderKeepNotificationThere: () => Promise<boolean>;
   isFromInputEmpty: () => Promise<boolean>;
+  isErrorValidationThere: () => Promise<boolean>;
+  isExceedsTradingLimitsValidationThere: () => Promise<boolean>;
   isNoValidMedian: () => Promise<boolean>;
   isCurrentPriceLoaded: () => Promise<boolean>;
 }
@@ -136,6 +139,10 @@ export class SwapService extends BaseService implements ISwapService {
     );
   }
 
+  async isContinueButtonThere(): Promise<boolean> {
+    return this.page.continueButton.isDisplayed();
+  }
+
   async isAmountRequiredValidationThere(): Promise<boolean> {
     return this.page.amountRequiredButton.isDisplayed();
   }
@@ -146,6 +153,14 @@ export class SwapService extends BaseService implements ISwapService {
 
   async isAmountTooSmallValidationThere(): Promise<boolean> {
     return this.page.amountTooSmallButton.isDisplayed();
+  }
+
+  async isErrorValidationThere(): Promise<boolean> {
+    return this.page.errorButton.isDisplayed();
+  }
+
+  async isExceedsTradingLimitsValidationThere(): Promise<boolean> {
+    return this.page.exceedsTradingLimitErrorLabel.isDisplayed();
   }
 
   async isCurrentPriceThere(): Promise<boolean> {
