@@ -157,4 +157,22 @@ export class SwapService extends BaseService implements ISwapService {
   async isFromInputEmpty(): Promise<boolean> {
     return !Boolean((await this.page.fromAmountInput.getValue()).length);
   }
+
+  async isNoValidMedian(): Promise<boolean> {
+    return waiterHelper.retry(
+      async () => {
+        return this.browser.hasConsoleErrorMatchingText("no valid median");
+      },
+      3,
+      {
+        throwError: false,
+        continueWithException: true,
+        errorMessage: "Check for a no valid median",
+      },
+    );
+  }
+
+  async isCurrentPriceLoaded(): Promise<boolean> {
+    return (await this.page.currentPriceLabel.getText()) !== "...";
+  }
 }
