@@ -8,6 +8,7 @@ import {
   ISetLocalStorage,
 } from "@helpers/browser/browser.helper.types";
 import { testFixture } from "@fixtures/common.fixture";
+import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 export interface IBrowser {
   openUrl: (url: string) => Promise<void>;
@@ -114,7 +115,7 @@ export class Browser implements IBrowser {
   }
 
   private async attachConsoleErrorLogs(): Promise<void> {
-    const name = "console-errors";
+    const name = `console-error-${primitiveHelper.getCurrenTime()}`;
     this.pwPage.on("console", async message => {
       if (message.type() === "error") {
         const logMessageBuffer = Buffer.from(message.text());
@@ -126,7 +127,7 @@ export class Browser implements IBrowser {
   }
 
   private async attachPageErrors(): Promise<void> {
-    const name = "page-errors";
+    const name = `page-errors-${primitiveHelper.getCurrenTime()}`;
     this.pwPage.on("pageerror", async error => {
       const errorMessageBuffer = Buffer.from(error.message);
       testFixture.info().attachments.length
