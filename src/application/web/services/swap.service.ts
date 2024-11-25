@@ -34,6 +34,8 @@ export interface ISwapService {
   isCurrentPriceThere: () => Promise<boolean>;
   isConsiderKeepNotificationThere: () => Promise<boolean>;
   isFromInputEmpty: () => Promise<boolean>;
+  isNoValidMedian: () => Promise<boolean>;
+  isCurrentPriceLoaded: () => Promise<boolean>;
 }
 
 @ClassLog
@@ -159,17 +161,19 @@ export class SwapService extends BaseService implements ISwapService {
   }
 
   async isNoValidMedian(): Promise<boolean> {
-    return waiterHelper.retry(
-      async () => {
-        return this.browser.hasConsoleErrorMatchingText("no valid median");
-      },
-      3,
-      {
-        throwError: false,
-        continueWithException: true,
-        errorMessage: "Check for a no valid median",
-      },
-    );
+    return !(await this.isCurrentPriceLoaded())
+      ? waiterHelper.retry(
+          async () => {
+            return this.browser.hasConsoleErrorsMatchingText("no valid median");
+          },
+          3,
+          {
+            throwError: false,
+            continueWithException: true,
+            errorMessage: "Checking for a 'no valid median' case",
+          },
+        )
+      : false;
   }
 
   async isCurrentPriceLoaded(): Promise<boolean> {

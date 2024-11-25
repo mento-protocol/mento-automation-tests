@@ -21,3 +21,9 @@ export interface IAddCookie {
   domain: string;
   path: string;
 }
+
+export interface IAttachInReportArgs {
+  name: string;
+  body: Buffer;
+  contentType?: string;
+}

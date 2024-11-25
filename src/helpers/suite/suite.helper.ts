@@ -49,8 +49,8 @@ class Utils {
   runBeforeAll(conditionFunction: ConditionFunction): void {
     testFixture.beforeAll(async ({ context, page, wallet }) => {
       executionArgs = { web: await init.web(context, page), wallet };
-      await executionArgs.web.swap.browser.collectConsoleErrorLogs();
-      await executionArgs.web.swap.browser.attachConsoleErrorLogs();
+      await executionArgs.web.swap.browser.collectErrors();
+      await executionArgs.web.swap.browser.attachErrors();
       conditionFunction && (await conditionFunction(executionArgs));
     });
   }

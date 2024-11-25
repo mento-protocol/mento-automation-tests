@@ -1,12 +1,11 @@
 import { BrowserContext, Page } from "@playwright/test";
 import {
   IAddCookie,
+  IAttachInReportArgs,
   IBrowserArgs,
   IScrollBy,
   ISetLocalStorage,
 } from "@helpers/browser/browser.helper.types";
-import { bind } from "lodash";
-import { testUtils } from "@helpers/suite/suite.helper";
 import { testFixture } from "@fixtures/common.fixture";
 
 export interface IBrowser {
@@ -15,9 +14,13 @@ export interface IBrowser {
   addCookies: (params: IAddCookie[]) => Promise<void>;
   scrollBy: (params: IScrollBy) => Promise<void>;
   getTitle: () => Promise<string>;
-  attachConsoleErrorLogs: () => Promise<void>;
-  collectConsoleErrorLogs: () => Promise<void>;
-  hasConsoleErrorMatchingText: (text: string) => boolean;
+  execute: (
+    callback: (args?: unknown[]) => Promise<unknown>,
+  ) => Promise<unknown>;
+  attachInReport: (args: IAttachInReportArgs) => Promise<void>;
+  attachErrors: () => Promise<void>;
+  collectErrors: () => Promise<void>;
+  hasConsoleErrorsMatchingText: (text: string) => boolean;
 }
 
 export class Browser implements IBrowser {
@@ -25,6 +28,7 @@ export class Browser implements IBrowser {
   private context: BrowserContext = null;
 
   private _consoleErrors: string[] = [];
+  private _pageErrors: string[] = [];
 
   constructor(args: IBrowserArgs) {
     const { pwPage, context } = args;
@@ -34,6 +38,10 @@ export class Browser implements IBrowser {
 
   get consoleErrors(): string[] {
     return this._consoleErrors;
+  }
+
+  get pageErrors(): string[] {
+    return this._pageErrors;
   }
 
   async openUrl(url: string): Promise<void> {
@@ -69,45 +77,72 @@ export class Browser implements IBrowser {
     await this.pwPage.reload();
   }
 
-  // V1
-  async attachConsoleErrorLogs(): Promise<void> {
-    this.pwPage.on("console", message => {
-      if (message.type() === "error") {
-        testFixture.info().attach("console-errors", {
-          contentType: "text/plain",
-          body: Buffer.from(message.text()),
-        });
-      }
-    });
+  async execute(
+    callback: (args?: unknown[]) => Promise<unknown>,
+    args: unknown[] = [],
+  ): Promise<unknown> {
+    return this.pwPage.evaluate(callback, args);
   }
 
-  // V2
-  // async attachConsoleErrorLogs(): Promise<void> {
-  //   this.pwPage.on("console", message => {
-  //     if (message.type() === "error") {
-  //       const currentBuffer = Buffer.from(message.text());
-  //       testFixture.info().attachments.forEach(attachment => {
-  //         if (!attachment?.body.equals(currentBuffer)) {
-  //           console.log();
-  //           testFixture.info().attach("console-errors", {
-  //             contentType: "text/plain",
-  //             body: currentBuffer,
-  //           });
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
+  hasConsoleErrorsMatchingText(text: string): boolean {
+    return this.consoleErrors.some(error => error.includes(text));
+  }
 
-  async collectConsoleErrorLogs(): Promise<void> {
+  async collectErrors(): Promise<void> {
     this.pwPage.on("console", message => {
       if (message.type() === "error") {
         this._consoleErrors.push(message.text());
       }
     });
+    this.pwPage.on("pageerror", exception => {
+      this._pageErrors.push(exception.message);
+    });
   }
 
-  hasConsoleErrorMatchingText(text: string): boolean {
-    return this.consoleErrors.some(error => error.includes(text));
+  async attachInReport(args: IAttachInReportArgs): Promise<void> {
+    const { name, body, contentType = "text/plain" } = args;
+    return testFixture.info().attach(name, {
+      contentType,
+      body,
+    });
+  }
+
+  async attachErrors(): Promise<void> {
+    await this.attachConsoleErrorLogs();
+    await this.attachPageErrors();
+  }
+
+  private async attachConsoleErrorLogs(): Promise<void> {
+    const name = "console-errors";
+    this.pwPage.on("console", async message => {
+      if (message.type() === "error") {
+        const currentBuffer = Buffer.from(message.text());
+        testFixture.info().attachments.length
+          ? await this.attachUniqueInReport(name, currentBuffer)
+          : await this.attachInReport({ name, body: currentBuffer });
+      }
+    });
+  }
+
+  private async attachPageErrors(): Promise<void> {
+    const name = "page-errors";
+    this.pwPage.on("pageerror", async error => {
+      const errorMessageBuffer = Buffer.from(error.message);
+      testFixture.info().attachments.length
+        ? await this.attachUniqueInReport(name, errorMessageBuffer)
+        : await this.attachInReport({ name, body: errorMessageBuffer });
+    });
+  }
+
+  private async attachUniqueInReport(
+    name: string,
+    body: Buffer,
+  ): Promise<void> {
+    const attachments = testFixture.info().attachments;
+    for (const attachment of attachments) {
+      if (!attachment?.body.equals(body)) {
+        await this.attachInReport({ name, body });
+      }
+    }
   }
 }
