@@ -1,5 +1,6 @@
 import { BrowserContext, Page } from "@playwright/test";
 import {
+  AttachUniqueInReportArgs,
   IAddCookie,
   IAttachInReportArgs,
   IBrowserArgs,
@@ -116,10 +117,10 @@ export class Browser implements IBrowser {
     const name = "console-errors";
     this.pwPage.on("console", async message => {
       if (message.type() === "error") {
-        const currentBuffer = Buffer.from(message.text());
+        const logMessageBuffer = Buffer.from(message.text());
         testFixture.info().attachments.length
-          ? await this.attachUniqueInReport(name, currentBuffer)
-          : await this.attachInReport({ name, body: currentBuffer });
+          ? await this.attachUniqueInReport({ name, body: logMessageBuffer })
+          : await this.attachInReport({ name, body: logMessageBuffer });
       }
     });
   }
@@ -129,15 +130,15 @@ export class Browser implements IBrowser {
     this.pwPage.on("pageerror", async error => {
       const errorMessageBuffer = Buffer.from(error.message);
       testFixture.info().attachments.length
-        ? await this.attachUniqueInReport(name, errorMessageBuffer)
+        ? await this.attachUniqueInReport({ name, body: errorMessageBuffer })
         : await this.attachInReport({ name, body: errorMessageBuffer });
     });
   }
 
   private async attachUniqueInReport(
-    name: string,
-    body: Buffer,
+    args: AttachUniqueInReportArgs,
   ): Promise<void> {
+    const { name, body } = args;
     const attachments = testFixture.info().attachments;
     for (const attachment of attachments) {
       if (!attachment?.body.equals(body)) {

@@ -27,3 +27,5 @@ export interface IAttachInReportArgs {
   body: Buffer;
   contentType?: string;
 }
+
+export type AttachUniqueInReportArgs = Omit<IAttachInReportArgs, "contentType">;
