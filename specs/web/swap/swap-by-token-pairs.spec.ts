@@ -1,5 +1,5 @@
 import { Token } from "@constants/token.constants";
-import { suite } from "@helpers/suite/suite.helper";
+import { suite, testUtils } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
@@ -92,7 +92,9 @@ suite({
             tokens: { from: testCase.fromToken, to: testCase.toToken },
             fromAmount: "0.0001",
           });
-          await web.swap.start();
+          (await web.swap.isNoValidMedian())
+            ? testUtils.disable({ reason: "No valid median to swap" })
+            : await web.swap.start();
           await wallet.helper.approveTransactionTwice();
           await web.swap.confirm.expectSuccessfulTransaction();
         },

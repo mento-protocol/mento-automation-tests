@@ -48,7 +48,9 @@ export const waiterHelper = {
       await this.logErrorAndSleep(errorMessage, caughtError, interval);
     } while (retryCount--);
     throwError && logRetryFailedAndThrow(errorMessage, caughtError);
-    logger.warn(`${errorMessage}: ${caughtError.message}`);
+    logger.warn(
+      `${errorMessage}${caughtError ? `:${caughtError.message}` : ""}`,
+    );
   },
 
   async logErrorAndSleep(
@@ -57,7 +59,7 @@ export const waiterHelper = {
     interval: number,
   ): Promise<void> {
     if (err || errorMessage) {
-      logger.warn(`${errorMessage}: ${err.message}`);
+      logger.warn(`${errorMessage}${err ? `:${err.message}` : ""}`);
     }
     logger.warn(`Retrying...`);
     await this.sleep(interval, { ignoreReason: true });

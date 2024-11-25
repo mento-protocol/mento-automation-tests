@@ -44,6 +44,15 @@ class PrimitiveHelper {
     return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
   }
 
+  getCurrenTime(): string {
+    const now = new Date();
+    const hour = String(now.getHours()).padStart(2, "0");
+    const minute = String(now.getMinutes()).padStart(2, "0");
+    const second = String(now.getSeconds()).padStart(2, "0");
+
+    return `${hour}:${minute}:${second}`;
+  }
+
   jsonStringify(value: unknown, options: IJsonStringifyOptions = {}): string {
     const { replacer = null, spaces = 2 } = options;
     return JSON.stringify(value, replacer, spaces);

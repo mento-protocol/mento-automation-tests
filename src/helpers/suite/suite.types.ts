@@ -45,11 +45,11 @@ export interface IRunTestArgs {
   test: ConditionFunction;
   beforeEach: ConditionFunction;
   afterEach: ConditionFunction;
-  disable?: IDisable;
 }
 
 export interface IRunTestWithWebArgs extends IRunTestArgs {
   name: string;
   isNewWebContext: boolean;
   testCaseId: string;
+  disable?: IDisable;
 }

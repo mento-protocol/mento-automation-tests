@@ -30,18 +30,18 @@ export function suite(args: ISuiteArgs): void {
   );
 
   testFixture.describe(name, () => {
-    utils.areAllTestsDisabled(tests) &&
+    testUtils.areAllTestsDisabled(tests) &&
       testFixture.skip(
         true,
         "All tests are skipped - please check their disable blocks",
       );
-    utils.runBeforeAll(beforeAll);
-    utils.runTests({
+    testUtils.runBeforeAll(beforeAll);
+    testUtils.runTests({
       beforeEach,
       afterEach,
       tests,
     });
-    utils.runAfterAll(afterAll);
+    testUtils.runAfterAll(afterAll);
   });
 }
 
@@ -49,6 +49,8 @@ class Utils {
   runBeforeAll(conditionFunction: ConditionFunction): void {
     testFixture.beforeAll(async ({ context, page, wallet }) => {
       executionArgs = { web: await init.web(context, page), wallet };
+      await executionArgs.web.swap.browser.collectErrors();
+      await executionArgs.web.swap.browser.attachErrors();
       conditionFunction && (await conditionFunction(executionArgs));
     });
   }
@@ -109,7 +111,6 @@ class Utils {
             test,
             beforeEach,
             afterEach,
-            disable,
           });
         })
       : testFixture(testName, async ({}) => {
@@ -118,7 +119,7 @@ class Utils {
             web: executionArgs.web,
             wallet: executionArgs.wallet,
           };
-          await this.runTest({ test, beforeEach, afterEach, disable });
+          await this.runTest({ test, beforeEach, afterEach });
         });
   }
 
@@ -129,6 +130,11 @@ class Utils {
     afterEach && (await afterEach(executionArgs));
   }
 
+  disable(disable: IDisable): void {
+    this.addDisableAnnotations(disable);
+    testFixture.skip(true, `Please check the disable details above ⬆️`);
+  }
+
   private isDisabled(disable: IDisable): boolean {
     if (!disable) {
       return false;
@@ -137,11 +143,6 @@ class Utils {
       return true;
     }
     return disable.env === envHelper.getEnv();
-  }
-
-  private disable(disable: IDisable): void {
-    this.addDisableAnnotations(disable);
-    testFixture.skip(true, `Please check the disable details above ⬆️`);
   }
 
   private addDisableAnnotations(disable: IDisable): void {
@@ -157,4 +158,4 @@ class Utils {
   }
 }
 
-const utils = new Utils();
+export const testUtils = new Utils();
