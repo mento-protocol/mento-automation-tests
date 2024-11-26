@@ -95,7 +95,6 @@ suite({
           (await web.swap.isNoValidMedian())
             ? testUtils.disable({ reason: "No valid median to swap" })
             : await web.swap.start();
-          await wallet.helper.approveTransactionTwice();
           await web.swap.confirm.finish(wallet);
           await web.swap.confirm.expectSuccessfulTransaction();
         },
