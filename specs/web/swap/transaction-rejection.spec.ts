@@ -1,8 +1,6 @@
 import { expect } from "@fixtures/common.fixture";
 import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
-import { waiterHelper } from "@helpers/waiter/waiter.helper";
-import { timeouts } from "@constants/timeouts.constants";
 
 suite({
   name: "Swap - incorrect input validations",

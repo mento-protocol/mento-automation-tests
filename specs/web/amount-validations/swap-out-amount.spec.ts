@@ -12,7 +12,7 @@ suite({
   },
   tests: [
     {
-      name: 'Fill the "swap-in" with an empty amount',
+      name: 'Fill the "swap-out" with an empty amount',
       testCaseId: "",
       test: async ({ web }) => {
         await web.swap.fillForm({ toAmount: "0" });
@@ -23,46 +23,27 @@ suite({
             "Continue button is still there",
           )
           .toBeFalsy();
-        expect(
-          await web.swap.isAmountRequiredValidationThere(),
-          "Amount Required button is not displayed",
-        ).toBeTruthy();
+        expect(await web.swap.isAmountRequiredValidationThere()).toBeTruthy();
       },
     },
     {
-      name: 'Fill the "swap-in" with an amount that exceeds balance',
+      name: 'Fill the "swap-out" with an amount that exceeds balance',
       testCaseId: "",
       test: async ({ web }) => {
         await web.swap.fillForm({ toAmount: "100" });
         await web.swap.continueToConfirmation();
-        expect
-          .soft(
-            await web.swap.isContinueButtonThere(),
-            "Continue button is still there",
-          )
-          .toBeFalsy();
-        expect(
-          await web.swap.isAmountExceedValidationThere(),
-          "Amount Exceeds button is not displayed",
-        ).toBeTruthy();
+        expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
+        expect(await web.swap.isAmountExceedValidationThere()).toBeTruthy();
       },
     },
     {
-      name: 'Fill the "swap-in" with an amount that is too small',
+      name: 'Fill the "swap-out" with an amount that is too small',
       testCaseId: "",
       test: async ({ web }) => {
         await web.swap.fillForm({ toAmount: "00" });
         await web.swap.continueToConfirmation();
-        expect
-          .soft(
-            await web.swap.isContinueButtonThere(),
-            "Continue button is still there",
-          )
-          .toBeFalsy();
-        expect(
-          await web.swap.isAmountTooSmallValidationThere(),
-          "Amount Too Small button is not displayed",
-        ).toBeTruthy();
+        expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
+        expect(await web.swap.isAmountTooSmallValidationThere()).toBeTruthy();
       },
     },
   ],
