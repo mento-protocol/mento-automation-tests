@@ -38,7 +38,6 @@ suite({
         await wallet.helper.rejectSwapTransaction();
         expect(
           await web.swap.confirm.isRejectSwapTransactionNotificationThere(),
-          "Reject swap transaction notification is not displayed",
         ).toBeTruthy();
       },
     },
