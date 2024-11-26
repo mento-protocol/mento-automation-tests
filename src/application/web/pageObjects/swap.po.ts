@@ -86,6 +86,10 @@ export class SwapPo extends BasePo implements ISwapPo {
   amountTooSmallButton = new Button(
     this.ef.pw.role("button", { name: "Amount too small" }),
   );
+  errorButton = new Button(this.ef.pw.role("button", { name: "Error" }));
+  exceedsTradingLimitErrorLabel = new Label(
+    this.ef.pw.text("amount exceeds the current trading limits"),
+  );
 
   staticElements = [this.headerLabel];
 }

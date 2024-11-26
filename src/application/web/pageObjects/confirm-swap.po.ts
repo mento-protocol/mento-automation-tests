@@ -53,8 +53,11 @@ export class ConfirmSwapPo extends BasePo implements IConfirmSwapPo {
       "py-2 w-full flex items-center justify-center text-sm rounded-b text-[#AAB3B6]",
     ),
   );
-  rejectedTransactionNotificationLabel = new Label(
+  rejectApprovalTransactionNotificationLabel = new Label(
     this.ef.pw.text("Unable to execute approval transaction"),
+  );
+  rejectSwapTransactionNotificationLabel = new Label(
+    this.ef.pw.text("Unable to execute swap transaction"),
   );
 
   staticElements = [this.headerLabel];

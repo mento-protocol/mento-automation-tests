@@ -27,13 +27,17 @@ export interface ISwapService {
   swapInputs: () => Promise<ISwapInputs>;
   getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
   getCurrentToTokenName: () => Promise<string>;
+  getCurrentFromTokenName: () => Promise<string>;
   getAmountByType: (amountType: AmountType) => Promise<string>;
+  isContinueButtonThere: () => Promise<boolean>;
   isAmountRequiredValidationThere: () => Promise<boolean>;
   isAmountExceedValidationThere: () => Promise<boolean>;
   isAmountTooSmallValidationThere: () => Promise<boolean>;
   isCurrentPriceThere: () => Promise<boolean>;
   isConsiderKeepNotificationThere: () => Promise<boolean>;
   isFromInputEmpty: () => Promise<boolean>;
+  isErrorValidationThere: () => Promise<boolean>;
+  waitForExceedsTradingLimitsValidation: (timeout: number) => Promise<boolean>;
   isNoValidMedian: () => Promise<boolean>;
   isCurrentPriceLoaded: () => Promise<boolean>;
 }
@@ -120,6 +124,13 @@ export class SwapService extends BaseService implements ISwapService {
     );
   }
 
+  async getCurrentFromTokenName(): Promise<string> {
+    return (await this.page.fromTokenDropdown.getText()).replaceAll(
+      "From Token",
+      "",
+    );
+  }
+
   async getAmountByType(amountType: AmountType): Promise<string> {
     const amountInput =
       amountType === AmountType.In
@@ -136,6 +147,10 @@ export class SwapService extends BaseService implements ISwapService {
     );
   }
 
+  async isContinueButtonThere(): Promise<boolean> {
+    return this.page.continueButton.isDisplayed();
+  }
+
   async isAmountRequiredValidationThere(): Promise<boolean> {
     return this.page.amountRequiredButton.isDisplayed();
   }
@@ -146,6 +161,16 @@ export class SwapService extends BaseService implements ISwapService {
 
   async isAmountTooSmallValidationThere(): Promise<boolean> {
     return this.page.amountTooSmallButton.isDisplayed();
+  }
+
+  async isErrorValidationThere(): Promise<boolean> {
+    return this.page.errorButton.isDisplayed();
+  }
+
+  async waitForExceedsTradingLimitsValidation(
+    timeout: number,
+  ): Promise<boolean> {
+    return this.page.exceedsTradingLimitErrorLabel.waitUntilDisplayed(timeout);
   }
 
   async isCurrentPriceThere(): Promise<boolean> {

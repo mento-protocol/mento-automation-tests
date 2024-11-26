@@ -130,7 +130,8 @@ class Utils {
     afterEach && (await afterEach(executionArgs));
   }
 
-  disable(disable: IDisable): void {
+  disable(disable: IDisable, beforeSkipLogMessage?: string): void {
+    beforeSkipLogMessage && logger.warn(`❗️ ${beforeSkipLogMessage}`);
     this.addDisableAnnotations(disable);
     testFixture.skip(true, `Please check the disable details above ⬆️`);
   }

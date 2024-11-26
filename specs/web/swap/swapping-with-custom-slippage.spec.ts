@@ -31,7 +31,7 @@ suite({
           )
           .toBeTruthy();
         await web.swap.start();
-        await wallet.helper.approveTransactionTwice();
+        await web.swap.confirm.finish(wallet);
         await web.swap.confirm.expectSuccessfulTransaction();
       },
     },
@@ -45,7 +45,7 @@ suite({
           fromAmount: "0.0001",
         });
         await web.swap.start();
-        await wallet.helper.approveTransactionTwice();
+        await web.swap.confirm.finish(wallet);
         await web.swap.confirm.expectSuccessfulTransaction();
       },
     },
@@ -59,7 +59,7 @@ suite({
           fromAmount: "0.0002",
         });
         await web.swap.start();
-        await wallet.helper.approveTransactionTwice();
+        await web.swap.confirm.finish(wallet);
         await web.swap.confirm.expectSuccessfulTransaction();
       },
     },

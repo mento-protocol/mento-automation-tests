@@ -3,7 +3,7 @@ import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 
 suite({
-  name: "Swap - validation on incorrect inputs",
+  name: "Amount Validations - Swap-Out Amount",
   beforeAll: async ({ web, wallet }) => {
     await web.main.openAppWithConnectedWallet(wallet);
   },
@@ -12,44 +12,33 @@ suite({
   },
   tests: [
     {
-      name: "Confirm swap with an empty amount",
-      testCaseId: "@Tcc0fa75f",
+      name: 'Fill the "swap-out" with an empty amount',
+      testCaseId: "@Tc952219e",
       test: async ({ web }) => {
+        await web.swap.fillForm({ toAmount: "0" });
         await web.swap.continueToConfirmation();
+        expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
         expect(await web.swap.isAmountRequiredValidationThere()).toBeTruthy();
       },
     },
     {
-      name: "Confirm swap with an exceeds balance",
-      testCaseId: "@T2a671992",
+      name: 'Fill the "swap-out" with an amount that exceeds balance',
+      testCaseId: "@T88e163ac",
       test: async ({ web }) => {
-        await web.swap.fillForm({ fromAmount: "100" });
+        await web.swap.fillForm({ toAmount: "100" });
         await web.swap.continueToConfirmation();
+        expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
         expect(await web.swap.isAmountExceedValidationThere()).toBeTruthy();
       },
     },
     {
-      name: "Confirm swap with a too small amount",
-      testCaseId: "@T8a97541b",
+      name: 'Fill the "swap-out" with an amount that is too small',
+      testCaseId: "@T26953592",
       test: async ({ web }) => {
-        await web.swap.fillForm({ fromAmount: "00" });
+        await web.swap.fillForm({ toAmount: "00" });
         await web.swap.continueToConfirmation();
+        expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
         expect(await web.swap.isAmountTooSmallValidationThere()).toBeTruthy();
-      },
-    },
-    {
-      name: "Reject approval transaction",
-      testCaseId: "@Td5aa1954",
-      test: async ({ web, wallet }) => {
-        await web.swap.fillForm({
-          tokens: { from: Token.cEUR, to: Token.CELO },
-          fromAmount: "0.0001",
-        });
-        await web.swap.start();
-        await wallet.metamask.reject();
-        expect(
-          await web.swap.confirm.isRejectedTransactionNotificationThere(),
-        ).toBeTruthy();
       },
     },
   ],

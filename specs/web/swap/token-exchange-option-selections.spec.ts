@@ -93,6 +93,16 @@ suite({
         expect(await web.swap.getCurrentToTokenName()).toEqual(Token.cEUR);
       },
     },
+    {
+      name: "Swap token inputs",
+      testCaseId: "@Td88a4d31",
+      test: async ({ web }) => {
+        await web.swap.selectTokens({ from: Token.cREAL, to: Token.CELO });
+        await web.swap.swapInputs();
+        expect(await web.swap.getCurrentFromTokenName()).toEqual(Token.CELO);
+        expect(await web.swap.getCurrentToTokenName()).toEqual(Token.cREAL);
+      },
+    },
     ...testCases.map(testCase => {
       return {
         name: `from ${testCase.token} token`,
