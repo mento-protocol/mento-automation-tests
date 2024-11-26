@@ -2,11 +2,22 @@ import { BaseService } from "@services/base.service";
 import { ConfirmSwapPo } from "@pageObjects/confirm-swap.po";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
-import { expect } from "@fixtures/common.fixture";
+import { expect, IWallet } from "@fixtures/common.fixture";
 import { IConfirmSwapServiceArgs } from "@services/types/swap.service.types";
 import { ClassLog } from "@decorators/logger.decorators";
 
-export interface IConfirmSwapService {}
+export interface IConfirmSwapService {
+  getCurrentPriceFromConfirmation: () => Promise<string>;
+  getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
+  finish: (wallet: IWallet) => Promise<void>;
+  expectSuccessfulTransaction: () => Promise<void>;
+  navigateToCeloExplorer: () => Promise<void>;
+  isSwapPerformingPopupThere: () => Promise<boolean>;
+  isApproveCompleteNotificationThere: () => Promise<boolean>;
+  isSwapCompleteNotificationThere: () => Promise<boolean>;
+  isRejectApprovalTransactionNotificationThere: () => Promise<boolean>;
+  isRejectSwapTransactionNotificationThere: () => Promise<boolean>;
+}
 
 @ClassLog
 export class ConfirmSwapService
@@ -33,7 +44,7 @@ export class ConfirmSwapService
     return this.page.currentPriceLabel.getText();
   }
 
-  async finish(wallet: any): Promise<void> {
+  async finish(wallet: IWallet): Promise<void> {
     await wallet.helper.approveTransactionTwice();
     await wallet.metamask.confirmTransaction();
   }

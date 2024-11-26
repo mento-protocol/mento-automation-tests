@@ -1,7 +1,12 @@
 import { MetaMaskWallet } from "@tenkeylabs/dappwright";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
-export class MetamaskWalletHelper {
+interface IMetamaskWalletHelper {
+  approveTransactionTwice: () => Promise<void>;
+  rejectSwapTransaction: () => Promise<void>;
+}
+
+export class MetamaskWalletHelper implements IMetamaskWalletHelper {
   constructor(private wallet: MetaMaskWallet) {}
 
   // it's workaround due to bug of confirmTransaction method: https://github.com/TenKeyLabs/dappwright/issues/234

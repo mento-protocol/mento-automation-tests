@@ -3,7 +3,12 @@ import { envHelper } from "@helpers/env/env.helper";
 import { BasePo } from "@pageObjects/base.po";
 import { IBaseServiceArgs } from "@services/types/base.service.types";
 
-export class BaseService {
+interface IBaseService {
+  navigateToApp: () => Promise<void>;
+  getPageTitle: () => Promise<string>;
+}
+
+export class BaseService implements IBaseService {
   // change browser to protected or move it completely
   public browser: Browser = null;
   protected page: BasePo = null;
