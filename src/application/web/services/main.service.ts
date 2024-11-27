@@ -8,6 +8,7 @@ import {
   ConnectWalletModalService,
   WalletName,
 } from "@services/connect-wallet-modal.service";
+import { WalletSettingsPopupService } from "@services/wallet-settings-popup.service";
 
 const logger = loggerHelper.get("MainService");
 
@@ -28,23 +29,35 @@ export interface IMainService {
 @ClassLog
 export class MainService extends BaseService implements IMainService {
   protected override page: MainPo = null;
-  public connectWallet: ConnectWalletModalService = null;
+  public connectWalletModal: ConnectWalletModalService = null;
+  public walletSettingsPopup: WalletSettingsPopupService = null;
 
   constructor(args: IMainServiceArgs) {
-    const { page, connectWalletModal } = args;
+    const { page, connectWalletModal, walletSettingsPopup } = args;
     super(args);
     this.page = page;
-    this.connectWallet = connectWalletModal;
+    this.connectWalletModal = connectWalletModal;
+    this.walletSettingsPopup = walletSettingsPopup;
   }
 
   async openConnectWalletModalFromHeader(): Promise<void> {
     await this.page.headerConnectWalletButton.click();
-    await this.connectWallet.page.verifyIsOpen();
+    await this.connectWalletModal.page.verifyIsOpen();
   }
 
   async openConnectWalletModal(): Promise<void> {
     await this.page.connectWalletButton.click();
-    await this.connectWallet.page.verifyIsOpen();
+    await this.connectWalletModal.page.verifyIsOpen();
+  }
+
+  async openWalletSettings(): Promise<void> {
+    await this.page.walletSettingsButton.click();
+    await this.walletSettingsPopup.page.verifyIsOpen();
+  }
+
+  async openNetworkDetails(): Promise<void> {
+    await this.page.walletSettingsButton.click();
+    await this.walletSettingsPopup.page.verifyIsOpen();
   }
 
   async openAppWithConnectedWallet(
@@ -63,12 +76,11 @@ export class MainService extends BaseService implements IMainService {
     walletName: WalletName,
   ): Promise<void> {
     await this.openConnectWalletModalFromHeader();
-    await this.connectWallet.selectWalletByName(walletName);
+    await this.connectWalletModal.selectWalletByName(walletName);
     await wallet.metamask.approve();
   }
 
   async isWalletConnected(): Promise<boolean> {
-    logger.debug("Verifying wallet connected status");
     return !(await this.page.headerConnectWalletButton.isDisplayed());
   }
 }

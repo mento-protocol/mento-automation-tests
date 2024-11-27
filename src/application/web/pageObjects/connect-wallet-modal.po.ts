@@ -4,7 +4,13 @@ import { Label } from "@pageElements/label";
 import { WalletName } from "@services/connect-wallet-modal.service";
 import { Button } from "@pageElements/button";
 
-export class ConnectWalletModalPo extends BasePo {
+// todo: FILL
+interface IConnectWalletModalPo {}
+
+export class ConnectWalletModalPo
+  extends BasePo
+  implements IConnectWalletModalPo
+{
   constructor(protected override ef: ElementFinderHelper) {
     super(ef);
   }

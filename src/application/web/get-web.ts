@@ -13,6 +13,8 @@ import { ConfirmSwapService } from "@services/confirm-swap.service";
 import { CeloExplorerService } from "@services/celo-explorer.service";
 import { ConnectWalletModalService } from "@services/connect-wallet-modal.service";
 import { ConnectWalletModalPo } from "@pageObjects/connect-wallet-modal.po";
+import { WalletSettingsPopupService } from "@services/wallet-settings-popup.service";
+import { WalletSettingsPopupPo } from "@pageObjects/wallet-settings-popup.po";
 
 export function getWeb(args: IGetServicesArgs): IGetWebServices {
   const { pwPage, browser } = args;
@@ -20,19 +22,23 @@ export function getWeb(args: IGetServicesArgs): IGetWebServices {
   return {
     main: new MainService({
       page: new MainPo(ef),
+      browser,
       connectWalletModal: new ConnectWalletModalService({
         page: new ConnectWalletModalPo(ef),
         browser,
       }),
-      browser,
+      walletSettingsPopup: new WalletSettingsPopupService({
+        page: new WalletSettingsPopupPo(ef),
+        browser,
+      }),
     }),
     swap: new SwapService({
       page: new SwapPo(ef),
+      browser,
       confirm: new ConfirmSwapService({
         page: new ConfirmSwapPo(ef),
         browser,
       }),
-      browser,
     }),
     celoExplorer: new CeloExplorerService({
       page: new CeloExplorerPo(ef),

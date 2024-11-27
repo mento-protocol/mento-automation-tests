@@ -9,7 +9,7 @@ suite({
   },
   tests: [
     {
-      name: "Connect the Metamask wallet",
+      name: "Connect Metamask wallet",
       testCaseId: "@Tf302ddd6",
       test: async ({ web, wallet }) => {
         await web.main.connectWalletByName(wallet, WalletName.Metamask);

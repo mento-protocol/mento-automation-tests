@@ -10,7 +10,7 @@ const logger = loggerHelper.get("BasePo");
 
 @ClassLog
 export abstract class BasePo {
-  public abstract staticElements: BaseElementPe[];
+  protected abstract staticElements: BaseElementPe[];
 
   protected constructor(protected ef: ElementFinderInterface) {}
 

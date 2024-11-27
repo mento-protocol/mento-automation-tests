@@ -12,7 +12,7 @@ suite({
       testCaseId: "",
       test: async ({ web }) => {
         await web.main.openConnectWalletModalFromHeader();
-        expect(await web.main.connectWallet.page.isOpen()).toBeTruthy();
+        expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();
       },
     },
     {
@@ -20,7 +20,7 @@ suite({
       testCaseId: "",
       test: async ({ web }) => {
         await web.main.openConnectWalletModal();
-        expect(await web.main.connectWallet.page.isOpen()).toBeTruthy();
+        expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();
       },
     },
   ],
