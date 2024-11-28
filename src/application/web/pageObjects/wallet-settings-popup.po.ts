@@ -17,7 +17,7 @@ export class WalletSettingsPopupPo
     super(ef);
   }
 
-  container = new Label(this.ef.id("py-5 font-medium leading-5"));
+  container = new Label(this.ef.className("py-5 font-medium leading-5"));
 
   copyAddressButton = new Button(this.ef.pw.text("Copy Address"));
   changeNetworkButton = new Button(this.ef.pw.text("Change Network"));

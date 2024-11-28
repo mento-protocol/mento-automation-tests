@@ -21,7 +21,6 @@ type MyFixtures = {
 
 export const testFixture = base.extend<MyFixtures>({
   context: async ({}, use) => {
-    // Launch context with extension
     const [wallet, page, context] = await dappwright.bootstrap("", {
       wallet: "metamask",
       version: MetaMaskWallet.recommendedVersion,
@@ -29,6 +28,7 @@ export const testFixture = base.extend<MyFixtures>({
       // unable to run without because of issue with Metamask for GitHub Actions - running with 'xvfb'
       headless: false,
     });
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await wallet.addNetwork({
       networkName: "Alfajores",
       rpc: "https://alfajores-forno.celo-testnet.org",

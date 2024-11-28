@@ -1,4 +1,5 @@
 import { MetaMaskWallet } from "@tenkeylabs/dappwright";
+
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 interface IMetamaskWalletHelper {

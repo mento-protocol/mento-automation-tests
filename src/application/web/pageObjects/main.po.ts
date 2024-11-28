@@ -33,5 +33,13 @@ export class MainPo extends BasePo implements IMainPo {
     ),
   );
 
+  addressCopiedNotificationLabel = new Label(
+    this.ef.pw.text("Address copied to clipboard"),
+  );
+
+  failedSwitchNetworkNotificationLabel = new Label(
+    this.ef.pw.text("Could not switch"),
+  );
+
   staticElements = [this.headerConnectWalletButton];
 }

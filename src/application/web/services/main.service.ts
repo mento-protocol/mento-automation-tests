@@ -9,6 +9,8 @@ import {
   WalletName,
 } from "@services/connect-wallet-modal.service";
 import { WalletSettingsPopupService } from "@services/wallet-settings-popup.service";
+import { processEnv } from "@helpers/processEnv/processEnv.helper";
+import { NetworkDetailsModalService } from "@services/network-details-modal.service";
 
 const logger = loggerHelper.get("MainService");
 
@@ -28,16 +30,19 @@ export interface IMainService {
 
 @ClassLog
 export class MainService extends BaseService implements IMainService {
-  protected override page: MainPo = null;
+  public override page: MainPo = null;
   public connectWalletModal: ConnectWalletModalService = null;
   public walletSettingsPopup: WalletSettingsPopupService = null;
+  public networkDetails: NetworkDetailsModalService = null;
 
   constructor(args: IMainServiceArgs) {
-    const { page, connectWalletModal, walletSettingsPopup } = args;
+    const { page, connectWalletModal, walletSettingsPopup, networkDetails } =
+      args;
     super(args);
     this.page = page;
     this.connectWalletModal = connectWalletModal;
     this.walletSettingsPopup = walletSettingsPopup;
+    this.networkDetails = networkDetails;
   }
 
   async openConnectWalletModalFromHeader(): Promise<void> {
@@ -56,15 +61,17 @@ export class MainService extends BaseService implements IMainService {
   }
 
   async openNetworkDetails(): Promise<void> {
-    await this.page.walletSettingsButton.click();
-    await this.walletSettingsPopup.page.verifyIsOpen();
+    await this.page.networkDetailsButton.click();
+    await this.networkDetails.page.verifyIsOpen();
   }
 
   async openAppWithConnectedWallet(
     wallet: IWallet,
     walletName = WalletName.Metamask,
   ): Promise<void> {
+    await wallet.metamask.page.getByTestId("app-header-copy-button").click();
     await this.navigateToApp();
+    processEnv.WALLET_ADDRESS = await this.browser.readFromClipboard();
     if (!(await this.isWalletConnected())) {
       return await this.connectWalletByName(wallet, walletName);
     }

@@ -15,6 +15,8 @@ import { ConnectWalletModalService } from "@services/connect-wallet-modal.servic
 import { ConnectWalletModalPo } from "@pageObjects/connect-wallet-modal.po";
 import { WalletSettingsPopupService } from "@services/wallet-settings-popup.service";
 import { WalletSettingsPopupPo } from "@pageObjects/wallet-settings-popup.po";
+import { NetworkDetailsModalService } from "@services/network-details-modal.service";
+import { NetworkDetailsModalPo } from "@pageObjects/network-details-modal.po";
 
 export function getWeb(args: IGetServicesArgs): IGetWebServices {
   const { pwPage, browser } = args;
@@ -29,6 +31,14 @@ export function getWeb(args: IGetServicesArgs): IGetWebServices {
       }),
       walletSettingsPopup: new WalletSettingsPopupService({
         page: new WalletSettingsPopupPo(ef),
+        browser,
+        networkDetails: new NetworkDetailsModalService({
+          page: new NetworkDetailsModalPo(ef),
+          browser,
+        }),
+      }),
+      networkDetails: new NetworkDetailsModalService({
+        page: new NetworkDetailsModalPo(ef),
         browser,
       }),
     }),

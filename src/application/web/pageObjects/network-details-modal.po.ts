@@ -2,13 +2,19 @@ import { ElementFinderHelper } from "@helpers/element-finder/element-finder.help
 import { BasePo } from "@pageObjects/base.po";
 import { Button } from "@pageElements/button";
 import { Label } from "@pageElements/label";
+import { Network } from "@services/network-details-modal.service";
 
 interface INetworkDetailsModalPo {
-  container: Label;
+  titleLabel: Label;
   closeButton: Button;
-  celoNetworkButton: Button;
-  alfajoresNetworkButton: Button;
-  baklavaNetworkButton: Button;
+  networkButtons: {
+    [Network.Celo]: Button;
+    [Network.Alfajores]: Button;
+    [Network.Baklava]: Button;
+  };
+  currentNetworkLabel: Label;
+  currentBlockNumberLabel: Label;
+  currentNodeRpcUrlLabel: Label;
 }
 
 export class NetworkDetailsModalPo
@@ -19,13 +25,27 @@ export class NetworkDetailsModalPo
     super(ef);
   }
 
-  container = new Label(this.ef.id("headlessui-dialog-panel-:rd:"));
+  private readonly baseLocator = "networkModal";
+
+  titleLabel = new Label(this.ef.pw.text("Network details"));
 
   closeButton = new Button(this.ef.title("Close"));
+  networkButtons = {
+    [Network.Celo]: new Button(this.ef.pw.text("Celo")),
+    [Network.Alfajores]: new Button(this.ef.pw.text("Alfajores")),
+    [Network.Baklava]: new Button(this.ef.pw.text("Baklava")),
+  };
 
-  celoNetworkButton = new Button(this.ef.pw.text("Celo"));
-  alfajoresNetworkButton = new Button(this.ef.pw.text("Alfajores"));
-  baklavaNetworkButton = new Button(this.ef.pw.text("Baklava"));
+  // LOCATORS STILL NOT MERGED INTO MAIN
+  currentNetworkLabel = new Label(
+    this.ef.dataTestId(`${this.baseLocator}_currentNetwork`),
+  );
+  currentBlockNumberLabel = new Label(
+    this.ef.dataTestId(`${this.baseLocator}_currentBlockNumber`),
+  );
+  currentNodeRpcUrlLabel = new Label(
+    this.ef.dataTestId(`${this.baseLocator}_currentNodeRpcUrl`),
+  );
 
-  staticElements = [this.container];
+  staticElements = [this.titleLabel];
 }

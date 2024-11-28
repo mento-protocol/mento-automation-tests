@@ -15,6 +15,7 @@ interface IProcessEnvHelper {
   TESTOMAT_REPORT_GENERATION: string;
   TESTOMAT_API_KEY: string;
   TESTOMATIO_TITLE: string;
+  WALLET_ADDRESS: string;
 }
 
 export const processEnv = process.env as unknown as IProcessEnvHelper;
