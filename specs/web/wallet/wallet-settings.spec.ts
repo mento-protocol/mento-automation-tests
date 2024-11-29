@@ -16,7 +16,7 @@ suite({
   tests: [
     {
       name: "Copy address",
-      testCaseId: "",
+      testCaseId: "@T9b6d1b09",
       test: async ({ web }) => {
         await web.main.walletSettingsPopup.copyAddress();
         expect
@@ -31,7 +31,7 @@ suite({
     },
     {
       name: "Open network details by 'Change address' button",
-      testCaseId: "",
+      testCaseId: "@T2f5ab8c4",
       test: async ({ web }) => {
         await web.main.walletSettingsPopup.openNetworkDetails();
         expect(
@@ -41,7 +41,7 @@ suite({
     },
     {
       name: "Disconnect Wallet",
-      testCaseId: "",
+      testCaseId: "@Tf4dbe31c",
       test: async ({ web }) => {
         await web.main.walletSettingsPopup.disconnect();
         expect(await web.main.isWalletConnected()).toBeFalsy();

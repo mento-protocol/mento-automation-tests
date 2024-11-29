@@ -11,16 +11,16 @@ suite({
   },
   tests: [
     {
-      name: "Open from header button",
-      testCaseId: "",
+      name: "Open by header button",
+      testCaseId: "@T112a63d0",
       test: async ({ web }) => {
         await web.main.openConnectWalletModalFromHeader();
         expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();
       },
     },
     {
-      name: "Open from main button",
-      testCaseId: "",
+      name: "Open by main button",
+      testCaseId: "@T224b25fc",
       test: async ({ web }) => {
         await web.main.openConnectWalletModal();
         expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();

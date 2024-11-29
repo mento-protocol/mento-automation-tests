@@ -4,17 +4,17 @@ import { Network } from "@services/network-details-modal.service";
 import { IExecution } from "@helpers/suite/suite.types";
 
 const testCases = [
-  { network: Network.Baklava, id: "" },
+  { network: Network.Baklava, id: "@T5eb11e48" },
   {
     network: Network.Alfajores,
-    id: "",
+    id: "@T97490a07",
     disable: { reason: "Initially set as default for tests" },
   },
-  { network: Network.Celo, id: "" },
+  { network: Network.Celo, id: "@T3130e821" },
 ];
 
 suite({
-  name: "Change network",
+  name: "Switch network",
   beforeAll: async ({ web, wallet }) => {
     await web.main.openAppWithConnectedWallet(wallet);
   },
@@ -27,7 +27,7 @@ suite({
   tests: [
     {
       name: "Reject switch network transaction",
-      testCaseId: "",
+      testCaseId: "@Tbf3f639c",
       test: async ({ web, wallet }) => {
         await web.main.walletSettingsPopup.networkDetails.switchNetworkByName(
           Network.Baklava,
@@ -46,7 +46,7 @@ suite({
     },
     ...testCases.map(testCase => {
       return {
-        name: `Change to the '${testCase.network}' network`,
+        name: `Switch to the '${testCase.network}' network`,
         testCaseId: testCase.id,
         disable: testCase?.disable,
         test: async ({ web, wallet }: IExecution) => {
