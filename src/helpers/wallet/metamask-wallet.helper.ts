@@ -2,9 +2,10 @@ import { MetaMaskWallet } from "@tenkeylabs/dappwright";
 
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
-interface IMetamaskWalletHelper {
+export interface IMetamaskWalletHelper {
   approveTransactionTwice: () => Promise<void>;
   rejectSwapTransaction: () => Promise<void>;
+  confirmNetworkSwitch: () => Promise<void>;
 }
 
 export class MetamaskWalletHelper implements IMetamaskWalletHelper {
@@ -22,5 +23,15 @@ export class MetamaskWalletHelper implements IMetamaskWalletHelper {
     await this.approveTransactionTwice();
     const popup = await this.wallet.page.context().waitForEvent("page");
     await popup.getByTestId("page-container-footer-cancel").click();
+  }
+
+  async confirmNetworkSwitch(): Promise<void> {
+    const popup = await this.wallet.page.context().waitForEvent("page");
+    await popup.getByTestId("confirmation-submit-button").click();
+    await waiterHelper.waitForAnimation();
+    await popup.getByTestId("confirmation-submit-button").click();
+    if (!popup.isClosed()) {
+      await popup.waitForEvent("close");
+    }
   }
 }

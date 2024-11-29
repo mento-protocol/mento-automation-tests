@@ -33,16 +33,20 @@ export class MainService extends BaseService implements IMainService {
   public override page: MainPo = null;
   public connectWalletModal: ConnectWalletModalService = null;
   public walletSettingsPopup: WalletSettingsPopupService = null;
-  public networkDetails: NetworkDetailsModalService = null;
+  public networkDetailsModal: NetworkDetailsModalService = null;
 
   constructor(args: IMainServiceArgs) {
-    const { page, connectWalletModal, walletSettingsPopup, networkDetails } =
-      args;
+    const {
+      page,
+      connectWalletModal,
+      walletSettingsPopup,
+      networkDetailsModal,
+    } = args;
     super(args);
     this.page = page;
     this.connectWalletModal = connectWalletModal;
     this.walletSettingsPopup = walletSettingsPopup;
-    this.networkDetails = networkDetails;
+    this.networkDetailsModal = networkDetailsModal;
   }
 
   async openConnectWalletModalFromHeader(): Promise<void> {
@@ -62,7 +66,7 @@ export class MainService extends BaseService implements IMainService {
 
   async openNetworkDetails(): Promise<void> {
     await this.page.networkDetailsButton.click();
-    await this.networkDetails.page.verifyIsOpen();
+    await this.networkDetailsModal.page.verifyIsOpen();
   }
 
   async openAppWithConnectedWallet(

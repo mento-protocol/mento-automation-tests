@@ -38,6 +38,7 @@ export class NetworkDetailsModalService
   }
 }
 
+// todo: MOVE TO TYPES FILE
 export enum Network {
   Celo = "Celo",
   Alfajores = "Alfajores",

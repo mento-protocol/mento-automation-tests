@@ -1,4 +1,4 @@
-import { expect, testFixture } from "@fixtures/common.fixture";
+import { expect } from "@fixtures/common.fixture";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { cTokens, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";

@@ -4,9 +4,13 @@ import { Network } from "@services/network-details-modal.service";
 import { IExecution } from "@helpers/suite/suite.types";
 
 const testCases = [
-  { network: Network.Celo, id: "" },
-  { network: Network.Alfajores, id: "" },
   { network: Network.Baklava, id: "" },
+  {
+    network: Network.Alfajores,
+    id: "",
+    disable: { reason: "Initially set as default for tests" },
+  },
+  { network: Network.Celo, id: "" },
 ];
 
 suite({
@@ -44,11 +48,12 @@ suite({
       return {
         name: `Change to the '${testCase.network}' network`,
         testCaseId: testCase.id,
+        disable: testCase?.disable,
         test: async ({ web, wallet }: IExecution) => {
           await web.main.walletSettingsPopup.networkDetails.switchNetworkByName(
             testCase.network,
           );
-          await wallet.metamask.approve();
+          await wallet.helper.confirmNetworkSwitch();
           expect
             .soft(
               await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),

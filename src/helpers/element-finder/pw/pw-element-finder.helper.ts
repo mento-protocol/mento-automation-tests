@@ -6,7 +6,10 @@ import {
   IPwElementFinderArgs,
   IPwElementSearcher,
 } from "@helpers/element-finder/types/index.types";
-import { BasePwElementFinderHelper } from "@helpers/element-finder/pw/base-pw-element-finder.helper";
+import {
+  BasePwElementFinderHelper,
+  PwMethodName,
+} from "@helpers/element-finder/pw/base-pw-element-finder.helper";
 
 export class PwElementFinderHelper extends BasePwElementFinderHelper {
   protected readonly searchRoot: FindElement = null;
@@ -18,16 +21,17 @@ export class PwElementFinderHelper extends BasePwElementFinderHelper {
   }
 
   protected search(args: IPwSearchArgs): IPwElementSearcher {
-    const { pwMethodName, pwMethodArgs, esOptions = {} } = args;
+    const { pwMethod, esOptions = {} } = args;
     const { takeFirstElement, frameLocator } = esOptions;
-    let locator: string = `${pwMethodName}(${pwMethodArgs})`;
+    const locator = `${pwMethod.name}(${pwMethod.args})`;
+
     const findElement = async (): Promise<Locator> => {
       const root = this.searchRoot ? await this.searchRoot() : this.page;
-      const element: Locator =
-        frameLocator?.length > 0
-          ? root.frameLocator(frameLocator)[pwMethodName](...pwMethodArgs)
-          : root[pwMethodName](...pwMethodArgs);
-      // locator = await element.innerHTML();
+      const element: Locator = frameLocator
+        ? // @ts-ignore
+          root.frameLocator(frameLocator)[pwMethod.name](...pwMethod.args)
+        : // @ts-ignore
+          root[pwMethod.name](...pwMethod.args);
       return takeFirstElement ? element.first() : element;
     };
     const nested = (): PwElementFinderHelper => {
@@ -45,9 +49,12 @@ export class PwElementFinderHelper extends BasePwElementFinderHelper {
 }
 
 export interface IPwSearchArgs {
-  // place enum here
-  pwMethodName: string;
-  pwMethodArgs: unknown[];
+  pwMethod: IPwMethod;
   customMethod?: string;
   esOptions?: IElementSearchOptions;
+}
+
+export interface IPwMethod {
+  name: PwMethodName;
+  args: unknown[];
 }

@@ -37,7 +37,7 @@ export function getWeb(args: IGetServicesArgs): IGetWebServices {
           browser,
         }),
       }),
-      networkDetails: new NetworkDetailsModalService({
+      networkDetailsModal: new NetworkDetailsModalService({
         page: new NetworkDetailsModalPo(ef),
         browser,
       }),

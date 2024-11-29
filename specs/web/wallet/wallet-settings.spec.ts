@@ -15,17 +15,9 @@ suite({
   },
   tests: [
     {
-      name: "Disconnect Wallet",
-      testCaseId: "",
-      test: async ({ web }) => {
-        await web.main.walletSettingsPopup.disconnect();
-        expect(await web.main.isWalletConnected()).toBeFalsy();
-      },
-    },
-    {
       name: "Copy address",
       testCaseId: "",
-      test: async ({ web, wallet }) => {
+      test: async ({ web }) => {
         await web.main.walletSettingsPopup.copyAddress();
         expect
           .soft(
@@ -45,6 +37,14 @@ suite({
         expect(
           await web.main.walletSettingsPopup.networkDetails.page.isOpen(),
         ).toBeTruthy();
+      },
+    },
+    {
+      name: "Disconnect Wallet",
+      testCaseId: "",
+      test: async ({ web }) => {
+        await web.main.walletSettingsPopup.disconnect();
+        expect(await web.main.isWalletConnected()).toBeFalsy();
       },
     },
   ],

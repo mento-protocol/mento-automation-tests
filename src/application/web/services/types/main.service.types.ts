@@ -8,5 +8,5 @@ export interface IMainServiceArgs extends IBaseServiceArgs {
   page: MainPo;
   connectWalletModal: ConnectWalletModalService;
   walletSettingsPopup: WalletSettingsPopupService;
-  networkDetails: NetworkDetailsModalService;
+  networkDetailsModal: NetworkDetailsModalService;
 }

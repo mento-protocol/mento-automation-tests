@@ -31,9 +31,13 @@ export class NetworkDetailsModalPo
 
   closeButton = new Button(this.ef.title("Close"));
   networkButtons = {
-    [Network.Celo]: new Button(this.ef.pw.text("Celo")),
-    [Network.Alfajores]: new Button(this.ef.pw.text("Alfajores")),
-    [Network.Baklava]: new Button(this.ef.pw.text("Baklava")),
+    [Network.Celo]: new Button(this.ef.pw.role("button", { name: "Celo" })),
+    [Network.Alfajores]: new Button(
+      this.ef.pw.role("button", { name: "Alfajores" }),
+    ),
+    [Network.Baklava]: new Button(
+      this.ef.pw.role("button", { name: "Baklava" }),
+    ),
   };
 
   // LOCATORS STILL NOT MERGED INTO MAIN
