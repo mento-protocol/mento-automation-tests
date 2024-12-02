@@ -1,22 +1,23 @@
-import {
-  IGetServicesArgs,
-  IGetWebServices,
-} from "@services/types/get-web-services.types";
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import { MainService } from "@services/main.service";
-import { MainPo } from "@pageObjects/main.po";
-import { SwapService } from "@services/swap.service";
-import { SwapPo } from "@pageObjects/swap.po";
-import { ConfirmSwapPo } from "@pageObjects/confirm-swap.po";
-import { CeloExplorerPo } from "@pageObjects/celo-explorer.po";
-import { ConfirmSwapService } from "@services/confirm-swap.service";
-import { CeloExplorerService } from "@services/celo-explorer.service";
-import { ConnectWalletModalService } from "@services/connect-wallet-modal.service";
-import { ConnectWalletModalPo } from "@pageObjects/connect-wallet-modal.po";
-import { WalletSettingsPopupService } from "@services/wallet-settings-popup.service";
-import { WalletSettingsPopupPo } from "@pageObjects/wallet-settings-popup.po";
-import { NetworkDetailsModalService } from "@services/network-details-modal.service";
-import { NetworkDetailsModalPo } from "@pageObjects/network-details-modal.po";
+import {
+  CeloExplorerPo,
+  ConfirmSwapPo,
+  ConnectWalletModalPo,
+  MainPo,
+  NetworkDetailsModalPo,
+  SwapPo,
+  WalletSettingsPopupPo,
+} from "@page-objects/index";
+import {
+  SwapService,
+  MainService,
+  ConfirmSwapService,
+  CeloExplorerService,
+  ConnectWalletModalService,
+  WalletSettingsPopupService,
+  NetworkDetailsModalService,
+} from "@services/index";
+import { IGetServicesArgs, IGetWebServices } from "./get-web.types";
 
 export function getWeb(args: IGetServicesArgs): IGetWebServices {
   const { pwPage, browser } = args;

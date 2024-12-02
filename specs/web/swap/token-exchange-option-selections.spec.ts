@@ -1,8 +1,8 @@
-import { expect } from "@fixtures/common.fixture";
+import { expect } from "@fixtures/common/common.fixture";
 import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
-import { Dropdown } from "@pageElements/dropdown";
-import { ITokenDropdownOptions } from "@pageObjects/types/swap.po.types";
+import { Dropdown } from "@page-elements/index";
+import { ITokenDropdownOptions } from "@page-objects/index";
 import { IExecution } from "@helpers/suite/suite.types";
 
 const testCases = [

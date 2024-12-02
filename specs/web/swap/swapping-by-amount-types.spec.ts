@@ -1,7 +1,7 @@
-import { expect } from "@fixtures/common.fixture";
+import { expect } from "@fixtures/common/common.fixture";
 import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
-import { AmountType } from "@services/types/swap.service.types";
+import { AmountType } from "@services/index";
 
 suite({
   name: "Swap - By amount type",

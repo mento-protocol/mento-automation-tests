@@ -1,7 +1,7 @@
-import { expect } from "@fixtures/common.fixture";
+import { expect } from "@fixtures/common/common.fixture";
 import { Token } from "@constants/token.constants";
-import { Slippage } from "@services/types/get-web-services.types";
 import { suite } from "@helpers/suite/suite.helper";
+import { Slippage } from "@services/index";
 
 suite({
   name: "Swap - Slippage",

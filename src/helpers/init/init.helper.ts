@@ -3,9 +3,9 @@ import { APIRequest, BrowserContext, Page } from "@playwright/test";
 import { getApi, IGetApi } from "@api/get-api";
 import { current } from "@helpers/current/current.helper";
 import { Browser } from "@helpers/browser/browser.helper";
-import { IGetWebServices } from "@services/types/get-web-services.types";
 import { IInitBrowser } from "@helpers/init/init.types";
 import { getWeb } from "../../application/web/get-web";
+import { IGetWebServices } from "../../application/web/get-web.types";
 
 export const init = {
   async web(

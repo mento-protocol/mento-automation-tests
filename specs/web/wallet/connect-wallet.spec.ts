@@ -1,6 +1,6 @@
-import { expect } from "@fixtures/common.fixture";
+import { expect } from "@fixtures/common/common.fixture";
 import { suite } from "@helpers/suite/suite.helper";
-import { WalletName } from "@services/connect-wallet-modal.service";
+import { WalletName } from "@services/index";
 
 suite({
   name: "Connect Wallet",
