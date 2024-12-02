@@ -1,1 +1,1 @@
-export interface ButtonInterface {}
+export interface IButton {}

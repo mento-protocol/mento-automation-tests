@@ -1,8 +1,7 @@
 import { ElementSearcher } from "@helpers/element-finder/types/index.types";
-import { BasePe } from "@page-elements/base/base.pe";
-import { ButtonInterface } from "@page-elements/button/button.types";
+import { BasePe, IButton } from "@page-elements/index";
 
-export class Button extends BasePe implements ButtonInterface {
+export class Button extends BasePe implements IButton {
   constructor(protected override elementSearcher: ElementSearcher) {
     super(elementSearcher);
   }
