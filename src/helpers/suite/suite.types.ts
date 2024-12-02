@@ -1,6 +1,7 @@
-import { IGetWebServices } from "@services/types/get-web-services.types";
 import { BrowserContext } from "@playwright/test";
-import { IWallet } from "@fixtures/common.fixture";
+
+import { IWallet } from "@fixtures/common/common.fixture.types";
+import { IGetWebServices } from "../../application/web/get-web.types";
 
 export interface IExecution {
   web?: IGetWebServices;

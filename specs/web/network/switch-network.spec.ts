@@ -1,7 +1,7 @@
-import { expect } from "@fixtures/common.fixture";
+import { expect } from "@fixtures/common/common.fixture";
 import { suite } from "@helpers/suite/suite.helper";
-import { Network } from "@services/network-details-modal.service";
 import { IExecution } from "@helpers/suite/suite.types";
+import { Network } from "@services/index";
 
 const testCases = [
   { network: Network.Baklava, id: "@T5eb11e48" },

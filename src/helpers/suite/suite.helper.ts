@@ -11,7 +11,7 @@ import {
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { envHelper } from "@helpers/env/env.helper";
 import { init } from "@helpers/init/init.helper";
-import { testFixture } from "@fixtures/common.fixture";
+import { testFixture } from "@fixtures/common/common.fixture";
 
 const logger = loggerHelper.get("SuiteHelper");
 let executionArgs: IExecution = { web: null, wallet: null, context: null };

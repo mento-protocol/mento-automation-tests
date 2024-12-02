@@ -1,4 +1,5 @@
 import { BrowserContext, Page } from "@playwright/test";
+
 import {
   AttachUniqueInReportArgs,
   IAddCookie,
@@ -7,7 +8,7 @@ import {
   IScrollBy,
   ISetLocalStorage,
 } from "@helpers/browser/browser.helper.types";
-import { testFixture } from "@fixtures/common.fixture";
+import { testFixture } from "@fixtures/common/common.fixture";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 export interface IBrowser {

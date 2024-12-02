@@ -1,4 +1,4 @@
-import { expect } from "@fixtures/common.fixture";
+import { expect } from "@fixtures/common/common.fixture";
 import { suite } from "@helpers/suite/suite.helper";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 

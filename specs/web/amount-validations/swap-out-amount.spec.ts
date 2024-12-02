@@ -1,5 +1,4 @@
-import { expect } from "@fixtures/common.fixture";
-import { Token } from "@constants/token.constants";
+import { expect } from "@fixtures/common/common.fixture";
 import { suite } from "@helpers/suite/suite.helper";
 
 suite({

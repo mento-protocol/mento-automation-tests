@@ -20,8 +20,8 @@
     "paths": {
       "@api/*": ["./src/application/api/*"],
       "@services/*": ["./src/application/web/services/*"],
-      "@pageObjects/*": ["./src/application/web/pageObjects/*"],
-      "@pageElements/*": ["./src/application/web/pageElements/*"],
+      "@page-objects/*": ["./src/application/web/page-objects/*"],
+      "@page-elements/*": ["./src/application/web/page-elements/*"],
       "@helpers/*": ["./src/helpers/*"],
       "@constants/*": ["./src/constants/*"],
       "@fixtures/*": ["./src/fixtures/*"],
