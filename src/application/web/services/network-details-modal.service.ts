@@ -1,12 +1,8 @@
 import { BaseService } from "@services/base.service";
-import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 import { IBaseServiceArgs } from "@services/types/base.service.types";
 import { NetworkDetailsModalPo } from "@pageObjects/network-details-modal.po";
 
-const logger = loggerHelper.get("NetworkDetailsModalService");
-
-// todo: FILL
 export interface INetworkDetailsModalService {
   switchNetworkByName: (name: Network) => Promise<void>;
   getCurrentNetwork: () => Promise<string>;
@@ -38,7 +34,6 @@ export class NetworkDetailsModalService
   }
 }
 
-// todo: MOVE TO TYPES FILE
 export enum Network {
   Celo = "Celo",
   Alfajores = "Alfajores",

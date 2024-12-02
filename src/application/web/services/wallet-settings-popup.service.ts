@@ -1,13 +1,9 @@
 import { BaseService } from "@services/base.service";
-import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 import { IBaseServiceArgs } from "@services/types/base.service.types";
 import { WalletSettingsPopupPo } from "@pageObjects/wallet-settings-popup.po";
 import { NetworkDetailsModalService } from "@services/network-details-modal.service";
 
-const logger = loggerHelper.get("WalletSettingsPopupService");
-
-// todo: FILL
 export interface IWalletSettingsPopupService {
   disconnect: () => Promise<void>;
   copyAddress: () => Promise<void>;

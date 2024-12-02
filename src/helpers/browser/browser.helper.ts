@@ -23,6 +23,7 @@ export interface IBrowser {
   attachErrors: () => Promise<void>;
   collectErrors: () => Promise<void>;
   hasConsoleErrorsMatchingText: (text: string) => boolean;
+  readFromClipboard: () => Promise<string>;
 }
 
 export class Browser implements IBrowser {

@@ -6,6 +6,10 @@ import { Label } from "@pageElements/label";
 export interface IMainPo {
   headerConnectWalletButton: Button;
   connectWalletButton: Button;
+  walletSettingsButton: Button;
+  networkDetailsButton: Button;
+  addressCopiedNotificationLabel: Label;
+  failedSwitchNetworkNotificationLabel: Label;
 }
 
 export class MainPo extends BasePo implements IMainPo {

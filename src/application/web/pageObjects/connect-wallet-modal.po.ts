@@ -4,8 +4,11 @@ import { Label } from "@pageElements/label";
 import { WalletName } from "@services/connect-wallet-modal.service";
 import { Button } from "@pageElements/button";
 
-// todo: FILL
-interface IConnectWalletModalPo {}
+interface IConnectWalletModalPo {
+  connectWalletModalLabel: Label;
+  walletList: { [WalletName.Metamask]: Button };
+  closeButton: Button;
+}
 
 export class ConnectWalletModalPo
   extends BasePo
