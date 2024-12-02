@@ -28,7 +28,7 @@ suite({
     },
     {
       name: "Close by clicking its button",
-      testCaseId: "",
+      testCaseId: "@T2836c736",
       test: async ({ web }) => {
         await web.main.openConnectWalletModal();
         await web.main.connectWalletModal.page.verifyIsOpen();
