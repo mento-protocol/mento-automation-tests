@@ -1,23 +1,49 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import { MainPoInterface } from "@pageObjects/types/main.po.types";
 import { Button } from "@pageElements/button";
-import { ElementsList } from "@pageElements/element-list.pe";
 import { BasePo } from "@pageObjects/base.po";
+import { Label } from "@pageElements/label";
 
-export class MainPo extends BasePo implements MainPoInterface {
+export interface IMainPo {
+  headerConnectWalletButton: Button;
+  connectWalletButton: Button;
+  walletSettingsButton: Button;
+  networkDetailsButton: Button;
+  addressCopiedNotificationLabel: Label;
+  failedSwitchNetworkNotificationLabel: Label;
+}
+
+export class MainPo extends BasePo implements IMainPo {
   constructor(protected override ef: ElementFinderHelper) {
     super(ef);
   }
 
-  connectButton = new Button(
+  headerConnectWalletButton = new Button(
     this.ef.pw.role("button", { name: "Connect", exact: true }),
   );
-  walletTypeButtons = new ElementsList(
-    Button,
-    this.ef.all.className(
-      "iekbcc0 ju367vj ju367v26 ju367v67 ju367v8m ju367v8y",
+
+  connectWalletButton = new Button(
+    this.ef.pw.role("button", { name: "Connect Wallet", exact: true }),
+  );
+
+  walletSettingsButton = new Button(
+    this.ef.className(
+      "flex outline-none flex items-center justify-center bg-white text-black rounded-full shadow-md transition-all duration-300 shadow-md h-[52px] min-w-[137px] py-[16px] !pl-[20px] !pr-[24px] sm:px-4 rounded-lg border border-solid border-black dark:border-white font-medium leading-5 dark:text-white dark:bg-primary-dark",
     ),
   );
 
-  staticElements = [this.connectButton];
+  networkDetailsButton = new Button(
+    this.ef.className(
+      "px-2.5 h-7 mt-2 bg-gray-100 dark:bg-neutral-800 rounded-[100px] justify-end items-center gap-1.5 inline-flex",
+    ),
+  );
+
+  addressCopiedNotificationLabel = new Label(
+    this.ef.pw.text("Address copied to clipboard"),
+  );
+
+  failedSwitchNetworkNotificationLabel = new Label(
+    this.ef.pw.text("Could not switch"),
+  );
+
+  staticElements = [this.headerConnectWalletButton];
 }

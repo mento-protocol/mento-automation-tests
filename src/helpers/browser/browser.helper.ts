@@ -23,6 +23,7 @@ export interface IBrowser {
   attachErrors: () => Promise<void>;
   collectErrors: () => Promise<void>;
   hasConsoleErrorsMatchingText: (text: string) => boolean;
+  readFromClipboard: () => Promise<string>;
 }
 
 export class Browser implements IBrowser {
@@ -79,11 +80,15 @@ export class Browser implements IBrowser {
     await this.pwPage.reload();
   }
 
-  async execute(
-    callback: (args?: unknown[]) => Promise<unknown>,
+  async execute<R>(
+    callback: (args?: unknown[]) => Promise<R>,
     args: unknown[] = [],
-  ): Promise<unknown> {
+  ): Promise<R> {
     return this.pwPage.evaluate(callback, args);
+  }
+
+  async readFromClipboard(): Promise<string> {
+    return this.execute(() => navigator.clipboard.readText());
   }
 
   hasConsoleErrorsMatchingText(text: string): boolean {

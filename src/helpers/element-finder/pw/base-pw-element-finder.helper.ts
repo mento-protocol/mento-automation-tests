@@ -2,11 +2,27 @@ import { Page } from "@playwright/test";
 
 import {
   IBaseElementFinderArgs,
+  IElementSearchOptions,
   IPwElementSearcher,
 } from "@helpers/element-finder/types/index.types";
 import { IPwSearchArgs } from "@helpers/element-finder/pw/pw-element-finder.helper";
 
-export abstract class BasePwElementFinderHelper {
+export interface IBasePwElementFinderHelper {
+  role: (
+    role: string,
+    options?: Record<string, unknown>,
+    esOptions?: IElementSearchOptions,
+  ) => IPwElementSearcher;
+  text: (
+    role: string,
+    options?: Record<string, unknown>,
+    esOptions?: IElementSearchOptions,
+  ) => IPwElementSearcher;
+}
+
+export abstract class BasePwElementFinderHelper
+  implements IBasePwElementFinderHelper
+{
   protected page: Page = null;
 
   protected constructor(params: IBaseElementFinderArgs) {
@@ -16,21 +32,30 @@ export abstract class BasePwElementFinderHelper {
 
   protected abstract search(args: IPwSearchArgs): IPwElementSearcher;
 
-  role(role: string, options?, esOptions?) {
-    // make enum here for PwMethodName
+  role(
+    role: string,
+    options?: Record<string, unknown>,
+    esOptions?: IElementSearchOptions,
+  ): IPwElementSearcher {
     return this.search({
-      pwMethodName: "getByRole",
-      pwMethodArgs: [role, options],
+      pwMethod: { name: PwMethodName.getByRole, args: [role, options] },
       esOptions,
     });
   }
 
-  text(text: string, options?: Record<string, unknown>, esOptions?) {
-    // make enum here for PwMethodName
+  text(
+    text: string,
+    options?: Record<string, unknown>,
+    esOptions?: IElementSearchOptions,
+  ): IPwElementSearcher {
     return this.search({
-      pwMethodName: "getByText",
-      pwMethodArgs: [text, options],
+      pwMethod: { name: PwMethodName.getByText, args: [text, options] },
       esOptions,
     });
   }
+}
+
+export enum PwMethodName {
+  getByRole = "getByRole",
+  getByText = "getByText",
 }

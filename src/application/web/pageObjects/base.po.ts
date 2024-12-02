@@ -10,7 +10,7 @@ const logger = loggerHelper.get("BasePo");
 
 @ClassLog
 export abstract class BasePo {
-  public abstract staticElements: BaseElementPe[];
+  protected abstract staticElements: BaseElementPe[];
 
   protected constructor(protected ef: ElementFinderInterface) {}
 
@@ -26,7 +26,7 @@ export abstract class BasePo {
     return newTabPage;
   }
 
-  async isOpen(options: IIsOpenOpts): Promise<boolean> {
+  async isOpen(options: IIsOpenOpts = {}): Promise<boolean> {
     let { retry = 0 } = options;
     const { timeout = timeouts.isOpenPage, shouldWaitForExist = false } =
       options;
