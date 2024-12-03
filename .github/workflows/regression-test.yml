@@ -26,10 +26,10 @@ jobs:
     name: "Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPECS_TYPE: ${{ 'all' }}
+      SPECS_TYPE: all
       HTML_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false", "onFailure"]'), inputs.HTML_REPORT_GENERATION) || 'onFailure' }}
       TESTOMAT_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false"]'), inputs.TESTOMAT_REPORT_GENERATION) || 'true' }}
-      TESTOMATIO_TITLE: "Regression"
+      TESTOMATIO_TITLE: Regression
 
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}

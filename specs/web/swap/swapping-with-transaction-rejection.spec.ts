@@ -3,7 +3,7 @@ import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 
 suite({
-  name: "Swap - incorrect input validations",
+  name: "Swap - Transaction rejection",
   beforeAll: async ({ web, wallet }) => {
     await web.main.openAppWithConnectedWallet(wallet);
   },

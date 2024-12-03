@@ -16,6 +16,7 @@ interface IProcessEnvHelper {
   TESTOMAT_API_KEY: string;
   TESTOMATIO_TITLE: string;
   WALLET_ADDRESS: string;
+  IS_PARALLEL_RUN: string;
 }
 
 export const processEnv = process.env as unknown as IProcessEnvHelper;

@@ -1,23 +1,21 @@
 import { defineConfig, devices } from "@playwright/test";
 
 import { configHelper } from "@helpers/config/config.helper";
-import { magicStrings } from "@constants/magic-strings.constants";
-import { timeouts } from "@constants/timeouts.constants";
+import { magicStrings, timeouts } from "@constants/index";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 export default defineConfig({
   timeout: timeouts.testRunner,
-  testDir: configHelper.getTestDirPath(),
+  // todo: Remove if it handles completely by the getSpecs method
+  // testDir: configHelper.getSpecsDir(),
   testMatch: configHelper.getSpecs(),
   forbidOnly: primitiveHelper.string.toBoolean(processEnv.CI),
   retries: configHelper.getTestRetry(),
-  workers: 1,
+  fullyParallel: configHelper.isParallelRun() || undefined,
+  workers: configHelper.getWorkers(),
   outputDir: `${magicStrings.path.artifacts}/test-results`,
-  use: {
-    trace: "on",
-    video: "on",
-  },
+  use: { trace: "on", video: "on" },
   projects: [
     {
       name: "chromium",
