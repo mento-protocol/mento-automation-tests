@@ -28,7 +28,6 @@ class FileHelper {
         files.push(fullPath);
       }
     }
-    console.log({ files });
     return files;
   }
 }

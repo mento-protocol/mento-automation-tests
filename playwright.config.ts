@@ -2,15 +2,13 @@ import { defineConfig, devices } from "@playwright/test";
 
 import { configHelper } from "@helpers/config/config.helper";
 import { magicStrings, timeouts } from "@constants/index";
-import { processEnv } from "@helpers/processEnv/processEnv.helper";
-import { primitiveHelper } from "@helpers/primitive/primitive.helper";
+import { specSelectorHelper } from "@helpers/spec-selector/spec-selector.helper";
+import { envHelper } from "@helpers/env/env.helper";
 
 export default defineConfig({
   timeout: timeouts.testRunner,
-  // todo: Remove if it handles completely by the getSpecs method
-  // testDir: configHelper.getSpecsDir(),
-  testMatch: configHelper.getSpecs(),
-  forbidOnly: primitiveHelper.string.toBoolean(processEnv.CI),
+  testMatch: specSelectorHelper.get(),
+  forbidOnly: envHelper.isCI(),
   retries: configHelper.getTestRetry(),
   fullyParallel: configHelper.isParallelRun() || undefined,
   workers: configHelper.getWorkers(),

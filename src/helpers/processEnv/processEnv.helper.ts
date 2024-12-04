@@ -6,6 +6,7 @@ interface IProcessEnvHelper {
   ENV: string;
   USER_PASSWORD: string;
   SPEC_NAMES: string;
+  SPECS_FOLDER_NAME: string;
   SPECS_TYPE: string;
   CI: string;
   SEED_PHRASE: string;

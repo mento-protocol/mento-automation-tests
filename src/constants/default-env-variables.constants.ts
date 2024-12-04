@@ -3,6 +3,9 @@ export const defaultEnvVariables = `ENV=prod
 SEED_PHRASE=
 
 SPECS_TYPE=all
+
+#SPECS_FOLDER_NAME=wallet
+
 SPEC_NAMES=
 #wallet
 #incorrect-inputs
