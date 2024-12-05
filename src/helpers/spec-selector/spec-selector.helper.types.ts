@@ -1,6 +1,6 @@
-export interface IGetFilteredArgs {
-  desiredSpecs: string[];
-  allSpecs: string[];
+export interface IGetFilteredNamesArgs {
+  desiredSpecNames: string[];
+  allSpecNames: string[];
 }
 
 export interface ISpecSelectorHelper {
