@@ -1,4 +1,4 @@
-# Regression Test Run is splitted by sequential and parallel jobs. Each swap test can't be run in parallel mode
+# Regression Test Run is splitted by sequential and parallel jobs. Swap tests can't be run in parallel mode
 name: Regression Test Run
 
 on:

@@ -12,6 +12,14 @@ on:
         description: "Spec type of running tests"
         required: false
         type: string
+      SPECS_FOLDER_NAME:
+        description: "Spec relative folder name of running tests"
+        required: false
+        type: string
+      IS_PARALLEL_RUN:
+        description: "Parallel run flag of running tests"
+        required: false
+        type: string
       HTML_REPORT_GENERATION:
         description: "HTML report generation"
         required: true
@@ -38,6 +46,8 @@ jobs:
     env:
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
       SPEC_NAMES: ${{ inputs.SPEC_NAMES }}
+      SPECS_FOLDER_NAME: ${{ inputs.SPECS_FOLDER_NAME }}
+      IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
