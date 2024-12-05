@@ -1,3 +1,4 @@
+# Regression Test Run is splitted by sequential and parallel jobs. Each swap test can't be run in parallel mode
 name: Regression Test Run
 
 on:
@@ -22,14 +23,31 @@ on:
           - "false"
 
 jobs:
-  test:
-    name: "Regression Test Run"
+  parallel_test:
+    name: "Parallel Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
       SPECS_TYPE: all
+      IS_PARALLEL_RUN: "true"
       HTML_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false", "onFailure"]'), inputs.HTML_REPORT_GENERATION) || 'onFailure' }}
       TESTOMAT_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false"]'), inputs.TESTOMAT_REPORT_GENERATION) || 'true' }}
-      TESTOMATIO_TITLE: Regression
+      TESTOMATIO_TITLE: Parallel-Regression
+
+    secrets:
+      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+
+  sequential_test:
+    name: "Sequential Regression Test Run"
+    uses: ./.github/workflows/common-test.yml
+    with:
+      SPECS_TYPE: all
+      SPECS_FOLDER_NAME: swap
+      SPEC_NAMES: swapping
+      IS_PARALLEL_RUN: "false"
+      HTML_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false", "onFailure"]'), inputs.HTML_REPORT_GENERATION) || 'onFailure' }}
+      TESTOMAT_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false"]'), inputs.TESTOMAT_REPORT_GENERATION) || 'true' }}
+      TESTOMATIO_TITLE: Sequential-Regression
 
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
