@@ -1,5 +1,5 @@
-# Regression Test Run is splitted by sequential and parallel jobs. Swap tests can't be run in parallel mode
-name: Regression Test Run
+# Web Regression Test Run is splitted by sequential and parallel jobs. Swap tests can't be run in parallel mode
+name: Web Regression Test Run
 
 on:
   schedule:
@@ -24,10 +24,10 @@ on:
 
 jobs:
   parallel_test:
-    name: "Parallel Regression Test Run"
+    name: "Web Parallel Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPECS_TYPE: all
+      SPECS_TYPE: web
       IS_PARALLEL_RUN: "true"
       HTML_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false", "onFailure"]'), inputs.HTML_REPORT_GENERATION) || 'onFailure' }}
       TESTOMAT_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false"]'), inputs.TESTOMAT_REPORT_GENERATION) || 'true' }}
@@ -38,10 +38,10 @@ jobs:
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
 
   sequential_test:
-    name: "Sequential Regression Test Run"
+    name: "Web Sequential Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPECS_TYPE: all
+      SPECS_TYPE: web
       SPECS_FOLDER_NAME: swap
       SPEC_NAMES: swapping
       IS_PARALLEL_RUN: "false"
