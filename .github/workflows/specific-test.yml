@@ -6,6 +6,10 @@ on:
       SPEC_NAMES:
         description: "Spec names of running test/s"
         required: true
+      SPECS_FOLDER_NAME:
+        description: "Spec folder name of running test/s"
+        required: false
+        default: ""
       SPECS_TYPE:
         type: choice
         description: "Specs type of running test/s"
@@ -29,6 +33,13 @@ on:
         options:
           - "true"
           - "false"
+      IS_PARALLEL_RUN:
+        type: choice
+        description: "Parallel run flag of running tests"
+        default: "false"
+        options:
+          - "true"
+          - "false"
 
 jobs:
   test:
@@ -37,9 +48,12 @@ jobs:
     with:
       SPEC_NAMES: ${{ inputs.SPEC_NAMES }}
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
+      SPECS_FOLDER_NAME: ${{ inputs.SPECS_FOLDER_NAME }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      HTML_REPORT_NAME: "specific"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
       TESTOMATIO_TITLE: "Specific"
+      IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
