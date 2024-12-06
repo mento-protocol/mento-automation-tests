@@ -2,7 +2,7 @@ export const defaultEnvVariables = `ENV=prod
 
 SEED_PHRASE=
 
-SPECS_TYPE=all
+SPECS_TYPE=web
 
 #SPECS_FOLDER_NAME=wallet
 

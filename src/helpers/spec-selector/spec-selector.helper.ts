@@ -59,8 +59,6 @@ class SpecSelectorHelper implements ISpecSelectorHelper {
         return magicStrings.path.webSpecs;
       case "api":
         return magicStrings.path.apiSpecs;
-      case "all":
-        return magicStrings.path.allSpecs;
       default:
         throw new Error(`Please specify SPECS_TYPE via: web, api or all`);
     }

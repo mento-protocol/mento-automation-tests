@@ -13,9 +13,8 @@ on:
       SPECS_TYPE:
         type: choice
         description: "Specs type of running test/s"
-        default: all
+        default: web
         options:
-          - all
           - web
           - api
       HTML_REPORT_GENERATION:
