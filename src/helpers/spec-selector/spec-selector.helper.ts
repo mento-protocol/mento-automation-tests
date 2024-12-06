@@ -15,12 +15,10 @@ class SpecSelectorHelper implements ISpecSelectorHelper {
   private readonly excludeTextOnParallelRun = "swapping";
 
   get(): string[] {
-    const finalSpecNames = this.getFilteredNames({
+    return this.getFilteredNames({
       allSpecNames: this.getAllNamesByDir(this.getFullDir()),
       desiredSpecNames: this.getDesiredNames(SPEC_NAMES),
     });
-    console.log({ finalSpecNames });
-    return finalSpecNames;
   }
 
   private getDesiredNames(currentSpecNamesString: string): string[] {
@@ -51,7 +49,7 @@ class SpecSelectorHelper implements ISpecSelectorHelper {
 
   private getFullDir(): string {
     return `${this.getRootDirByType(SPECS_TYPE)}${
-      SPECS_FOLDER_NAME ? `/${SPECS_FOLDER_NAME}` : ""
+      SPECS_FOLDER_NAME?.length ? `/${SPECS_FOLDER_NAME}` : ""
     }`;
   }
 

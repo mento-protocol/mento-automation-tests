@@ -13,6 +13,7 @@ interface IProcessEnvHelper {
   TEST_RUNNER_TIMEOUT: string;
   LOG_LEVEL: string;
   TEST_RETRY: string;
+  HTML_REPORT_NAME: string;
   TESTOMAT_REPORT_GENERATION: string;
   TESTOMAT_API_KEY: string;
   TESTOMATIO_TITLE: string;
