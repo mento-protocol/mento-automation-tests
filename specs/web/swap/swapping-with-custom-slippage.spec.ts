@@ -4,7 +4,7 @@ import { suite } from "@helpers/suite/suite.helper";
 import { Slippage } from "@services/index";
 
 suite({
-  name: "Swap - Slippage",
+  name: "Swap - With custom slippage",
   beforeAll: async ({ web, wallet }) => {
     await web.main.openAppWithConnectedWallet(wallet);
   },

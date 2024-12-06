@@ -75,7 +75,7 @@ const testCases = [
 ];
 
 suite({
-  name: "Swap by token pairs",
+  name: "Swap - By token pairs",
   beforeAll: async ({ web, wallet }) => {
     await web.main.openAppWithConnectedWallet(wallet);
   },

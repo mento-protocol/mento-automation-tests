@@ -1,4 +1,5 @@
-name: Regression Test Run
+# Web Regression Test Run is splitted by sequential and parallel jobs. Swap tests can't be run in parallel mode
+name: Web Regression Test Run
 
 on:
   schedule:
@@ -22,14 +23,33 @@ on:
           - "false"
 
 jobs:
-  test:
-    name: "Regression Test Run"
+  parallel_test:
+    name: "Web Parallel Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPECS_TYPE: ${{ 'all' }}
-      HTML_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false", "onFailure"]'), inputs.HTML_REPORT_GENERATION) || 'onFailure' }}
-      TESTOMAT_REPORT_GENERATION: ${{ contains(fromJSON('["true", "false"]'), inputs.TESTOMAT_REPORT_GENERATION) || 'true' }}
-      TESTOMATIO_TITLE: "Regression"
+      SPECS_TYPE: web
+      IS_PARALLEL_RUN: "true"
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      HTML_REPORT_NAME: "web-parallel-regression"
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMATIO_TITLE: "Web Parallel-Regression"
+
+    secrets:
+      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+
+  sequential_test:
+    name: "Web Sequential Regression Test Run"
+    uses: ./.github/workflows/common-test.yml
+    with:
+      SPECS_TYPE: web
+      SPECS_FOLDER_NAME: swap
+      SPEC_NAMES: swapping
+      IS_PARALLEL_RUN: "false"
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      HTML_REPORT_NAME: "web-sequential-regression"
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMATIO_TITLE: "Web Sequential-Regression"
 
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
