@@ -29,9 +29,9 @@ jobs:
     with:
       SPECS_TYPE: web
       IS_PARALLEL_RUN: "true"
-      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: "web-parallel-regression"
-      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true'  }}
       TESTOMATIO_TITLE: "Web Parallel-Regression"
 
     secrets:
@@ -46,9 +46,9 @@ jobs:
       SPECS_FOLDER_NAME: swap
       SPEC_NAMES: swapping
       IS_PARALLEL_RUN: "false"
-      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: "web-sequential-regression"
-      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
       TESTOMATIO_TITLE: "Web Sequential-Regression"
 
     secrets:
