@@ -36,8 +36,7 @@ export class ConfirmSwapService
   }
 
   async finish(wallet: IWallet): Promise<void> {
-    await wallet.helper.approveTransactionTwice();
-    await wallet.metamask.confirmTransaction();
+    await wallet.helper.confirmTransaction();
   }
 
   async expectSuccessfulTransaction(): Promise<void> {
