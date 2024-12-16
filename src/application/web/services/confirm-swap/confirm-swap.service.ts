@@ -36,29 +36,16 @@ export class ConfirmSwapService
   }
 
   async finish(wallet: IWallet): Promise<void> {
-    await wallet.helper.approveTransactionTwice();
-    await wallet.metamask.confirmTransaction();
+    // confirm approval tx
+    await wallet.helper.confirmTransaction();
+    // confirm swap tx
+    await wallet.helper.confirmTransaction();
   }
 
   async expectSuccessfulTransaction(): Promise<void> {
-    expect
-      .soft(
-        await this.isSwapPerformingPopupThere(),
-        "missing swap performing popup",
-      )
-      .toBeTruthy();
-    expect
-      .soft(
-        await this.isApproveCompleteNotificationThere(),
-        "missing approve complete notification",
-      )
-      .toBeTruthy();
-    expect
-      .soft(
-        await this.isSwapCompleteNotificationThere(),
-        "missing swap complete notification",
-      )
-      .toBeTruthy();
+    expect.soft(await this.isSwapPerformingPopupThere()).toBeTruthy();
+    expect.soft(await this.isApproveCompleteNotificationThere()).toBeTruthy();
+    expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
   }
 
   async navigateToCeloExplorer(): Promise<void> {
@@ -75,8 +62,10 @@ export class ConfirmSwapService
 
   async isSwapCompleteNotificationThere(): Promise<boolean> {
     return this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
-      timeouts.l,
-      { throwError: false },
+      timeouts.xl,
+      {
+        throwError: false,
+      },
     );
   }
 

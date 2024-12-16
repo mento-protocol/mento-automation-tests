@@ -32,7 +32,7 @@ suite({
         await web.main.walletSettingsPopup.networkDetails.switchNetworkByName(
           Network.Baklava,
         );
-        await wallet.metamask.reject();
+        await wallet.helper.rejectNetworkSwitch();
         expect
           .soft(
             await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
