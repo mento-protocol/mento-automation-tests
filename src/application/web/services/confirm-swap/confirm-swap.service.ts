@@ -36,6 +36,9 @@ export class ConfirmSwapService
   }
 
   async finish(wallet: IWallet): Promise<void> {
+    // confirm approval tx
+    await wallet.helper.confirmTransaction();
+    // confirm swap tx
     await wallet.helper.confirmTransaction();
   }
 
