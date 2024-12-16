@@ -50,6 +50,10 @@ export class ConfirmSwapPo extends BasePo implements IConfirmSwapPo {
   rejectSwapTransactionNotificationLabel = new Label(
     this.ef.pw.text("Unable to execute swap transaction"),
   );
+  approveAndSwapTxsLabel = new Label(
+    this.ef.pw.text("Sending two transactions: Approve and Swap"),
+  );
+  swapTxLabel = new Label(this.ef.pw.text(""));
 
   staticElements = [this.headerLabel];
 }

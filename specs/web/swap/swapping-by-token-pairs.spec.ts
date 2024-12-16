@@ -3,6 +3,7 @@ import { suite, testUtils } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
+import { expect } from "@fixtures/common/common.fixture";
 
 const testCases = [
   // CELO
@@ -47,6 +48,7 @@ const testCases = [
   // cCOP
   {
     fromToken: Token.cCOP,
+    fromTokenAmount: "1",
     toToken: Token.cUSD,
     id: "@Ta2aa287f",
   },
@@ -90,8 +92,11 @@ suite({
         test: async ({ web, wallet }: IExecution) => {
           await web.swap.fillForm({
             tokens: { from: testCase.fromToken, to: testCase.toToken },
-            fromAmount: "0.0001",
+            fromAmount: testCase?.fromTokenAmount || "0.1",
           });
+          const initialToTokenBalance = await web.main.getTokenBalanceByName(
+            testCase.toToken,
+          );
           (await web.swap.isNoValidMedian())
             ? testUtils.disable(
                 { reason: "No valid median to swap" },
@@ -99,7 +104,10 @@ suite({
               )
             : await web.swap.start();
           await web.swap.confirm.finish(wallet);
-          await web.swap.confirm.expectSuccessfulTransaction();
+          await web.swap.confirm.expectSuccessfulNotifications();
+          expect
+            .soft(await web.main.getTokenBalanceByName(testCase.toToken))
+            .toBeGreaterThan(initialToTokenBalance);
         },
       };
     }),

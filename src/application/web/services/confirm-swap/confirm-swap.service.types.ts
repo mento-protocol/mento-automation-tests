@@ -6,7 +6,7 @@ export interface IConfirmSwapService {
   getCurrentPriceFromConfirmation: () => Promise<string>;
   getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
   finish: (wallet: IWallet) => Promise<void>;
-  expectSuccessfulTransaction: () => Promise<void>;
+  expectSuccessfulNotifications: () => Promise<void>;
   navigateToCeloExplorer: () => Promise<void>;
   isSwapPerformingPopupThere: () => Promise<boolean>;
   isApproveCompleteNotificationThere: () => Promise<boolean>;

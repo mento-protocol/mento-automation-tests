@@ -32,7 +32,7 @@ suite({
           .toBeTruthy();
         await web.swap.start();
         await web.swap.confirm.finish(wallet);
-        await web.swap.confirm.expectSuccessfulTransaction();
+        await web.swap.confirm.expectSuccessfulNotifications();
       },
     },
     {
@@ -46,7 +46,7 @@ suite({
         });
         await web.swap.start();
         await web.swap.confirm.finish(wallet);
-        await web.swap.confirm.expectSuccessfulTransaction();
+        await web.swap.confirm.expectSuccessfulNotifications();
       },
     },
     {
@@ -60,7 +60,7 @@ suite({
         });
         await web.swap.start();
         await web.swap.confirm.finish(wallet);
-        await web.swap.confirm.expectSuccessfulTransaction();
+        await web.swap.confirm.expectSuccessfulNotifications();
       },
     },
   ],

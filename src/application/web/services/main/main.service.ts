@@ -12,6 +12,7 @@ import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { IWallet } from "@fixtures/common/common.fixture.types";
 import { NetworkDetailsModalService } from "@services/index";
 import { MainPo } from "@page-objects/index";
+import { Token } from "@constants/token.constants";
 
 const logger = loggerHelper.get("MainService");
 
@@ -80,5 +81,13 @@ export class MainService extends BaseService implements IMainService {
 
   async isWalletConnected(): Promise<boolean> {
     return !(await this.page.headerConnectWalletButton.isDisplayed());
+  }
+
+  async getTokenBalanceByName(tokenName: Token): Promise<number> {
+    await this.openWalletSettings();
+    const tokenBalanceText = await this.walletSettingsPopup.page
+      .getTokenBalanceLabelByName(tokenName)
+      .getText();
+    return Number(tokenBalanceText);
   }
 }

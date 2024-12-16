@@ -15,4 +15,6 @@ export interface IConfirmSwapPo {
   currentPriceLabel: Label;
   rejectApprovalTransactionNotificationLabel: Label;
   rejectSwapTransactionNotificationLabel: Label;
+  approveAndSwapTxsLabel: Label;
+  swapTxLabel: Label;
 }

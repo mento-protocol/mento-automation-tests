@@ -29,7 +29,7 @@ suite({
           .toBeGreaterThan(0);
         await web.swap.start();
         await web.swap.confirm.finish(wallet);
-        await web.swap.confirm.expectSuccessfulTransaction();
+        await web.swap.confirm.expectSuccessfulNotifications();
       },
     },
     {
@@ -45,7 +45,7 @@ suite({
         ).toBeGreaterThan(0);
         await web.swap.start();
         await web.swap.confirm.finish(wallet);
-        await web.swap.confirm.expectSuccessfulTransaction();
+        await web.swap.confirm.expectSuccessfulNotifications();
       },
     },
   ],

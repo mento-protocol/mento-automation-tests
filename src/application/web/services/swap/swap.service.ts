@@ -32,6 +32,9 @@ export class SwapService extends BaseService implements ISwapService {
   async start(): Promise<void> {
     await this.page.continueButton.click();
     await this.confirm.page.verifyIsOpen();
+    await waiterHelper.sleep(timeouts.xs, {
+      sleepReason: "Doesn't open metamask tx because fast clicking on button",
+    });
     await waiterHelper.retry(
       async () => {
         await this.confirm.page.swapButton.click();
