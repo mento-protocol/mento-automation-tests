@@ -1,5 +1,5 @@
 import { expect } from "@fixtures/common/common.fixture";
-import { Token } from "@constants/token.constants";
+import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { Slippage } from "@services/index";
 import { IExecution } from "@helpers/suite/suite.types";
@@ -45,7 +45,7 @@ suite({
           await web.swap.fillForm({
             slippage: testCase.slippage,
             tokens: { from: Token.cEUR, to: toToken },
-            fromAmount: "0.1",
+            fromAmount: defaultSwapAmount,
           });
           const initialBalance = await web.main.getTokenBalanceByName(toToken);
           expect.soft(await web.swap.isCurrentPriceThere()).toBeTruthy();

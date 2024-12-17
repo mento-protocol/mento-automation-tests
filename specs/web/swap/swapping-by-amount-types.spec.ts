@@ -1,5 +1,5 @@
 import { expect } from "@fixtures/common/common.fixture";
-import { Token } from "@constants/token.constants";
+import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { AmountType } from "@services/index";
 
@@ -19,7 +19,7 @@ suite({
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.CELO, to: Token.cREAL },
-          fromAmount: "0.0001",
+          fromAmount: defaultSwapAmount,
         });
         const initialBalance = await web.main.getTokenBalanceByName(
           Token.cREAL,
@@ -45,7 +45,7 @@ suite({
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.cEUR, to: Token.CELO },
-          toAmount: "0.0001",
+          toAmount: defaultSwapAmount,
         });
         const initialBalance = await web.main.getTokenBalanceByName(Token.CELO);
         expect

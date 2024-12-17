@@ -1,5 +1,5 @@
 import { expect } from "@fixtures/common/common.fixture";
-import { Token } from "@constants/token.constants";
+import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 
 suite({
@@ -17,7 +17,7 @@ suite({
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.cREAL, to: Token.CELO },
-          fromAmount: "0.0001",
+          fromAmount: defaultSwapAmount,
         });
         await web.swap.start();
         await wallet.metamask.reject();
@@ -32,7 +32,7 @@ suite({
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.CELO, to: Token.cEUR },
-          fromAmount: "0.0001",
+          fromAmount: defaultSwapAmount,
         });
         await web.swap.start();
         await wallet.helper.rejectSwapTransaction();

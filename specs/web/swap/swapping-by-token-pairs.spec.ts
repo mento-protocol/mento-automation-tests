@@ -1,4 +1,4 @@
-import { Token } from "@constants/token.constants";
+import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
@@ -90,7 +90,7 @@ suite({
         test: async ({ web, wallet }: IExecution) => {
           await web.swap.fillForm({
             tokens: { from: testCase.fromToken, to: testCase.toToken },
-            fromAmount: "0.1",
+            fromAmount: defaultSwapAmount,
           });
           const initialBalance = await web.main.getTokenBalanceByName(
             testCase.toToken,
