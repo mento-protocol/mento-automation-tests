@@ -48,6 +48,7 @@ const testCases = [
   {
     fromToken: Token.cCOP,
     toToken: Token.cUSD,
+    fromAmount: "430",
     id: "@Ta2aa287f",
   },
   // USDC
@@ -90,7 +91,7 @@ suite({
         test: async ({ web, wallet }: IExecution) => {
           await web.swap.fillForm({
             tokens: { from: testCase.fromToken, to: testCase.toToken },
-            fromAmount: defaultSwapAmount,
+            fromAmount: testCase?.fromAmount || defaultSwapAmount,
           });
           const initialBalance = await web.main.getTokenBalanceByName(
             testCase.toToken,
