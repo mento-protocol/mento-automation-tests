@@ -1,5 +1,5 @@
-import { Token } from "@constants/token.constants";
-import { suite, testUtils } from "@helpers/suite/suite.helper";
+import { defaultSwapAmount, Token } from "@constants/token.constants";
+import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
@@ -48,6 +48,7 @@ const testCases = [
   {
     fromToken: Token.cCOP,
     toToken: Token.cUSD,
+    fromAmount: "430",
     id: "@Ta2aa287f",
   },
   // USDC
@@ -90,16 +91,20 @@ suite({
         test: async ({ web, wallet }: IExecution) => {
           await web.swap.fillForm({
             tokens: { from: testCase.fromToken, to: testCase.toToken },
-            fromAmount: "0.0001",
+            fromAmount: testCase?.fromAmount || defaultSwapAmount,
           });
-          (await web.swap.isNoValidMedian())
-            ? testUtils.disable(
-                { reason: "No valid median to swap" },
-                "Disabled in runtime because of 'no valid median' case",
-              )
-            : await web.swap.start();
+          const initialBalance = await web.main.getTokenBalanceByName(
+            testCase.toToken,
+          );
+          await web.swap.start();
           await web.swap.confirm.finish(wallet);
-          await web.swap.confirm.expectSuccessfulTransaction();
+          await web.swap.confirm.expectSuccessfulNotifications();
+          await web.swap.confirm.expectChangedBalance({
+            currentBalance: await web.main.getTokenBalanceByName(
+              testCase.toToken,
+            ),
+            initialBalance,
+          });
         },
       };
     }),

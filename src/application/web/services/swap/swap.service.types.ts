@@ -22,8 +22,7 @@ export interface ISwapService {
   isFromInputEmpty: () => Promise<boolean>;
   isErrorValidationThere: () => Promise<boolean>;
   waitForExceedsTradingLimitsValidation: (timeout: number) => Promise<boolean>;
-  isNoValidMedian: () => Promise<boolean>;
-  isCurrentPriceLoaded: () => Promise<boolean>;
+  verifyNoValidMedianCase: () => Promise<void>;
 }
 
 export interface ISwapServiceArgs extends IBaseServiceArgs {

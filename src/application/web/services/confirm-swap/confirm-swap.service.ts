@@ -7,8 +7,12 @@ import {
   IConfirmSwapService,
   IConfirmSwapServiceArgs,
   BaseService,
+  IExpectChangedBalanceArgs,
 } from "@services/index";
 import { IWallet } from "@fixtures/common/common.fixture.types";
+import { loggerHelper } from "@helpers/logger/logger.helper";
+
+const logger = loggerHelper.get("ConfirmSwapService");
 
 @ClassLog
 export class ConfirmSwapService
@@ -36,16 +40,28 @@ export class ConfirmSwapService
   }
 
   async finish(wallet: IWallet): Promise<void> {
-    // confirm approval tx
-    await wallet.helper.confirmTransaction();
-    // confirm swap tx
-    await wallet.helper.confirmTransaction();
+    if (!(await this.page.approveAndSwapTxsLabel.isDisplayed())) {
+      logger.debug(
+        "Sent and confirms only swap tx because sufficient allowance already exists",
+      );
+      await wallet.helper.confirmTransaction();
+    } else {
+      logger.debug(
+        "Sent and confirms approval and swap txs because sufficient allowance is not exist yet",
+      );
+      await wallet.helper.confirmTransaction();
+      await wallet.helper.confirmTransaction();
+    }
   }
 
-  async expectSuccessfulTransaction(): Promise<void> {
+  async expectSuccessfulNotifications(): Promise<void> {
     expect.soft(await this.isSwapPerformingPopupThere()).toBeTruthy();
-    expect.soft(await this.isApproveCompleteNotificationThere()).toBeTruthy();
     expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
+  }
+
+  async expectChangedBalance(args: IExpectChangedBalanceArgs): Promise<void> {
+    const { currentBalance, initialBalance } = args;
+    expect.soft(currentBalance).toBeGreaterThan(initialBalance);
   }
 
   async navigateToCeloExplorer(): Promise<void> {

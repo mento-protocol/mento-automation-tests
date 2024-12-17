@@ -1,5 +1,5 @@
 import { expect } from "@fixtures/common/common.fixture";
-import { Token } from "@constants/token.constants";
+import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { AmountType } from "@services/index";
 
@@ -19,8 +19,11 @@ suite({
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.CELO, to: Token.cREAL },
-          fromAmount: "0.0001",
+          fromAmount: defaultSwapAmount,
         });
+        const initialBalance = await web.main.getTokenBalanceByName(
+          Token.cREAL,
+        );
         expect
           .soft(
             Number(await web.swap.getAmountByType(AmountType.Out)),
@@ -29,7 +32,11 @@ suite({
           .toBeGreaterThan(0);
         await web.swap.start();
         await web.swap.confirm.finish(wallet);
-        await web.swap.confirm.expectSuccessfulTransaction();
+        await web.swap.confirm.expectSuccessfulNotifications();
+        await web.swap.confirm.expectChangedBalance({
+          currentBalance: await web.main.getTokenBalanceByName(Token.cREAL),
+          initialBalance,
+        });
       },
     },
     {
@@ -38,14 +45,19 @@ suite({
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.cEUR, to: Token.CELO },
-          toAmount: "0.0001",
+          toAmount: defaultSwapAmount,
         });
-        expect(
-          Number(await web.swap.getAmountByType(AmountType.In)),
-        ).toBeGreaterThan(0);
+        const initialBalance = await web.main.getTokenBalanceByName(Token.CELO);
+        expect
+          .soft(Number(await web.swap.getAmountByType(AmountType.In)))
+          .toBeGreaterThan(0);
         await web.swap.start();
         await web.swap.confirm.finish(wallet);
-        await web.swap.confirm.expectSuccessfulTransaction();
+        await web.swap.confirm.expectSuccessfulNotifications();
+        await web.swap.confirm.expectChangedBalance({
+          currentBalance: await web.main.getTokenBalanceByName(Token.CELO),
+          initialBalance,
+        });
       },
     },
   ],
