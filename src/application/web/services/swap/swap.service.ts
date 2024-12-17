@@ -14,6 +14,7 @@ import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
+import { testUtils } from "@helpers/suite/suite.helper";
 
 const logger = loggerHelper.get("SwapService");
 
@@ -30,6 +31,7 @@ export class SwapService extends BaseService implements ISwapService {
   }
 
   async start(): Promise<void> {
+    await this.verifyNoValidMedianCase();
     await this.page.continueButton.click();
     await this.confirm.page.verifyIsOpen();
     await waiterHelper.sleep(timeouts.xs, {
@@ -163,7 +165,16 @@ export class SwapService extends BaseService implements ISwapService {
     return !Boolean((await this.page.fromAmountInput.getValue()).length);
   }
 
-  async isNoValidMedian(): Promise<boolean> {
+  async verifyNoValidMedianCase(): Promise<void> {
+    return (await this.isNoValidMedian())
+      ? testUtils.disable(
+          { reason: "No valid median to swap" },
+          "Disabled in runtime because of 'no valid median' case",
+        )
+      : logger.info("'No valid median' case is not defined - keep swapping");
+  }
+
+  private async isNoValidMedian(): Promise<boolean> {
     return !(await this.isCurrentPriceLoaded())
       ? waiterHelper.retry(
           async () => {
@@ -179,7 +190,7 @@ export class SwapService extends BaseService implements ISwapService {
       : false;
   }
 
-  async isCurrentPriceLoaded(): Promise<boolean> {
+  private async isCurrentPriceLoaded(): Promise<boolean> {
     return (await this.page.currentPriceLabel.getText()) !== "...";
   }
 }

@@ -1,9 +1,8 @@
 import { Token } from "@constants/token.constants";
-import { suite, testUtils } from "@helpers/suite/suite.helper";
+import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
-import { expect } from "@fixtures/common/common.fixture";
 
 const testCases = [
   // CELO
@@ -48,7 +47,6 @@ const testCases = [
   // cCOP
   {
     fromToken: Token.cCOP,
-    fromTokenAmount: "1",
     toToken: Token.cUSD,
     id: "@Ta2aa287f",
   },
@@ -92,22 +90,20 @@ suite({
         test: async ({ web, wallet }: IExecution) => {
           await web.swap.fillForm({
             tokens: { from: testCase.fromToken, to: testCase.toToken },
-            fromAmount: testCase?.fromTokenAmount || "0.1",
+            fromAmount: "0.1",
           });
-          const initialToTokenBalance = await web.main.getTokenBalanceByName(
+          const initialBalance = await web.main.getTokenBalanceByName(
             testCase.toToken,
           );
-          (await web.swap.isNoValidMedian())
-            ? testUtils.disable(
-                { reason: "No valid median to swap" },
-                "Disabled in runtime because of 'no valid median' case",
-              )
-            : await web.swap.start();
+          await web.swap.start();
           await web.swap.confirm.finish(wallet);
           await web.swap.confirm.expectSuccessfulNotifications();
-          expect
-            .soft(await web.main.getTokenBalanceByName(testCase.toToken))
-            .toBeGreaterThan(initialToTokenBalance);
+          await web.swap.confirm.expectChangedBalance({
+            currentBalance: await web.main.getTokenBalanceByName(
+              testCase.toToken,
+            ),
+            initialBalance,
+          });
         },
       };
     }),

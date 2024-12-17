@@ -7,11 +7,12 @@ import {
   IConfirmSwapService,
   IConfirmSwapServiceArgs,
   BaseService,
+  IExpectChangedBalanceArgs,
 } from "@services/index";
 import { IWallet } from "@fixtures/common/common.fixture.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 
-const logger = loggerHelper.get("Confirm-Swap-Service");
+const logger = loggerHelper.get("ConfirmSwapService");
 
 @ClassLog
 export class ConfirmSwapService
@@ -56,6 +57,11 @@ export class ConfirmSwapService
   async expectSuccessfulNotifications(): Promise<void> {
     expect.soft(await this.isSwapPerformingPopupThere()).toBeTruthy();
     expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
+  }
+
+  async expectChangedBalance(args: IExpectChangedBalanceArgs): Promise<void> {
+    const { currentBalance, initialBalance } = args;
+    expect.soft(currentBalance).toBeGreaterThan(initialBalance);
   }
 
   async navigateToCeloExplorer(): Promise<void> {

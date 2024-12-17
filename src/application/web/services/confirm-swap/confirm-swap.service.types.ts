@@ -7,6 +7,7 @@ export interface IConfirmSwapService {
   getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
   finish: (wallet: IWallet) => Promise<void>;
   expectSuccessfulNotifications: () => Promise<void>;
+  expectChangedBalance: (args: IExpectChangedBalanceArgs) => Promise<void>;
   navigateToCeloExplorer: () => Promise<void>;
   isSwapPerformingPopupThere: () => Promise<boolean>;
   isApproveCompleteNotificationThere: () => Promise<boolean>;
@@ -17,4 +18,9 @@ export interface IConfirmSwapService {
 
 export interface IConfirmSwapServiceArgs extends IBaseServiceArgs {
   page: ConfirmSwapPo;
+}
+
+export interface IExpectChangedBalanceArgs {
+  initialBalance: number;
+  currentBalance: number;
 }

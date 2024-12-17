@@ -21,6 +21,9 @@ suite({
           tokens: { from: Token.CELO, to: Token.cREAL },
           fromAmount: "0.0001",
         });
+        const initialBalance = await web.main.getTokenBalanceByName(
+          Token.cREAL,
+        );
         expect
           .soft(
             Number(await web.swap.getAmountByType(AmountType.Out)),
@@ -30,6 +33,10 @@ suite({
         await web.swap.start();
         await web.swap.confirm.finish(wallet);
         await web.swap.confirm.expectSuccessfulNotifications();
+        await web.swap.confirm.expectChangedBalance({
+          currentBalance: await web.main.getTokenBalanceByName(Token.cREAL),
+          initialBalance,
+        });
       },
     },
     {
@@ -40,12 +47,17 @@ suite({
           tokens: { from: Token.cEUR, to: Token.CELO },
           toAmount: "0.0001",
         });
-        expect(
-          Number(await web.swap.getAmountByType(AmountType.In)),
-        ).toBeGreaterThan(0);
+        const initialBalance = await web.main.getTokenBalanceByName(Token.CELO);
+        expect
+          .soft(Number(await web.swap.getAmountByType(AmountType.In)))
+          .toBeGreaterThan(0);
         await web.swap.start();
         await web.swap.confirm.finish(wallet);
         await web.swap.confirm.expectSuccessfulNotifications();
+        await web.swap.confirm.expectChangedBalance({
+          currentBalance: await web.main.getTokenBalanceByName(Token.CELO),
+          initialBalance,
+        });
       },
     },
   ],
