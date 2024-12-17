@@ -101,11 +101,11 @@ class Utils {
     const testName = `${name} [${testCaseId}]`;
 
     return isNewWebContext
-      ? testFixture(testName, async ({ context, page }) => {
+      ? testFixture(testName, async ({ context, page, wallet }) => {
           this.isDisabled(disable) && this.disable(disable);
           executionArgs = {
             web: await init.web(context, page),
-            wallet: executionArgs.wallet,
+            wallet: wallet,
           };
           await this.runTest({
             test,

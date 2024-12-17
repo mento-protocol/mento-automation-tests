@@ -4,7 +4,7 @@ import { suite } from "@helpers/suite/suite.helper";
 
 suite({
   name: "Swap - Transaction rejection",
-  beforeAll: async ({ web, wallet }) => {
+  beforeEach: async ({ web, wallet }) => {
     await web.main.openAppWithConnectedWallet(wallet);
   },
   afterEach: async ({ web }) => {
@@ -14,6 +14,7 @@ suite({
     {
       name: "Reject approval transaction",
       testCaseId: "@Td5aa1954",
+      isNewWebContext: true,
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.cREAL, to: Token.CELO },
@@ -29,6 +30,7 @@ suite({
     {
       name: "Reject swap transaction",
       testCaseId: "@T09fd373a",
+      isNewWebContext: true,
       test: async ({ web, wallet }) => {
         await web.swap.fillForm({
           tokens: { from: Token.CELO, to: Token.cEUR },

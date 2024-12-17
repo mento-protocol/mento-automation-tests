@@ -21,7 +21,7 @@ export class MetamaskWalletHelper implements IMetamaskWalletHelper {
   async rejectSwapTransaction(): Promise<void> {
     await this.confirmTransaction();
     const popup = await this.wallet.page.context().waitForEvent("page");
-    await popup.getByTestId("page-container-footer-cancel").click();
+    await popup.getByText("Cancel").click();
   }
 
   async confirmNetworkSwitch(): Promise<void> {
