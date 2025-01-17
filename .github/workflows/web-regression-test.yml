@@ -23,8 +23,8 @@ on:
           - "false"
 
 jobs:
-  sequential_test:
-    name: "Web Sequential Regression Test Run"
+  mento_web_sequential_regression_test:
+    name: "[Mento-Web] Web Sequential Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
       SPECS_TYPE: web
@@ -32,9 +32,9 @@ jobs:
       #      SPEC_NAMES: swapping
       IS_PARALLEL_RUN: "false"
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
-      HTML_REPORT_NAME: "web-sequential-regression"
+      HTML_REPORT_NAME: "mento-web-sequential-regression"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
-      TESTOMATIO_TITLE: "Web Sequential-Regression"
+      TESTOMATIO_TITLE: "[Mento-Web] Web Sequential-Regression"
 
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
@@ -42,16 +42,16 @@ jobs:
 # Disabled because of bug https://github.com/TenKeyLabs/dappwright/issues/406
 # Now all tests run sequentially - change back after fixing (Commented vars from sequential_test as well)
 #
-#  parallel_test:
-#    name: "Web Parallel Regression Test Run"
+#  mento_web_parallel_regression_test:
+#    name: "[Mento-Web] Web Parallel Regression Test Run"
 #    uses: ./.github/workflows/common-test.yml
 #    with:
 #      SPECS_TYPE: web
 #      IS_PARALLEL_RUN: "true"
 #      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
-#      HTML_REPORT_NAME: "web-parallel-regression"
+#      HTML_REPORT_NAME: "mento-web-parallel-regression"
 #      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true'  }}
-#      TESTOMATIO_TITLE: "Web Parallel-Regression"
+#      TESTOMATIO_TITLE: "[Mento-Web] Web Parallel-Regression"
 #
 #    secrets:
 #      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
