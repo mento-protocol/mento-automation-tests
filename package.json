@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.44.1",
+    "@synthetixio/synpress": "3.7.3",
     "@testomatio/reporter": "1.5.3",
     "@types/lodash": "4.14.202",
     "@types/node": "20.14.5",
