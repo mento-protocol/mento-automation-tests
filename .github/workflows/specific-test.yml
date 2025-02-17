@@ -55,4 +55,5 @@ jobs:
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
