@@ -29,15 +29,15 @@ export interface IBrowser {
 
 export class Browser implements IBrowser {
   private pwPage: Page = null;
-  private context: BrowserContext = null;
+  private pwContext: BrowserContext = null;
 
   private _consoleErrors: string[] = [];
   private _pageErrors: string[] = [];
 
   constructor(args: IBrowserArgs) {
-    const { pwPage, context } = args;
+    const { pwPage, pwContext } = args;
     this.pwPage = pwPage;
-    this.context = context;
+    this.pwContext = pwContext;
   }
 
   get consoleErrors(): string[] {
@@ -61,7 +61,7 @@ export class Browser implements IBrowser {
   }
 
   async addCookies(params: IAddCookie[]): Promise<void> {
-    await this.context.addCookies(params);
+    await this.pwContext.addCookies(params);
   }
 
   async scrollBy(params: IScrollBy): Promise<void> {

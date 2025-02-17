@@ -1,8 +1,11 @@
-import { IBaseServiceArgs } from "@services/index";
+import { IBaseServiceArgs, ISwitchNetworkByName } from "@services/index";
 import { NetworkDetailsModalPo } from "@page-objects/index";
 
 export interface INetworkDetailsModalService {
-  switchNetworkByName: (name: Network) => Promise<void>;
+  switchNetworkByName: (
+    name: Network,
+    opts: ISwitchNetworkByName,
+  ) => Promise<void>;
   getCurrentNetwork: () => Promise<string>;
 }
 

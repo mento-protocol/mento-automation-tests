@@ -11,10 +11,7 @@ import {
 const logger = loggerHelper.get("Base-Http");
 
 export class BaseHttpClient implements IBaseHttpClient {
-  private apiModulePromise: Promise<APIRequestContext> = null;
-  constructor(apiModulePromise: Promise<APIRequestContext>) {
-    this.apiModulePromise = apiModulePromise;
-  }
+  constructor(protected pwApiContext: APIRequestContext) {}
 
   async sendRequest<T>(
     method: Method,
@@ -28,14 +25,18 @@ export class BaseHttpClient implements IBaseHttpClient {
       timeout,
     };
     try {
-      const response = await (await this.apiModulePromise).fetch(url, request);
+      const response = await this.pwApiContext.fetch(url, request);
       return {
         data: await response.json(),
         headers: response.headers(),
         status: response.status(),
       };
     } catch (error) {
-      const errorMessage = `Failed to send request. Request: ${request}, Error: ${error.message}`;
+      const errorMessage = `Failed to send request.\nRequest: ${JSON.stringify(
+        request,
+        null,
+        2,
+      )}\nError: ${error.message}`;
       logger.error(errorMessage);
       throw new Error(errorMessage);
     }

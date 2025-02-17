@@ -1,42 +1,32 @@
-import { test as base } from "@playwright/test";
-import dappwright, { MetaMaskWallet } from "@tenkeylabs/dappwright";
+import { metaMaskFixtures } from "@synthetixio/synpress/playwright";
+import { testWithSynpress } from "@synthetixio/synpress";
 
+import basicSetup from "../../wallet-setups/basic.setup";
 import { init } from "@helpers/init/init.helper";
-import { MetamaskWalletHelper } from "@helpers/wallet/metamask-wallet.helper";
-import { envHelper } from "@helpers/env/env.helper";
-import { MyFixtures } from "@fixtures/common/common.fixture.types";
+import { IApplicationFixtures } from "@fixtures/common/common.fixture.types";
+import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 
-export const testFixture = base.extend<MyFixtures>({
-  context: async ({}, use) => {
-    const [wallet, page, context] = await dappwright.bootstrap("", {
-      wallet: "metamask",
-      version: MetaMaskWallet.recommendedVersion,
-      seed: envHelper.getSeedPhrase(),
-      // unable to run without because of issue with Metamask for GitHub Actions - running with 'xvfb'
-      headless: false,
+const synpressFixture = testWithSynpress(metaMaskFixtures(basicSetup));
+
+export const testFixture = synpressFixture.extend<IApplicationFixtures>({
+  metamaskHelper: async ({ metamask }, use) => {
+    const metamaskHelper = new MetamaskHelper(metamask);
+    await use(metamaskHelper);
+  },
+
+  web: async ({ context, page, metamaskHelper }, use) => {
+    const web = await init.web({
+      existingContext: context,
+      existingPage: page,
+      metamaskHelper,
     });
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-    await wallet.addNetwork({
-      networkName: "Alfajores",
-      rpc: "https://alfajores-forno.celo-testnet.org",
-      chainId: 44787,
-      symbol: "A-CELO",
-    });
-    await use(context);
-  },
-
-  wallet: async ({ context }, use) => {
-    const metamask = await dappwright.getWallet("metamask", context);
-    const helper = new MetamaskWalletHelper(metamask);
-    await use({ metamask, helper });
-  },
-
-  web: async ({ context, page }, use) => {
-    const web = await init.web(context, page);
+    await web.swap.browser.collectErrors();
+    await web.swap.browser.attachErrors();
     await use(web);
   },
 
-  api: async ({ playwright: { request } }, use) => {
+  api: async ({ request }, use) => {
     const api = await init.api(request);
     await use(api);
   },

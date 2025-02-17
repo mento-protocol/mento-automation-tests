@@ -1,9 +1,9 @@
 import { Browser } from "@playwright/test";
-import { IGetApi } from "@api/get-api";
+import { IAssmbleApi } from "@api/assemble-api";
 
 export interface ICurrent {
   browsers: Browser[];
   browser: Browser;
-  apis: IGetApi[];
-  api: IGetApi;
+  apis: IAssmbleApi[];
+  api: IAssmbleApi;
 }

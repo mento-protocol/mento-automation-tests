@@ -1,6 +1,5 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import {
-  CeloExplorerPo,
   ConfirmSwapPo,
   ConnectWalletModalPo,
   MainPo,
@@ -12,48 +11,47 @@ import {
   SwapService,
   MainService,
   ConfirmSwapService,
-  CeloExplorerService,
   ConnectWalletModalService,
   WalletSettingsPopupService,
   NetworkDetailsModalService,
 } from "@services/index";
-import { IGetServicesArgs, IGetWebServices } from "./get-web.types";
+import { IAssembleWeb, IAssembleWebArgs } from "./assemble-web.types";
 
-export function getWeb(args: IGetServicesArgs): IGetWebServices {
-  const { pwPage, browser } = args;
+export function assembleWeb({
+  pwPage,
+  browser,
+  metamaskHelper,
+}: IAssembleWebArgs): IAssembleWeb {
   const ef = new ElementFinderHelper({ page: pwPage });
+  const baseDependencies = { browser, metamaskHelper };
   return {
     main: new MainService({
       page: new MainPo(ef),
-      browser,
+      ...baseDependencies,
       connectWalletModal: new ConnectWalletModalService({
         page: new ConnectWalletModalPo(ef),
-        browser,
+        ...baseDependencies,
       }),
       walletSettingsPopup: new WalletSettingsPopupService({
         page: new WalletSettingsPopupPo(ef),
-        browser,
+        ...baseDependencies,
         networkDetails: new NetworkDetailsModalService({
           page: new NetworkDetailsModalPo(ef),
-          browser,
+          ...baseDependencies,
         }),
       }),
       networkDetailsModal: new NetworkDetailsModalService({
         page: new NetworkDetailsModalPo(ef),
-        browser,
+        ...baseDependencies,
       }),
     }),
     swap: new SwapService({
       page: new SwapPo(ef),
-      browser,
+      ...baseDependencies,
       confirm: new ConfirmSwapService({
         page: new ConfirmSwapPo(ef),
-        browser,
+        ...baseDependencies,
       }),
-    }),
-    celoExplorer: new CeloExplorerService({
-      page: new CeloExplorerPo(ef),
-      browser,
     }),
   };
 }

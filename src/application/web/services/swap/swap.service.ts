@@ -15,6 +15,7 @@ import { timeouts } from "@constants/timeouts.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 import { testUtils } from "@helpers/suite/suite.helper";
+import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 
 const logger = loggerHelper.get("SwapService");
 
@@ -41,7 +42,8 @@ export class SwapService extends BaseService implements ISwapService {
       async () => {
         await this.confirm.page.swapButton.click();
         return this.confirm.page.swapPerformingPopupLabel.waitUntilDisplayed(
-          timeouts.xxs,
+          timeouts.xs,
+          { throwError: false },
         );
       },
       3,
@@ -132,19 +134,27 @@ export class SwapService extends BaseService implements ISwapService {
   }
 
   async isAmountRequiredValidationThere(): Promise<boolean> {
-    return this.page.amountRequiredButton.isDisplayed();
+    return this.page.amountRequiredButton.waitUntilDisplayed(timeouts.s, {
+      throwError: false,
+    });
   }
 
   async isAmountExceedValidationThere(): Promise<boolean> {
-    return this.page.amountExceedsBalanceButton.isDisplayed();
+    return this.page.amountExceedsBalanceButton.waitUntilDisplayed(timeouts.s, {
+      throwError: false,
+    });
   }
 
   async isAmountTooSmallValidationThere(): Promise<boolean> {
-    return this.page.amountTooSmallButton.isDisplayed();
+    return this.page.amountTooSmallButton.waitUntilDisplayed(timeouts.s, {
+      throwError: false,
+    });
   }
 
   async isErrorValidationThere(): Promise<boolean> {
-    return this.page.errorButton.isDisplayed();
+    return this.page.errorButton.waitUntilDisplayed(timeouts.s, {
+      throwError: false,
+    });
   }
 
   async waitForExceedsTradingLimitsValidation(
@@ -167,7 +177,7 @@ export class SwapService extends BaseService implements ISwapService {
 
   async verifyNoValidMedianCase(): Promise<void> {
     return (await this.isNoValidMedian())
-      ? testUtils.disable(
+      ? testUtils.disableInRuntime(
           { reason: "No valid median to swap" },
           "Disabled in runtime because of 'no valid median' case",
         )
@@ -180,8 +190,9 @@ export class SwapService extends BaseService implements ISwapService {
           async () => {
             return this.browser.hasConsoleErrorsMatchingText("no valid median");
           },
-          3,
+          5,
           {
+            interval: timeouts.xs,
             throwError: false,
             continueWithException: true,
             errorMessage: "Checking for a 'no valid median' case",

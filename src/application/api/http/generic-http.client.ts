@@ -6,9 +6,7 @@ import {
 } from "./http.types";
 
 export class GenericHttpClient {
-  constructor(private baseHttpClient: BaseHttpClient) {
-    this.baseHttpClient = baseHttpClient;
-  }
+  constructor(private baseHttpClient: BaseHttpClient) {}
 
   async get<T>(args: IBaseApiRequestArgs): Promise<IGenericHttpResponse<T>> {
     return this.baseHttpClient.sendRequest(Method.GET, args);

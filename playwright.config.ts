@@ -13,7 +13,7 @@ export default defineConfig({
   fullyParallel: configHelper.isParallelRun() || undefined,
   workers: configHelper.getWorkers(),
   outputDir: `${magicStrings.path.artifacts}/test-results`,
-  use: { trace: "on", video: "on" },
+  use: { trace: "on", video: "on", baseURL: envHelper.getBaseWebUrl() },
   projects: [
     {
       name: "chromium",

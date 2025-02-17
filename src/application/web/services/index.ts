@@ -1,7 +1,5 @@
 export * from "@services/base/base.service";
 export * from "@services/base/base.service.types";
-export * from "@services/celo-explorer/celo-explorer.service";
-export * from "@services/celo-explorer/celo-explorer.service.types";
 export * from "@services/confirm-swap/confirm-swap.service";
 export * from "@services/confirm-swap/confirm-swap.service.types";
 export * from "@services/connect-wallet-modal/connect-wallet-modal.service";

@@ -6,19 +6,12 @@ import {
   NetworkDetailsModalService,
   WalletName,
 } from "@services/index";
-import { IWallet } from "@fixtures/common/common.fixture.types";
 
 export interface IMainService {
   openConnectWalletModalFromHeader: () => Promise<void>;
   openConnectWalletModal: () => Promise<void>;
-  openAppWithConnectedWallet: (
-    wallet: IWallet,
-    walletName: WalletName,
-  ) => Promise<void>;
-  connectWalletByName: (
-    wallet: IWallet,
-    walletName: WalletName,
-  ) => Promise<void>;
+  openAppWithConnectedWallet: (walletName: WalletName) => Promise<void>;
+  connectWalletByName: (walletName: WalletName) => Promise<void>;
   isWalletConnected: () => Promise<boolean>;
 }
 

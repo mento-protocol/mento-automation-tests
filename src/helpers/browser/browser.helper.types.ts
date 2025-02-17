@@ -2,7 +2,7 @@ import { BrowserContext, Page } from "@playwright/test";
 
 export interface IBrowserArgs {
   pwPage: Page;
-  context: BrowserContext;
+  pwContext: BrowserContext;
 }
 
 export interface ISetLocalStorage {

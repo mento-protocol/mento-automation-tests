@@ -1,5 +1,5 @@
-import { configure, getLogger } from "log4js";
 import { test } from "@playwright/test";
+import log4js from "log4js";
 
 import {
   IGetLogger,
@@ -13,7 +13,7 @@ class LoggerHelper {
   private readonly logLevel = processEnv.LOG_LEVEL || "ALL";
 
   constructor() {
-    configure({
+    log4js.configure({
       appenders: {
         console: {
           layout: {
@@ -40,7 +40,7 @@ class LoggerHelper {
   }
 
   get(category: string): IGetLogger {
-    const logger = getLogger(category);
+    const logger = log4js.getLogger(category);
     return {
       info: (message, params) =>
         this.getSpecifiedLog({

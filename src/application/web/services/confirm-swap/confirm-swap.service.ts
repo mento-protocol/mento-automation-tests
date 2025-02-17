@@ -7,9 +7,7 @@ import {
   IConfirmSwapService,
   IConfirmSwapServiceArgs,
   BaseService,
-  IExpectChangedBalanceArgs,
 } from "@services/index";
-import { IWallet } from "@fixtures/common/common.fixture.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 
 const logger = loggerHelper.get("ConfirmSwapService");
@@ -39,29 +37,41 @@ export class ConfirmSwapService
     return this.page.currentPriceLabel.getText();
   }
 
-  async finish(wallet: IWallet): Promise<void> {
-    if (!(await this.page.approveAndSwapTxsLabel.isDisplayed())) {
-      logger.debug(
-        "Sent and confirms only swap tx because sufficient allowance already exists",
-      );
-      await wallet.helper.confirmTransaction();
-    } else {
+  async finish(): Promise<void> {
+    if (
+      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.xs, {
+        throwError: false,
+      })
+    ) {
       logger.debug(
         "Sent and confirms approval and swap txs because sufficient allowance is not exist yet",
       );
-      await wallet.helper.confirmTransaction();
-      await wallet.helper.confirmTransaction();
+      await this.metamaskHelper.confirmTransaction();
+      await waiterHelper.sleep(timeouts.xs, {
+        sleepReason: "Waiting for a second tx",
+      });
+      await this.metamaskHelper.confirmTransaction();
+    } else {
+      logger.debug(
+        "Sent and confirms only swap tx because sufficient allowance already exists",
+      );
+      await this.metamaskHelper.confirmTransaction();
     }
   }
 
   async expectSuccessfulNotifications(): Promise<void> {
     expect.soft(await this.isSwapPerformingPopupThere()).toBeTruthy();
-    expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
-  }
-
-  async expectChangedBalance(args: IExpectChangedBalanceArgs): Promise<void> {
-    const { currentBalance, initialBalance } = args;
-    expect.soft(currentBalance).toBeGreaterThan(initialBalance);
+    if (await this.page.approveAndSwapTxsLabel.isDisplayed()) {
+      logger.debug("Checks for approval and swap completion notifications");
+      expect.soft(await this.isApproveCompleteNotificationThere()).toBeTruthy();
+      expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
+    } else {
+      logger.debug("Checks for swap completion notification only");
+      expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
+    }
+    await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
+      throwError: false,
+    });
   }
 
   async navigateToCeloExplorer(): Promise<void> {
@@ -69,11 +79,16 @@ export class ConfirmSwapService
   }
 
   async isSwapPerformingPopupThere(): Promise<boolean> {
-    return this.page.swapPerformingPopupLabel.isDisplayed();
+    return this.page.swapPerformingPopupLabel.waitUntilDisplayed(timeouts.m, {
+      throwError: false,
+    });
   }
 
   async isApproveCompleteNotificationThere(): Promise<boolean> {
-    return this.page.approveCompleteNotificationLabel.isDisplayed();
+    return this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
+      timeouts.xl,
+      { throwError: false },
+    );
   }
 
   async isSwapCompleteNotificationThere(): Promise<boolean> {
@@ -86,10 +101,16 @@ export class ConfirmSwapService
   }
 
   async isRejectApprovalTransactionNotificationThere(): Promise<boolean> {
-    return this.page.rejectApprovalTransactionNotificationLabel.isDisplayed();
+    return this.page.rejectApprovalTransactionNotificationLabel.waitUntilDisplayed(
+      timeouts.s,
+      { throwError: false },
+    );
   }
 
   async isRejectSwapTransactionNotificationThere(): Promise<boolean> {
-    return this.page.rejectSwapTransactionNotificationLabel.isDisplayed();
+    return this.page.rejectSwapTransactionNotificationLabel.waitUntilDisplayed(
+      timeouts.s,
+      { throwError: false },
+    );
   }
 }
