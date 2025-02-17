@@ -1,15 +1,12 @@
 import { expect } from "@fixtures/common/common.fixture";
-import { primitiveHelper } from "@helpers/primitive/primitive.helper";
-import { cTokens, Token } from "@constants/token.constants";
+import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
+import { WalletName } from "@services/connect-wallet-modal/connect-wallet-modal.service.types";
 
 suite({
   name: "Swap - Prices",
-  beforeAll: async ({ web, wallet }) => {
-    await web.main.openAppWithConnectedWallet(wallet);
-  },
-  afterEach: async ({ web }) => {
-    await web.swap.browser.refresh();
+  beforeEach: async ({ web }) => {
+    await web.main.connectWalletByName(WalletName.Metamask);
   },
   tests: [
     {
@@ -56,7 +53,7 @@ suite({
       testCaseId: "@T80d4fbc3",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { from: primitiveHelper.getRandomFrom(cTokens) },
+          tokens: { from: Token.cCOP },
         });
         await web.swap.useFullBalance();
         expect(await web.swap.isConsiderKeepNotificationThere()).toBeFalsy();

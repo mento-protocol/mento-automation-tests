@@ -1,7 +1,7 @@
 import { expect } from "@fixtures/common/common.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
-import { Slippage } from "@services/index";
+import { Network, Slippage, WalletName } from "@services/index";
 import { IExecution } from "@helpers/suite/suite.types";
 
 const toToken = Token.CELO;
@@ -29,11 +29,13 @@ const testCases = [
 
 suite({
   name: "Swap - With custom slippage",
-  beforeAll: async ({ web, wallet }) => {
-    await web.main.openAppWithConnectedWallet(wallet);
-  },
-  afterEach: async ({ web }) => {
-    await web.swap.browser.refresh();
+  beforeEach: async ({ web }) => {
+    await web.main.connectWalletByName(WalletName.Metamask);
+    await web.main.switchNetwork({
+      networkName: Network.Alfajores,
+      shouldOpenSettings: true,
+    });
+    await web.main.waitForBalanceToLoad();
   },
   tests: [
     ...testCases.map(testCase => {
@@ -41,19 +43,19 @@ suite({
         name: `perform with ${testCase.name} slippage`,
         testCaseId: testCase.id,
         disable: testCase?.disable,
-        test: async ({ web, wallet }: IExecution) => {
+        test: async ({ web }: IExecution) => {
+          const initialBalance = await web.main.getTokenBalanceByName(toToken);
           await web.swap.fillForm({
             slippage: testCase.slippage,
             tokens: { from: Token.cEUR, to: toToken },
             fromAmount: defaultSwapAmount,
           });
-          const initialBalance = await web.main.getTokenBalanceByName(toToken);
           expect.soft(await web.swap.isCurrentPriceThere()).toBeTruthy();
           await web.swap.start();
-          await web.swap.confirm.finish(wallet);
+          await web.swap.confirm.finish();
           await web.swap.confirm.expectSuccessfulNotifications();
-          await web.swap.confirm.expectChangedBalance({
-            currentBalance: await web.main.getTokenBalanceByName(toToken),
+          await web.main.expectIncreasedBalance({
+            tokenName: toToken,
             initialBalance,
           });
         },
