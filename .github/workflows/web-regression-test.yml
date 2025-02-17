@@ -28,8 +28,8 @@ jobs:
     uses: ./.github/workflows/common-test.yml
     with:
       SPECS_TYPE: web
-      #      SPECS_FOLDER_NAME: swap
-      #      SPEC_NAMES: swapping
+      SPECS_FOLDER_NAME: swap
+      SPEC_NAMES: swapping
       IS_PARALLEL_RUN: "false"
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: "mento-web-sequential-regression"
@@ -38,21 +38,21 @@ jobs:
 
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
-# Disabled because of bug https://github.com/TenKeyLabs/dappwright/issues/406
-# Now all tests run sequentially - change back after fixing (Commented vars from sequential_test as well)
-#
-#  mento_web_parallel_regression_test:
-#    name: "[Mento-Web] Web Parallel Regression Test Run"
-#    uses: ./.github/workflows/common-test.yml
-#    with:
-#      SPECS_TYPE: web
-#      IS_PARALLEL_RUN: "true"
-#      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
-#      HTML_REPORT_NAME: "mento-web-parallel-regression"
-#      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true'  }}
-#      TESTOMATIO_TITLE: "[Mento-Web] Web Parallel-Regression"
-#
-#    secrets:
-#      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
-#      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+
+  mento_web_parallel_regression_test:
+    name: "[Mento-Web] Web Parallel Regression Test Run"
+    uses: ./.github/workflows/common-test.yml
+    with:
+      SPECS_TYPE: web
+      IS_PARALLEL_RUN: "true"
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
+      HTML_REPORT_NAME: "mento-web-parallel-regression"
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true'  }}
+      TESTOMATIO_TITLE: "[Mento-Web] Web Parallel-Regression"
+
+    secrets:
+      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}

@@ -1,30 +1,35 @@
-import { BrowserContext } from "@playwright/test";
+import { Browser as PwBrowser, BrowserContext } from "@playwright/test";
 
 import { IWallet } from "@fixtures/common/common.fixture.types";
-import { IGetWebServices } from "../../application/web/get-web.types";
+import { MetaMask } from "@synthetixio/synpress/playwright";
+import { IAssembleWeb } from "../../application/web/assemble-web.types";
+import {
+  IMetamaskHelper,
+  MetamaskHelper,
+} from "@helpers/wallet/metamask-wallet.helper";
+import { IAssmbleApi } from "@api/assemble-api";
 
 export interface IExecution {
-  web?: IGetWebServices;
-  context?: BrowserContext;
-  wallet?: IWallet;
+  web?: IAssembleWeb;
+  api?: IAssmbleApi;
+  metamaskHelper?: IMetamaskHelper;
 }
 
 export interface ISuiteArgs {
   name: string;
   tests: ITest[];
-  beforeAll?: (params: IExecution) => Promise<void>;
   beforeEach?: (params: IExecution) => Promise<void>;
-  afterAll?: (params: IExecution) => Promise<void>;
   afterEach?: (params: IExecution) => Promise<void>;
+  // Only API is available because web inits in beforeEach per each test
+  beforeAll?: (params: Pick<IExecution, "api">) => Promise<void>;
+  // Only API is available because web inits in beforeEach per each test
+  afterAll?: (params: Pick<IExecution, "api">) => Promise<void>;
 }
 
 export interface ITest {
   name: string;
   testCaseId: string;
   test: (args: IExecution) => Promise<void>;
-  xname?: string;
-  fname?: string;
-  isNewWebContext?: boolean;
   disable?: IDisable;
 }
 

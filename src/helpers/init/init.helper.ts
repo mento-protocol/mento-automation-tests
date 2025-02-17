@@ -1,38 +1,31 @@
-import { APIRequest, BrowserContext, Page } from "@playwright/test";
+import { APIRequestContext } from "@playwright/test";
 
-import { getApi, IGetApi } from "@api/get-api";
+import { IInitBrowser, IInitWebOptions } from "@helpers/init/init.types";
+import { IAssembleWeb } from "../../application/web/assemble-web.types";
+import { assembleWeb } from "../../application/web/assemble-web";
+import { assembleApi, IAssmbleApi } from "@api/assemble-api";
 import { current } from "@helpers/current/current.helper";
 import { Browser } from "@helpers/browser/browser.helper";
-import { IInitBrowser } from "@helpers/init/init.types";
-import { getWeb } from "../../application/web/get-web";
-import { IGetWebServices } from "../../application/web/get-web.types";
 
 export const init = {
-  async web(
-    existingContext?: BrowserContext,
-    existingPwPage?: Page,
-  ): Promise<IGetWebServices> {
-    const { browser, pwPage } = await this.browser(
-      existingContext,
-      existingPwPage,
-    );
-    return getWeb({ pwPage, browser });
+  async web(opts: IInitWebOptions): Promise<IAssembleWeb> {
+    const { metamaskHelper } = opts;
+    const { browser, pwPage } = await this.browser(opts);
+    return assembleWeb({ pwPage, browser, metamaskHelper });
   },
 
-  async api(pwApi: APIRequest): Promise<IGetApi> {
-    const apiContext = pwApi.newContext();
-    const api = getApi(apiContext);
+  async api(pwApiContext: APIRequestContext): Promise<IAssmbleApi> {
+    const api = assembleApi(pwApiContext);
     current.apis.push(api);
     current.apis.shift();
     return api;
   },
 
-  async browser(
-    existingContext?: BrowserContext,
-    existingPwPage?: Page,
-  ): Promise<IInitBrowser> {
-    const pwPage = existingPwPage ?? (await existingContext.newPage());
-    const browser = new Browser({ pwPage, context: existingContext });
+  async browser(opts: IInitWebOptions): Promise<IInitBrowser> {
+    const { pwBrowser, existingContext, existingPage } = opts;
+    const pwContext = existingContext ?? (await pwBrowser.newContext());
+    const pwPage = existingContext ? existingPage : await pwContext.newPage();
+    const browser = new Browser({ pwPage, pwContext });
     // @ts-ignore
     current.browsers.push(browser);
     current.browsers.shift();

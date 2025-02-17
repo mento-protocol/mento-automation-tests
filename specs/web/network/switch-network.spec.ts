@@ -1,38 +1,63 @@
 import { expect } from "@fixtures/common/common.fixture";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
-import { Network } from "@services/index";
+import { Network, WalletName } from "@services/index";
 
 const testCases = [
-  { network: Network.Baklava, id: "@T5eb11e48" },
+  {
+    network: Network.Baklava,
+    id: "@T5eb11e48",
+    disable: {
+      reason:
+        "[Mento-Web] Can't click any button from the down side of application due to overlapping by image",
+      link: "https://linear.app/mento-labs/issue/SUP-158",
+    },
+  },
   {
     network: Network.Alfajores,
     id: "@T97490a07",
-    disable: { reason: "Initially set as default for tests" },
+    disable: {
+      reason:
+        "[Mento-Web] Can't click any button from the down side of application due to overlapping by image",
+      link: "https://linear.app/mento-labs/issue/SUP-158",
+    },
+    // disable: { reason: "Initially set as default for tests" },
   },
-  { network: Network.Celo, id: "@T3130e821" },
+  {
+    network: Network.Celo,
+    id: "@T3130e821",
+    disable: {
+      reason:
+        "[Mento-Web] Can't click any button from the down side of application due to overlapping by image",
+      link: "https://linear.app/mento-labs/issue/SUP-158",
+    },
+  },
 ];
 
 suite({
   name: "Switch network",
-  beforeAll: async ({ web, wallet }) => {
-    await web.main.openAppWithConnectedWallet(wallet);
+  beforeEach: async ({ web }) => {
+    await web.main.connectWalletByName(WalletName.Metamask);
+    await web.main.openNetworkDetails();
   },
   afterEach: async ({ web }) => {
     await web.main.browser.refresh();
   },
-  beforeEach: async ({ web }) => {
-    await web.main.openNetworkDetails();
-  },
+
   tests: [
     {
       name: "Reject switch network transaction",
+      disable: {
+        reason:
+          "[Mento-Web] Can't click any button from the down side of application due to overlapping by image",
+        link: "https://linear.app/mento-labs/issue/SUP-158",
+      },
       testCaseId: "@Tbf3f639c",
-      test: async ({ web, wallet }) => {
+      test: async ({ web, metamaskHelper }) => {
         await web.main.walletSettingsPopup.networkDetails.switchNetworkByName(
           Network.Baklava,
         );
-        await wallet.helper.rejectNetworkSwitch();
+        await metamaskHelper.rejectSwitchNetwork();
         expect
           .soft(
             await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
@@ -49,11 +74,11 @@ suite({
         name: `Switch to the '${testCase.network}' network`,
         testCaseId: testCase.id,
         disable: testCase?.disable,
-        test: async ({ web, wallet }: IExecution) => {
+        test: async ({ web, metamaskHelper }: IExecution) => {
           await web.main.walletSettingsPopup.networkDetails.switchNetworkByName(
             testCase.network,
           );
-          await wallet.helper.confirmNetworkSwitch();
+          await metamaskHelper.approveSwitchNetwork();
           expect
             .soft(
               await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),

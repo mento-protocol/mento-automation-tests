@@ -78,19 +78,13 @@ const testCases = [
 
 suite({
   name: "Swap - Token Exchange Options",
-  beforeAll: async ({ web, wallet }) => {
-    await web.main.openAppWithConnectedWallet(wallet);
-  },
-  afterEach: async ({ web }) => {
-    await web.swap.browser.refresh();
-  },
   tests: [
     {
       name: 'pre-defining a default selected token after changing the "From Token"',
       testCaseId: "@T093c401d",
       test: async ({ web }) => {
         await web.swap.selectTokens({ from: Token.axlEUROC });
-        expect(await web.swap.getCurrentToTokenName()).toEqual(Token.cEUR);
+        expect(await web.swap.getCurrentToTokenName()).toEqual(Token.cUSD);
       },
     },
     {

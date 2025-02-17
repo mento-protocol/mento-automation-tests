@@ -2,8 +2,8 @@
   "compilerOptions": {
     "incremental": true,
     "tsBuildInfoFile": "./.tsbuildinfo",
-    "moduleResolution": "Node",
-    "module": "CommonJS",
+    "moduleResolution": "bundler",
+    "module": "ES6",
     "target": "es2022",
     "types": ["node"],
     "lib": ["ESNext", "dom"],

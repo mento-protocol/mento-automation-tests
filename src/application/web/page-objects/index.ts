@@ -1,7 +1,5 @@
 export * from "@page-objects/base/base.po";
 export * from "@page-objects/base/base.po.types";
-export * from "@page-objects/celo-explorer/celo-explorer.po";
-export * from "@page-objects/celo-explorer/celo-explorer.po.types";
 export * from "@page-objects/confirm-swap/confirm-swap.po";
 export * from "@page-objects/confirm-swap/confirm-swap.po.types";
 export * from "@page-objects/connect-wallet-modal/connect-wallet-modal.po";

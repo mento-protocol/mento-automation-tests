@@ -1,13 +1,12 @@
 import { expect } from "@fixtures/common/common.fixture";
 import { suite } from "@helpers/suite/suite.helper";
+import { WalletName } from "@services/connect-wallet-modal/connect-wallet-modal.service.types";
 
 suite({
   name: "Amount Validations - Swap-Out Amount",
-  beforeAll: async ({ web, wallet }) => {
-    await web.main.openAppWithConnectedWallet(wallet);
-  },
-  afterEach: async ({ web }) => {
-    await web.swap.browser.refresh();
+  beforeEach: async ({ web }) => {
+    await web.main.connectWalletByName(WalletName.Metamask);
+    await web.main.waitForBalanceToLoad();
   },
   tests: [
     {

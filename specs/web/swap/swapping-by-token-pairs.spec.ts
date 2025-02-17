@@ -3,6 +3,7 @@ import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
+import { Network, WalletName } from "@services/index";
 
 const testCases = [
   // CELO
@@ -77,33 +78,33 @@ const testCases = [
 
 suite({
   name: "Swap - By token pairs",
-  beforeAll: async ({ web, wallet }) => {
-    await web.main.openAppWithConnectedWallet(wallet);
-  },
-  afterEach: async ({ web }) => {
-    await web.swap.browser.refresh();
+  beforeEach: async ({ web }) => {
+    await web.main.connectWalletByName(WalletName.Metamask);
+    await web.main.switchNetwork({
+      networkName: Network.Alfajores,
+      shouldOpenSettings: true,
+    });
+    await web.main.waitForBalanceToLoad();
   },
   tests: [
     ...testCases.map(testCase => {
       return {
         name: `from ${testCase.fromToken} to ${testCase.toToken}`,
         testCaseId: testCase.id,
-        test: async ({ web, wallet }: IExecution) => {
+        test: async ({ web }: IExecution) => {
+          const initialBalance = await web.main.getTokenBalanceByName(
+            testCase.toToken,
+          );
           await web.swap.fillForm({
             tokens: { from: testCase.fromToken, to: testCase.toToken },
             fromAmount: testCase?.fromAmount || defaultSwapAmount,
           });
-          const initialBalance = await web.main.getTokenBalanceByName(
-            testCase.toToken,
-          );
           await web.swap.start();
-          await web.swap.confirm.finish(wallet);
+          await web.swap.confirm.finish();
           await web.swap.confirm.expectSuccessfulNotifications();
-          await web.swap.confirm.expectChangedBalance({
-            currentBalance: await web.main.getTokenBalanceByName(
-              testCase.toToken,
-            ),
+          await web.main.expectIncreasedBalance({
             initialBalance,
+            tokenName: testCase.toToken,
           });
         },
       };

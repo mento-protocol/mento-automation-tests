@@ -16,3 +16,14 @@ export interface IRetryOptions {
   continueWithException?: boolean;
   errorMessage?: string;
 }
+
+export interface IWaitOpts {
+  errorMessage?: string;
+  interval?: number;
+  throwError?: boolean;
+}
+
+export interface IRetryOptions extends IWaitOptions {
+  continueWithException?: boolean;
+  resolveWhenNoException?: boolean;
+}

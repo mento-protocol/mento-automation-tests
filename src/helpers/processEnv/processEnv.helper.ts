@@ -10,6 +10,7 @@ interface IProcessEnvHelper {
   SPECS_TYPE: string;
   CI: string;
   SEED_PHRASE: string;
+  WALLET_PASSWORD: string;
   TEST_RUNNER_TIMEOUT: string;
   LOG_LEVEL: string;
   TEST_RETRY: string;

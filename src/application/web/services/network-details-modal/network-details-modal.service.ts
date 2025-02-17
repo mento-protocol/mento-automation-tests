@@ -7,6 +7,10 @@ import {
   Network,
 } from "@services/index";
 
+export interface ISwitchNetworkByName {
+  shouldClosePopup?: boolean;
+}
+
 @ClassLog
 export class NetworkDetailsModalService
   extends BaseService
@@ -20,8 +24,14 @@ export class NetworkDetailsModalService
     this.page = page;
   }
 
-  async switchNetworkByName(name: Network): Promise<void> {
-    return this.page.networkButtons[name].click();
+  async switchNetworkByName(
+    name: Network,
+    { shouldClosePopup = false }: ISwitchNetworkByName = {},
+  ): Promise<void> {
+    await this.page.networkButtons[name].click();
+    await this.metamaskHelper.approveNewNetwork();
+    await this.metamaskHelper.approveSwitchNetwork();
+    shouldClosePopup && (await this.page.closeButton.click());
   }
 
   async getCurrentNetwork(): Promise<string> {

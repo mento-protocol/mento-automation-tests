@@ -1,6 +1,7 @@
 import { SwapPo } from "@page-objects/index";
 import { ConfirmSwapService, IBaseServiceArgs } from "@services/index";
 import { Token } from "@constants/token.constants";
+import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 
 export interface ISwapService {
   start: () => Promise<void>;
@@ -28,6 +29,7 @@ export interface ISwapService {
 export interface ISwapServiceArgs extends IBaseServiceArgs {
   page: SwapPo;
   confirm: ConfirmSwapService;
+  metamaskHelper: IMetamaskHelper;
 }
 
 export interface ISwapInputs {

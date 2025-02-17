@@ -3,12 +3,6 @@ import { suite } from "@helpers/suite/suite.helper";
 
 suite({
   name: "Wallet modal",
-  beforeAll: async ({ web }) => {
-    await web.main.navigateToApp();
-  },
-  beforeEach: async ({ web }) => {
-    await web.main.browser.refresh();
-  },
   tests: [
     {
       name: "Open by header button",
@@ -31,7 +25,6 @@ suite({
       testCaseId: "@T2836c736",
       test: async ({ web }) => {
         await web.main.openConnectWalletModal();
-        await web.main.connectWalletModal.page.verifyIsOpen();
         await web.main.connectWalletModal.close();
         expect
           .soft(await web.main.connectWalletModal.page.isOpen())

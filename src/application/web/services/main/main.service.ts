@@ -1,18 +1,24 @@
+// @ts-ignore
+import { MetaMask } from "@synthetixio/synpress/types/playwright";
+
 import {
+  BaseService,
+  ConnectWalletModalService,
   IMainService,
   IMainServiceArgs,
-  ConnectWalletModalService,
-  WalletSettingsPopupService,
+  Network,
+  NetworkDetailsModalService,
   WalletName,
-  BaseService,
+  WalletSettingsPopupService,
 } from "@services/index";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
-import { IWallet } from "@fixtures/common/common.fixture.types";
-import { NetworkDetailsModalService } from "@services/index";
 import { MainPo } from "@page-objects/index";
 import { Token } from "@constants/token.constants";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
+import { timeouts } from "@constants/timeouts.constants";
+import { expect } from "@fixtures/common/common.fixture";
 
 const logger = loggerHelper.get("MainService");
 
@@ -52,42 +58,163 @@ export class MainService extends BaseService implements IMainService {
     await this.walletSettingsPopup.page.verifyIsOpen();
   }
 
+  async closeWalletSettings(): Promise<void> {
+    await this.page.walletSettingsButton.click();
+    await this.walletSettingsPopup.page.verifyIsClosed();
+  }
+
   async openNetworkDetails(): Promise<void> {
     await this.page.networkDetailsButton.click();
     await this.networkDetailsModal.page.verifyIsOpen();
   }
 
   async openAppWithConnectedWallet(
-    wallet: IWallet,
     walletName = WalletName.Metamask,
   ): Promise<void> {
-    await wallet.metamask.page.getByTestId("app-header-copy-button").click();
-    await this.navigateToApp();
-    processEnv.WALLET_ADDRESS = await this.browser.readFromClipboard();
+    processEnv.WALLET_ADDRESS = await this.metamaskHelper.getAddress();
     if (!(await this.isWalletConnected())) {
-      return await this.connectWalletByName(wallet, walletName);
+      return await this.connectWalletByName(walletName);
     }
     logger.debug(`'${walletName}' wallet is already connected`);
   }
 
-  async connectWalletByName(
-    wallet: IWallet,
-    walletName: WalletName,
-  ): Promise<void> {
+  async connectWalletByName(walletName: WalletName): Promise<void> {
     await this.openConnectWalletModalFromHeader();
     await this.connectWalletModal.selectWalletByName(walletName);
-    await wallet.metamask.approve();
+    await this.metamaskHelper.connectWallet();
   }
 
   async isWalletConnected(): Promise<boolean> {
     return !(await this.page.headerConnectWalletButton.isDisplayed());
   }
 
-  async getTokenBalanceByName(tokenName: Token): Promise<number> {
-    await this.openWalletSettings();
-    const tokenBalanceText = await this.walletSettingsPopup.page
-      .getTokenBalanceLabelByName(tokenName)
-      .getText();
-    return Number(tokenBalanceText);
+  async getTokenBalanceByName(
+    tokenName: Token,
+    {
+      shouldOpenSettings = false,
+      shouldCloseSettings = false,
+    }: IGetTokenBalanceByNameOpts = {},
+  ): Promise<number> {
+    shouldOpenSettings && (await this.openWalletSettings());
+    const tokenBalance = Number(
+      await this.walletSettingsPopup.page
+        .getTokenBalanceLabelByName(tokenName)
+        .getText(),
+    );
+    shouldCloseSettings && (await this.closeWalletSettings());
+    return tokenBalance;
   }
+
+  async waitForBalanceToIncrease({
+    initialBalance,
+    tokenName,
+  }: IWaitForBalanceToChangeArgs): Promise<boolean> {
+    await this.openWalletSettings();
+    return waiterHelper.wait(
+      async () => {
+        const currentBalance = await this.getTokenBalanceByName(tokenName);
+        return currentBalance > initialBalance;
+      },
+      timeouts.xxl,
+      {
+        throwError: false,
+        interval: timeouts.xxs,
+        errorMessage: `Current balance still less than '${initialBalance}' initial balance`,
+      },
+    );
+  }
+
+  async waitForBalanceToLoad({
+    shouldOpenSettings = false,
+    shouldCloseSettings = false,
+    tokenToCheck = Token.CELO,
+  }: IWaitForBalanceToLoadOptions = {}): Promise<boolean> {
+    shouldOpenSettings && (await this.openWalletSettings());
+    const isBalanceLoaded = waiterHelper.wait(
+      async () => {
+        const result = await this.walletSettingsPopup.page
+          .getTokenBalanceLabelByName(tokenToCheck)
+          .isDisplayed();
+        result && logger.info("Balance is loaded successfully!");
+        return result;
+      },
+      timeouts.xl,
+      {
+        throwError: false,
+        interval: timeouts.xxs,
+        errorMessage: `Balance is still not loaded`,
+      },
+    );
+    shouldCloseSettings && (await this.closeWalletSettings());
+    return isBalanceLoaded;
+  }
+
+  async expectIncreasedBalance({
+    initialBalance,
+    tokenName,
+  }: IWaitForBalanceToChangeArgs): Promise<void> {
+    await this.waitForBalanceToIncrease({
+      initialBalance,
+      tokenName,
+    });
+    expect(
+      await this.getTokenBalanceByName(tokenName, {
+        shouldOpenSettings: false,
+      }),
+    ).toBeGreaterThan(initialBalance);
+  }
+
+  async switchNetwork({
+    networkName,
+    shouldOpenSettings = false,
+    shouldCloseSettings = false,
+  }: ISwitchNetworkArgs): Promise<void> {
+    shouldOpenSettings && (await this.openWalletSettings());
+    const balanceBeforeChangeNetwork = await this.getTokenBalanceByName(
+      Token.CELO,
+    );
+    await this.walletSettingsPopup.openNetworkDetails();
+    await this.walletSettingsPopup.networkDetails.switchNetworkByName(
+      networkName,
+      { shouldClosePopup: true },
+    );
+    // workaround until fix https://linear.app/mento-labs/issue/SUP-159/
+    await this.openWalletSettings();
+    await waiterHelper.wait(
+      async () => {
+        const currentBalance = await this.getTokenBalanceByName(Token.CELO);
+        return balanceBeforeChangeNetwork !== currentBalance;
+      },
+      timeouts.xl,
+      {
+        throwError: false,
+        interval: timeouts.xxxs,
+        errorMessage: `Balance is not equal to '${networkName}' network'`,
+      },
+    );
+    shouldCloseSettings && (await this.closeWalletSettings());
+  }
+}
+
+interface ISwitchNetworkArgs {
+  networkName: Network;
+  shouldOpenSettings?: boolean;
+  shouldCloseSettings?: boolean;
+}
+
+interface IWaitForBalanceToLoadOptions {
+  beforeChangeNetworkBalance?: number;
+  tokenToCheck?: Token;
+  shouldOpenSettings?: boolean;
+  shouldCloseSettings?: boolean;
+}
+
+interface IWaitForBalanceToChangeArgs {
+  tokenName: Token;
+  initialBalance: number;
+}
+
+interface IGetTokenBalanceByNameOpts {
+  shouldOpenSettings?: boolean;
+  shouldCloseSettings?: boolean;
 }

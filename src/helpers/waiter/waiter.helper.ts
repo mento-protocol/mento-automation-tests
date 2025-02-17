@@ -1,4 +1,8 @@
-import { ISleepOptions, IWaitOptions } from "@helpers/waiter/waiters.types";
+import {
+  IRetryOptions,
+  ISleepOptions,
+  IWaitOpts,
+} from "@helpers/waiter/waiters.types";
 import { timeouts } from "@constants/timeouts.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 
@@ -64,6 +68,35 @@ export const waiterHelper = {
     logger.warn(`Retrying...`);
     await this.sleep(interval, { ignoreReason: true });
   },
+
+  async wait(
+    callback: () => Promise<boolean>,
+    timeout: number,
+    { interval = 100, errorMessage, throwError = true }: IWaitOpts = {},
+  ): Promise<boolean> {
+    const startTime = Date.now();
+    while (hasTime(startTime, timeout)) {
+      try {
+        const result = await callback();
+        if (result) {
+          return result;
+        }
+        errorMessage && logger.warn(errorMessage);
+        await this.sleep(interval, { ignoreReason: true });
+      } catch (error) {
+        if (throwError) {
+          errorMessage && logger.error(errorMessage);
+          throw new Error(error);
+        }
+        errorMessage && logger.warn(errorMessage);
+        return false;
+      }
+    }
+    if (throwError) {
+      errorMessage && logger.error(errorMessage);
+      throw new Error(`Wait timeout has reached with ${timeout} timeout`);
+    }
+  },
 };
 
 function hasTime(startTime: number, timeout: number): boolean {
@@ -78,9 +111,4 @@ function logRetryFailedAndThrow(
       ${caughtError.message || ""}`;
   logger.error(message);
   throw new Error(message);
-}
-
-interface IRetryOptions extends IWaitOptions {
-  continueWithException?: boolean;
-  resolveWhenNoException?: boolean;
 }

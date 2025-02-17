@@ -1,5 +1,6 @@
 {
   "name": "mento-automation-tests",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -11,7 +12,7 @@
     "lint": "eslint 'src/**/*.{js,ts}'",
     "codeCheck": "tsc && npm run linter",
     "prepare": "husky install",
-    "postinstall": "npx ts-node src/tools/env.tool.ts"
+    "postinstall": "tsx src/tools/env.tool.ts"
   },
   "engines": {
     "node": ">=18.20.0"
@@ -21,10 +22,12 @@
     "dotenv": "16.3.1",
     "lodash": "4.17.21",
     "log4js": "6.9.1",
-    "prettier": "2.8.8"
+    "prettier": "2.8.8",
+    "tsx": "4.19.2"
   },
   "devDependencies": {
-    "@playwright/test": "1.44.1",
+    "@playwright/test": "1.48.2",
+    "@synthetixio/synpress": "4.0.3",
     "@testomatio/reporter": "1.5.3",
     "@types/lodash": "4.14.202",
     "@types/node": "20.14.5",
