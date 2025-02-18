@@ -6,7 +6,7 @@ suite({
   name: "Amount Validations - Swap-In Amount",
   beforeEach: async ({ web }) => {
     await web.main.connectWalletByName(WalletName.Metamask);
-    await web.main.waitForBalanceToLoad();
+    await web.main.waitForBalanceToLoad({ shouldOpenSettings: true });
   },
   tests: [
     {

@@ -36,7 +36,7 @@ export class SwapService extends BaseService implements ISwapService {
     await this.page.continueButton.click();
     await this.confirm.page.verifyIsOpen();
     await waiterHelper.sleep(timeouts.xs, {
-      sleepReason: "Doesn't open metamask tx because fast clicking on button",
+      sleepReason: "https://linear.app/mento-labs/issue/SUP-160",
     });
     await waiterHelper.retry(
       async () => {
@@ -74,10 +74,6 @@ export class SwapService extends BaseService implements ISwapService {
     await this.selectTokens(tokens);
     fromAmount && (await this.page.fromAmountInput.enterText(fromAmount));
     toAmount && (await this.page.toAmountInput.enterText(toAmount));
-    await waiterHelper.sleep(timeouts.s, {
-      sleepReason:
-        "flaky incorrect continueButton state by fast pressing after entering amount",
-    });
   }
 
   async continueToConfirmation(): Promise<void> {
