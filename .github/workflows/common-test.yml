@@ -20,6 +20,10 @@ on:
         description: "Parallel run flag of running tests"
         required: false
         type: string
+      CUSTOM_URL:
+        description: "Custom base url to run tests against different URLs"
+        required: false
+        type: string
       HTML_REPORT_NAME:
         description: "HTML report name"
         required: true
@@ -55,6 +59,7 @@ jobs:
       SPEC_NAMES: ${{ inputs.SPEC_NAMES }}
       SPECS_FOLDER_NAME: ${{ inputs.SPECS_FOLDER_NAME }}
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
