@@ -21,6 +21,10 @@ on:
         options:
           - "true"
           - "false"
+      CUSTOM_URL:
+        description: "Custom base url to run tests against different URLs"
+        required: false
+        type: string
 
 jobs:
   mento_web_sequential_regression_test:
@@ -35,6 +39,7 @@ jobs:
       HTML_REPORT_NAME: "mento-web-sequential-regression"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
       TESTOMATIO_TITLE: "[Mento-Web] Web Sequential-Regression"
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
 
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
@@ -51,6 +56,7 @@ jobs:
       HTML_REPORT_NAME: "mento-web-parallel-regression"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true'  }}
       TESTOMATIO_TITLE: "[Mento-Web] Web Parallel-Regression"
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
 
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}

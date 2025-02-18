@@ -39,6 +39,10 @@ on:
         options:
           - "true"
           - "false"
+      CUSTOM_URL:
+        description: "Custom base url to run tests against different URLs"
+        required: false
+        type: string
 
 jobs:
   test:
@@ -53,6 +57,7 @@ jobs:
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
       TESTOMATIO_TITLE: "Specific"
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
       WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
