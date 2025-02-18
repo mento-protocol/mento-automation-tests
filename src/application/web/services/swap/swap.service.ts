@@ -190,7 +190,7 @@ export class SwapService extends BaseService implements ISwapService {
           async () => {
             return this.browser.hasConsoleErrorsMatchingText("no valid median");
           },
-          5,
+          8,
           {
             interval: timeouts.xs,
             throwError: false,

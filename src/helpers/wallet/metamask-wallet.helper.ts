@@ -1,6 +1,8 @@
 import { MetaMask } from "@synthetixio/synpress/playwright";
 
 import { ClassLog } from "@decorators/logger.decorators";
+import { timeouts } from "@constants/timeouts.constants";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 export interface IMetamaskHelper {
   rawModule: MetaMask;
@@ -54,7 +56,16 @@ export class MetamaskHelper implements IMetamaskHelper {
   }
 
   async confirmTransaction(): Promise<void> {
-    this.metamask.confirmTransaction();
+    await waiterHelper.retry(
+      async () => {
+        await this.metamask.confirmTransaction();
+      },
+      5,
+      {
+        resolveWhenNoException: true,
+        errorMessage: "couldn't confirm transaction",
+      },
+    );
   }
 
   async rejectTransaction(): Promise<void> {
