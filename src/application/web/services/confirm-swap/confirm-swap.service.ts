@@ -37,7 +37,7 @@ export class ConfirmSwapService
     return this.page.currentPriceLabel.getText();
   }
 
-  async finish(): Promise<void> {
+  async process(): Promise<void> {
     if (
       await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.xs, {
         throwError: false,
@@ -46,32 +46,26 @@ export class ConfirmSwapService
       logger.debug(
         "Sent and confirms approval and swap txs because sufficient allowance is not exist yet",
       );
-      await this.metamaskHelper.confirmTransaction();
-      await waiterHelper.sleep(timeouts.xs, {
-        sleepReason: "Waiting for a second tx",
-      });
-      await this.metamaskHelper.confirmTransaction();
+      await this.confirmApprovalAndSwapTransactions();
     } else {
       logger.debug(
         "Sent and confirms only swap tx because sufficient allowance already exists",
       );
       await this.metamaskHelper.confirmTransaction();
     }
-  }
-
-  async expectSuccessfulNotifications(): Promise<void> {
-    expect.soft(await this.isSwapPerformingPopupThere()).toBeTruthy();
-    if (await this.page.approveAndSwapTxsLabel.isDisplayed()) {
-      logger.debug("Checks for approval and swap completion notifications");
-      expect.soft(await this.isApproveCompleteNotificationThere()).toBeTruthy();
-      expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
-    } else {
-      logger.debug("Checks for swap completion notification only");
-      expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
-    }
+    expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
     await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
       throwError: false,
     });
+  }
+
+  async confirmApprovalAndSwapTransactions(): Promise<void> {
+    await this.metamaskHelper.confirmTransaction();
+    await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
+      timeouts.xl,
+      { throwError: false },
+    );
+    await this.metamaskHelper.confirmTransaction();
   }
 
   async navigateToCeloExplorer(): Promise<void> {

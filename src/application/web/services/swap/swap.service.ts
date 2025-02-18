@@ -36,7 +36,7 @@ export class SwapService extends BaseService implements ISwapService {
     await this.page.continueButton.click();
     await this.confirm.page.verifyIsOpen();
     await waiterHelper.sleep(timeouts.xs, {
-      sleepReason: "Doesn't open metamask tx because fast clicking on button",
+      sleepReason: "https://linear.app/mento-labs/issue/SUP-160",
     });
     await waiterHelper.retry(
       async () => {
@@ -74,10 +74,7 @@ export class SwapService extends BaseService implements ISwapService {
     await this.selectTokens(tokens);
     fromAmount && (await this.page.fromAmountInput.enterText(fromAmount));
     toAmount && (await this.page.toAmountInput.enterText(toAmount));
-    await waiterHelper.sleep(timeouts.s, {
-      sleepReason:
-        "flaky incorrect continueButton state by fast pressing after entering amount",
-    });
+    await this.waitForLoadedCurrentPrice();
   }
 
   async continueToConfirmation(): Promise<void> {
@@ -184,6 +181,18 @@ export class SwapService extends BaseService implements ISwapService {
       : logger.info("'No valid median' case is not defined - keep swapping");
   }
 
+  async waitForLoadedCurrentPrice(): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => this.isCurrentPriceLoaded(),
+      timeouts.xs,
+      {
+        throwError: false,
+        errorMessage: "Current price is not loaded",
+        interval: timeouts.xxxs,
+      },
+    );
+  }
+
   private async isNoValidMedian(): Promise<boolean> {
     return !(await this.isCurrentPriceLoaded())
       ? waiterHelper.retry(
@@ -202,6 +211,7 @@ export class SwapService extends BaseService implements ISwapService {
   }
 
   private async isCurrentPriceLoaded(): Promise<boolean> {
-    return (await this.page.currentPriceLabel.getText()) !== "...";
+    const currentPriceText = await this.page.currentPriceLabel.getText();
+    return currentPriceText !== "...";
   }
 }
