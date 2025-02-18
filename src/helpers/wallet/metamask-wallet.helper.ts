@@ -76,19 +76,4 @@ export class MetamaskHelper implements IMetamaskHelper {
     await this.confirmTransaction();
     await this.rejectTransaction();
   }
-
-  // todo: Think about
-  // private async callMetamaskMethod<T>(
-  //   method: (...args) => Promise<T>,
-  //   args?: unknown[],
-  // ) {
-  //   try {
-  //     console.log({ method, args });
-  //     return method(args);
-  //   } catch (error) {
-  //     throw new Error(
-  //       `Metamask '${method.name}' method has failed: ${error.message}`,
-  //     );
-  //   }
-  // }
 }
