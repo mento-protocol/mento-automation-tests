@@ -74,6 +74,7 @@ export class SwapService extends BaseService implements ISwapService {
     await this.selectTokens(tokens);
     fromAmount && (await this.page.fromAmountInput.enterText(fromAmount));
     toAmount && (await this.page.toAmountInput.enterText(toAmount));
+    await this.waitForLoadedCurrentPrice();
   }
 
   async continueToConfirmation(): Promise<void> {
@@ -180,13 +181,25 @@ export class SwapService extends BaseService implements ISwapService {
       : logger.info("'No valid median' case is not defined - keep swapping");
   }
 
+  async waitForLoadedCurrentPrice(): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => this.isCurrentPriceLoaded(),
+      timeouts.xs,
+      {
+        throwError: false,
+        errorMessage: "Current price is not loaded",
+        interval: timeouts.xxxs,
+      },
+    );
+  }
+
   private async isNoValidMedian(): Promise<boolean> {
     return !(await this.isCurrentPriceLoaded())
       ? waiterHelper.retry(
           async () => {
             return this.browser.hasConsoleErrorsMatchingText("no valid median");
           },
-          8,
+          5,
           {
             interval: timeouts.xs,
             throwError: false,
@@ -198,6 +211,7 @@ export class SwapService extends BaseService implements ISwapService {
   }
 
   private async isCurrentPriceLoaded(): Promise<boolean> {
-    return (await this.page.currentPriceLabel.getText()) !== "...";
+    const currentPriceText = await this.page.currentPriceLabel.getText();
+    return currentPriceText !== "...";
   }
 }
