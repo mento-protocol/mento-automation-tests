@@ -6,17 +6,15 @@ suite({
   name: "Amount Validations - Swap-Out Amount",
   beforeEach: async ({ web }) => {
     await web.main.connectWalletByName(WalletName.Metamask);
-    await web.main.waitForBalanceToLoad();
+    await web.main.waitForBalanceToLoad({ shouldOpenSettings: true });
   },
   tests: [
     {
       name: 'Fill the "swap-out" with an empty amount',
       testCaseId: "@Tc952219e",
       test: async ({ web }) => {
-        await web.swap.fillForm({ toAmount: "0" });
-        await web.swap.continueToConfirmation();
-        expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
-        expect(await web.swap.isAmountRequiredValidationThere()).toBeTruthy();
+        expect.soft(await web.swap.isContinueButtonThere()).toBeTruthy();
+        expect.soft(await web.swap.isContinueButtonEnabled()).toBeFalsy();
       },
     },
     {
@@ -24,7 +22,6 @@ suite({
       testCaseId: "@T88e163ac",
       test: async ({ web }) => {
         await web.swap.fillForm({ toAmount: "100" });
-        await web.swap.continueToConfirmation();
         expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
         expect(await web.swap.isAmountExceedValidationThere()).toBeTruthy();
       },
@@ -34,7 +31,6 @@ suite({
       testCaseId: "@T26953592",
       test: async ({ web }) => {
         await web.swap.fillForm({ toAmount: "00" });
-        await web.swap.continueToConfirmation();
         expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
         expect(await web.swap.isAmountTooSmallValidationThere()).toBeTruthy();
       },

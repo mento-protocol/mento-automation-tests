@@ -34,6 +34,10 @@ export abstract class BasePe implements IBasePe {
     return (await this.element).isVisible();
   }
 
+  async isEnabled(): Promise<boolean> {
+    return (await this.element).isEnabled();
+  }
+
   async waitUntilDisplayed(
     timeout: number,
     params: IWaitUntilDisplayed = {},

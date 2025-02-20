@@ -11,4 +11,5 @@ export interface IBasePe {
     params?: IWaitUntilDisplayed,
   ) => Promise<boolean>;
   isDisplayed: () => Promise<boolean>;
+  isEnabled: () => Promise<boolean>;
 }
