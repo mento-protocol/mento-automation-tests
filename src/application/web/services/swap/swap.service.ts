@@ -130,6 +130,10 @@ export class SwapService extends BaseService implements ISwapService {
     return this.page.continueButton.isDisplayed();
   }
 
+  async isContinueButtonEnabled(): Promise<boolean> {
+    return this.page.continueButton.isEnabled();
+  }
+
   async isAmountRequiredValidationThere(): Promise<boolean> {
     return this.page.amountRequiredButton.waitUntilDisplayed(timeouts.s, {
       throwError: false,

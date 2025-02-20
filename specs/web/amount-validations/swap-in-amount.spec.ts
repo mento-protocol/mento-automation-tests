@@ -13,9 +13,8 @@ suite({
       name: 'Fill the "swap-in" with an empty amount',
       testCaseId: "@Tcc0fa75f",
       test: async ({ web }) => {
-        await web.swap.continueToConfirmation();
-        expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
-        expect(await web.swap.isAmountRequiredValidationThere()).toBeTruthy();
+        expect.soft(await web.swap.isContinueButtonThere()).toBeTruthy();
+        expect.soft(await web.swap.isContinueButtonEnabled()).toBeFalsy();
       },
     },
     {
@@ -23,7 +22,6 @@ suite({
       testCaseId: "@T2a671992",
       test: async ({ web }) => {
         await web.swap.fillForm({ fromAmount: "100" });
-        await web.swap.continueToConfirmation();
         expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
         expect(await web.swap.isAmountExceedValidationThere()).toBeTruthy();
       },
@@ -33,7 +31,6 @@ suite({
       testCaseId: "@T8a97541b",
       test: async ({ web }) => {
         await web.swap.fillForm({ fromAmount: "00" });
-        await web.swap.continueToConfirmation();
         expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
         expect(await web.swap.isAmountTooSmallValidationThere()).toBeTruthy();
       },

@@ -22,6 +22,7 @@ export interface ISwapService {
   isConsiderKeepNotificationThere: () => Promise<boolean>;
   isFromInputEmpty: () => Promise<boolean>;
   isErrorValidationThere: () => Promise<boolean>;
+  isContinueButtonEnabled: () => Promise<boolean>;
   waitForExceedsTradingLimitsValidation: (timeout: number) => Promise<boolean>;
   verifyNoValidMedianCase: () => Promise<void>;
 }
