@@ -27,7 +27,9 @@
 | SPEC_NAMES                 | `wallet,slippage` | specs names separated by comma which will be executed locally, if no or disabled will execute all specs, disabled by default |
 | TEST_RETRY                 | `1`               | retries N times if test fails, disabled by default                                                                           |
 | \*SEED_PHRASE              | `'seed phrase'`   | required seed phrase for connection of metamask wallet                                                                       |
-| TEST_RUNNER_TIMEOUT        | `120_000`         | custom test runner timeout, disabled by default                                                                              |
+| \*WALLET_PASSWORD          | `'password'`      | required password for connection of metamask wallet                                                                          |
+| TEST_RUN_TIMEOUT           | `120_000`         | custom test run timeout, disabled by default                                                                                 |
+| TEST_TIMEOUT               | `120_000`         | custom test timeout, disabled by default                                                                                     |
 | LOG_LEVEL                  | `DEBUG`           | desired log level, disabled by default. Can be: ALL, TRACE, INFO, DEBUG                                                      |
 | TESTOMAT_REPORT_GENERATION | `false`           | desired option to generate testomat test run report or not. Can be: true or false                                            |
 | TESTOMATIO_TITLE           | `your own title`  | desired testomat test run report title to run locally.                                                                       |

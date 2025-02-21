@@ -3,7 +3,11 @@ import * as console from "console";
 
 import { ElementSearcher } from "@helpers/element-finder/types/index.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
-import { IBasePe, IWaitUntilDisplayed } from "@page-elements/index";
+import {
+  IBasePe,
+  IClickParams,
+  IWaitUntilDisplayed,
+} from "@page-elements/index";
 
 const logger = loggerHelper.get("BaseElementPe");
 
@@ -14,8 +18,29 @@ export abstract class BasePe implements IBasePe {
     return this.elementSearcher.findElement();
   }
 
-  async click(options: { timeout?: number } = {}): Promise<void> {
-    return (await this.element).click(options);
+  protected get locator(): string {
+    return this.elementSearcher.locator;
+  }
+
+  async click({
+    throwError = true,
+    timeout,
+  }: IClickParams = {}): Promise<void> {
+    const element = await this.element;
+    try {
+      if (await this.isEnabled()) {
+        await element.click({ timeout });
+      } else {
+        logger.warn(
+          `Element with '${this.locator}' is disabled - force clicking...`,
+        );
+        await element.click({ force: true, timeout });
+      }
+    } catch (error) {
+      const errorMessage = `Can't click on '${this.locator}' element.\nError details: ${error.message}`;
+      if (throwError) throw new Error(errorMessage);
+      logger.error(errorMessage);
+    }
   }
 
   async jsClick(): Promise<void> {
@@ -42,8 +67,10 @@ export abstract class BasePe implements IBasePe {
     timeout: number,
     params: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
-    const { throwError = true, errorMessage = "failed to wait for element" } =
-      params;
+    const {
+      throwError = true,
+      errorMessage = "Failed to wait for element to display",
+    } = params;
 
     try {
       await (await this.element).waitFor({ timeout, state: "visible" });
@@ -63,7 +90,7 @@ export abstract class BasePe implements IBasePe {
   ): Promise<boolean> {
     const {
       throwError = true,
-      errorMessage = "failed to wait for element to disappear",
+      errorMessage = "Failed to wait for element to disappear",
     } = params;
     try {
       await (await this.element).waitFor({ timeout, state: "hidden" });
@@ -81,8 +108,10 @@ export abstract class BasePe implements IBasePe {
     timeout: number,
     params: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
-    const { throwError = true, errorMessage = "failed to wait for element" } =
-      params;
+    const {
+      throwError = true,
+      errorMessage = "Failed to wait for element to exist",
+    } = params;
 
     try {
       await (await this.element).waitFor({ timeout, state: "attached" });

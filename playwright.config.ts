@@ -6,7 +6,8 @@ import { specSelectorHelper } from "@helpers/spec-selector/spec-selector.helper"
 import { envHelper } from "@helpers/env/env.helper";
 
 export default defineConfig({
-  timeout: timeouts.testRunner,
+  globalTimeout: timeouts.testRun,
+  timeout: timeouts.test,
   testMatch: specSelectorHelper.get(),
   forbidOnly: envHelper.isCI(),
   retries: configHelper.getTestRetry(),

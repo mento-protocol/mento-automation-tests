@@ -13,3 +13,9 @@ export interface IBasePe {
   isDisplayed: () => Promise<boolean>;
   isEnabled: () => Promise<boolean>;
 }
+
+export interface IClickParams {
+  timeout?: number;
+  force?: boolean;
+  throwError?: boolean;
+}
