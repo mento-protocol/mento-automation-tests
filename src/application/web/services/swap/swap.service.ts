@@ -33,7 +33,7 @@ export class SwapService extends BaseService implements ISwapService {
 
   async start(): Promise<void> {
     await this.verifyNoValidMedianCase();
-    await this.page.continueButton.click();
+    await this.continueToConfirmation();
     await this.confirm.page.verifyIsOpen();
     await waiterHelper.sleep(timeouts.xs, {
       sleepReason: "https://linear.app/mento-labs/issue/SUP-160",
