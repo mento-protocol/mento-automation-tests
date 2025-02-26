@@ -10,7 +10,6 @@ export interface IConfirmSwapService {
   navigateToCeloExplorer: () => Promise<void>;
   isSwapPerformingPopupThere: () => Promise<boolean>;
   isApproveCompleteNotificationThere: () => Promise<boolean>;
-  isSwapCompleteNotificationThere: () => Promise<boolean>;
   isRejectApprovalTransactionNotificationThere: () => Promise<boolean>;
   isRejectSwapTransactionNotificationThere: () => Promise<boolean>;
 }

@@ -40,7 +40,7 @@ suite({
       test: async ({ web }) => {
         const initialBalance = await web.main.getTokenBalanceByName(Token.CELO);
         await web.swap.fillForm({
-          tokens: { from: Token.cEUR, to: Token.CELO },
+          tokens: { from: Token.cCOP, to: Token.CELO },
           toAmount: defaultSwapAmount,
         });
         expect
