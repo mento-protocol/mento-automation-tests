@@ -9,18 +9,9 @@ import type {
 // @ts-ignore
 import { MetaMask } from "@synthetixio/synpress/playwright";
 
-import { Dappwright } from "@tenkeylabs/dappwright";
-import {
-  IMetamaskHelper,
-  MetamaskHelper,
-} from "@helpers/wallet/metamask-wallet.helper";
+import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { IAssmbleApi } from "@api/assemble-api";
 import { IAssembleWeb } from "../../application/web/assemble-web.types";
-
-export interface IWallet {
-  metamask: Dappwright;
-  helper: MetamaskHelper;
-}
 
 export type CommonFixture<IYourFixtures> = TestType<
   PlaywrightTestArgs & PlaywrightTestOptions & IYourFixtures,

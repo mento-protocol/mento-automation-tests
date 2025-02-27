@@ -1,7 +1,6 @@
 import { ConfirmSwapPo } from "@page-objects/index";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
-import { expect } from "@fixtures/common/common.fixture";
 import { ClassLog } from "@decorators/logger.decorators";
 import {
   IConfirmSwapService,
@@ -39,7 +38,7 @@ export class ConfirmSwapService
 
   async process(): Promise<void> {
     if (
-      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.xs, {
+      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.s, {
         throwError: false,
       })
     ) {
@@ -53,9 +52,12 @@ export class ConfirmSwapService
       );
       await this.metamaskHelper.confirmTransaction();
     }
-    expect.soft(await this.isSwapCompleteNotificationThere()).toBeTruthy();
+    await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
+      timeouts.xl,
+      { errorMessage: "Swap completion notification is not displayed" },
+    );
     await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
-      throwError: false,
+      errorMessage: "Swap performing popup is still there",
     });
   }
 
@@ -63,7 +65,7 @@ export class ConfirmSwapService
     await this.metamaskHelper.confirmTransaction();
     await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
       timeouts.xl,
-      { throwError: false },
+      { errorMessage: "Approve tx notification is not displayed" },
     );
     await this.metamaskHelper.confirmTransaction();
   }
@@ -82,15 +84,6 @@ export class ConfirmSwapService
     return this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
       timeouts.xl,
       { throwError: false },
-    );
-  }
-
-  async isSwapCompleteNotificationThere(): Promise<boolean> {
-    return this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
-      timeouts.xl,
-      {
-        throwError: false,
-      },
     );
   }
 

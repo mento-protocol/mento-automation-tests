@@ -35,11 +35,9 @@ export class SwapService extends BaseService implements ISwapService {
     await this.verifyNoValidMedianCase();
     await this.continueToConfirmation();
     await this.confirm.page.verifyIsOpen();
-    await waiterHelper.sleep(timeouts.xs, {
-      sleepReason: "https://linear.app/mento-labs/issue/SUP-160",
-    });
     await waiterHelper.retry(
       async () => {
+        await this.confirm.page.swapButton.waitUntilEnabled(timeouts.s);
         await this.confirm.page.swapButton.click();
         return this.confirm.page.swapPerformingPopupLabel.waitUntilDisplayed(
           timeouts.xs,

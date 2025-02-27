@@ -56,16 +56,13 @@ export class MetamaskHelper implements IMetamaskHelper {
   }
 
   async confirmTransaction(): Promise<void> {
-    await waiterHelper.retry(
-      async () => {
-        await this.metamask.confirmTransaction();
-      },
-      5,
-      {
-        resolveWhenNoException: true,
-        errorMessage: "couldn't confirm transaction",
-      },
-    );
+    try {
+      await this.metamask.confirmTransaction();
+    } catch (error) {
+      throw new Error(
+        `Cannot confirm transaction because of error: ${error.message}`,
+      );
+    }
   }
 
   async rejectTransaction(): Promise<void> {

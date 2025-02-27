@@ -8,6 +8,7 @@ import {
   IClickParams,
   IWaitUntilDisplayed,
 } from "@page-elements/index";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 const logger = loggerHelper.get("BaseElementPe");
 
@@ -118,6 +119,28 @@ export abstract class BasePe implements IBasePe {
       return true;
     } catch (error) {
       logger.error(`${errorMessage}: ${this.elementSearcher.locator}`);
+      if (throwError) {
+        throw { ...error, message: `${errorMessage}: ${error.message}}` };
+      }
+      return false;
+    }
+  }
+
+  async waitUntilEnabled(
+    timeout: number,
+    params: IWaitUntilDisplayed = {},
+  ): Promise<boolean> {
+    const {
+      throwError = true,
+      errorMessage = "Failed to wait for element to be enabled",
+    } = params;
+
+    try {
+      return waiterHelper.wait(async () => {
+        return this.isEnabled();
+      }, timeout);
+    } catch (error) {
+      logger.warn(`${errorMessage}: ${this.elementSearcher.locator}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }
