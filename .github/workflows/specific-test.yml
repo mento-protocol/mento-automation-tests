@@ -43,6 +43,10 @@ on:
         description: "Custom base url to run tests against different URLs"
         required: false
         type: string
+      IS_MAINNET:
+        description: "Mainnet test run flag"
+        required: false
+        type: string
 
 jobs:
   test:
@@ -58,6 +62,7 @@ jobs:
       TESTOMATIO_TITLE: "Specific"
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      IS_MAINNET: ${{ inputs.IS_MAINNET }}
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
       WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}

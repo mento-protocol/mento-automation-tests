@@ -19,6 +19,7 @@ import { Token } from "@constants/token.constants";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/common/common.fixture";
+import { envHelper } from "@helpers/env/env.helper";
 
 const logger = loggerHelper.get("MainService");
 
@@ -41,6 +42,16 @@ export class MainService extends BaseService implements IMainService {
     this.connectWalletModal = connectWalletModal;
     this.walletSettingsPopup = walletSettingsPopup;
     this.networkDetailsModal = networkDetailsModal;
+  }
+
+  async runSwapTestPreconditions() {
+    await this.connectWalletByName(WalletName.Metamask);
+    await this.openWalletSettings();
+    !envHelper.isMainnet() &&
+      (await this.switchNetwork({
+        networkName: Network.Alfajores,
+      }));
+    await this.waitForBalanceToLoad();
   }
 
   async openConnectWalletModalFromHeader(): Promise<void> {
