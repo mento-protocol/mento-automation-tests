@@ -24,6 +24,10 @@ on:
         description: "Custom base url to run tests against different URLs"
         required: false
         type: string
+      IS_MAINNET:
+        description: "Mainnet test run flag"
+        required: false
+        type: string
       HTML_REPORT_NAME:
         description: "HTML report name"
         required: true
@@ -60,6 +64,7 @@ jobs:
       SPECS_FOLDER_NAME: ${{ inputs.SPECS_FOLDER_NAME }}
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      IS_MAINNET: ${{ inputs.IS_MAINET }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}

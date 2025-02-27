@@ -1,17 +1,12 @@
 import { expect } from "@fixtures/common/common.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
-import { AmountType, Network, WalletName } from "@services/index";
+import { AmountType } from "@services/index";
 
 suite({
   name: "Swap - By amount type",
   beforeEach: async ({ web }) => {
-    await web.main.connectWalletByName(WalletName.Metamask);
-    await web.main.switchNetwork({
-      networkName: Network.Alfajores,
-      shouldOpenSettings: true,
-    });
-    await web.main.waitForBalanceToLoad();
+    await web.main.runSwapTestPreconditions();
   },
   tests: [
     {

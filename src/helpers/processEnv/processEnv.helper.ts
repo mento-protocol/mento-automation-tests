@@ -22,6 +22,7 @@ interface IProcessEnvHelper {
   WALLET_ADDRESS: string;
   IS_PARALLEL_RUN: string;
   CUSTOM_URL: string;
+  IS_MAINNET: string;
 }
 
 export const processEnv = process.env as unknown as IProcessEnvHelper;

@@ -3,7 +3,7 @@ import { magicStrings } from "@constants/magic-strings.constants";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 
-const { ENV, CI, CUSTOM_URL } = processEnv;
+const { ENV, CI, CUSTOM_URL, IS_MAINNET } = processEnv;
 
 const logger = loggerHelper.get("Env-Helper");
 
@@ -31,6 +31,10 @@ export class EnvHelper {
 
   isCI(): boolean {
     return primitiveHelper.string.toBoolean(CI);
+  }
+
+  isMainnet(): boolean {
+    return primitiveHelper.string.toBoolean(IS_MAINNET);
   }
 }
 
