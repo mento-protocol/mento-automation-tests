@@ -38,7 +38,7 @@ export class ConfirmSwapService
 
   async process(): Promise<void> {
     if (
-      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.xs, {
+      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.s, {
         throwError: false,
       })
     ) {
@@ -57,7 +57,7 @@ export class ConfirmSwapService
       { errorMessage: "Swap completion notification is not displayed" },
     );
     await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
-      errorMessage: "Swap performing popup is still there!",
+      errorMessage: "Swap performing popup is still there",
     });
   }
 

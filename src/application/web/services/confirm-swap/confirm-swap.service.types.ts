@@ -1,6 +1,5 @@
 import { IBaseServiceArgs } from "@services/index";
 import { ConfirmSwapPo } from "@page-objects/index";
-import { IWallet } from "@fixtures/common/common.fixture.types";
 import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 
 export interface IConfirmSwapService {

@@ -1,12 +1,5 @@
-import { Browser as PwBrowser, BrowserContext } from "@playwright/test";
-
-import { IWallet } from "@fixtures/common/common.fixture.types";
-import { MetaMask } from "@synthetixio/synpress/playwright";
 import { IAssembleWeb } from "../../application/web/assemble-web.types";
-import {
-  IMetamaskHelper,
-  MetamaskHelper,
-} from "@helpers/wallet/metamask-wallet.helper";
+import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { IAssmbleApi } from "@api/assemble-api";
 
 export interface IExecution {
