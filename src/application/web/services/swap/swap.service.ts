@@ -15,7 +15,6 @@ import { timeouts } from "@constants/timeouts.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 import { testUtils } from "@helpers/suite/suite.helper";
-import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 
 const logger = loggerHelper.get("SwapService");
 
@@ -171,7 +170,7 @@ export class SwapService extends BaseService implements ISwapService {
   }
 
   async isFromInputEmpty(): Promise<boolean> {
-    return !Boolean((await this.page.fromAmountInput.getValue()).length);
+    return !(await this.page.fromAmountInput.getValue()).length;
   }
 
   async verifyNoValidMedianCase(): Promise<void> {

@@ -6,7 +6,6 @@ import type {
   PlaywrightWorkerOptions,
   TestType,
 } from "@playwright/test";
-// @ts-ignore
 import { MetaMask } from "@synthetixio/synpress/playwright";
 
 import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";

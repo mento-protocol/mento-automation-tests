@@ -26,6 +26,7 @@ export const init = {
     const pwContext = existingContext ?? (await pwBrowser.newContext());
     const pwPage = existingContext ? existingPage : await pwContext.newPage();
     const browser = new Browser({ pwPage, pwContext });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     current.browsers.push(browser);
     current.browsers.shift();

@@ -18,11 +18,10 @@ export abstract class BasePo {
 
   async navigateToNewTab(
     currentBrowserContext: BrowserContext,
-    navigateMethod: unknown,
+    navigateMethod: () => unknown,
   ) {
     const [newTabPage] = await Promise.all([
       currentBrowserContext.waitForEvent("page"),
-      // @ts-ignore
       navigateMethod(),
     ]);
     return newTabPage;

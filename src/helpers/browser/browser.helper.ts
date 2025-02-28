@@ -55,7 +55,6 @@ export class Browser implements IBrowser {
   async setLocalStorage(params: ISetLocalStorage): Promise<void> {
     await this.pwPage.addInitScript(_params => {
       const { key, value } = _params;
-      // @ts-ignore
       window.localStorage.setItem(key, value);
     }, params);
   }
@@ -146,8 +145,7 @@ export class Browser implements IBrowser {
     args: AttachUniqueInReportArgs,
   ): Promise<void> {
     const { name, body } = args;
-    const attachments = testFixture.info().attachments;
-    for (const attachment of attachments) {
+    for (const attachment of testFixture.info().attachments) {
       if (!attachment?.body.equals(body)) {
         await this.attachInReport({ name, body });
       }

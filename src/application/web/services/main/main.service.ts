@@ -1,6 +1,3 @@
-// @ts-ignore
-import { MetaMask } from "@synthetixio/synpress/types/playwright";
-
 import {
   BaseService,
   ConnectWalletModalService,
