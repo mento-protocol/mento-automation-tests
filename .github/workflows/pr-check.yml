@@ -14,9 +14,8 @@ jobs:
       SPEC_NAMES: "connect-wallet"
       SPECS_TYPE: "web"
       HTML_REPORT_NAME: "healthcheck-test-run"
+      HTML_REPORT_GENERATION: "true"
       TESTOMAT_REPORT_GENERATION: "false"
-      IS_PARALLEL_RUN: "false"
-      IS_MAINNET: "false"
     secrets:
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
       WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}

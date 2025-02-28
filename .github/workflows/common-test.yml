@@ -19,6 +19,7 @@ on:
       IS_PARALLEL_RUN:
         description: "Parallel run flag of running tests"
         required: false
+        default: "false"
         type: string
       CUSTOM_URL:
         description: "Custom base url to run tests against different URLs"
@@ -27,6 +28,7 @@ on:
       IS_MAINNET:
         description: "Mainnet test run flag"
         required: false
+        default: "false"
         type: string
       HTML_REPORT_NAME:
         description: "HTML report name"
@@ -34,11 +36,13 @@ on:
         type: string
       HTML_REPORT_GENERATION:
         description: "HTML report generation"
-        required: true
+        required: false
+        default: "onFailure"
         type: string
       TESTOMAT_REPORT_GENERATION:
         description: "Testomat test run report generation"
-        required: true
+        required: false
+        default: "true"
         type: string
       TESTOMATIO_TITLE:
         description: "Title of test run in the Testomat"
