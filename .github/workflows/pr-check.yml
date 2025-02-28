@@ -1,6 +1,10 @@
 name: PR Check Test Run
 
-on: [push]
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
   test:
