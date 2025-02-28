@@ -1,4 +1,4 @@
-import { IDisable, ISuiteArgs, ITest } from "@helpers/suite/suite.types";
+import { IDisable, ISuiteArgs } from "@helpers/suite/suite.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { envHelper } from "@helpers/env/env.helper";
 import { testFixture } from "@fixtures/common/common.fixture";

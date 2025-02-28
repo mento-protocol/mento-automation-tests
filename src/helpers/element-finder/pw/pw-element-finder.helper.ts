@@ -28,9 +28,11 @@ export class PwElementFinderHelper extends BasePwElementFinderHelper {
     const findElement = async (): Promise<Locator> => {
       const root = this.searchRoot ? await this.searchRoot() : this.page;
       const element: Locator = frameLocator
-        ? // @ts-ignore
+        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           root.frameLocator(frameLocator)[pwMethod.name](...pwMethod.args)
-        : // @ts-ignore
+        : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           root[pwMethod.name](...pwMethod.args);
       return takeFirstElement ? element.first() : element;
     };

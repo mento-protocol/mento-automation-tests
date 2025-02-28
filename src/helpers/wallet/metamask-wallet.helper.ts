@@ -1,8 +1,6 @@
 import { MetaMask } from "@synthetixio/synpress/playwright";
 
 import { ClassLog } from "@decorators/logger.decorators";
-import { timeouts } from "@constants/timeouts.constants";
-import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 export interface IMetamaskHelper {
   rawModule: MetaMask;

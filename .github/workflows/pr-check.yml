@@ -1,0 +1,22 @@
+name: PR Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  test:
+    name: "PR Check Test Run"
+    uses: ./.github/workflows/common-test.yml
+    with:
+      SPEC_NAMES: "connect-wallet"
+      SPECS_TYPE: "web"
+      HTML_REPORT_NAME: "healthcheck-test-run"
+      HTML_REPORT_GENERATION: "true"
+      TESTOMAT_REPORT_GENERATION: "false"
+    secrets:
+      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}

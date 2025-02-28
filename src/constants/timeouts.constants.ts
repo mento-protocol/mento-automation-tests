@@ -1,5 +1,4 @@
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
-import { envHelper } from "@helpers/env/env.helper";
 
 const { TEST_RUN_TIMEOUT, TEST_TIMEOUT } = processEnv;
 

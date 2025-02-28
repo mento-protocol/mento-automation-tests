@@ -21,6 +21,7 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   reporter: configHelper.getReportersList(),
 });

@@ -41,7 +41,7 @@ function secureArgs({
       return "***";
     }
     if (typeof arg === "object") {
-      for (const [key, value] of Object.entries(arg)) {
+      for (const [key] of Object.entries(arg)) {
         if (argsToHide.includes(key)) {
           arg[key] = "***";
         }

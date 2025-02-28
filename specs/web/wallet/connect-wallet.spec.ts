@@ -1,4 +1,4 @@
-import { expect, testFixture } from "@fixtures/common/common.fixture";
+import { expect } from "@fixtures/common/common.fixture";
 import { suite } from "@helpers/suite/suite.helper";
 import { WalletName } from "@services/index";
 
