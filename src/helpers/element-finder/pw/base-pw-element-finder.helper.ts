@@ -53,9 +53,21 @@ export abstract class BasePwElementFinderHelper
       esOptions,
     });
   }
+
+  dataTestId(
+    dataTestId: string,
+    options?: Record<string, unknown>,
+    esOptions?: IElementSearchOptions,
+  ): IPwElementSearcher {
+    return this.search({
+      pwMethod: { name: PwMethodName.getByTestId, args: [dataTestId, options] },
+      esOptions,
+    });
+  }
 }
 
 export enum PwMethodName {
   getByRole = "getByRole",
   getByText = "getByText",
+  getByTestId = "getByTestId",
 }

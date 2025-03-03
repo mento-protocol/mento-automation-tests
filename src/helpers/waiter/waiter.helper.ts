@@ -92,9 +92,11 @@ export const waiterHelper = {
         return false;
       }
     }
+    errorMessage && logger.error(errorMessage);
     if (throwError) {
-      errorMessage && logger.error(errorMessage);
-      throw new Error(`Wait timeout has reached with ${timeout} timeout`);
+      throw new Error(
+        `${errorMessage}\nWait timeout has reached with ${timeout} timeout.`,
+      );
     }
   },
 };

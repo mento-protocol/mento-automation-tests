@@ -17,6 +17,7 @@ import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/common/common.fixture";
 import { envHelper } from "@helpers/env/env.helper";
+import { testUtils } from "@helpers/suite/suite.helper";
 
 const logger = loggerHelper.get("MainService");
 
@@ -136,6 +137,8 @@ export class MainService extends BaseService implements IMainService {
     shouldOpenSettings = false,
     shouldCloseSettings = false,
     tokenToCheck = Token.CELO,
+    throwError = true,
+    shouldVerifyBalanceLoadingError = true,
   }: IWaitForBalanceToLoadOptions = {}): Promise<boolean> {
     shouldOpenSettings && (await this.openWalletSettings());
     const isBalanceLoaded = waiterHelper.wait(
@@ -143,18 +146,49 @@ export class MainService extends BaseService implements IMainService {
         const result = await this.walletSettingsPopup.page
           .getTokenBalanceLabelByName(tokenToCheck)
           .isDisplayed();
+        if (!result && shouldVerifyBalanceLoadingError) {
+          await this.verifyErrorRetrievingBalances();
+        }
         result && logger.info("Balance is loaded successfully!");
         return result;
       },
-      timeouts.xl,
+      timeouts.s,
       {
-        throwError: false,
+        throwError,
         interval: timeouts.xxs,
         errorMessage: `Balance is still not loaded`,
       },
     );
     shouldCloseSettings && (await this.closeWalletSettings());
     return isBalanceLoaded;
+  }
+
+  private async verifyErrorRetrievingBalances(): Promise<void> {
+    return (await this.isErrorRetrievingBalances())
+      ? testUtils.disableInRuntime(
+          {
+            reason: "Error retrieving account balances",
+          },
+          "'Error retrieving account balances' case",
+        )
+      : logger.debug("Error retrieving account balances is not defined");
+  }
+
+  private async isErrorRetrievingBalances(): Promise<boolean> {
+    return waiterHelper.retry(
+      async () => {
+        return this.browser.hasConsoleErrorsMatchingText(
+          "Failed to retrieve balances",
+        );
+      },
+      2,
+      {
+        interval: timeouts.xxxxs,
+        throwError: false,
+        continueWithException: true,
+        errorMessage: "Checking for a 'error retrieving account balances' case",
+      },
+    );
   }
 
   async expectIncreasedBalance({
@@ -215,6 +249,8 @@ interface IWaitForBalanceToLoadOptions {
   tokenToCheck?: Token;
   shouldOpenSettings?: boolean;
   shouldCloseSettings?: boolean;
+  shouldVerifyBalanceLoadingError?: boolean;
+  throwError?: boolean;
 }
 
 interface IWaitForBalanceToChangeArgs {
