@@ -19,3 +19,8 @@ export interface IClickParams {
   force?: boolean;
   throwError?: boolean;
 }
+
+export interface IGetTextParams {
+  timeout?: number;
+  throwError?: boolean;
+}

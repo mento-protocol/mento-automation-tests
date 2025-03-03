@@ -6,6 +6,7 @@ import { loggerHelper } from "@helpers/logger/logger.helper";
 import {
   IBasePe,
   IClickParams,
+  IGetTextParams,
   IWaitUntilDisplayed,
 } from "@page-elements/index";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
@@ -48,8 +49,14 @@ export abstract class BasePe implements IBasePe {
     return (await this.element).dispatchEvent("click");
   }
 
-  async getText(): Promise<string> {
-    return (await this.element).textContent();
+  async getText({ timeout, throwError }: IGetTextParams = {}): Promise<string> {
+    try {
+      return (await this.element).textContent({ timeout });
+    } catch (error) {
+      const errorMessage = `Can't get text on '${this.elementSearcher.locator}' element.\nError details: ${error.message}`;
+      logger.error(errorMessage);
+      if (throwError) throw new Error(errorMessage);
+    }
   }
 
   async getValue(): Promise<string> {
