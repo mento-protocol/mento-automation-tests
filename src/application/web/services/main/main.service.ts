@@ -212,6 +212,7 @@ export class MainService extends BaseService implements IMainService {
     shouldCloseSettings = false,
   }: ISwitchNetworkArgs): Promise<void> {
     shouldOpenSettings && (await this.openWalletSettings());
+    await this.waitForBalanceToLoad();
     const balanceBeforeChangeNetwork = await this.getTokenBalanceByName(
       Token.CELO,
     );
@@ -236,6 +237,8 @@ export class MainService extends BaseService implements IMainService {
     );
     shouldCloseSettings && (await this.closeWalletSettings());
   }
+
+  async waitForNewBalanceWorkaround() {}
 }
 
 interface ISwitchNetworkArgs {
