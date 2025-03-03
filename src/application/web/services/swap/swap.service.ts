@@ -177,7 +177,7 @@ export class SwapService extends BaseService implements ISwapService {
     return (await this.isNoValidMedian())
       ? testUtils.disableInRuntime(
           { reason: "No valid median to swap" },
-          "Disabled in runtime because of 'no valid median' case",
+          "'no valid median' case",
         )
       : logger.info("'No valid median' case is not defined - keep swapping");
   }
@@ -185,7 +185,7 @@ export class SwapService extends BaseService implements ISwapService {
   async waitForLoadedCurrentPrice(): Promise<boolean> {
     return waiterHelper.wait(
       async () => this.isCurrentPriceLoaded(),
-      timeouts.xs,
+      timeouts.s,
       {
         throwError: false,
         errorMessage: "Current price is not loaded",
