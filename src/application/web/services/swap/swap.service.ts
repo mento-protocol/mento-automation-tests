@@ -33,7 +33,6 @@ export class SwapService extends BaseService implements ISwapService {
   async start(): Promise<void> {
     await this.verifyNoValidMedianCase();
     await this.continueToConfirmation();
-    await this.confirm.page.verifyIsOpen();
     await waiterHelper.retry(
       async () => {
         await this.confirm.page.swapButton.waitUntilEnabled(timeouts.s);
@@ -75,12 +74,14 @@ export class SwapService extends BaseService implements ISwapService {
   }
 
   async continueToConfirmation(): Promise<void> {
-    return this.page.continueButton.click();
+    await this.page.continueButton.click();
+    await this.confirm.page.verifyIsOpen();
   }
 
   async swapInputs(): Promise<ISwapInputs> {
     const beforeSwapPrice = await this.getCurrentPriceFromSwap();
     await this.page.swapInputsButton.click();
+    await this.waitForLoadedCurrentPrice();
     const afterSwapPrice = await this.getCurrentPriceFromSwap(timeouts.xxs);
     return { beforeSwapPrice, afterSwapPrice };
   }
