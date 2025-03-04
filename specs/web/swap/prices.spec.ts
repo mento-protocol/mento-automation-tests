@@ -14,7 +14,7 @@ suite({
       testCaseId: "@T2332ee03",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { from: Token.cEUR, to: Token.CELO },
+          tokens: { from: Token.cUSD, to: Token.CELO },
           fromAmount: "0.0001",
         });
         expect(await web.swap.isCurrentPriceThere()).toBeTruthy();
