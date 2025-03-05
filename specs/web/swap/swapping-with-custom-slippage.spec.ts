@@ -52,7 +52,7 @@ suite({
           });
           expect.soft(await web.swap.isCurrentPriceThere()).toBeTruthy();
           await web.swap.start();
-          await web.swap.confirm.process();
+          await web.swap.confirm.confirm();
           await web.main.expectIncreasedBalance({
             tokenName: toToken,
             initialBalance,

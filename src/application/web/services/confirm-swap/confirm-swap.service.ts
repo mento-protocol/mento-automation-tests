@@ -36,7 +36,7 @@ export class ConfirmSwapService
     return this.page.currentPriceLabel.getText();
   }
 
-  async process(): Promise<void> {
+  async confirm(): Promise<void> {
     if (
       await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.s, {
         throwError: false,
@@ -61,13 +61,57 @@ export class ConfirmSwapService
     });
   }
 
-  async confirmApprovalAndSwapTransactions(): Promise<void> {
+  private async confirmApprovalAndSwapTransactions(): Promise<void> {
     await this.metamaskHelper.confirmTransaction();
     await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
       timeouts.xl,
       { errorMessage: "Approve tx notification is not displayed" },
     );
     await this.metamaskHelper.confirmTransaction();
+  }
+
+  async rejectByType(txTypeToReject: string): Promise<void> {
+    logger.warn(
+      `Rejection of ${
+        txTypeToReject === "approval" ? "approval and swap txs" : "swap tx"
+      }`,
+    );
+    txTypeToReject === "approval"
+      ? await this.rejectApprovalTx()
+      : await this.rejectSwapTx();
+
+    await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
+      errorMessage: "Swap performing popup is still there",
+    });
+  }
+
+  private async rejectApprovalTx(): Promise<void> {
+    if (
+      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.s, {
+        throwError: false,
+      })
+    ) {
+      await this.metamaskHelper.rejectTransaction();
+    } else {
+      throw new Error("No approval tx defined");
+    }
+  }
+
+  private async rejectSwapTx(): Promise<void> {
+    if (
+      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.s, {
+        throwError: false,
+      })
+    ) {
+      await this.metamaskHelper.confirmTransaction();
+      await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
+        timeouts.xl,
+        { errorMessage: "Approve tx notification is not displayed" },
+      );
+      await this.metamaskHelper.rejectTransaction();
+    } else {
+      await this.metamaskHelper.rejectTransaction();
+    }
   }
 
   async navigateToCeloExplorer(): Promise<void> {

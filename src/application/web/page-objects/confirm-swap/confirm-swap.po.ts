@@ -38,7 +38,7 @@ export class ConfirmSwapPo extends BasePo implements IConfirmSwapPo {
         .getElementByIndex(1),
     ),
   };
-  swapButton = new Button(this.ef.pw.role("button", { name: "Swap" }));
+  swapButton = new Button(this.ef.pw.dataTestId("confirm-button"));
   currentPriceLabel = new Label(
     this.ef.className(
       "py-2 w-full flex items-center justify-center text-sm rounded-b text-[#AAB3B6]",

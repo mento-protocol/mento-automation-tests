@@ -102,13 +102,14 @@ export class MainService extends BaseService implements IMainService {
     {
       shouldOpenSettings = false,
       shouldCloseSettings = false,
+      throwError = true,
     }: IGetTokenBalanceByNameOpts = {},
   ): Promise<number> {
     shouldOpenSettings && (await this.openWalletSettings());
     const tokenBalance = Number(
       await this.walletSettingsPopup.page
         .getTokenBalanceLabelByName(tokenName)
-        .getText(),
+        .getText({ throwError }),
     );
     shouldCloseSettings && (await this.closeWalletSettings());
     return tokenBalance;
@@ -152,7 +153,7 @@ export class MainService extends BaseService implements IMainService {
         result && logger.info("Balance is loaded successfully!");
         return result;
       },
-      timeouts.s,
+      timeouts.m,
       {
         throwError,
         interval: timeouts.xxs,
@@ -174,14 +175,16 @@ export class MainService extends BaseService implements IMainService {
       : logger.debug("Error retrieving account balances is not defined");
   }
 
-  private async isErrorRetrievingBalances(): Promise<boolean> {
+  private async isErrorRetrievingBalances({
+    retryCount = 1,
+  }: IsErrorRetrievingBalances = {}): Promise<boolean> {
     return waiterHelper.retry(
       async () => {
         return this.browser.hasConsoleErrorsMatchingText(
           "Failed to retrieve balances",
         );
       },
-      2,
+      retryCount,
       {
         interval: timeouts.xxxxs,
         throwError: false,
@@ -225,7 +228,9 @@ export class MainService extends BaseService implements IMainService {
     await this.openWalletSettings();
     await waiterHelper.wait(
       async () => {
-        const currentBalance = await this.getTokenBalanceByName(Token.CELO);
+        const currentBalance = await this.getTokenBalanceByName(Token.CELO, {
+          throwError: false,
+        });
         return balanceBeforeChangeNetwork !== currentBalance;
       },
       timeouts.xl,
@@ -237,8 +242,6 @@ export class MainService extends BaseService implements IMainService {
     );
     shouldCloseSettings && (await this.closeWalletSettings());
   }
-
-  async waitForNewBalanceWorkaround() {}
 }
 
 interface ISwitchNetworkArgs {
@@ -264,4 +267,9 @@ interface IWaitForBalanceToChangeArgs {
 interface IGetTokenBalanceByNameOpts {
   shouldOpenSettings?: boolean;
   shouldCloseSettings?: boolean;
+  throwError?: boolean;
+}
+
+interface IsErrorRetrievingBalances {
+  retryCount?: number;
 }
