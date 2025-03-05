@@ -14,14 +14,11 @@ export function suite({
   afterEach,
   afterAll,
 }: ISuiteArgs): void {
-  logger.info(
-    `Running '${suiteName}' suite against '${envHelper.getEnv()}' on ${
-      process.pid
-    } PID`,
-  );
-
   testFixture.describe(suiteName, () => {
-    beforeAll && testFixture.beforeAll(async ({ api }) => beforeAll({ api }));
+    testFixture.beforeAll(async ({ api }) => {
+      logRunDetails(suiteName);
+      beforeAll && (await beforeAll({ api }));
+    });
     afterAll && testFixture.afterAll(async ({ api }) => afterAll({ api }));
 
     beforeEach &&
@@ -99,3 +96,14 @@ export const testUtils = {
     };
   },
 };
+
+function logRunDetails(suiteName: string): void {
+  const env = envHelper.isCustomUrl()
+    ? `Custom with '${envHelper.getBaseWebUrl()}' URL`
+    : `Regular '${envHelper.getEnv()}' with '${envHelper.getBaseWebUrl()}' URL`;
+  const chain = envHelper.isMainnet()
+    ? `'Celo' mainnet`
+    : `'Alfajores' testnet`;
+  const config = `\n        ENV: ${env}\n        CHAIN: ${chain}\n        PID: ${process.pid}`;
+  logger.info(`Running '${suiteName}' suite with configuration: ${config}`);
+}

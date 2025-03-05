@@ -44,9 +44,12 @@ on:
         required: false
         type: string
       IS_MAINNET:
+        type: choice
         description: "Mainnet test run flag"
-        required: false
-        type: string
+        default: "false"
+        options:
+          - "true"
+          - "false"
 
 jobs:
   test:

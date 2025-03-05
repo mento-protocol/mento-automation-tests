@@ -1,26 +1,21 @@
 export const defaultEnvVariables = `ENV=prod
-
-SEED_PHRASE=
+SEED_PHRASE="affair pattern detail feature plunge cruise spot deal strike mango cherry combine"
+WALLET_PASSWORD="kovowevynklsac28mv80ncwoe12"
 
 SPECS_TYPE=web
-
-#SPECS_FOLDER_NAME=wallet
-
+#SPECS_FOLDER_NAME=amount-validations
 SPEC_NAMES=
-#wallet
-#incorrect-inputs
-#slippage
-#price
+#swapping-by-amount-types
+#connect-wallet
 
-IS_PARALLEL=false
+LOG_LEVEL=ALL
+#TEST_RETRY=1
+#IS_MAINNET=true
+#TEST_RUNNER_TIMEOUT=
+#IS_PARALLEL_RUN=true
+#CUSTOM_URL=
 
-#TEST_RUN_TIMEOUT=
-#TEST_TIMEOUT=
-#LOG_LEVEL=ALL
-#TEST_RETRY=0
-#IS_MAINNET=false
+#TESTOMAT_REPORT_GENERATION=true
+#TESTOMAT_API_KEY=
 
-#TESTOMAT_REPORT_GENERATION=false
-#TESTOMATIO_TITLE=yourOwnTitle
-TESTOMAT_API_KEY=
 `;

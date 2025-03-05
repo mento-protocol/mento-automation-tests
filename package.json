@@ -11,6 +11,7 @@
     "lint:staged": "eslint '*.ts' --fix",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "codeCheck": "tsc && npm run linter",
+    "build-synpress-cache": "npx synpress src/wallet-setups --force",
     "prepare": "husky install",
     "postinstall": "tsx src/tools/env.tool.ts"
   },

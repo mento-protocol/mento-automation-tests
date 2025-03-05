@@ -13,12 +13,13 @@
 
 ## Pre-conditions
 
-1. Execute `npm install`
-2. Paste a seed phrase into the `SEED_PHRASE` variable (can be taken from [CI](https://github.com/mento-protocol/mento-automation-tests/settings/secrets/actions))
+1. Execute `npm install`.
+2. Paste a seed phrase into the `SEED_PHRASE` and a `WALLET_PASSWORD` variables.
+3. Execute `npm run build-synpress-cache`.
 
 ## Environment Variables
 
-#### .env file creates automatically as a "postinstall" on `npm install` command execution
+#### .env file creates automatically via "postinstall" on `npm install` command execution
 
 | Variable                   | Example           | Description                                                                                                                  |
 | -------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |

@@ -1,16 +1,14 @@
 import { defineWalletSetup } from "@synthetixio/synpress";
 import { MetaMask } from "@synthetixio/synpress/playwright";
 
-import { processEnv } from "@helpers/processEnv/processEnv.helper";
+import { envHelper } from "@helpers/env/env.helper";
+
+const walletPassword = envHelper.getWalletPassword();
 
 export default defineWalletSetup(
-  processEnv.WALLET_PASSWORD,
+  walletPassword,
   async (context, walletPage) => {
-    const metamask = new MetaMask(
-      context,
-      walletPage,
-      processEnv.WALLET_PASSWORD,
-    );
-    await metamask.importWallet(processEnv.SEED_PHRASE);
+    const metamask = new MetaMask(context, walletPage, walletPassword);
+    await metamask.importWallet(envHelper.getSeedPhrase());
   },
 );
