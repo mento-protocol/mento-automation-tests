@@ -1,11 +1,9 @@
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
-import { loggerHelper } from "@helpers/logger/logger.helper";
 
-const { ENV, CI, CUSTOM_URL, IS_MAINNET } = processEnv;
-
-const logger = loggerHelper.get("Env-Helper");
+const { ENV, CI, CUSTOM_URL, IS_MAINNET, SEED_PHRASE, WALLET_PASSWORD } =
+  processEnv;
 
 export class EnvHelper {
   getEnv(): string {
@@ -13,8 +11,7 @@ export class EnvHelper {
   }
 
   getBaseWebUrl(): string {
-    if (CUSTOM_URL) {
-      logger.debug(`❕ Running tests with custom URL: ${CUSTOM_URL}`);
+    if (this.isCustomUrl()) {
       return CUSTOM_URL;
     }
     return magicStrings.url.web[this.getEnv()].base;
@@ -25,8 +22,13 @@ export class EnvHelper {
   }
 
   getSeedPhrase(): string {
-    if (!processEnv.SEED_PHRASE) throw new Error("Seed phrase isn't provided");
-    return processEnv.SEED_PHRASE;
+    if (!SEED_PHRASE) throw new Error("Seed phrase isn't provided");
+    return SEED_PHRASE;
+  }
+
+  getWalletPassword(): string {
+    if (!WALLET_PASSWORD) throw new Error("Wallet password isn't provided");
+    return WALLET_PASSWORD;
   }
 
   isCI(): boolean {
@@ -35,6 +37,10 @@ export class EnvHelper {
 
   isMainnet(): boolean {
     return primitiveHelper.string.toBoolean(IS_MAINNET);
+  }
+
+  isCustomUrl(): boolean {
+    return Boolean(CUSTOM_URL?.length);
   }
 }
 
