@@ -13,7 +13,7 @@ suite({
       testCaseId: "@Td5aa1954",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { from: Token.cREAL, to: Token.CELO },
+          tokens: { from: Token.CELO, to: Token.cREAL },
           fromAmount: defaultSwapAmount,
         });
         await web.swap.start();
