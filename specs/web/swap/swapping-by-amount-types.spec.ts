@@ -27,7 +27,7 @@ suite({
           .soft(Number(await web.swap.getAmountByType(AmountType.Out)))
           .toBeGreaterThan(0);
         await web.swap.start();
-        await web.swap.confirm.process();
+        await web.swap.confirm.confirm();
         await web.main.expectIncreasedBalance({
           initialBalance,
           tokenName: Token.CELO,
@@ -47,7 +47,7 @@ suite({
           .soft(Number(await web.swap.getAmountByType(AmountType.In)))
           .toBeGreaterThan(0);
         await web.swap.start();
-        await web.swap.confirm.process();
+        await web.swap.confirm.confirm();
         await web.main.expectIncreasedBalance({
           initialBalance,
           tokenName: Token.CELO,

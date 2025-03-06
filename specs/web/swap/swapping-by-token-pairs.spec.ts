@@ -100,7 +100,7 @@ suite({
             fromAmount: testCase?.fromAmount || defaultSwapAmount,
           });
           await web.swap.start();
-          await web.swap.confirm.process();
+          await web.swap.confirm.confirm();
           await web.main.expectIncreasedBalance({
             initialBalance,
             tokenName: testCase.toToken,

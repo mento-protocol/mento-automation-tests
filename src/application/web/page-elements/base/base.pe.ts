@@ -29,8 +29,18 @@ export abstract class BasePe implements IBasePe {
     return (await this.element).isVisible();
   }
 
-  async isEnabled(): Promise<boolean> {
-    return (await this.element).isEnabled();
+  async isEnabled({
+    timeout,
+    throwError = true,
+  }: IGetTextParams = {}): Promise<boolean> {
+    try {
+      await this.waitUntilDisplayed(timeouts.action, { throwError });
+      return (await this.element).isEnabled({ timeout });
+    } catch (error) {
+      const errorMessage = `Can't get text on element with '${this.locator}' locator.\nError details: ${error.message}`;
+      logger.error(errorMessage);
+      if (throwError) throw new Error(errorMessage);
+    }
   }
 
   async click({

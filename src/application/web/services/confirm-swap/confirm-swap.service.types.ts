@@ -5,7 +5,7 @@ import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 export interface IConfirmSwapService {
   getCurrentPriceFromConfirmation: () => Promise<string>;
   getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
-  process: (metamaskHelper: IMetamaskHelper) => Promise<void>;
+  confirm: (metamaskHelper: IMetamaskHelper) => Promise<void>;
   navigateToCeloExplorer: () => Promise<void>;
   isSwapPerformingPopupThere: () => Promise<boolean>;
   isApproveCompleteNotificationThere: () => Promise<boolean>;
