@@ -53,6 +53,7 @@ jobs:
     with:
       SPECS_TYPE: web
       IS_PARALLEL_RUN: "true"
+      IS_MAINNET: "true"
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: "mento-web-parallel-regression"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true'  }}

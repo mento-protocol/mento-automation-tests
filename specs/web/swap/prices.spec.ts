@@ -53,7 +53,7 @@ suite({
       testCaseId: "@T80d4fbc3",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { from: Token.cCOP },
+          tokens: { from: Token.cUSD },
         });
         await web.swap.useFullBalance();
         expect(await web.swap.isConsiderKeepNotificationThere()).toBeFalsy();
