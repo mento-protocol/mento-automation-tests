@@ -16,7 +16,6 @@ import { Token } from "@constants/token.constants";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/common/common.fixture";
-import { envHelper } from "@helpers/env/env.helper";
 import { testUtils } from "@helpers/suite/suite.helper";
 
 const logger = loggerHelper.get("MainService");
