@@ -1,7 +1,7 @@
 import { expect } from "@fixtures/common/common.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
-import { Network, Slippage, WalletName } from "@services/index";
+import { Slippage } from "@services/index";
 import { IExecution } from "@helpers/suite/suite.types";
 
 const toToken = Token.CELO;
@@ -30,12 +30,7 @@ const testCases = [
 suite({
   name: "Swap - With custom slippage",
   beforeEach: async ({ web }) => {
-    await web.main.connectWalletByName(WalletName.Metamask);
-    await web.main.switchNetwork({
-      networkName: Network.Alfajores,
-      shouldOpenSettings: true,
-    });
-    await web.main.waitForBalanceToLoad();
+    await web.main.runSwapTestPreconditions();
   },
   tests: [
     ...testCases.map(testCase => {

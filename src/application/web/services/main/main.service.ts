@@ -43,8 +43,7 @@ export class MainService extends BaseService implements IMainService {
 
   async runSwapTestPreconditions() {
     await this.connectWalletByName(WalletName.Metamask);
-    await this.openWalletSettings();
-    await this.waitForBalanceToLoad();
+    await this.waitForBalanceToLoad({ shouldOpenSettings: true });
   }
 
   async openConnectWalletModalFromHeader(): Promise<void> {
