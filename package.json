@@ -4,16 +4,17 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "playwright test --headed",
-    "test:ui": "playwright test --ui",
-    "test:debug": "playwright test --debug",
+    "test": "npm run verify-env-config && playwright test --headed",
+    "test:ui": "npm run verify-env-config && playwright test --ui",
+    "test:debug": "npm run verify-env-config && playwright test --debug",
     "linter": "eslint . --ext .ts",
     "lint:staged": "eslint '*.ts' --fix",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "codeCheck": "tsc && npm run linter",
     "build-synpress-cache": "npx synpress src/wallet-setups --force",
+    "verify-env-config": "tsx src/tools/verify-env-config.tool.ts",
     "prepare": "husky install",
-    "postinstall": "tsx src/tools/env.tool.ts"
+    "postinstall": "tsx src/tools/default-env-vars.tool.ts"
   },
   "engines": {
     "node": ">=18.20.0"

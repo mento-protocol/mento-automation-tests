@@ -13,6 +13,7 @@ jobs:
     with:
       SPEC_NAMES: "connect-wallet"
       SPECS_TYPE: "web"
+      IS_MAINNET: "true"
       HTML_REPORT_NAME: "healthcheck-test-run"
       HTML_REPORT_GENERATION: "true"
       TESTOMAT_REPORT_GENERATION: "false"

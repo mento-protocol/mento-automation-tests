@@ -3,7 +3,6 @@ import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
-import { Network, WalletName } from "@services/index";
 
 const testCases = [
   // CELO
@@ -79,12 +78,7 @@ const testCases = [
 suite({
   name: "Swap - By token pairs",
   beforeEach: async ({ web }) => {
-    await web.main.connectWalletByName(WalletName.Metamask);
-    await web.main.switchNetwork({
-      networkName: Network.Alfajores,
-      shouldOpenSettings: true,
-    });
-    await web.main.waitForBalanceToLoad();
+    await web.main.runSwapTestPreconditions();
   },
   tests: [
     ...testCases.map(testCase => {

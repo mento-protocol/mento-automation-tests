@@ -16,7 +16,6 @@ import { Token } from "@constants/token.constants";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/common/common.fixture";
-import { envHelper } from "@helpers/env/env.helper";
 import { testUtils } from "@helpers/suite/suite.helper";
 
 const logger = loggerHelper.get("MainService");
@@ -44,12 +43,7 @@ export class MainService extends BaseService implements IMainService {
 
   async runSwapTestPreconditions() {
     await this.connectWalletByName(WalletName.Metamask);
-    await this.openWalletSettings();
-    !envHelper.isMainnet() &&
-      (await this.switchNetwork({
-        networkName: Network.Alfajores,
-      }));
-    await this.waitForBalanceToLoad();
+    await this.waitForBalanceToLoad({ shouldOpenSettings: true });
   }
 
   async openConnectWalletModalFromHeader(): Promise<void> {
@@ -153,7 +147,7 @@ export class MainService extends BaseService implements IMainService {
         result && logger.info("Balance is loaded successfully!");
         return result;
       },
-      timeouts.m,
+      timeouts.l,
       {
         throwError,
         interval: timeouts.xxs,

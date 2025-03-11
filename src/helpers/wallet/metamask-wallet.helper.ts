@@ -15,10 +15,6 @@ export interface IMetamaskHelper {
   rejectSwapTransaction: () => Promise<void>;
 }
 
-interface IConnectWalletOpts {
-  isMentoWeb?: boolean;
-}
-
 @ClassLog
 export class MetamaskHelper implements IMetamaskHelper {
   constructor(private metamask: MetaMask) {}
@@ -27,14 +23,8 @@ export class MetamaskHelper implements IMetamaskHelper {
     return this.metamask;
   }
 
-  async connectWallet({
-    isMentoWeb = true,
-  }: IConnectWalletOpts = {}): Promise<void> {
+  async connectWallet(): Promise<void> {
     await this.metamask.connectToDapp();
-    if (isMentoWeb) {
-      await this.approveNewNetwork();
-      await this.approveSwitchNetwork();
-    }
   }
 
   async approveNewNetwork(): Promise<void> {

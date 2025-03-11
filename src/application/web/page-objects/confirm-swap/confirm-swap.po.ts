@@ -12,7 +12,7 @@ export class ConfirmSwapPo extends BasePo implements IConfirmSwapPo {
     this.ef.pw.role("button", { name: "Close" }),
   );
   approveCompleteNotificationLabel = new Label(
-    this.ef.pw.text("Approve complete, starting"),
+    this.ef.pw.text("Approve complete! Sending swap tx See Details"),
   );
   swapCompleteNotificationLabel = new Label(
     this.ef.pw.text("Swap Complete! See Details"),
