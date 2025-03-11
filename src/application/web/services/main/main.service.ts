@@ -45,10 +45,6 @@ export class MainService extends BaseService implements IMainService {
   async runSwapTestPreconditions() {
     await this.connectWalletByName(WalletName.Metamask);
     await this.openWalletSettings();
-    !envHelper.isMainnet() &&
-      (await this.switchNetwork({
-        networkName: Network.Alfajores,
-      }));
     await this.waitForBalanceToLoad();
   }
 
@@ -153,7 +149,7 @@ export class MainService extends BaseService implements IMainService {
         result && logger.info("Balance is loaded successfully!");
         return result;
       },
-      timeouts.m,
+      timeouts.l,
       {
         throwError,
         interval: timeouts.xxs,
