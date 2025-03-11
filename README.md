@@ -15,7 +15,7 @@
 
 1. Execute `npm install`.
 2. Fill the `SEED_PHRASE`, and `WALLET_PASSWORD` variables.
-3. Specify the `IS_MAINNET` variable (this uses for cache building, if you want to run on another chain you need to re-build the cache).
+3. Specify the `IS_MAINNET` variable (ensure you re-built synpress cache when changing a chain by this flag!).
 4. Execute `npm run build-synpress-cache`.
 
 ## Environment Variables
