@@ -14,8 +14,9 @@
 ## Pre-conditions
 
 1. Execute `npm install`.
-2. Paste a seed phrase into the `SEED_PHRASE` and a `WALLET_PASSWORD` variables.
-3. Execute `npm run build-synpress-cache`.
+2. Fill the `SEED_PHRASE`, and `WALLET_PASSWORD` variables.
+3. Specify the `IS_MAINNET` variable (this uses for cache building, if you want to run on another chain you need to re-build the cache).
+4. Execute `npm run build-synpress-cache`.
 
 ## Environment Variables
 
@@ -29,6 +30,7 @@
 | TEST_RETRY                 | `1`               | retries N times if test fails, disabled by default                                                                           |
 | \*SEED_PHRASE              | `'seed phrase'`   | required seed phrase for connection of metamask wallet                                                                       |
 | \*WALLET_PASSWORD          | `'password'`      | required password for connection of metamask wallet                                                                          |
+| \*IS_MAINNET               | `'true'`          | required flag to specify chain for test running                                                                              |
 | TEST_RUN_TIMEOUT           | `120_000`         | custom test run timeout, disabled by default                                                                                 |
 | TEST_TIMEOUT               | `120_000`         | custom test timeout, disabled by default                                                                                     |
 | LOG_LEVEL                  | `DEBUG`           | desired log level, disabled by default. Can be: ALL, TRACE, INFO, DEBUG                                                      |

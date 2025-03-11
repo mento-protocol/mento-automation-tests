@@ -11,6 +11,20 @@ export const magicStrings = {
       },
     },
   },
+  chain: {
+    testnet: {
+      name: "Celo Alfajores",
+      rpcUrl: "https://alfajores-forno.celo-testnet.org",
+      chainId: 44787,
+      symbol: "CELO",
+    },
+    mainnet: {
+      name: "Celo",
+      rpcUrl: "https://forno.celo.org/",
+      chainId: 42220,
+      symbol: "CELO",
+    },
+  },
   path: {
     root: process.cwd(),
     get artifacts() {

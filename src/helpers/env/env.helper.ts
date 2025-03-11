@@ -22,12 +22,10 @@ export class EnvHelper {
   }
 
   getSeedPhrase(): string {
-    if (!SEED_PHRASE) throw new Error("Seed phrase isn't provided");
     return SEED_PHRASE;
   }
 
   getWalletPassword(): string {
-    if (!WALLET_PASSWORD) throw new Error("Wallet password isn't provided");
     return WALLET_PASSWORD;
   }
 
