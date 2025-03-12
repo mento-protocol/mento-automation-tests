@@ -10,6 +10,7 @@ const testCases = [
     fromToken: Token.CELO,
     toToken: Token.cUSD,
     id: "@Tb3ad24f0",
+    disable: { reason: "It's default pair for other tests" },
   },
   {
     fromToken: Token.CELO,
@@ -85,6 +86,7 @@ suite({
       return {
         name: `from ${testCase.fromToken} to ${testCase.toToken}`,
         testCaseId: testCase.id,
+        disable: testCase?.disable,
         test: async ({ web }: IExecution) => {
           const initialBalance = await web.main.getTokenBalanceByName(
             testCase.toToken,
