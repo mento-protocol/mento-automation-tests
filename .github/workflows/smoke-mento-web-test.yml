@@ -35,7 +35,6 @@ jobs:
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
       HTML_REPORT_NAME: "smoke-mento-web"
-      TESTOMATIO_TITLE: "[Mento-Web] Smoke"
       HTML_REPORT_GENERATION: "onFailure"
       TESTOMAT_REPORT_GENERATION: "true"
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
