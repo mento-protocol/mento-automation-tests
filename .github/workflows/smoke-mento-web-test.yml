@@ -1,0 +1,31 @@
+name: Smoke Test Run
+
+on:
+  workflow_call:
+    inputs:
+      CUSTOM_URL:
+        type: string
+        description: "Custom base url to run tests against different URLs"
+        required: true
+      IS_MAINNET:
+        type: string
+        description: "Mainnet test run flag"
+        required: false
+        default: "false"
+
+jobs:
+  test:
+    name: "Smoke Test Run - Mento-Web"
+    uses: ./.github/workflows/common-test.yml
+    with:
+      SPEC_NAMES: "p1"
+      SPECS_TYPE: "web"
+      HTML_REPORT_NAME: "smoke-mento-web"
+      TESTOMATIO_TITLE: "Smoke-Mento-Web"
+      IS_PARALLEL_RUN: "false"
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      IS_MAINNET: ${{ inputs.IS_MAINNET }}
+    secrets:
+      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
+      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
