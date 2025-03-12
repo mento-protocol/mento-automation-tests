@@ -1,7 +1,6 @@
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
-import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
 
 const testCases = [
@@ -55,13 +54,17 @@ const testCases = [
   // USDC
   {
     fromToken: Token.USDC,
-    toToken: getRandomToken(Token.USDC, [Token.cEUR, Token.cUSD, Token.cREAL]),
+    toToken: retryDataHelper.getRandomToken(Token.USDC, [
+      Token.cEUR,
+      Token.cUSD,
+      Token.cREAL,
+    ]),
     id: "@Ta9f2be1e",
   },
   // axlUSDC
   {
     fromToken: Token.axlUSDC,
-    toToken: getRandomToken(Token.axlUSDC, [
+    toToken: retryDataHelper.getRandomToken(Token.axlUSDC, [
       Token.cEUR,
       Token.cUSD,
       Token.cREAL,
@@ -71,7 +74,10 @@ const testCases = [
   // axlEUROC
   {
     fromToken: Token.axlEUROC,
-    toToken: getRandomToken(Token.axlEUROC, [Token.cEUR, Token.eXOF]),
+    toToken: retryDataHelper.getRandomToken(Token.axlEUROC, [
+      Token.cEUR,
+      Token.eXOF,
+    ]),
     id: "@T92258405",
   },
 ];
@@ -106,12 +112,3 @@ suite({
     }),
   ],
 });
-
-function getRandomToken(fromToken: Token, toTokens: Token[]): Token {
-  if (!retryDataHelper.isExistByName(fromToken)) {
-    const randomToken = primitiveHelper.getRandomFrom(toTokens);
-    retryDataHelper.create({ fromToken, toToken: randomToken }, fromToken);
-    return randomToken;
-  }
-  return retryDataHelper.getByName<Token>(fromToken).toToken;
-}

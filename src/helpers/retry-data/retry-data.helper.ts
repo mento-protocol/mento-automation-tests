@@ -2,6 +2,8 @@ import fs from "fs";
 
 import { magicStrings } from "@constants/magic-strings.constants";
 import { IRetryDataHelper } from "@helpers/retry-data/retry-data.helper.types";
+import { Token } from "@constants/token.constants";
+import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 class RetryDataHelper implements IRetryDataHelper {
   private readonly retryFolderPath = `${magicStrings.path.artifacts}/retries`;
@@ -23,6 +25,15 @@ class RetryDataHelper implements IRetryDataHelper {
 
   isExistByName(retryName: string): boolean {
     return fs.existsSync(`${this.retryFolderPath}/${retryName}.json`);
+  }
+
+  getRandomToken(fromToken: Token, toTokens: Token[]): Token {
+    if (!retryDataHelper.isExistByName(fromToken)) {
+      const randomToken = primitiveHelper.getRandomFrom(toTokens);
+      retryDataHelper.create({ fromToken, toToken: randomToken }, fromToken);
+      return randomToken;
+    }
+    return retryDataHelper.getByName<Token>(fromToken).toToken;
   }
 }
 
