@@ -14,18 +14,63 @@ on:
         default: "false"
 
 jobs:
-  test:
-    name: "Smoke Test Run - Mento-Web"
-    uses: ./.github/workflows/common-test.yml
-    with:
-      SPEC_NAMES: "p1"
+  smoke-test:
+    timeout-minutes: 60
+    env:
       SPECS_TYPE: "web"
-      HTML_REPORT_NAME: "smoke-mento-web"
-      TESTOMATIO_TITLE: "Smoke-Mento-Web"
+      SPEC_NAMES: "p1"
       IS_PARALLEL_RUN: "false"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
-    secrets:
+      HTML_REPORT_NAME: "smoke-mento-web"
+      TESTOMATIO_TITLE: "Smoke-Mento-Web"
+      HTML_REPORT_GENERATION: "onFailure"
+      TESTOMAT_REPORT_GENERATION: "true"
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
       WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.48.2-jammy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: "mento-protocol/mento-automation-tests"
+          ref: "main"
+
+      - name: Node install
+        uses: actions/setup-node@v4
+        with:
+          cache: npm
+          node-version: 18.20.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify env config
+        run: npm run verify-env-config
+
+      - name: Code-Check
+        run: npm run codeCheck
+
+      - name: Build Synpress cache
+        run: xvfb-run npx synpress src/wallet-setups
+
+      - name: Set current datetime
+        run: |
+          CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
+          echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
+
+      - name: Run Playwright tests
+        run: xvfb-run npx playwright test
+        env:
+          TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+        with:
+          name: "${{ inputs.HTML_REPORT_NAME }}-playwright-report"
+          path: "artifacts/reports/playwright-report/"
+          retention-days: 30
