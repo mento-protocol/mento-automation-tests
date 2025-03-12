@@ -12,15 +12,12 @@ suite({
     {
       name: "Swap-in",
       testCaseId: "@Tab822de9",
-      disable: {
-        reason: "Swap-in amount tests all time with all swap tests",
-      },
       test: async ({ web }) => {
         const initialBalance = await web.main.getTokenBalanceByName(
           Token.cREAL,
         );
         await web.swap.fillForm({
-          tokens: { from: Token.CELO, to: Token.cREAL },
+          tokens: { from: Token.CELO, to: Token.cUSD },
           fromAmount: defaultSwapAmount,
         });
         expect
