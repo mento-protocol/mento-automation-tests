@@ -13,11 +13,9 @@ suite({
       name: "Swap-in",
       testCaseId: "@Tab822de9",
       test: async ({ web }) => {
-        const initialBalance = await web.main.getTokenBalanceByName(
-          Token.cREAL,
-        );
+        const initialBalance = await web.main.getTokenBalanceByName(Token.CELO);
         await web.swap.fillForm({
-          tokens: { from: Token.CELO, to: Token.cUSD },
+          tokens: { from: Token.cUSD, to: Token.CELO },
           fromAmount: defaultSwapAmount,
         });
         expect

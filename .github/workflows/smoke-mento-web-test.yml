@@ -30,7 +30,7 @@ jobs:
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
       HTML_REPORT_NAME: "smoke-mento-web"
-      TESTOMATIO_TITLE: "Smoke-Mento-Web"
+      TESTOMATIO_TITLE: "[Mento-Web] Smoke"
       HTML_REPORT_GENERATION: "onFailure"
       TESTOMAT_REPORT_GENERATION: "true"
       SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
@@ -72,7 +72,7 @@ jobs:
       - name: Run Playwright tests
         run: xvfb-run npx playwright test
         env:
-          TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
+          TESTOMATIO_TITLE: "${{ env.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
