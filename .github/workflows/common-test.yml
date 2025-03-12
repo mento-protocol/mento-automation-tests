@@ -2,8 +2,6 @@
 name: Common Test Run
 
 on:
-  workflow_dispatch: {}
-
   workflow_call:
     inputs:
       SPEC_NAMES:
