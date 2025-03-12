@@ -12,6 +12,11 @@ on:
         description: "Mainnet test run flag"
         required: false
         default: "false"
+      TESTOMATIO_TITLE:
+        type: string
+        description: "Test run title"
+        required: false
+        default: "[Mento-Web] Smoke"
     secrets:
       SEED_PHRASE:
         required: true
@@ -72,7 +77,7 @@ jobs:
       - name: Run Playwright tests
         run: xvfb-run npx playwright test
         env:
-          TESTOMATIO_TITLE: "${{ env.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
+          TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
