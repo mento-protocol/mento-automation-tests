@@ -12,6 +12,13 @@ on:
         description: "Mainnet test run flag"
         required: false
         default: "false"
+    secrets:
+      SEED_PHRASE:
+        required: true
+      WALLET_PASSWORD:
+        required: true
+      TESTOMAT_API_KEY:
+        required: true
 
 jobs:
   smoke-test:
