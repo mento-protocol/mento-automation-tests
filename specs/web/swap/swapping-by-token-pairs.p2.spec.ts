@@ -80,6 +80,17 @@ const testCases = [
     ]),
     id: "@T92258405",
   },
+  // cGHS
+  {
+    fromToken: Token.cGHS,
+    toToken: retryDataHelper.getRandomToken(Token.cGHS, [
+      Token.CELO,
+      Token.cUSD,
+      Token.USDC,
+      Token.USDT,
+    ]),
+    id: "@T8da32b9f",
+  },
 ];
 
 suite({

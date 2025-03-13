@@ -11,6 +11,7 @@ export enum Token {
   "cKES" = "cKES",
   "eXOF" = "eXOF",
   "PUSO" = "PUSO",
+  "cGHS" = "cGHS",
 }
 
 export const cTokens = [
