@@ -24,3 +24,7 @@ export interface IGetTextParams {
   timeout?: number;
   throwError?: boolean;
 }
+
+export interface IGetValueParams extends IGetTextParams {}
+
+export interface IHoverParams extends IGetTextParams {}

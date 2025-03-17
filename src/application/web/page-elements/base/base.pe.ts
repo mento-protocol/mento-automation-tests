@@ -7,6 +7,8 @@ import {
   IBasePe,
   IClickParams,
   IGetTextParams,
+  IGetValueParams,
+  IHoverParams,
   IWaitUntilDisplayed,
 } from "@page-elements/index";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
@@ -30,11 +32,11 @@ export abstract class BasePe implements IBasePe {
   }
 
   async isEnabled({
-    timeout,
+    timeout = timeouts.action,
     throwError = true,
   }: IGetTextParams = {}): Promise<boolean> {
     try {
-      await this.waitUntilDisplayed(timeouts.action, { throwError });
+      await this.waitUntilDisplayed(timeout, { throwError });
       return (await this.element).isEnabled({ timeout });
     } catch (error) {
       const errorMessage = `Can't get text on element with '${this.locator}' locator.\nError details: ${error.message}`;
@@ -44,11 +46,11 @@ export abstract class BasePe implements IBasePe {
   }
 
   async click({
+    timeout = timeouts.action,
     throwError = true,
-    timeout,
   }: IClickParams = {}): Promise<void> {
     const element = await this.element;
-    await this.waitUntilDisplayed(timeouts.action, { throwError });
+    await this.waitUntilDisplayed(timeout, { throwError });
     try {
       if (await this.isEnabled()) {
         await element.click({ timeout });
@@ -70,11 +72,11 @@ export abstract class BasePe implements IBasePe {
   }
 
   async getText({
-    timeout,
+    timeout = timeouts.action,
     throwError = true,
   }: IGetTextParams = {}): Promise<string> {
     try {
-      await this.waitUntilDisplayed(timeouts.action, { throwError });
+      await this.waitUntilDisplayed(timeout, { throwError });
       return (await this.element).textContent({ timeout });
     } catch (error) {
       const errorMessage = `Can't get text on element with '${this.locator}' locator.\nError details: ${error.message}`;
@@ -83,15 +85,26 @@ export abstract class BasePe implements IBasePe {
     }
   }
 
-  async getValue({ throwError = true }: IGetValueParams = {}): Promise<string> {
+  async getValue({
+    timeout = timeouts.action,
+    throwError = true,
+  }: IGetValueParams = {}): Promise<string> {
     try {
-      await this.waitUntilDisplayed(timeouts.action, { throwError });
+      await this.waitUntilDisplayed(timeout, { throwError });
       return (await this.element).inputValue();
     } catch (error) {
       const errorMessage = `Can't get value on element with '${this.locator}' locator.\nError details: ${error.message}`;
       logger.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
+  }
+
+  async hover({
+    throwError = true,
+    timeout,
+  }: IHoverParams = {}): Promise<void> {
+    await this.waitUntilDisplayed(timeout, { throwError });
+    await (await this.element).hover();
   }
 
   async waitUntilDisplayed(
@@ -168,16 +181,4 @@ export abstract class BasePe implements IBasePe {
       return false;
     }
   }
-
-  async hover({
-    throwError = true,
-  }: { throwError?: boolean } = {}): Promise<void> {
-    await this.waitUntilDisplayed(timeouts.action, { throwError });
-    await (await this.element).hover();
-  }
-}
-
-interface IGetValueParams {
-  throwError?: boolean;
-  timeout?: number;
 }

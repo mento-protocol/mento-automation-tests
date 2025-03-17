@@ -1,5 +1,10 @@
 import { loggerHelper } from "@helpers/logger/logger.helper";
-import { BasePe, IDropdown, IDropdownArgs } from "@page-elements/index";
+import {
+  BasePe,
+  IDropdown,
+  IDropdownArgs,
+  ISelectOptionByNameParams,
+} from "@page-elements/index";
 
 const logger = loggerHelper.get("DropdownPe");
 
@@ -33,8 +38,11 @@ export class Dropdown<Options> extends BasePe implements IDropdown {
     }
   }
 
-  async selectOptionByName(name: string): Promise<void> {
+  async selectOptionByName(
+    name: string,
+    { timeout, throwError }: ISelectOptionByNameParams = {},
+  ): Promise<void> {
     await super.click();
-    return this.options[name].click();
+    return this.options[name].click({ timeout, throwError });
   }
 }
