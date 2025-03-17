@@ -147,7 +147,7 @@ export class MainService extends BaseService implements IMainService {
         result && logger.info("Balance is loaded successfully!");
         return result;
       },
-      timeouts.l,
+      timeouts.xxl,
       {
         throwError,
         interval: timeouts.xxs,

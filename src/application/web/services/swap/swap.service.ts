@@ -49,8 +49,13 @@ export class SwapService extends BaseService implements ISwapService {
 
   async selectTokens(args: ISelectTokensArgs): Promise<void> {
     args?.from &&
-      (await this.page.fromTokenDropdown.selectOptionByName(args?.from));
-    args?.to && (await this.page.toTokenDropdown.selectOptionByName(args?.to));
+      (await this.page.fromTokenDropdown.selectOptionByName(args?.from, {
+        timeout: timeouts.xxs,
+      }));
+    args?.to &&
+      (await this.page.toTokenDropdown.selectOptionByName(args?.to, {
+        timeout: timeouts.xxs,
+      }));
   }
 
   async chooseSlippage(slippage: Slippage): Promise<void> {
