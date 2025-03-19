@@ -37,8 +37,8 @@ jobs:
       HTML_REPORT_NAME: "smoke-mento-web"
       HTML_REPORT_GENERATION: "onFailure"
       TESTOMAT_REPORT_GENERATION: "true"
-      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
-      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
+      SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
+      WALLET_PASSWORD: ${{ secrets.E2E_TEST_WALLET_PASSWORD }}
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
     runs-on: ubuntu-latest
     container:
