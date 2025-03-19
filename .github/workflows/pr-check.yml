@@ -17,7 +17,4 @@ jobs:
       HTML_REPORT_NAME: "healthcheck-test-run"
       HTML_REPORT_GENERATION: "true"
       TESTOMAT_REPORT_GENERATION: "false"
-    secrets:
-      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
-      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
-      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+    secrets: inherit

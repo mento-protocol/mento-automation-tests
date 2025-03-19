@@ -18,9 +18,9 @@ on:
         required: false
         default: "[Mento-Web] Smoke"
     secrets:
-      SEED_PHRASE:
+      E2E_TEST_SEED_PHRASE:
         required: true
-      WALLET_PASSWORD:
+      E2E_TEST_WALLET_PASSWORD:
         required: true
       TESTOMAT_API_KEY:
         required: true
