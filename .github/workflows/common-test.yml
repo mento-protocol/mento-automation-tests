@@ -49,10 +49,10 @@ on:
         required: false
         type: string
     secrets:
-      SEED_PHRASE:
+      E2E_TEST_SEED_PHRASE:
         description: "Seed phrase to import wallet"
         required: true
-      WALLET_PASSWORD:
+      E2E_TEST_WALLET_PASSWORD:
         description: "Wallet password to login to wallet"
         required: true
       TESTOMAT_API_KEY:
@@ -71,8 +71,8 @@ jobs:
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
-      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
-      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
+      SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
+      WALLET_PASSWORD: ${{ secrets.E2E_TEST_WALLET_PASSWORD }}
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
     runs-on: ubuntu-latest
     container:
