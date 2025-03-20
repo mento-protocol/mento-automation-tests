@@ -41,11 +41,7 @@ jobs:
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
       TESTOMATIO_TITLE: "[Mento-Web] Web Sequential-Regression"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
-
-    secrets:
-      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
-      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
-      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+    secrets: inherit
 
   mento_web_parallel_regression_test:
     name: "[Mento-Web] Web Parallel Regression Test Run"
@@ -59,8 +55,4 @@ jobs:
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true'  }}
       TESTOMATIO_TITLE: "[Mento-Web] Web Parallel-Regression"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
-
-    secrets:
-      SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
-      WALLET_PASSWORD: ${{ secrets.WALLET_PASSWORD }}
-      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+    secrets: inherit
