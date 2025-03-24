@@ -1,12 +1,11 @@
 import { expect } from "@fixtures/common/common.fixture";
 import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
-import { WalletName } from "@services/connect-wallet-modal/connect-wallet-modal.service.types";
 
 suite({
   name: "Swap - Prices",
   beforeEach: async ({ web }) => {
-    await web.main.connectWalletByName(WalletName.Metamask);
+    await web.main.runSwapTestPreconditions();
   },
   tests: [
     {
@@ -14,7 +13,7 @@ suite({
       testCaseId: "@T2332ee03",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { from: Token.cUSD, to: Token.CELO },
+          tokens: { to: Token.CELO, from: Token.cUSD },
           fromAmount: "0.0001",
         });
         expect(await web.swap.isCurrentPriceThere()).toBeTruthy();
@@ -31,7 +30,7 @@ suite({
       testCaseId: "@T9906952e",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { to: Token.cUSD },
+          tokens: { to: Token.cUSD, from: Token.CELO },
           toAmount: "0.0001",
         });
         expect(await web.swap.isFromInputEmpty()).toBeFalsy();
@@ -42,7 +41,7 @@ suite({
       testCaseId: "@Ta34f8bd6",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { from: Token.CELO },
+          tokens: { from: Token.CELO, to: Token.cUSD },
         });
         await web.swap.useFullBalance();
         expect(await web.swap.isConsiderKeepNotificationThere()).toBeTruthy();
@@ -53,7 +52,7 @@ suite({
       testCaseId: "@T80d4fbc3",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { from: Token.cUSD },
+          tokens: { from: Token.cUSD, to: Token.CELO },
         });
         await web.swap.useFullBalance();
         expect(await web.swap.isConsiderKeepNotificationThere()).toBeFalsy();

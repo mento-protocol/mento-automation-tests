@@ -122,7 +122,7 @@ export class SwapService extends BaseService implements ISwapService {
   }
 
   async useFullBalance(): Promise<void> {
-    await this.page.useMaxButton.click();
+    await this.page.useMaxButton.click({ timeout: timeouts.xxs });
     await this.page.considerKeepNotificationLabel.waitUntilDisplayed(
       timeouts.xs,
       { throwError: false },
