@@ -7,22 +7,7 @@ import {
 } from "@helpers/element-finder/types/index.types";
 import { IPwSearchArgs } from "@helpers/element-finder/pw/pw-element-finder.helper";
 
-export interface IBasePwElementFinderHelper {
-  role: (
-    role: string,
-    options?: Record<string, unknown>,
-    esOptions?: IElementSearchOptions,
-  ) => IPwElementSearcher;
-  text: (
-    role: string,
-    options?: Record<string, unknown>,
-    esOptions?: IElementSearchOptions,
-  ) => IPwElementSearcher;
-}
-
-export abstract class BasePwElementFinderHelper
-  implements IBasePwElementFinderHelper
-{
+export abstract class BasePwElementFinderHelper {
   protected page: Page = null;
 
   protected constructor(params: IBaseElementFinderArgs) {
@@ -64,10 +49,22 @@ export abstract class BasePwElementFinderHelper
       esOptions,
     });
   }
+
+  label(
+    label: string,
+    options?: Record<string, unknown>,
+    esOptions?: IElementSearchOptions,
+  ): IPwElementSearcher {
+    return this.search({
+      pwMethod: { name: PwMethodName.getByLabel, args: [label, options] },
+      esOptions,
+    });
+  }
 }
 
 export enum PwMethodName {
   getByRole = "getByRole",
   getByText = "getByText",
   getByTestId = "getByTestId",
+  getByLabel = "getByLabel",
 }

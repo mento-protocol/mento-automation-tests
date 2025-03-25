@@ -19,11 +19,7 @@ export class ConnectWalletModalPo
     ),
   };
 
-  closeButton = new Button(
-    this.ef.className(
-      "iekbcc0 iekbcc9 ju367v4 ju367v9u ju367vc0 ju367vs ju367vt ju367vv ju367vf9 ju367va ju367v26 ju367v2l ju367v8o ju367v8y _12cbo8i3 ju367v8m _12cbo8i5 _12cbo8i7",
-    ),
-  );
+  closeButton = new Button(this.ef.pw.label("Close"));
 
   staticElements = [this.connectWalletModalLabel];
 }
