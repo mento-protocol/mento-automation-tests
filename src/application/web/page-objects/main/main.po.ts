@@ -15,11 +15,7 @@ export class MainPo extends BasePo implements IMainPo {
     this.ef.pw.role("button", { name: "Connect Wallet", exact: true }),
   );
 
-  walletSettingsButton = new Button(
-    this.ef.className(
-      "flex outline-none flex items-center justify-center bg-white text-black rounded-full shadow-md transition-all duration-300 shadow-md h-[52px] min-w-[137px] py-[16px] !pl-[20px] !pr-[24px] sm:px-4 rounded-lg border border-solid border-black dark:border-white font-medium leading-5 dark:text-white dark:bg-primary-dark",
-    ),
-  );
+  walletSettingsButton = new Button(this.ef.pw.text("0x", { exact: false }));
 
   networkDetailsButton = new Button(
     this.ef.className(

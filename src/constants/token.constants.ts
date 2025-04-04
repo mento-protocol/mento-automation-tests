@@ -26,4 +26,4 @@ export const otherTokens = [Token.USDC];
 
 export const allTokens = [...cTokens, ...otherTokens, Token.CELO];
 
-export const defaultSwapAmount = "0.1";
+export const defaultSwapAmount = "0.01";

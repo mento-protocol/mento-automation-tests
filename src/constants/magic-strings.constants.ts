@@ -20,7 +20,7 @@ export const magicStrings = {
     },
     mainnet: {
       name: "Celo",
-      rpcUrl: "https://forno.celo.org/",
+      rpcUrl: "https://forno.celo.org",
       chainId: 42220,
       symbol: "CELO",
     },
