@@ -21,6 +21,10 @@ export interface ITokenDropdownOptions extends Record<string, Button> {
   [Token.USDC]: Button;
   [Token.PUSO]: Button;
   [Token.cGHS]: Button;
+  [Token.cGBP]: Button;
+  [Token.cZAR]: Button;
+  [Token.cCAD]: Button;
+  [Token.cAUD]: Button;
 }
 
 export interface ISwapPo {

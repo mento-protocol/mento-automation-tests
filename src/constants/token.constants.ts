@@ -12,6 +12,10 @@ export enum Token {
   "eXOF" = "eXOF",
   "PUSO" = "PUSO",
   "cGHS" = "cGHS",
+  "cGBP" = "cGBP",
+  "cZAR" = "cZAR",
+  "cCAD" = "cCAD",
+  "cAUD" = "cAUD",
 }
 
 export const cTokens = [

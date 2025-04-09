@@ -91,6 +91,42 @@ const testCases = [
     ]),
     id: "@T8da32b9f",
   },
+  // cGBP
+  {
+    fromToken: Token.cGBP,
+    toToken: retryDataHelper.getRandomToken(Token.cGBP, [
+      Token.CELO,
+      Token.cUSD,
+    ]),
+    id: "@T22f94bbb",
+  },
+  // cZAR
+  {
+    fromToken: Token.cZAR,
+    toToken: retryDataHelper.getRandomToken(Token.cZAR, [
+      Token.CELO,
+      Token.cUSD,
+    ]),
+    id: "@T4b1b444b",
+  },
+  // cCAD
+  {
+    fromToken: Token.cCAD,
+    toToken: retryDataHelper.getRandomToken(Token.cCAD, [
+      Token.CELO,
+      Token.cUSD,
+    ]),
+    id: "@T0869d367",
+  },
+  // cAUD
+  {
+    fromToken: Token.cAUD,
+    toToken: retryDataHelper.getRandomToken(Token.cAUD, [
+      Token.CELO,
+      Token.cUSD,
+    ]),
+    id: "@T1d46dc17",
+  },
 ];
 
 suite({
