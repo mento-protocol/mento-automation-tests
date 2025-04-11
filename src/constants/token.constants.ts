@@ -12,6 +12,10 @@ export enum Token {
   "eXOF" = "eXOF",
   "PUSO" = "PUSO",
   "cGHS" = "cGHS",
+  "cGBP" = "cGBP",
+  "cZAR" = "cZAR",
+  "cCAD" = "cCAD",
+  "cAUD" = "cAUD",
 }
 
 export const cTokens = [
@@ -26,4 +30,4 @@ export const otherTokens = [Token.USDC];
 
 export const allTokens = [...cTokens, ...otherTokens, Token.CELO];
 
-export const defaultSwapAmount = "0.01";
+export const defaultSwapAmount = "0.001";
