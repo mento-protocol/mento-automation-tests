@@ -33,6 +33,7 @@ export class SwapService extends BaseService implements ISwapService {
   async start(): Promise<void> {
     await this.verifyNoValidMedianCase();
     await this.continueToConfirmation();
+    await this.verifyTradingSuspendedCase();
     await waiterHelper.retry(
       async () => {
         await this.confirm.page.swapButton.waitUntilEnabled(timeouts.s);
@@ -126,6 +127,32 @@ export class SwapService extends BaseService implements ISwapService {
     await this.page.considerKeepNotificationLabel.waitUntilDisplayed(
       timeouts.xs,
       { throwError: false },
+    );
+  }
+
+  async verifyTradingSuspendedCase(): Promise<void> {
+    return (await this.isTradingSuspended())
+      ? testUtils.disableInRuntime(
+          { reason: "Trading is suspended for this reference rate" },
+          "'Trading is suspended for this reference rate' case",
+        )
+      : logger.info("'Trading suspended' case is not defined - keep swapping");
+  }
+
+  private async isTradingSuspended(): Promise<boolean> {
+    return waiterHelper.retry(
+      async () => {
+        return this.browser.hasConsoleErrorsMatchingText(
+          "Trading is suspended for this reference rate",
+        );
+      },
+      5,
+      {
+        interval: timeouts.xs,
+        throwError: false,
+        continueWithException: true,
+        errorMessage: "Checking for a 'trading suspended' case",
+      },
     );
   }
 
