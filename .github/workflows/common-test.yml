@@ -122,7 +122,7 @@ jobs:
           retention-days: 30
 
       - name: Send Discord Notification
-        uses: ./.github/workflows/common-test.yml
+        uses: ./.github/workflows/notification.yml
         # if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
         with:
           DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
