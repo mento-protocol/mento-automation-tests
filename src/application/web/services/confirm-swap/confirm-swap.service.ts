@@ -70,16 +70,12 @@ export class ConfirmSwapService
     await this.metamaskHelper.confirmTransaction();
   }
 
-  async rejectByType(txTypeToReject: string): Promise<void> {
+  async rejectByType(txType: "approval" | "swap"): Promise<void> {
+    const isApprovalTx = txType === "approval";
     logger.warn(
-      `Rejection of ${
-        txTypeToReject === "approval" ? "approval and swap txs" : "swap tx"
-      }`,
+      `Rejection of ${isApprovalTx ? "approval and swap txs" : "swap tx"}`,
     );
-    txTypeToReject === "approval"
-      ? await this.rejectApprovalTx()
-      : await this.rejectSwapTx();
-
+    isApprovalTx ? await this.rejectApprovalTx() : await this.rejectSwapTx();
     await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
       errorMessage: "Swap performing popup is still there",
     });
@@ -131,14 +127,14 @@ export class ConfirmSwapService
     );
   }
 
-  async isRejectApprovalTransactionNotificationThere(): Promise<boolean> {
+  async isRejectApprovalTxNotificationThere(): Promise<boolean> {
     return this.page.rejectApprovalTransactionNotificationLabel.waitUntilDisplayed(
       timeouts.s,
       { throwError: false },
     );
   }
 
-  async isRejectSwapTransactionNotificationThere(): Promise<boolean> {
+  async isRejectSwapTxNotificationThere(): Promise<boolean> {
     return this.page.rejectSwapTransactionNotificationLabel.waitUntilDisplayed(
       timeouts.s,
       { throwError: false },

@@ -1,7 +1,6 @@
 import { expect } from "@fixtures/common/common.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
-import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
 
 suite({
   name: "Swap - Transaction rejection",
@@ -10,31 +9,22 @@ suite({
   },
   tests: [
     {
-      name: "Reject approval transaction",
+      name: "Reject approval tx",
       testCaseId: "@Td5aa1954",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: {
-            from: Token.CELO,
-            to: retryDataHelper.getRandomToken(Token.CELO, [
-              Token.cEUR,
-              Token.cUSD,
-              Token.cREAL,
-              Token.PUSO,
-              Token.cKES,
-            ]),
-          },
+          tokens: { from: Token.CELO, to: Token.cKES },
           fromAmount: defaultSwapAmount,
         });
         await web.swap.start();
         await web.swap.confirm.rejectByType("approval");
         expect(
-          await web.swap.confirm.isRejectApprovalTransactionNotificationThere(),
+          await web.swap.confirm.isRejectApprovalTxNotificationThere(),
         ).toBeTruthy();
       },
     },
     {
-      name: "Reject swap transaction",
+      name: "Reject swap tx",
       testCaseId: "@T09fd373a",
       test: async ({ web }) => {
         await web.swap.fillForm({
@@ -44,7 +34,7 @@ suite({
         await web.swap.start();
         await web.swap.confirm.rejectByType("swap");
         expect(
-          await web.swap.confirm.isRejectSwapTransactionNotificationThere(),
+          await web.swap.confirm.isRejectSwapTxNotificationThere(),
         ).toBeTruthy();
       },
     },

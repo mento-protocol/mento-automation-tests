@@ -9,8 +9,8 @@ export interface IConfirmSwapService {
   navigateToCeloExplorer: () => Promise<void>;
   isSwapPerformingPopupThere: () => Promise<boolean>;
   isApproveCompleteNotificationThere: () => Promise<boolean>;
-  isRejectApprovalTransactionNotificationThere: () => Promise<boolean>;
-  isRejectSwapTransactionNotificationThere: () => Promise<boolean>;
+  isRejectApprovalTxNotificationThere: () => Promise<boolean>;
+  isRejectSwapTxNotificationThere: () => Promise<boolean>;
 }
 
 export interface IConfirmSwapServiceArgs extends IBaseServiceArgs {
