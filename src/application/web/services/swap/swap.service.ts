@@ -130,32 +130,6 @@ export class SwapService extends BaseService implements ISwapService {
     );
   }
 
-  async verifyTradingSuspendedCase(): Promise<void> {
-    return (await this.isTradingSuspended())
-      ? testUtils.disableInRuntime(
-          { reason: "Trading is suspended for this reference rate" },
-          "'Trading is suspended for this reference rate' case",
-        )
-      : logger.info("'Trading suspended' case is not defined - keep swapping");
-  }
-
-  private async isTradingSuspended(): Promise<boolean> {
-    return waiterHelper.retry(
-      async () => {
-        return this.browser.hasConsoleErrorsMatchingText(
-          "Trading is suspended for this reference rate",
-        );
-      },
-      5,
-      {
-        interval: timeouts.xs,
-        throwError: false,
-        continueWithException: true,
-        errorMessage: "Checking for a 'trading suspended' case",
-      },
-    );
-  }
-
   async isContinueButtonThere(): Promise<boolean> {
     return this.page.continueButton.isDisplayed();
   }
@@ -215,6 +189,14 @@ export class SwapService extends BaseService implements ISwapService {
       : logger.info("'No valid median' case is not defined - keep swapping");
   }
 
+  async verifyTradingSuspendedCase(): Promise<void> {
+    if (await this.isTradingSuspended()) {
+      logger.error("Trading is suspended for this reference rate");
+      throw new Error("Trading is suspended for this reference rate");
+    }
+    logger.info("'Trading suspended' case is not defined - keep swapping");
+  }
+
   async waitForLoadedCurrentPrice(): Promise<boolean> {
     return waiterHelper.wait(
       async () => this.isCurrentPriceLoaded(),
@@ -242,6 +224,23 @@ export class SwapService extends BaseService implements ISwapService {
           },
         )
       : false;
+  }
+
+  private async isTradingSuspended(): Promise<boolean> {
+    return waiterHelper.retry(
+      async () => {
+        return this.browser.hasConsoleErrorsMatchingText(
+          "Trading is suspended for this reference rate",
+        );
+      },
+      2,
+      {
+        interval: timeouts.xs,
+        throwError: false,
+        continueWithException: true,
+        errorMessage: "Checking for a 'trading suspended' case",
+      },
+    );
   }
 
   private async isCurrentPriceLoaded(): Promise<boolean> {
