@@ -58,6 +58,10 @@ on:
       TESTOMAT_API_KEY:
         description: "API key to sync with Testomat account"
         required: true
+      DISCORD_TEST_RUN_WEBHOOK_ID:
+        required: true
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN:
+        required: true
 
 jobs:
   test:
@@ -116,3 +120,11 @@ jobs:
           name: "${{ inputs.HTML_REPORT_NAME }}-playwright-report"
           path: "artifacts/reports/playwright-report/"
           retention-days: 30
+
+      - name: Send Discord Notification
+        uses: ./.github/workflows/common-test.yml
+        # if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+        with:
+          secrets:
+            DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
+            DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
