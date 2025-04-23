@@ -28,7 +28,7 @@ on:
 
 jobs:
   mento_web_sequential_regression_test:
-    name: "[Mento-Web] Web Sequential Regression Test Run"
+    name: "[Mento-Web] Sequential Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
       SPECS_TYPE: web
@@ -39,12 +39,13 @@ jobs:
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: "mento-web-sequential-regression"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
-      TESTOMATIO_TITLE: "[Mento-Web] Web Sequential-Regression"
+      TESTOMATIO_TITLE: "[Mento-Web] Sequential-Regression"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      NOTIFICATION_MESSAGE: "[Mento-Web] Parallel-Regression"
     secrets: inherit
 
   mento_web_parallel_regression_test:
-    name: "[Mento-Web] Web Parallel Regression Test Run"
+    name: "[Mento-Web] Parallel Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
       SPECS_TYPE: web
@@ -53,6 +54,7 @@ jobs:
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: "mento-web-parallel-regression"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true'  }}
-      TESTOMATIO_TITLE: "[Mento-Web] Web Parallel-Regression"
+      TESTOMATIO_TITLE: "[Mento-Web] Parallel-Regression"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      NOTIFICATION_MESSAGE: "[Mento-Web] Parallel-Regression"
     secrets: inherit

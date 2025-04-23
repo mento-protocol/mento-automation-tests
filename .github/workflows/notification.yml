@@ -11,6 +11,11 @@ on:
         description: "Notification message"
         required: true
         type: string
+      JOB_URL:
+        description: "Test job URL"
+        required: true
+        type: string
+
     secrets:
       DISCORD_TEST_RUN_WEBHOOK_ID:
         required: true
@@ -32,4 +37,4 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
           color: "${{ inputs.JOB_STATUS == 'success' && '#48f442' || '#ff0000' }}"
           username: "Test Run Notifier"
-          message: "${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}"
+          message: "${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}\n🔗 Job URL: ${{ inputs.JOB_URL }}"
