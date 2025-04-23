@@ -50,7 +50,6 @@ on:
         options:
           - "true"
           - "false"
-
 jobs:
   test:
     name: "Specific Test Run"
@@ -62,8 +61,9 @@ jobs:
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
       HTML_REPORT_NAME: "specific"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
-      TESTOMATIO_TITLE: "Specific"
+      TESTOMATIO_TITLE: "[Mento-Web] Specific"
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
+      NOTIFICATION_MESSAGE: "[Mento-Web] Specific Test"
     secrets: inherit

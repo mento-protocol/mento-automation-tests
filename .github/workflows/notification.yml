@@ -1,0 +1,39 @@
+name: Notification
+
+on:
+  workflow_call:
+    inputs:
+      JOB_STATUS:
+        description: "Test job status"
+        required: true
+        type: string
+      MESSAGE:
+        description: "Notification message"
+        required: true
+        type: string
+      JOB_URL:
+        description: "Test job URL"
+        required: true
+        type: string
+
+    secrets:
+      DISCORD_TEST_RUN_WEBHOOK_ID:
+        required: true
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN:
+        required: true
+
+jobs:
+  notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Send Notification
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
+          webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
+          color: "${{ inputs.JOB_STATUS == 'success' && '#48f442' || '#ff0000' }}"
+          username: "Test Run Notifier"
+          message: "${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}\n🔗 Job URL: ${{ inputs.JOB_URL }}"

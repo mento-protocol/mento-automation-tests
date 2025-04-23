@@ -16,4 +16,5 @@ jobs:
       IS_MAINNET: "true"
       HTML_REPORT_NAME: "pr-check-run"
       TESTOMAT_REPORT_GENERATION: "false"
+      NOTIFICATION_MESSAGE: "[Mento-Web] PR Check"
     secrets: inherit

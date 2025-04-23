@@ -48,6 +48,11 @@ on:
         description: "Title of test run in the Testomat"
         required: false
         type: string
+      NOTIFICATION_MESSAGE:
+        description: "Notification message for Discord"
+        required: false
+        type: string
+
     secrets:
       E2E_TEST_SEED_PHRASE:
         description: "Seed phrase to import wallet"
@@ -57,6 +62,10 @@ on:
         required: true
       TESTOMAT_API_KEY:
         description: "API key to sync with Testomat account"
+        required: true
+      DISCORD_TEST_RUN_WEBHOOK_ID:
+        required: true
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN:
         required: true
 
 jobs:
@@ -81,7 +90,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Node install
+      - name: Install Node
         uses: actions/setup-node@v4
         with:
           cache: npm
@@ -116,3 +125,15 @@ jobs:
           name: "${{ inputs.HTML_REPORT_NAME }}-playwright-report"
           path: "artifacts/reports/playwright-report/"
           retention-days: 30
+
+  notification:
+    needs: test
+    if: always()
+    uses: ./.github/workflows/notification.yml
+    with:
+      JOB_STATUS: ${{ needs.test.result }}
+      MESSAGE: "${{ inputs.NOTIFICATION_MESSAGE }} by ${{ github.actor }}"
+      JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    secrets:
+      DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
