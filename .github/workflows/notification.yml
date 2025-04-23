@@ -24,7 +24,6 @@ on:
 
 jobs:
   notification:
-    name: Notification
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
