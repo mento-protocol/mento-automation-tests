@@ -24,6 +24,10 @@ on:
         required: true
       TESTOMAT_API_KEY:
         required: true
+      DISCORD_TEST_RUN_WEBHOOK_ID:
+        required: true
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN:
+        required: true
 
 jobs:
   smoke-test:
@@ -85,3 +89,15 @@ jobs:
           name: "${{ inputs.HTML_REPORT_NAME }}-playwright-report"
           path: "artifacts/reports/playwright-report/"
           retention-days: 30
+
+  notification:
+    needs: smoke-test
+    if: always()
+    uses: ./.github/workflows/notification.yml
+    with:
+      JOB_STATUS: ${{ needs.smoke-test.result }}
+      MESSAGE: "[Mento-Web] Smoke by ${{ github.actor }}"
+      JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    secrets:
+      DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
