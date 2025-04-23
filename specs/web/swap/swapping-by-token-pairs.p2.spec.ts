@@ -90,6 +90,7 @@ const testCases = [
       Token.USDT,
     ]),
     id: "@T8da32b9f",
+    fromAmount: "0.1",
   },
   // cGBP
   {
@@ -108,6 +109,7 @@ const testCases = [
       Token.cUSD,
     ]),
     id: "@T4b1b444b",
+    fromAmount: "0.1",
   },
   // cCAD
   {
