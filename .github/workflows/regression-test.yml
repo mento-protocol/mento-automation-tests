@@ -41,7 +41,7 @@ jobs:
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
       TESTOMATIO_TITLE: "[Mento-Web] Sequential-Regression"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
-      NOTIFICATION_MESSAGE: "[Mento-Web] Parallel-Regression"
+      NOTIFICATION_MESSAGE: "[Mento-Web] Sequential-Regression"
     secrets: inherit
 
   mento_web_parallel_regression_test:
