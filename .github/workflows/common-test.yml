@@ -123,14 +123,8 @@ jobs:
 
   notification:
     name: Notification
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Send Notification
-        uses: appleboy/discord-action@master
-        with:
-          webhook_id: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
-          webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
-          color: "#48f442"
-          username: "Smile Notifier"
-          message: "🎉 New update"
+    needs: test
+    uses: ./.github/workflows/notification.yml
+    secrets:
+      DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
