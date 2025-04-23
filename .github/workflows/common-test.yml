@@ -122,9 +122,11 @@ jobs:
           retention-days: 30
 
   notification:
-    name: Notification
     needs: test
     uses: ./.github/workflows/notification.yml
+    with:
+      JOB_STATUS: ${{ needs.test.result }}
+      MESSAGE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }}"
     secrets:
       DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
       DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}

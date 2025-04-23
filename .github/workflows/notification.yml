@@ -2,20 +2,15 @@ name: Notification
 
 on:
   workflow_call:
-    # inputs:
-    #   CUSTOM_URL:
-    #     description: "Custom base url to run tests against different URLs"
-    #     required: false
-    #     type: string
-    #   IS_MAINNET:
-    #     description: "Mainnet test run flag"
-    #     required: false
-    #     default: "false"
-    #     type: string
-    #   TESTOMATIO_TITLE:
-    #     description: "Title of test run in the Testomat"
-    #     required: false
-    #     type: string
+    inputs:
+      JOB_STATUS:
+        description: "Test job status"
+        required: true
+        type: string
+      MESSAGE:
+        description: "Notification message"
+        required: true
+        type: string
     secrets:
       DISCORD_TEST_RUN_WEBHOOK_ID:
         required: true
@@ -35,6 +30,6 @@ jobs:
         with:
           webhook_id: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
-          color: "#48f442"
-          username: "Smile Notifier"
-          message: "🎉 New update"
+          color: "${{ inputs.JOB_STATUS == 'success' && '#48f442' || '#ff0000' }}"
+          username: "Test Run Notifier"
+          message: "${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}"
