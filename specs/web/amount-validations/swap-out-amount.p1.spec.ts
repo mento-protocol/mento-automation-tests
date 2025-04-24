@@ -21,7 +21,7 @@ suite({
       name: 'Fill the "swap-out" with an amount that exceeds balance',
       testCaseId: "@T88e163ac",
       test: async ({ web }) => {
-        await web.swap.fillForm({ toAmount: "100" });
+        await web.swap.fillForm({ toAmount: "700" });
         expect.soft(await web.swap.isContinueButtonThere()).toBeFalsy();
         expect(await web.swap.isAmountExceedValidationThere()).toBeTruthy();
       },
