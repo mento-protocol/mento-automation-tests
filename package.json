@@ -13,7 +13,7 @@
     "codeCheck": "tsc && npm run linter",
     "build-synpress-cache": "npx synpress src/wallet-setups --force",
     "verify-env-config": "tsx src/tools/verify-env-config.tool.ts",
-    "prepare": "husky install",
+    "prepare": "husky install && npx playwright install --with-deps",
     "postinstall": "tsx src/tools/default-env-vars.tool.ts"
   },
   "engines": {
