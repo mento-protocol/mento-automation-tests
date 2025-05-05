@@ -148,8 +148,8 @@ jobs:
           # Upload the report to GCS
           gsutil -m cp -r artifacts/reports/playwright-report/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
 
-          # Upload the report to GCS with public-read ACL
-          gsutil -m -h "Content-Type:text/html" cp -r -a public-read artifacts/reports/playwright-report/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
+          # Make the folder publicly accessible using IAM
+          gsutil iam ch allUsers:objectViewer gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
 
           # Output the public URL
           echo "Report URL: https://storage.googleapis.com/${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" >> $GITHUB_STEP_SUMMARY
