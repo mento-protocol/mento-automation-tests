@@ -15,6 +15,17 @@ export default defineConfig({
   workers: configHelper.getWorkers(),
   outputDir: `${magicStrings.path.artifacts}/test-results`,
   use: { trace: "on", video: "on", baseURL: envHelper.getBaseWebUrl() },
+  // TODO: Try another trace mode
+  // use: {
+  //   trace: {
+  //     mode: "retain-on-failure",
+  //     snapshots: true,
+  //     screenshots: true,
+  //     sources: true
+  //   },
+  //   video: "on",
+  //   baseURL: envHelper.getBaseWebUrl()
+  // },
   projects: [
     {
       name: "chromium",

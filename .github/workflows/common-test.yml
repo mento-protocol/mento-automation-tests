@@ -67,6 +67,9 @@ on:
         required: true
       DISCORD_TEST_RUN_WEBHOOK_TOKEN:
         required: true
+      GCP_SA_KEY:
+        description: "Google Cloud Service Account key JSON"
+        required: true
 
 jobs:
   test:
@@ -83,6 +86,7 @@ jobs:
       SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
       WALLET_PASSWORD: ${{ secrets.E2E_TEST_WALLET_PASSWORD }}
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+      GCS_BUCKET_NAME: "mento-playwright-reports"
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy
@@ -125,6 +129,29 @@ jobs:
           name: "${{ inputs.HTML_REPORT_NAME }}-playwright-report"
           path: "artifacts/reports/playwright-report/"
           retention-days: 30
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Upload report to GCS
+        if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+        run: |
+          # Create a unique folder for this run
+          RUN_FOLDER="run-${{ github.run_id }}-${{ github.run_number }}"
+
+          # Upload the report to GCS
+          gsutil -m cp -r artifacts/reports/playwright-report/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
+
+          # Make the files publicly accessible
+          gsutil -m acl ch -r -u AllUsers:R gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
+
+          # Output the public URL
+          echo "Report URL: https://storage.googleapis.com/${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" >> $GITHUB_STEP_SUMMARY
 
   notification:
     needs: test
