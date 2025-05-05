@@ -139,7 +139,8 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Upload report to GCS
-        if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+        # TODO: Uncomment this when the HTML report is working
+        # if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
         run: |
           # Create a unique folder for this run
           RUN_FOLDER="run-${{ github.run_id }}-${{ github.run_number }}"
