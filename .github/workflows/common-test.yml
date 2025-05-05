@@ -122,13 +122,14 @@ jobs:
         env:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
-        with:
-          name: "${{ inputs.HTML_REPORT_NAME }}-playwright-report"
-          path: "artifacts/reports/playwright-report/"
-          retention-days: 30
+      # TODO: Remove or leave when the HTML report is on GCS working
+      # - name: Upload artifacts
+      #   uses: actions/upload-artifact@v4
+      #   if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+      #   with:
+      #     name: "${{ inputs.HTML_REPORT_NAME }}-playwright-report"
+      #     path: "artifacts/reports/playwright-report/"
+      #     retention-days: 30
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -145,11 +146,11 @@ jobs:
           # Create a unique folder for this run
           RUN_FOLDER="run-${{ github.run_id }}-${{ github.run_number }}"
 
-          # Upload the report to GCS
+          # Create the folder first
           gsutil -m cp -r artifacts/reports/playwright-report/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
 
-          # Make the folder publicly accessible using IAM
-          gsutil iam ch allUsers:objectViewer gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
+          # Make the bucket publicly readable
+          gsutil iam ch allUsers:objectViewer gs://${{ env.GCS_BUCKET_NAME }}
 
           # Output the public URL
           echo "Report URL: https://storage.googleapis.com/${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" >> $GITHUB_STEP_SUMMARY
