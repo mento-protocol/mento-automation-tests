@@ -147,7 +147,7 @@ jobs:
       JOB_STATUS: ${{ needs.test.result }}
       MESSAGE: "${{ inputs.NOTIFICATION_MESSAGE }} by ${{ github.actor }}"
       JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      REPORT_URL: ${{ needs.report.outputs.report_url }}
+      REPORT_URL: ${{ needs.report.report.outputs.url }}
     secrets:
       DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
       DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
