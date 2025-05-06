@@ -149,8 +149,8 @@ jobs:
           # Upload the report to GCS
           gsutil -m cp -r artifacts/reports/playwright-report/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
 
-          # Save service account key to a temporary file
-          echo '${{ secrets.GCP_SA_KEY }}' > /tmp/service-account-key.json
+          # Save service account key to a temporary file with proper JSON formatting
+          echo '${{ secrets.GCP_SA_KEY }}' | sed 's/\\n/\n/g' > /tmp/service-account-key.json
 
           # Generate signed URL for the report (valid for 7 days)
           SIGNED_URL=$(gsutil signurl -d 7d -m GET /tmp/service-account-key.json "gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" | tail -n 1 | awk '{print $5}')
