@@ -40,8 +40,4 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
           color: "${{ inputs.JOB_STATUS == 'success' && '#48f442' || '#ff0000' }}"
           username: "Test Run Notifier"
-          message: |
-            ${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}
-
-            🔗 [Job](${{ inputs.JOB_URL }})
-            📊 [Playwright Report](${{ inputs.REPORT_URL }})
+          message: "${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}\n🔗 [Job](${{ inputs.JOB_URL }})\n📊 [Playwright Report](${{ inputs.REPORT_URL }})"
