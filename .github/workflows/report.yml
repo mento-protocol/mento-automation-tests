@@ -2,6 +2,10 @@ name: Report
 
 on:
   workflow_call:
+    outputs:
+      url:
+        description: "The Report URL"
+        value: ${{ jobs.report.outputs.url }}
     secrets:
       GCP_SA_KEY:
         required: true
