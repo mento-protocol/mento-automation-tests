@@ -45,3 +45,6 @@ jobs:
 
           # Set the URL as an output
           echo "url=$SIGNED_URL" >> $GITHUB_OUTPUT
+
+          # Verify the output was set
+          echo "Output URL: ${{ steps.report.outputs.url }}"
