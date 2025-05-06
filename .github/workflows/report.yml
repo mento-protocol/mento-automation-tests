@@ -12,7 +12,7 @@ jobs:
     env:
       GCS_BUCKET_NAME: "mento-playwright-reports"
     outputs:
-      url: ${{ steps.report.outputs.url }}
+      url: ${{ steps.set-url.outputs.url }}
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -29,7 +29,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Upload report to GCS
-        id: report
+        id: set-url
         run: |
           # Create a unique folder for this run
           RUN_FOLDER="run-${{ github.run_id }}-${{ github.run_number }}"
@@ -46,5 +46,6 @@ jobs:
           # Set the URL as an output
           echo "url=$SIGNED_URL" >> $GITHUB_OUTPUT
 
-          # Verify the output was set
-          echo "Output URL: ${{ steps.report.outputs.url }}"
+      - name: Verify URL
+        run: |
+          echo "Output URL: ${{ steps.set-url.outputs.url }}"
