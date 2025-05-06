@@ -149,8 +149,8 @@ jobs:
           # Upload the report to GCS
           gsutil -m cp -r artifacts/reports/playwright-report/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
 
-          # Generate signed URL for the report (valid for 7 days)
-          SIGNED_URL=$(gsutil signurl --use-service-account -d 7d -m GET "gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" | tail -n 1 | awk '{print $5}')
+          # Generate signed URL for the report (valid for 12 hours)
+          SIGNED_URL=$(gsutil signurl --use-service-account -d 12h -m GET "gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" | tail -n 1 | awk '{print $5}')
 
           # Output the signed URL
           echo "Report URL: $SIGNED_URL" >> $GITHUB_STEP_SUMMARY
