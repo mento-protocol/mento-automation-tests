@@ -9,6 +9,8 @@ on:
 jobs:
   report:
     runs-on: ubuntu-latest
+    env:
+      GCS_BUCKET_NAME: "mento-playwright-reports"
     outputs:
       report_url: ${{ steps.set-output.outputs.report_url }}
     steps:
@@ -28,10 +30,6 @@ jobs:
 
           # Upload the report to GCS
           gsutil -m cp -r artifacts/reports/playwright-report/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
-
-          # TODO: Try to apply later
-          # Make all files in the folder publicly readable
-          # gsutil -m acl ch -r -u AllUsers:R gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
 
           # Generate signed URL for the report (valid for 12 hours)
           SIGNED_URL=$(gsutil signurl --use-service-account -d 12h -m GET "gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" | tail -n 1 | awk '{print $5}')

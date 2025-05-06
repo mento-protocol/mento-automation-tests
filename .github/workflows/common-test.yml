@@ -86,7 +86,6 @@ jobs:
       SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
       WALLET_PASSWORD: ${{ secrets.E2E_TEST_WALLET_PASSWORD }}
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
-      GCS_BUCKET_NAME: "mento-playwright-reports"
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy
