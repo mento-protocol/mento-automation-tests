@@ -14,6 +14,12 @@ jobs:
     outputs:
       report_url: ${{ steps.set-output.outputs.report_url }}
     steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report
+          path: artifacts/reports/playwright-report
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:

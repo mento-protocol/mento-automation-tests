@@ -121,14 +121,14 @@ jobs:
         env:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
-      # TODO: Remove or leave when the HTML report is on GCS working
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v4
-      #   if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
-      #   with:
-      #     name: "${{ inputs.HTML_REPORT_NAME }}-playwright-report"
-      #     path: "artifacts/reports/playwright-report/"
-      #     retention-days: 30
+      - name: Upload Playwright report
+        # TODO: Uncomment this when the HTML report is working
+        # if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: artifacts/reports/playwright-report/
+          retention-days: 1
 
   report:
     needs: test
