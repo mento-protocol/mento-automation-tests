@@ -36,8 +36,7 @@ jobs:
       - name: Send Notification
         uses: appleboy/discord-action@v1.2.0
         with:
-          webhook_id: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
-          webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
+          webhook_url: "https://discord.com/api/webhooks/${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}/${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}"
           color: "${{ inputs.JOB_STATUS == 'success' && '#48f442' || '#ff0000' }}"
           username: "Test Run Notifier"
           message: "${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}\n🔗 [Job](${{ inputs.JOB_URL }})\n📊 [Playwright Report](${{ inputs.REPORT_URL }})"
