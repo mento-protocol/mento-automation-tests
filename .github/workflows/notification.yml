@@ -34,10 +34,14 @@ jobs:
         uses: actions/checkout@master
 
       - name: Send Notification
-        uses: appleboy/discord-action@master
+        uses: appleboy/discord-action@v1.2.0
         with:
           webhook_id: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
           color: "${{ inputs.JOB_STATUS == 'success' && '#48f442' || '#ff0000' }}"
           username: "Test Run Notifier"
-          message: "${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}\n🔗 Job URL: ${{ inputs.JOB_URL }}\n📊 Playwright Report URL: ${{ inputs.REPORT_URL }}"
+          message: |
+            ${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}
+
+            🔗 [Job](${{ inputs.JOB_URL }})
+            📊 [Playwright Report](${{ inputs.REPORT_URL }})
