@@ -131,38 +131,24 @@ jobs:
       #     path: "artifacts/reports/playwright-report/"
       #     retention-days: 30
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Upload report to GCS
-        # TODO: Uncomment this when the HTML report is working
-        # if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
-        run: |
-          # Create a unique folder for this run
-          RUN_FOLDER="run-${{ github.run_id }}-${{ github.run_number }}"
-
-          # Upload the report to GCS
-          gsutil -m cp -r artifacts/reports/playwright-report/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
-
-          # Generate signed URL for the report (valid for 12 hours)
-          SIGNED_URL=$(gsutil signurl --use-service-account -d 12h -m GET "gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" | tail -n 1 | awk '{print $5}')
-
-          # Output the signed URL
-          echo "Report URL: $SIGNED_URL" >> $GITHUB_STEP_SUMMARY
+  report:
+    needs: test
+    # TODO: Uncomment this when the HTML report is working
+    # if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+    if: always()
+    uses: ./.github/workflows/report.yml
+    secrets:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
   notification:
-    needs: test
+    needs: [test, report]
     if: always()
     uses: ./.github/workflows/notification.yml
     with:
       JOB_STATUS: ${{ needs.test.result }}
       MESSAGE: "${{ inputs.NOTIFICATION_MESSAGE }} by ${{ github.actor }}"
       JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      REPORT_URL: ${{ needs.report.outputs.report_url }}
     secrets:
       DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
       DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}

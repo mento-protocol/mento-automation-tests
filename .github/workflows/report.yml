@@ -1,0 +1,43 @@
+name: Report
+
+on:
+  workflow_call:
+    secrets:
+      GCP_SA_KEY:
+        required: true
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    outputs:
+      report_url: ${{ steps.set-output.outputs.report_url }}
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Upload report to GCS
+        id: set-output
+        run: |
+          # Create a unique folder for this run
+          RUN_FOLDER="run-${{ github.run_id }}-${{ github.run_number }}"
+
+          # Upload the report to GCS
+          gsutil -m cp -r artifacts/reports/playwright-report/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
+
+          # TODO: Try to apply later
+          # Make all files in the folder publicly readable
+          # gsutil -m acl ch -r -u AllUsers:R gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
+
+          # Generate signed URL for the report (valid for 12 hours)
+          SIGNED_URL=$(gsutil signurl --use-service-account -d 12h -m GET "gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" | tail -n 1 | awk '{print $5}')
+
+          # Output the signed URL
+          echo "Report URL: $SIGNED_URL" >> $GITHUB_STEP_SUMMARY
+
+          # Set the URL as an output
+          echo "report_url=$SIGNED_URL" >> $GITHUB_OUTPUT
