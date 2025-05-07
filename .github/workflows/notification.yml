@@ -19,6 +19,7 @@ on:
         description: "Playwright Report URL"
         required: false
         type: string
+        default: ""
 
     secrets:
       DISCORD_TEST_RUN_WEBHOOK_ID:
@@ -42,4 +43,4 @@ jobs:
           args: |
             ${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}
             🔗 [Job](${{ inputs.JOB_URL }})
-            ${{ inputs.REPORT_URL && '📊 [Playwright Report](${{ inputs.REPORT_URL }})' }}
+            ${{ inputs.REPORT_URL != '' && '📊 [Playwright Report](${{ inputs.REPORT_URL }})' }}
