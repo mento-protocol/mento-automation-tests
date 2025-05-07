@@ -122,8 +122,7 @@ jobs:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
       - name: Upload Playwright report
-        # TODO: Uncomment this when the HTML report is working
-        # if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+        if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
@@ -132,9 +131,7 @@ jobs:
 
   report:
     needs: test
-    # TODO: Uncomment this when the HTML report is working
-    # if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
-    if: always()
+    if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (needs.test.result == 'failure' && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
     uses: ./.github/workflows/report.yml
     secrets:
       GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
