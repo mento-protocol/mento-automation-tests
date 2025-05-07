@@ -44,8 +44,8 @@ jobs:
           # Generate signed URL for the report (valid for 12 hours)
           SIGNED_URL=$(gsutil signurl --use-service-account -d 12h -m GET "gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/index.html" | tail -n 1 | awk '{print $5}')
 
-          # Output the signed URL
-          echo "Report URL: $SIGNED_URL" >> $GITHUB_STEP_SUMMARY
+          # Output the signed URL in the job summary
+          echo "📊 [Playwright Report]($SIGNED_URL)" >> $GITHUB_STEP_SUMMARY
 
           # Set the URL as an output
           echo "url=$SIGNED_URL" >> $GITHUB_OUTPUT
