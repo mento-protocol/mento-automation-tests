@@ -28,7 +28,7 @@ on:
         required: true
       DISCORD_TEST_RUN_WEBHOOK_TOKEN:
         required: true
-      GCP_SA_KEY:
+      E2E_TEST_GCP_SA_KEY:
         description: "Google Cloud Service Account key JSON"
         required: true
 
@@ -98,7 +98,7 @@ jobs:
     if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
     uses: ./.github/workflows/report.yml
     secrets:
-      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+      GCP_SA_KEY: ${{ secrets.E2E_TEST_GCP_SA_KEY }}
 
   notification:
     needs: [smoke-test, report]
