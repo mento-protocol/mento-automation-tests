@@ -34,6 +34,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
+      - name: Debug
+        run: |
+          echo "REPORT_URL: ${{ inputs.REPORT_URL }}"
+          echo "FULL: '📊 [Playwright Report](${{ inputs.REPORT_URL }})'"
+
       - name: Send Discord Notification
         env:
           DISCORD_WEBHOOK: "https://discord.com/api/webhooks/${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}/${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}"
