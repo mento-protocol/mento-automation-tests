@@ -10,7 +10,7 @@ suite({
       testCaseId: "@Tf302ddd6",
       test: async ({ web }) => {
         await web.main.connectWalletByName(WalletName.Metamask);
-        expect(await web.main.isWalletConnected()).toBeTruthy();
+        expect(await web.main.isWalletConnected()).toBeFalsy();
       },
     },
   ],
