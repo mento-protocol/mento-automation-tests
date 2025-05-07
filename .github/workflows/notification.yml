@@ -35,12 +35,12 @@ jobs:
         uses: actions/checkout@master
 
       - name: Send Discord Notification
-        env:
-          DISCORD_WEBHOOK: "https://discord.com/api/webhooks/${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}/${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}"
-          DISCORD_USERNAME: "Test Run Notifier"
-        uses: Ilshidur/action-discord@master
+        uses: appleboy/discord-action@master
         with:
-          args: |
+          webhook_id: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
+          webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
+          username: "Test Run Notifier"
+          message: |
             ${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}
             🔗 [Job](${{ inputs.JOB_URL }})
-            ${{ inputs.REPORT_URL != '' && '📊 [Playwright Report](${{ inputs.REPORT_URL }})' || '' }}
+            ${{ inputs.REPORT_URL != '' && format('📊 [Playwright Report]({0})', inputs.REPORT_URL) || '' }}
