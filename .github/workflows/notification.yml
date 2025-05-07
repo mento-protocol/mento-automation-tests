@@ -42,5 +42,5 @@ jobs:
           username: "Test Run Notifier"
           message: |
             ${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}
-            🔗 [Job](${{ inputs.JOB_URL }})
-            ${{ inputs.REPORT_URL != '' && format('📊 [Playwright Report]({0})', inputs.REPORT_URL) || '' }}
+            🔗 [Job](<${{ inputs.JOB_URL }}>)
+            ${{ inputs.REPORT_URL != '' && format('📊 [Playwright Report](<{0}>)', inputs.REPORT_URL) || '' }}
