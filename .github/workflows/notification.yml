@@ -40,7 +40,6 @@ jobs:
           webhook_id: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
           username: "Test Run Notifier"
-          color: ${{ inputs.JOB_STATUS == 'success' && '#48f442' || '#ff0000' }}
           message: |
             ${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}
             🔗 [Job](${{ inputs.JOB_URL }})
