@@ -86,7 +86,7 @@ jobs:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
       - name: Upload Playwright report
-        if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
@@ -95,7 +95,7 @@ jobs:
 
   report:
     needs: smoke-test
-    if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+    if: failure()
     uses: ./.github/workflows/report.yml
     secrets:
       GCP_SA_KEY: ${{ secrets.E2E_TEST_GCP_SA_KEY }}
