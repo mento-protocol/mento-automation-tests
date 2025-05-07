@@ -15,6 +15,11 @@ on:
         description: "Test job URL"
         required: true
         type: string
+      REPORT_URL:
+        description: "Playwright Report URL"
+        required: false
+        type: string
+        default: ""
 
     secrets:
       DISCORD_TEST_RUN_WEBHOOK_ID:
@@ -29,11 +34,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      - name: Send Notification
+      - name: Send Discord Notification
         uses: appleboy/discord-action@master
         with:
           webhook_id: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
-          color: "${{ inputs.JOB_STATUS == 'success' && '#48f442' || '#ff0000' }}"
           username: "Test Run Notifier"
-          message: "${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}\n🔗 Job URL: ${{ inputs.JOB_URL }}"
+          message: |
+            ${{ inputs.JOB_STATUS == 'success' && '✅' || '❌' }} ${{ inputs.MESSAGE }}
+            🔗 [Job](${{ inputs.JOB_URL }})
+            ${{ inputs.REPORT_URL != '' && format('📊 [Playwright Report]({0})', inputs.REPORT_URL) || '' }}
