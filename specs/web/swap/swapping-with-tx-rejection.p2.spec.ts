@@ -9,7 +9,7 @@ suite({
   },
   tests: [
     {
-      name: "Reject approval tx",
+      name: `Reject approval tx (${Token.CELO}/${Token.cKES})`,
       testCaseId: "@Td5aa1954",
       test: async ({ web }) => {
         await web.swap.fillForm({
@@ -24,7 +24,7 @@ suite({
       },
     },
     {
-      name: "Reject swap tx",
+      name: `Reject swap tx (${Token.CELO}/${Token.cREAL})`,
       testCaseId: "@T09fd373a",
       test: async ({ web }) => {
         await web.swap.fillForm({
