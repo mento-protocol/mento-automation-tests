@@ -4,11 +4,14 @@ import { suite } from "@helpers/suite/suite.helper";
 import { Slippage } from "@services/index";
 import { IExecution } from "@helpers/suite/suite.types";
 
-const toToken = Token.CELO;
+const tokens = {
+  from: Token.cEUR,
+  to: Token.CELO,
+};
 
 const testCases = [
   {
-    name: "default",
+    name: `default (${tokens.from}/${tokens.to})`,
     slippage: undefined,
     id: "@T751161b4",
     disable: {
@@ -16,12 +19,12 @@ const testCases = [
     },
   },
   {
-    name: "minimal",
+    name: `minimal (${tokens.from}/${tokens.to})`,
     slippage: Slippage["0.5%"],
     id: "@T0046ec8d",
   },
   {
-    name: "max",
+    name: `max (${tokens.from}/${tokens.to})`,
     slippage: Slippage["1.5%"],
     id: "@Tb9505e3a",
   },
@@ -39,17 +42,19 @@ suite({
         testCaseId: testCase.id,
         disable: testCase?.disable,
         test: async ({ web }: IExecution) => {
-          const initialBalance = await web.main.getTokenBalanceByName(toToken);
+          const initialBalance = await web.main.getTokenBalanceByName(
+            tokens.to,
+          );
           await web.swap.fillForm({
             slippage: testCase.slippage,
-            tokens: { from: Token.cEUR, to: toToken },
+            tokens: { from: tokens.from, to: tokens.to },
             fromAmount: defaultSwapAmount,
           });
           expect.soft(await web.swap.isCurrentPriceThere()).toBeTruthy();
           await web.swap.start();
           await web.swap.confirm.confirm();
           await web.main.expectIncreasedBalance({
-            tokenName: toToken,
+            tokenName: tokens.to,
             initialBalance,
           });
         },

@@ -3,6 +3,11 @@ import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { AmountType } from "@services/index";
 
+const tokens = {
+  from: Token.cUSD,
+  to: Token.CELO,
+};
+
 suite({
   name: "Swap - By amount type",
   beforeEach: async ({ web }) => {
@@ -10,7 +15,7 @@ suite({
   },
   tests: [
     {
-      name: "Swap-in",
+      name: `Swap-in (${tokens.from}/${tokens.to})`,
       testCaseId: "@Tab822de9",
       test: async ({ web }) => {
         const initialBalance = await web.main.getTokenBalanceByName(Token.CELO);
@@ -30,7 +35,7 @@ suite({
       },
     },
     {
-      name: "Swap-out",
+      name: `Swap-out (${tokens.from}/${tokens.to})`,
       testCaseId: "@T3c8db175",
       test: async ({ web }) => {
         const initialBalance = await web.main.getTokenBalanceByName(Token.CELO);
