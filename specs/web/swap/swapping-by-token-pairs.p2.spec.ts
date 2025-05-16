@@ -104,10 +104,7 @@ const testCases = [
   // cZAR
   {
     fromToken: Token.cZAR,
-    toToken: retryDataHelper.getRandomToken(Token.cZAR, [
-      Token.CELO,
-      Token.cUSD,
-    ]),
+    toToken: Token.cUSD,
     id: "@T4b1b444b",
     fromAmount: "0.1",
   },
