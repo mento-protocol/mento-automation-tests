@@ -43,6 +43,9 @@ export class SwapPo extends BasePo implements ISwapPo {
       [Token.cZAR]: new Button(this.ef.pw.role("option", { name: Token.cZAR })),
       [Token.cCAD]: new Button(this.ef.pw.role("option", { name: Token.cCAD })),
       [Token.cAUD]: new Button(this.ef.pw.role("option", { name: Token.cAUD })),
+      [Token.cCHF]: new Button(this.ef.pw.role("option", { name: Token.cCHF })),
+      [Token.cNGN]: new Button(this.ef.pw.role("option", { name: Token.cNGN })),
+      [Token.cJPY]: new Button(this.ef.pw.role("option", { name: Token.cJPY })),
     };
   }
 
