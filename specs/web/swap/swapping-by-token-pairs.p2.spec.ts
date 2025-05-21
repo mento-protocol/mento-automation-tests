@@ -126,6 +126,26 @@ const testCases = [
     ]),
     id: "@T1d46dc17",
   },
+  // cCHF
+  {
+    fromToken: Token.cCHF,
+    toToken: Token.cUSD,
+    id: "@Tc750f6e5",
+  },
+  // cNGN
+  {
+    fromToken: Token.cNGN,
+    fromAmount: "10",
+    toToken: Token.cUSD,
+    id: "@T280cb27f",
+  },
+  // cJPY
+  {
+    fromToken: Token.cJPY,
+    toToken: Token.cUSD,
+    id: "@T36d94360",
+    fromAmount: "0.1",
+  },
 ];
 
 suite({

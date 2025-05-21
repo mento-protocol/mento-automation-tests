@@ -16,6 +16,9 @@ export enum Token {
   "cZAR" = "cZAR",
   "cCAD" = "cCAD",
   "cAUD" = "cAUD",
+  "cCHF" = "cCHF",
+  "cNGN" = "cNGN",
+  "cJPY" = "cJPY",
 }
 
 export const cTokens = [
