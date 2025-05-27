@@ -1,0 +1,35 @@
+name: PR Healthcheck
+
+on: push
+
+jobs:
+  define-specs:
+    name: "Define Spec Names for PR Healthcheck"
+    runs-on: ubuntu-latest
+    outputs:
+      spec-names: ${{ steps.extract-spec-names.outputs.spec-names }}
+    steps:
+      - name: Define spec names for PR healthcheck
+        id: extract-spec-names
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" =~ __(.*)__ ]]; then
+            echo "Using the parsed spec names: ${BASH_REMATCH[1]}"
+            echo "spec-names=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+          else
+            echo "No spec names found in commit message!"
+            echo "Using the default 'connect-wallet' spec to validate the PR"
+            echo "spec-names=connect-wallet" >> $GITHUB_OUTPUT
+          fi
+
+  test:
+    name: "PR Healthcheck Test Run"
+    needs: define-specs
+    uses: ./.github/workflows/common-test.yml
+    with:
+      SPEC_NAMES: ${{ needs.define-specs.outputs.spec-names }}
+      SPECS_TYPE: "web"
+      IS_MAINNET: "false"
+      HTML_REPORT_NAME: "pr-healthcheck-run"
+      TESTOMAT_REPORT_GENERATION: "false"
+      NOTIFICATION_MESSAGE: "[Automated-Tests] PR Healthcheck"
+    secrets: inherit
