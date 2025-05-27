@@ -28,7 +28,7 @@ jobs:
     with:
       SPEC_NAMES: ${{ needs.define-specs.outputs.spec-names }}
       SPECS_TYPE: "web"
-      IS_MAINNET: "true"
+      IS_MAINNET: "false"
       HTML_REPORT_NAME: "pr-healthcheck-run"
       TESTOMAT_REPORT_GENERATION: "false"
       NOTIFICATION_MESSAGE: "[Automated-Tests] PR Healthcheck"
