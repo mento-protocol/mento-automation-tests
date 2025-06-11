@@ -5,32 +5,13 @@ import { Network, WalletName } from "@services/index";
 
 const testCases = [
   {
-    network: Network.Baklava,
-    id: "@T5eb11e48",
-    disable: {
-      reason:
-        "[Mento-Web] Can't click any button from the down side of application due to overlapping by image",
-      link: "https://linear.app/mento-labs/issue/SUP-158",
-    },
-  },
-  {
     network: Network.Alfajores,
     id: "@T97490a07",
-    disable: {
-      reason:
-        "[Mento-Web] Can't click any button from the down side of application due to overlapping by image",
-      link: "https://linear.app/mento-labs/issue/SUP-158",
-    },
-    // disable: { reason: "Initially set as default for tests" },
+    disable: { reason: "Initially set as default for tests" },
   },
   {
     network: Network.Celo,
     id: "@T3130e821",
-    disable: {
-      reason:
-        "[Mento-Web] Can't click any button from the down side of application due to overlapping by image",
-      link: "https://linear.app/mento-labs/issue/SUP-158",
-    },
   },
 ];
 
@@ -46,27 +27,19 @@ suite({
 
   tests: [
     {
-      name: "Reject switch network transaction",
-      disable: {
-        reason:
-          "[Mento-Web] Can't click any button from the down side of application due to overlapping by image",
-        link: "https://linear.app/mento-labs/issue/SUP-158",
-      },
+      name: "Reject switch network",
       testCaseId: "@Tbf3f639c",
       test: async ({ web, metamaskHelper }) => {
-        await web.main.walletSettingsPopup.networkDetails.switchNetworkByName(
-          Network.Baklava,
-        );
+        await web.main.walletSettingsPopup.networkDetails.page.networkButtons[
+          Network.Celo
+        ].click();
         await metamaskHelper.rejectSwitchNetwork();
-        expect
-          .soft(
-            await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
-          )
-          .toBeTruthy();
-        // todo: Enable when new locators are merged into main
-        // expect(await web.main.networkDetails.getCurrentNetwork()).toEqual(
-        //   Network.Alfajores,
-        // );
+        expect(
+          await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
+        ).toBeTruthy();
+        expect(
+          await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork(),
+        ).toEqual(Network.Alfajores);
       },
     },
     ...testCases.map(testCase => {
@@ -74,20 +47,19 @@ suite({
         name: `Switch to the '${testCase.network}' network`,
         testCaseId: testCase.id,
         disable: testCase?.disable,
-        test: async ({ web, metamaskHelper }: IExecution) => {
+        test: async ({ web }: IExecution) => {
           await web.main.walletSettingsPopup.networkDetails.switchNetworkByName(
             testCase.network,
           );
-          await metamaskHelper.approveSwitchNetwork();
-          expect
-            .soft(
-              await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
-            )
-            .toBeFalsy();
-          // todo: Enable when new locators are merged into main
-          // expect(await web.main.networkDetails.getCurrentNetwork()).toEqual(
-          //   testCase.network,
-          // );
+          expect(
+            await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
+          ).toBeFalsy();
+          await web.main.walletSettingsPopup.networkDetails.waitForNetworkToChange(
+            Network.Alfajores,
+          );
+          expect(
+            await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork(),
+          ).toEqual(testCase.network);
         },
       };
     }),

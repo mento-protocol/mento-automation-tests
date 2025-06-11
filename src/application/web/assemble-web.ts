@@ -16,6 +16,8 @@ import {
   NetworkDetailsModalService,
 } from "@services/index";
 import { IAssembleWeb, IAssembleWebArgs } from "./assemble-web.types";
+import { SelectTokenModalPo } from "@page-objects/select-token-modal/select-token-modal.po";
+import { SlippageModalPo } from "@page-objects/slippage-modal/slippage-modal.po";
 
 export function assembleWeb({
   pwPage,
@@ -47,6 +49,8 @@ export function assembleWeb({
     }),
     swap: new SwapService({
       page: new SwapPo(ef),
+      selectTokenModalPage: new SelectTokenModalPo(ef),
+      slippageModalPage: new SlippageModalPo(ef),
       ...baseDependencies,
       confirm: new ConfirmSwapService({
         page: new ConfirmSwapPo(ef),

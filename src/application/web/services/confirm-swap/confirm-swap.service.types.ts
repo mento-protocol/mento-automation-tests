@@ -3,7 +3,7 @@ import { ConfirmSwapPo } from "@page-objects/index";
 import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 
 export interface IConfirmSwapService {
-  getCurrentPriceFromConfirmation: () => Promise<string>;
+  getRate: () => Promise<string>;
   getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
   confirm: (metamaskHelper: IMetamaskHelper) => Promise<void>;
   navigateToCeloExplorer: () => Promise<void>;

@@ -67,7 +67,8 @@ export class MainService extends BaseService implements IMainService {
   }
 
   async openNetworkDetails(): Promise<void> {
-    await this.page.networkDetailsButton.click();
+    await this.openWalletSettings();
+    await this.walletSettingsPopup.page.changeNetworkButton.click();
     await this.networkDetailsModal.page.verifyIsOpen();
   }
 
@@ -123,7 +124,7 @@ export class MainService extends BaseService implements IMainService {
       {
         throwError: false,
         interval: timeouts.xxs,
-        errorMessage: `Current balance still less than '${initialBalance}' initial balance`,
+        errorMessage: `Current balance still equals to initial balance: '${initialBalance}'`,
       },
     );
   }
@@ -202,6 +203,22 @@ export class MainService extends BaseService implements IMainService {
       }),
     ).toBeGreaterThan(initialBalance);
   }
+
+  // TODO: Think about this
+  // async expectDecreasedBalance({
+  //   initialBalance,
+  //   tokenName,
+  // }: IWaitForBalanceToChangeArgs): Promise<void> {
+  //   await this.waitForBalanceToIncrease({
+  //     initialBalance,
+  //     tokenName,
+  //   });
+  //   expect(
+  //     await this.getTokenBalanceByName(tokenName, {
+  //       shouldOpenSettings: false,
+  //     }),
+  //   ).toBeLessThan(initialBalance);
+  // }
 
   async switchNetwork({
     networkName,

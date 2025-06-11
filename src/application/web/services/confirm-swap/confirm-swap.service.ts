@@ -8,14 +8,12 @@ import {
   BaseService,
 } from "@services/index";
 import { loggerHelper } from "@helpers/logger/logger.helper";
+import { testUtils } from "@helpers/suite/suite.helper";
 
 const logger = loggerHelper.get("ConfirmSwapService");
 
 @ClassLog
-export class ConfirmSwapService
-  extends BaseService
-  implements IConfirmSwapService
-{
+export class ConfirmSwapService extends BaseService {
   public override page: ConfirmSwapPo = null;
 
   constructor(args: IConfirmSwapServiceArgs) {
@@ -24,50 +22,49 @@ export class ConfirmSwapService
     this.page = page;
   }
 
-  async getCurrentPriceFromConfirmation(): Promise<string> {
-    return (await this.page.currentPriceLabel.getText()).replace(":", "~");
+  async getRate(): Promise<string> {
+    return (await this.page.rateLabel.getText()).replace("=", "~");
   }
 
-  async getCurrentPriceFromSwap(waitTimeout?: number): Promise<string> {
-    waitTimeout &&
-      (await waiterHelper.sleep(waitTimeout, {
-        sleepReason: "re-calculating after swapping inputs",
-      }));
-    return this.page.currentPriceLabel.getText();
+  async confirmBothTxs(): Promise<void> {
+    await this.confirmApprovalTx();
+    await this.confirmSwapTx();
   }
 
-  async confirm(): Promise<void> {
-    if (
-      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.s, {
-        throwError: false,
-      })
-    ) {
-      logger.debug(
-        "Sent and confirms approval and swap txs because sufficient allowance is not exist yet",
-      );
-      await this.confirmApprovalAndSwapTransactions();
-    } else {
-      logger.debug(
-        "Sent and confirms only swap tx because sufficient allowance already exists",
-      );
-      await this.metamaskHelper.confirmTransaction();
-    }
-    await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
-      timeouts.xl,
-      { errorMessage: "Swap completion notification is not displayed" },
-    );
-    await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
-      errorMessage: "Swap performing popup is still there",
-    });
-  }
-
-  private async confirmApprovalAndSwapTransactions(): Promise<void> {
+  async confirmApprovalTx(): Promise<void> {
     await this.metamaskHelper.confirmTransaction();
     await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
       timeouts.xl,
       { errorMessage: "Approve tx notification is not displayed" },
     );
+  }
+
+  async confirmSwapTx(): Promise<void> {
+    await this.page.swapButton.click({ timeout: timeouts.s });
+    await this.verifyNoValidMedianCase();
+    await this.verifyTradingSuspendedCase();
     await this.metamaskHelper.confirmTransaction();
+    await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
+      timeouts.xl,
+      { errorMessage: "Swap tx notification is not displayed" },
+    );
+  }
+
+  async verifyNoValidMedianCase(): Promise<void> {
+    return (await this.isNoValidMedian())
+      ? testUtils.disableInRuntime(
+          { reason: "No valid median to swap" },
+          "'no valid median' case",
+        )
+      : logger.info("'No valid median' case is not defined - keep swapping");
+  }
+
+  async verifyTradingSuspendedCase(): Promise<void> {
+    if (await this.isTradingSuspended()) {
+      logger.error("Trading is suspended for this reference rate");
+      throw new Error("Trading is suspended for this reference rate");
+    }
+    logger.info("'Trading suspended' case is not defined - keep swapping");
   }
 
   async rejectByType(txType: "approval" | "swap"): Promise<void> {
@@ -76,14 +73,14 @@ export class ConfirmSwapService
       `Rejection of ${isApprovalTx ? "approval and swap txs" : "swap tx"}`,
     );
     isApprovalTx ? await this.rejectApprovalTx() : await this.rejectSwapTx();
-    await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
-      errorMessage: "Swap performing popup is still there",
-    });
+    // await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
+    //   errorMessage: "Swap performing popup is still there",
+    // });
   }
 
   private async rejectApprovalTx(): Promise<void> {
     if (
-      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.s, {
+      await this.page.approveButton.waitUntilDisplayed(timeouts.s, {
         throwError: false,
       })
     ) {
@@ -95,7 +92,7 @@ export class ConfirmSwapService
 
   private async rejectSwapTx(): Promise<void> {
     if (
-      await this.page.approveAndSwapTxsLabel.waitUntilDisplayed(timeouts.s, {
+      await this.page.approveButton.waitUntilDisplayed(timeouts.s, {
         throwError: false,
       })
     ) {
@@ -112,12 +109,6 @@ export class ConfirmSwapService
 
   async navigateToCeloExplorer(): Promise<void> {
     await this.page.seeDetailsLinkButton.click();
-  }
-
-  async isSwapPerformingPopupThere(): Promise<boolean> {
-    return this.page.swapPerformingPopupLabel.waitUntilDisplayed(timeouts.m, {
-      throwError: false,
-    });
   }
 
   async isApproveCompleteNotificationThere(): Promise<boolean> {
@@ -138,6 +129,40 @@ export class ConfirmSwapService
     return this.page.rejectSwapTransactionNotificationLabel.waitUntilDisplayed(
       timeouts.s,
       { throwError: false },
+    );
+  }
+
+  private async isNoValidMedian(): Promise<boolean> {
+    return !(await this.isRateLoaded())
+      ? waiterHelper.retry(
+          async () => {
+            return this.browser.hasConsoleErrorsMatchingText("no valid median");
+          },
+          5,
+          {
+            interval: timeouts.xs,
+            throwError: false,
+            continueWithException: true,
+            errorMessage: "Checking for a 'no valid median' case",
+          },
+        )
+      : false;
+  }
+
+  private async isTradingSuspended(): Promise<boolean> {
+    return waiterHelper.retry(
+      async () => {
+        return this.browser.hasConsoleErrorsMatchingText(
+          "Trading is suspended for this reference rate",
+        );
+      },
+      2,
+      {
+        interval: timeouts.xs,
+        throwError: false,
+        continueWithException: true,
+        errorMessage: "Checking for a 'trading suspended' case",
+      },
     );
   }
 }

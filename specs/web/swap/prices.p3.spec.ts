@@ -9,20 +9,18 @@ suite({
   },
   tests: [
     {
-      name: "Prices are equal on all stages and correct",
+      name: "Rates are equal on all the stages",
       testCaseId: "@T2332ee03",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { to: Token.CELO, from: Token.cUSD },
-          fromAmount: "0.0001",
+          tokens: { from: Token.cEUR, to: Token.CELO },
+          sellAmount: "0.0001",
         });
-        expect(await web.swap.isCurrentPriceThere()).toBeTruthy();
+        expect(await web.swap.isRateThere()).toBeTruthy();
         const { beforeSwapPrice, afterSwapPrice } = await web.swap.swapInputs();
         expect(beforeSwapPrice).not.toEqual(afterSwapPrice);
-        await web.swap.continueToConfirmation();
-        expect(afterSwapPrice).toEqual(
-          await web.swap.confirm.getCurrentPriceFromConfirmation(),
-        );
+        await web.swap.proceedToConfirmation();
+        expect(afterSwapPrice).toEqual(await web.swap.confirm.getRate());
       },
     },
     {
@@ -30,31 +28,39 @@ suite({
       testCaseId: "@T9906952e",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { to: Token.cUSD, from: Token.CELO },
-          toAmount: "0.0001",
+          tokens: { from: Token.cEUR, to: Token.CELO },
+          buyAmount: "0.0001",
         });
         expect(await web.swap.isFromInputEmpty()).toBeFalsy();
       },
     },
     {
-      name: `Use full balance using '${Token.CELO}' as 'From Token'`,
+      name: `Use max balance using '${Token.CELO}' as 'Sell'`,
       testCaseId: "@Ta34f8bd6",
       test: async ({ web }) => {
+        const maxBalance = (
+          await web.main.getTokenBalanceByName(Token.CELO)
+        ).toString();
         await web.swap.fillForm({
           tokens: { from: Token.CELO, to: Token.cUSD },
         });
         await web.swap.useFullBalance();
+        expect(await web.swap.getSellTokenAmount()).toEqual(maxBalance);
         expect(await web.swap.isConsiderKeepNotificationThere()).toBeTruthy();
       },
     },
     {
-      name: `Use full balance using anything as 'from' besides '${Token.CELO}'`,
+      name: `Use max balance using anything as 'from' besides '${Token.CELO}'`,
       testCaseId: "@T80d4fbc3",
       test: async ({ web }) => {
+        const maxBalance = (
+          await web.main.getTokenBalanceByName(Token.cCHF)
+        ).toString();
         await web.swap.fillForm({
-          tokens: { from: Token.cUSD, to: Token.CELO },
+          tokens: { from: Token.cCHF, to: Token.cUSD },
         });
         await web.swap.useFullBalance();
+        expect(await web.swap.getSellTokenAmount()).toEqual(maxBalance);
         expect(await web.swap.isConsiderKeepNotificationThere()).toBeFalsy();
       },
     },

@@ -1,4 +1,5 @@
 import { ClassLog } from "@decorators/logger.decorators";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { NetworkDetailsModalPo } from "@page-objects/index";
 import {
   BaseService,
@@ -36,5 +37,16 @@ export class NetworkDetailsModalService
 
   async getCurrentNetwork(): Promise<string> {
     return this.page.currentNetworkLabel.getText();
+  }
+
+  async waitForNetworkToChange(initialNetwork: string): Promise<boolean> {
+    return waiterHelper.retry(
+      async () =>
+        (await this.page.currentNetworkLabel.getText()) !== initialNetwork,
+      3,
+      {
+        throwError: false,
+      },
+    );
   }
 }

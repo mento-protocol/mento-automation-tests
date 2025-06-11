@@ -28,9 +28,9 @@ suite({
             from: pairs.rejectApproval.from,
             to: pairs.rejectApproval.to,
           },
-          fromAmount: defaultSwapAmount,
+          sellAmount: defaultSwapAmount,
         });
-        await web.swap.start();
+        await web.swap.page.approveButton.click();
         await web.swap.confirm.rejectByType("approval");
         expect(
           await web.swap.confirm.isRejectApprovalTxNotificationThere(),
@@ -46,9 +46,11 @@ suite({
             from: pairs.rejectSwap.from,
             to: pairs.rejectSwap.to,
           },
-          fromAmount: defaultSwapAmount,
+          sellAmount: defaultSwapAmount,
         });
-        await web.swap.start();
+        await web.swap.proceedToConfirmation();
+        await web.swap.confirm.page.verifyIsOpen();
+        await web.swap.confirm.page.swapButton.click();
         await web.swap.confirm.rejectByType("swap");
         expect(
           await web.swap.confirm.isRejectSwapTxNotificationThere(),

@@ -26,6 +26,9 @@ export class ConnectWalletModalService
   }
 
   async close(): Promise<void> {
-    return this.page.closeButton.click({ force: true });
+    return this.page.closeButton.click({
+      force: true,
+      timeout: timeouts.xxs,
+    });
   }
 }
