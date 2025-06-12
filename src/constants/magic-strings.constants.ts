@@ -2,7 +2,7 @@ export const magicStrings = {
   url: {
     web: {
       prod: {
-        base: "https://app.mento.org/",
+        base: "https://appmentoorg.vercel.app/",
       },
     },
     api: {
