@@ -222,8 +222,8 @@ export class SwapService extends BaseService {
     return this.page.considerKeepNotificationLabel.isDisplayed();
   }
 
-  async isFromInputEmpty(): Promise<boolean> {
-    return !(await this.page.buyAmountInput.getValue()).length;
+  async isSellInputEmpty(): Promise<boolean> {
+    return !(await this.page.sellAmountInput.getValue()).length;
   }
 
   async waitForLoadedRate(): Promise<boolean> {

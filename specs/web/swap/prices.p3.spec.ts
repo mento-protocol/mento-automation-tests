@@ -24,14 +24,14 @@ suite({
       },
     },
     {
-      name: "'From' field is auto-calculating when 'to' is filled`",
+      name: "'Sell' field is auto-calculating when 'Buy' is filled`",
       testCaseId: "@T9906952e",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { from: Token.cEUR, to: Token.CELO },
           buyAmount: "0.0001",
         });
-        expect(await web.swap.isFromInputEmpty()).toBeFalsy();
+        expect(await web.swap.isSellInputEmpty()).toBeFalsy();
       },
     },
     {
