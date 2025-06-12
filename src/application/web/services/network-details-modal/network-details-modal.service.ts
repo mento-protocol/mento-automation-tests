@@ -41,10 +41,9 @@ export class NetworkDetailsModalService
   }
 
   async waitForNetworkToChange(initialNetwork: string): Promise<boolean> {
-    const currentNetwork = await this.getCurrentNetwork();
-    return waiterHelper.retry(
-      async () => currentNetwork !== initialNetwork,
-      3,
+    return waiterHelper.wait(
+      async () => (await this.getCurrentNetwork()) !== initialNetwork,
+      timeouts.s,
       {
         throwError: false,
         errorMessage: `Network didn't change from ${initialNetwork}`,
