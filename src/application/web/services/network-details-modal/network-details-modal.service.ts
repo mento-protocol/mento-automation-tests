@@ -25,7 +25,7 @@ export class NetworkDetailsModalService
     this.page = page;
   }
 
-  async switchNetworkByName(
+  async switchToNetworkByName(
     name: Network,
     { shouldClosePopup = false }: ISwitchNetworkByName = {},
   ): Promise<void> {

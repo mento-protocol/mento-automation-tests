@@ -231,7 +231,7 @@ export class MainService extends BaseService implements IMainService {
       Token.CELO,
     );
     await this.walletSettingsPopup.openNetworkDetails();
-    await this.walletSettingsPopup.networkDetails.switchNetworkByName(
+    await this.walletSettingsPopup.networkDetails.switchToNetworkByName(
       networkName,
       { shouldClosePopup: true },
     );

@@ -1,19 +1,12 @@
 import { expect } from "@fixtures/common/common.fixture";
+import { envHelper } from "@helpers/env/env.helper";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { Network, WalletName } from "@services/index";
 
-const testCases = [
-  {
-    network: Network.Alfajores,
-    id: "@T97490a07",
-  },
-  {
-    network: Network.Celo,
-    id: "@T3130e821",
-    disable: { reason: "Initially set as default for parallel tests" },
-  },
-];
+const networkNameToSwitch = envHelper.isMainnet()
+  ? Network.Alfajores
+  : Network.Celo;
 
 suite({
   name: "Switch network",
@@ -42,26 +35,23 @@ suite({
         ).toEqual(Network.Alfajores);
       },
     },
-    ...testCases.map(testCase => {
-      return {
-        name: `Switch to the '${testCase.network}' network`,
-        testCaseId: testCase.id,
-        disable: testCase?.disable,
-        test: async ({ web }: IExecution) => {
-          await web.main.walletSettingsPopup.networkDetails.switchNetworkByName(
-            testCase.network,
-          );
-          expect(
-            await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
-          ).toBeFalsy();
-          await web.main.walletSettingsPopup.networkDetails.waitForNetworkToChange(
-            Network.Alfajores,
-          );
-          expect(
-            await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork(),
-          ).toEqual(testCase.network);
-        },
-      };
-    }),
+    {
+      name: `Switch network to ${networkNameToSwitch}`,
+      testCaseId: "@T97490a07",
+      test: async ({ web }: IExecution) => {
+        await web.main.walletSettingsPopup.networkDetails.switchToNetworkByName(
+          networkNameToSwitch,
+        );
+        expect(
+          await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
+        ).toBeFalsy();
+        await web.main.walletSettingsPopup.networkDetails.waitForNetworkToChange(
+          Network.Alfajores,
+        );
+        expect(
+          await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork(),
+        ).toEqual(networkNameToSwitch);
+      },
+    },
   ],
 });
