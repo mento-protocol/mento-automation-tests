@@ -7,11 +7,11 @@ const testCases = [
   {
     network: Network.Alfajores,
     id: "@T97490a07",
-    disable: { reason: "Initially set as default for tests" },
   },
   {
     network: Network.Celo,
     id: "@T3130e821",
+    disable: { reason: "Initially set as default for parallel tests" },
   },
 ];
 
