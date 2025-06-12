@@ -81,7 +81,6 @@ export class SwapService extends BaseService {
       await this.page.selectBuyTokenButton.click({
         force: true,
         timeout: timeouts.s,
-        times: clicksOnTokenSelector,
       });
       await this.selectTokenModalPage.verifyIsOpen();
       await this.selectTokenModalPage.tokens[args.to].click({
