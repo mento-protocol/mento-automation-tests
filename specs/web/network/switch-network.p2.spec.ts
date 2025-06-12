@@ -2,6 +2,7 @@ import { expect } from "@fixtures/common/common.fixture";
 import { envHelper } from "@helpers/env/env.helper";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { Network, WalletName } from "@services/index";
 
 const networkNameToSwitch = envHelper.isMainnet()
@@ -23,22 +24,27 @@ suite({
       name: "Reject switch network",
       testCaseId: "@Tbf3f639c",
       test: async ({ web, metamaskHelper }) => {
+        const initialNetworkName =
+          await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork();
         await web.main.walletSettingsPopup.networkDetails.page.networkButtons[
-          Network.Celo
+          networkNameToSwitch
         ].click();
+        await metamaskHelper.approveNewNetwork();
         await metamaskHelper.rejectSwitchNetwork();
         expect(
           await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
         ).toBeTruthy();
         expect(
           await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork(),
-        ).toEqual(Network.Alfajores);
+        ).toEqual(initialNetworkName);
       },
     },
     {
       name: `Switch network to ${networkNameToSwitch}`,
       testCaseId: "@T97490a07",
       test: async ({ web }: IExecution) => {
+        const intialNetworkName =
+          await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork();
         await web.main.walletSettingsPopup.networkDetails.switchToNetworkByName(
           networkNameToSwitch,
         );
@@ -46,7 +52,7 @@ suite({
           await web.main.page.failedSwitchNetworkNotificationLabel.isDisplayed(),
         ).toBeFalsy();
         await web.main.walletSettingsPopup.networkDetails.waitForNetworkToChange(
-          Network.Alfajores,
+          intialNetworkName,
         );
         expect(
           await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork(),

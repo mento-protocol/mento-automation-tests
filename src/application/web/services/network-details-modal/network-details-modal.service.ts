@@ -1,4 +1,6 @@
+import { timeouts } from "@constants/timeouts.constants";
 import { ClassLog } from "@decorators/logger.decorators";
+import { envHelper } from "@helpers/env/env.helper";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { NetworkDetailsModalPo } from "@page-objects/index";
 import {
@@ -40,12 +42,14 @@ export class NetworkDetailsModalService
   }
 
   async waitForNetworkToChange(initialNetwork: string): Promise<boolean> {
+    const currentNetwork = await this.getCurrentNetwork();
     return waiterHelper.retry(
-      async () =>
-        (await this.page.currentNetworkLabel.getText()) !== initialNetwork,
+      async () => currentNetwork !== initialNetwork,
       3,
       {
         throwError: false,
+        errorMessage: `Network didn't change from ${initialNetwork}`,
+        interval: timeouts.xxxxs,
       },
     );
   }
