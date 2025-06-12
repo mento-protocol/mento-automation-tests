@@ -1,6 +1,6 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { ElementsList, Button, Label } from "@page-elements/index";
-import { BasePo, IConfirmSwapPo } from "@page-objects/index";
+import { BasePo } from "@page-objects/index";
 
 export class ConfirmSwapPo extends BasePo {
   constructor(protected override ef: ElementFinderHelper) {

@@ -1,11 +1,5 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import {
-  Button,
-  Dropdown,
-  ElementsList,
-  Input,
-  Label,
-} from "@page-elements/index";
+import { Button, Label } from "@page-elements/index";
 import { Token } from "@constants/token.constants";
 import { BasePo, ITokenDropdownOptions } from "@page-objects/index";
 

@@ -2,11 +2,7 @@ import { ConfirmSwapPo } from "@page-objects/index";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { ClassLog } from "@decorators/logger.decorators";
-import {
-  IConfirmSwapService,
-  IConfirmSwapServiceArgs,
-  BaseService,
-} from "@services/index";
+import { IConfirmSwapServiceArgs, BaseService } from "@services/index";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { testUtils } from "@helpers/suite/suite.helper";
 

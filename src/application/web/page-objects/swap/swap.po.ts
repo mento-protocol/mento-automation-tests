@@ -1,13 +1,7 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import {
-  Button,
-  Dropdown,
-  ElementsList,
-  Input,
-  Label,
-} from "@page-elements/index";
+import { Button, Input, Label } from "@page-elements/index";
 import { Token } from "@constants/token.constants";
-import { ISwapPo, BasePo, ITokenDropdownOptions } from "@page-objects/index";
+import { BasePo } from "@page-objects/index";
 
 export class SwapPo extends BasePo {
   constructor(protected override ef: ElementFinderHelper) {

@@ -1,11 +1,5 @@
 import { Token } from "@constants/token.constants";
-import {
-  Button,
-  Dropdown,
-  ElementsList,
-  Input,
-  Label,
-} from "@page-elements/index";
+import { Button } from "@page-elements/index";
 
 export interface ITokenDropdownOptions extends Record<string, Button> {
   [Token.CELO]: Button;

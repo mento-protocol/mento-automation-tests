@@ -1,7 +1,7 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { Button, Label } from "@page-elements/index";
 import { Network } from "@services/index";
-import { INetworkDetailsModalPo, BasePo } from "@page-objects/index";
+import { BasePo } from "@page-objects/index";
 
 export class NetworkDetailsModalPo extends BasePo {
   constructor(protected override ef: ElementFinderHelper) {
