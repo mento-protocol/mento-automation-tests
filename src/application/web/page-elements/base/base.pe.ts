@@ -48,17 +48,19 @@ export abstract class BasePe implements IBasePe {
   async click({
     timeout = timeouts.action,
     throwError = true,
+    force = false,
+    times,
   }: IClickParams = {}): Promise<void> {
     const element = await this.element;
     await this.waitUntilDisplayed(timeout, { throwError });
     try {
       if (await this.isEnabled()) {
-        await element.click({ timeout });
+        await element.click({ force, timeout, clickCount: times });
       } else {
         logger.warn(
           `Element with '${this.locator}' is disabled - force clicking...`,
         );
-        await element.click({ force: true, timeout });
+        await element.click({ force: true, timeout, clickCount: times });
       }
     } catch (error) {
       const errorMessage = `Can't click on element with '${this.locator}' locator.\nError details: ${error.message}`;

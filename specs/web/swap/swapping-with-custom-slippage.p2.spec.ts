@@ -47,12 +47,15 @@ suite({
           );
           await web.swap.fillForm({
             slippage: testCase.slippage,
-            tokens: { from: tokens.from, to: tokens.to },
-            fromAmount: defaultSwapAmount,
+            tokens: {
+              from: tokens.from,
+              to: tokens.to,
+              clicksOnTokenSelector: 1,
+            },
+            sellAmount: defaultSwapAmount,
           });
-          expect.soft(await web.swap.isCurrentPriceThere()).toBeTruthy();
+          expect.soft(await web.swap.isRateThere()).toBeTruthy();
           await web.swap.start();
-          await web.swap.confirm.confirm();
           await web.main.expectIncreasedBalance({
             tokenName: tokens.to,
             initialBalance,

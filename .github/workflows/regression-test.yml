@@ -32,8 +32,7 @@ jobs:
     uses: ./.github/workflows/common-test.yml
     with:
       SPECS_TYPE: web
-      SPECS_FOLDER_NAME: swap
-      SPEC_NAMES: swapping
+      SPEC_NAMES: "swapping,switch-network"
       IS_PARALLEL_RUN: "false"
       IS_MAINNET: "false"
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}

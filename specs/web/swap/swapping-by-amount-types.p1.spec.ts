@@ -4,8 +4,8 @@ import { suite } from "@helpers/suite/suite.helper";
 import { AmountType } from "@services/index";
 
 const tokens = {
-  from: Token.cUSD,
-  to: Token.CELO,
+  from: Token.CELO,
+  to: Token.cUSD,
 };
 
 suite({
@@ -15,42 +15,41 @@ suite({
   },
   tests: [
     {
-      name: `Swap-in (${tokens.from}/${tokens.to})`,
+      name: `Sell (${tokens.from}/${tokens.to})`,
       testCaseId: "@Tab822de9",
       test: async ({ web }) => {
-        const initialBalance = await web.main.getTokenBalanceByName(Token.CELO);
+        const initialBalance = await web.main.getTokenBalanceByName(tokens.to);
         await web.swap.fillForm({
-          tokens: { from: Token.cUSD, to: Token.CELO },
-          fromAmount: defaultSwapAmount,
+          tokens: { from: tokens.from, to: tokens.to },
+          sellAmount: defaultSwapAmount,
         });
         expect
-          .soft(Number(await web.swap.getAmountByType(AmountType.Out)))
+          .soft(Number(await web.swap.getAmountByType(AmountType.Buy)))
           .toBeGreaterThan(0);
         await web.swap.start();
-        await web.swap.confirm.confirm();
         await web.main.expectIncreasedBalance({
           initialBalance,
-          tokenName: Token.CELO,
+          tokenName: tokens.to,
         });
       },
     },
     {
-      name: `Swap-out (${tokens.from}/${tokens.to})`,
+      name: `Buy (${tokens.from}/${tokens.to})`,
       testCaseId: "@T3c8db175",
       test: async ({ web }) => {
-        const initialBalance = await web.main.getTokenBalanceByName(Token.CELO);
+        const initialBalance = await web.main.getTokenBalanceByName(tokens.to);
         await web.swap.fillForm({
-          tokens: { from: Token.cUSD, to: Token.CELO },
-          toAmount: defaultSwapAmount,
+          tokens: { from: tokens.from, to: tokens.to },
+          buyAmount: defaultSwapAmount,
         });
+
         expect
-          .soft(Number(await web.swap.getAmountByType(AmountType.In)))
+          .soft(Number(await web.swap.getAmountByType(AmountType.Sell)))
           .toBeGreaterThan(0);
         await web.swap.start();
-        await web.swap.confirm.confirm();
         await web.main.expectIncreasedBalance({
-          initialBalance,
-          tokenName: Token.CELO,
+          initialBalance: initialBalance,
+          tokenName: tokens.to,
         });
       },
     },

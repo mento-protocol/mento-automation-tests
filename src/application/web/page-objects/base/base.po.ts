@@ -6,7 +6,7 @@ import { promiseHelper } from "@helpers/promise/promise.helper";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 import { IIsOpenOpts } from "@page-objects/index";
-import { BasePe } from "@page-elements/index";
+import { BasePe, Label } from "@page-elements/index";
 
 const logger = loggerHelper.get("BasePo");
 
@@ -15,6 +15,8 @@ export abstract class BasePo {
   protected abstract staticElements: BasePe[];
 
   protected constructor(protected ef: ElementFinderInterface) {}
+
+  rateLabel = new Label(this.ef.dataTestId("rateLabel"));
 
   async navigateToNewTab(
     currentBrowserContext: BrowserContext,

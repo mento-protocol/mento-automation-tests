@@ -15,11 +15,9 @@ export class WalletSettingsPopupPo
     return new Label(this.ef.dataTestId(`walletSettings_${name}_balance`));
   }
 
-  container = new Label(this.ef.className("py-5 font-medium leading-5"));
-
   copyAddressButton = new Button(this.ef.pw.text("Copy Address"));
   changeNetworkButton = new Button(this.ef.pw.text("Change Network"));
   disconnectButton = new Button(this.ef.pw.text("Disconnect"));
 
-  staticElements = [this.container, this.copyAddressButton];
+  staticElements = [this.copyAddressButton];
 }

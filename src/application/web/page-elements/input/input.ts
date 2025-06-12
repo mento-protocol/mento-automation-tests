@@ -6,7 +6,10 @@ export class Input extends BasePe implements IInput {
     super(elementSearcher);
   }
 
-  async enterText(text: string, options?: { timeout: number }): Promise<void> {
+  async enterText(
+    text: string,
+    options: { timeout?: number; force?: boolean } = {},
+  ): Promise<void> {
     return (await this.element).fill(text, options);
   }
 }
