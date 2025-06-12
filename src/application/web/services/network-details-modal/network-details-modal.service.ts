@@ -1,6 +1,5 @@
 import { timeouts } from "@constants/timeouts.constants";
 import { ClassLog } from "@decorators/logger.decorators";
-import { envHelper } from "@helpers/env/env.helper";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { NetworkDetailsModalPo } from "@page-objects/index";
 import {

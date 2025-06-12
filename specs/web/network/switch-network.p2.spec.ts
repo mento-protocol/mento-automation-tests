@@ -2,7 +2,6 @@ import { expect } from "@fixtures/common/common.fixture";
 import { envHelper } from "@helpers/env/env.helper";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
-import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { Network, WalletName } from "@services/index";
 
 const networkNameToSwitch = envHelper.isMainnet()
