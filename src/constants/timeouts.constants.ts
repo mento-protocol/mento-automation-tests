@@ -13,7 +13,7 @@ export const timeouts = {
     return this.m;
   },
   get action(): number {
-    return this.xxxxs;
+    return this.xxxs;
   },
   animation: 250,
   xxxxs: 500,

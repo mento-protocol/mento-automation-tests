@@ -165,10 +165,9 @@ suite({
           );
           await web.swap.fillForm({
             tokens: { from: testCase.fromToken, to: testCase.toToken },
-            fromAmount: testCase?.fromAmount || defaultSwapAmount,
+            sellAmount: testCase?.fromAmount || defaultSwapAmount,
           });
           await web.swap.start();
-          await web.swap.confirm.confirm();
           await web.main.expectIncreasedBalance({
             initialBalance,
             tokenName: testCase.toToken,

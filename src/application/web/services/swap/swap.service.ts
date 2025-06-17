@@ -4,7 +4,6 @@ import {
   IFillFromOpts,
   ISelectTokensArgs,
   ISwapInputs,
-  ISwapService,
   ISwapServiceArgs,
   ConfirmSwapService,
   Slippage,
@@ -14,111 +13,156 @@ import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
-import { testUtils } from "@helpers/suite/suite.helper";
+import { SelectTokenModalPo } from "@page-objects/select-token-modal/select-token-modal.po";
+import { SlippageModalPo } from "@page-objects/slippage-modal/slippage-modal.po";
 
 const logger = loggerHelper.get("SwapService");
 
 @ClassLog
-export class SwapService extends BaseService implements ISwapService {
-  public override page: SwapPo = null;
-  public confirm: ConfirmSwapService = null;
+export class SwapService extends BaseService {
+  override page: SwapPo = null;
+  selectTokenModalPage: SelectTokenModalPo = null;
+  slippageModalPage: SlippageModalPo = null;
+  confirm: ConfirmSwapService = null;
 
   constructor(args: ISwapServiceArgs) {
-    const { page, confirm } = args;
+    const { page, confirm, selectTokenModalPage, slippageModalPage } = args;
     super(args);
     this.page = page;
     this.confirm = confirm;
+    this.selectTokenModalPage = selectTokenModalPage;
+    this.slippageModalPage = slippageModalPage;
+  }
+
+  async proceedToConfirmation(): Promise<void> {
+    if (await this.page.approveButton.isDisplayed()) {
+      await this.page.approveButton.click({ timeout: timeouts.s });
+      await this.confirm.confirmApprovalTx();
+    } else {
+      await this.page.swapButton.click();
+    }
   }
 
   async start(): Promise<void> {
-    await this.verifyNoValidMedianCase();
-    await this.continueToConfirmation();
-    await this.verifyTradingSuspendedCase();
-    await waiterHelper.retry(
-      async () => {
-        await this.confirm.page.swapButton.waitUntilEnabled(timeouts.s);
-        await this.confirm.page.swapButton.click();
-        return this.confirm.page.swapPerformingPopupLabel.waitUntilDisplayed(
-          timeouts.xs,
-          { throwError: false },
-        );
-      },
-      3,
-      { resolveWhenNoException: true, errorMessage: "couldn't start swapping" },
-    );
+    if (await this.page.approveButton.isDisplayed()) {
+      logger.debug(
+        "Confirms the approval and swap TXs because sufficient allowance is not exist yet",
+      );
+      await this.page.approveButton.click({ timeout: timeouts.s });
+      await this.confirm.confirmBothTxs();
+    } else {
+      logger.debug(
+        "Confirms only swap TX because sufficient allowance already exists",
+      );
+      await this.page.swapButton.click();
+      await this.confirm.page.verifyIsOpen();
+      await this.confirm.confirmSwapTx();
+    }
   }
 
   async selectTokens(args: ISelectTokensArgs): Promise<void> {
-    args?.from &&
-      (await this.page.fromTokenDropdown.selectOptionByName(args?.from, {
+    const { clicksOnTokenSelector = 2 } = args;
+    if (args?.from) {
+      await this.page.selectSellTokenButton.click({
+        force: true,
+        timeout: timeouts.s,
+        times: clicksOnTokenSelector,
+      });
+      await this.selectTokenModalPage.verifyIsOpen();
+      await this.selectTokenModalPage.tokens[args?.from].click({
         timeout: timeouts.xxs,
-      }));
-    args?.to &&
-      (await this.page.toTokenDropdown.selectOptionByName(args?.to, {
+      });
+      await this.selectTokenModalPage.verifyIsClosed();
+      await this.page
+        .getSelectedTokenLabel(args.from)
+        .waitUntilDisplayed(timeouts.xxs);
+    }
+    if (args?.to) {
+      await this.page.selectBuyTokenButton.click({
+        force: true,
+        timeout: timeouts.s,
+      });
+      await this.selectTokenModalPage.verifyIsOpen();
+      await this.selectTokenModalPage.tokens[args.to].click({
         timeout: timeouts.xxs,
-      }));
+      });
+      await this.selectTokenModalPage.verifyIsClosed();
+      await this.page
+        .getSelectedTokenLabel(args.to)
+        .waitUntilDisplayed(timeouts.xxs);
+    }
   }
 
-  async chooseSlippage(slippage: Slippage): Promise<void> {
-    logger.debug(`Choosing the '${slippage}' slippage.`);
-    await this.showSlippage();
-    await this.page.maxSlippageButtons[slippage].jsClick();
+  async chooseSlippage(
+    slippage: Slippage,
+    customSlippage?: string,
+  ): Promise<void> {
+    await this.openSlippageModal();
+    customSlippage?.length
+      ? await this.slippageModalPage.customSlippageInput.enterText(
+          customSlippage,
+        )
+      : await this.slippageModalPage.slippageButtons[slippage].click();
+    await this.slippageModalPage.confirmButton.click();
+    await this.slippageModalPage.verifyIsClosed();
   }
 
-  private async showSlippage(): Promise<void> {
-    await this.page.settingsButton.click();
-    await this.page.showSlippageButton.click();
+  private async openSlippageModal(): Promise<void> {
+    await this.page.slippageButton.click({
+      force: true,
+      timeout: timeouts.s,
+      times: 2,
+    });
+    await this.slippageModalPage.verifyIsOpen();
   }
 
   async fillForm(opts: IFillFromOpts): Promise<void> {
-    const { slippage, fromAmount, toAmount, tokens } = opts;
+    const { slippage, sellAmount, buyAmount, tokens } = opts;
     slippage && (await this.chooseSlippage(slippage));
-    await this.selectTokens(tokens);
-    fromAmount && (await this.page.fromAmountInput.enterText(fromAmount));
-    toAmount && (await this.page.toAmountInput.enterText(toAmount));
-    await this.waitForLoadedCurrentPrice();
-  }
-
-  async continueToConfirmation(): Promise<void> {
-    await this.page.continueButton.click();
-    await this.confirm.page.verifyIsOpen();
+    await this.selectTokens({ isSlippage: !!slippage, ...tokens });
+    // TODO: Sort out why we need to click on the input before filling when it's only filling
+    sellAmount && (await this.page.sellAmountInput.click({ force: true }));
+    sellAmount &&
+      (await this.page.sellAmountInput.enterText(sellAmount, { force: true }));
+    buyAmount && (await this.page.buyAmountInput.click({ force: true }));
+    buyAmount &&
+      (await this.page.buyAmountInput.enterText(buyAmount, { force: true }));
+    await this.waitForLoadedRate();
   }
 
   async swapInputs(): Promise<ISwapInputs> {
-    const beforeSwapPrice = await this.getCurrentPriceFromSwap();
-    await this.page.swapInputsButton.click();
-    await this.waitForLoadedCurrentPrice();
-    const afterSwapPrice = await this.getCurrentPriceFromSwap(timeouts.xxs);
+    const beforeSwapPrice = await this.getRate();
+    await this.page.swapInputsButton.click({ timeout: timeouts.xxs });
+    await this.waitForLoadedRate();
+    const afterSwapPrice = await this.getRate(timeouts.xxs);
     return { beforeSwapPrice, afterSwapPrice };
   }
 
-  async getCurrentPriceFromSwap(waitTimeout?: number): Promise<string> {
+  async getRate(waitTimeout?: number): Promise<string> {
     waitTimeout &&
       (await waiterHelper.sleep(waitTimeout, {
         sleepReason: "re-calculating after swapping inputs",
       }));
-    return this.page.currentPriceLabel.getText();
+    return this.page.rateLabel.getText();
   }
 
   async getCurrentToTokenName(): Promise<string> {
-    return (await this.page.toTokenDropdown.getText()).replaceAll(
-      "To Token",
-      "",
-    );
+    return this.page.selectBuyTokenButton.getText();
   }
 
   async getCurrentFromTokenName(): Promise<string> {
-    return (await this.page.fromTokenDropdown.getText()).replaceAll(
-      "From Token",
-      "",
-    );
+    return this.page.selectSellTokenButton.getText();
+  }
+
+  async getSellTokenAmount(): Promise<string> {
+    return this.page.sellAmountInput.getValue();
   }
 
   async getAmountByType(amountType: AmountType): Promise<string> {
     const amountInput =
-      amountType === AmountType.In
-        ? this.page.fromAmountInput
-        : this.page.toAmountInput;
+      amountType === AmountType.Sell
+        ? this.page.sellAmountInput
+        : this.page.buyAmountInput;
     return amountInput.getValue();
   }
 
@@ -130,12 +174,17 @@ export class SwapService extends BaseService implements ISwapService {
     );
   }
 
-  async isContinueButtonThere(): Promise<boolean> {
-    return this.page.continueButton.isDisplayed();
+  async isProceedButtonThere(): Promise<boolean> {
+    return (
+      (await this.page.swapButton.isDisplayed()) ||
+      (await this.page.approveButton.isDisplayed())
+    );
   }
 
-  async isContinueButtonEnabled(): Promise<boolean> {
-    return this.page.continueButton.isEnabled();
+  async isProceedButtonEnabled(): Promise<boolean> {
+    return (await this.page.swapButton.isDisplayed())
+      ? await this.page.swapButton.isEnabled()
+      : await this.page.approveButton.isEnabled();
   }
 
   async isAmountRequiredValidationThere(): Promise<boolean> {
@@ -145,13 +194,7 @@ export class SwapService extends BaseService implements ISwapService {
   }
 
   async isAmountExceedValidationThere(): Promise<boolean> {
-    return this.page.amountExceedsBalanceButton.waitUntilDisplayed(timeouts.s, {
-      throwError: false,
-    });
-  }
-
-  async isAmountTooSmallValidationThere(): Promise<boolean> {
-    return this.page.amountTooSmallButton.waitUntilDisplayed(timeouts.s, {
+    return this.page.insufficientBalanceButton.waitUntilDisplayed(timeouts.s, {
       throwError: false,
     });
   }
@@ -168,83 +211,26 @@ export class SwapService extends BaseService implements ISwapService {
     return this.page.exceedsTradingLimitErrorLabel.waitUntilDisplayed(timeout);
   }
 
-  async isCurrentPriceThere(): Promise<boolean> {
-    return this.page.currentPriceLabel.isDisplayed();
+  async isRateThere(): Promise<boolean> {
+    return (
+      (await this.page.rateLabel.isDisplayed()) &&
+      (await this.page.rateLabel.getText()) !== "..."
+    );
   }
 
   async isConsiderKeepNotificationThere(): Promise<boolean> {
     return this.page.considerKeepNotificationLabel.isDisplayed();
   }
 
-  async isFromInputEmpty(): Promise<boolean> {
-    return !(await this.page.fromAmountInput.getValue()).length;
+  async isSellInputEmpty(): Promise<boolean> {
+    return !(await this.page.sellAmountInput.getValue()).length;
   }
 
-  async verifyNoValidMedianCase(): Promise<void> {
-    return (await this.isNoValidMedian())
-      ? testUtils.disableInRuntime(
-          { reason: "No valid median to swap" },
-          "'no valid median' case",
-        )
-      : logger.info("'No valid median' case is not defined - keep swapping");
-  }
-
-  async verifyTradingSuspendedCase(): Promise<void> {
-    if (await this.isTradingSuspended()) {
-      logger.error("Trading is suspended for this reference rate");
-      throw new Error("Trading is suspended for this reference rate");
-    }
-    logger.info("'Trading suspended' case is not defined - keep swapping");
-  }
-
-  async waitForLoadedCurrentPrice(): Promise<boolean> {
-    return waiterHelper.wait(
-      async () => this.isCurrentPriceLoaded(),
-      timeouts.s,
-      {
-        throwError: false,
-        errorMessage: "Current price is not loaded",
-        interval: timeouts.xxxs,
-      },
-    );
-  }
-
-  private async isNoValidMedian(): Promise<boolean> {
-    return !(await this.isCurrentPriceLoaded())
-      ? waiterHelper.retry(
-          async () => {
-            return this.browser.hasConsoleErrorsMatchingText("no valid median");
-          },
-          5,
-          {
-            interval: timeouts.xs,
-            throwError: false,
-            continueWithException: true,
-            errorMessage: "Checking for a 'no valid median' case",
-          },
-        )
-      : false;
-  }
-
-  private async isTradingSuspended(): Promise<boolean> {
-    return waiterHelper.retry(
-      async () => {
-        return this.browser.hasConsoleErrorsMatchingText(
-          "Trading is suspended for this reference rate",
-        );
-      },
-      2,
-      {
-        interval: timeouts.xs,
-        throwError: false,
-        continueWithException: true,
-        errorMessage: "Checking for a 'trading suspended' case",
-      },
-    );
-  }
-
-  private async isCurrentPriceLoaded(): Promise<boolean> {
-    const currentPriceText = await this.page.currentPriceLabel.getText();
-    return currentPriceText !== "...";
+  async waitForLoadedRate(): Promise<boolean> {
+    return waiterHelper.wait(async () => this.isRateLoaded(), timeouts.s, {
+      throwError: false,
+      errorMessage: "Rate is not loaded",
+      interval: timeouts.xs,
+    });
   }
 }

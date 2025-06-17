@@ -1,12 +1,9 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { Button, Label } from "@page-elements/index";
 import { Network } from "@services/index";
-import { INetworkDetailsModalPo, BasePo } from "@page-objects/index";
+import { BasePo } from "@page-objects/index";
 
-export class NetworkDetailsModalPo
-  extends BasePo
-  implements INetworkDetailsModalPo
-{
+export class NetworkDetailsModalPo extends BasePo {
   constructor(protected override ef: ElementFinderHelper) {
     super(ef);
   }
@@ -20,9 +17,6 @@ export class NetworkDetailsModalPo
     [Network.Celo]: new Button(this.ef.pw.role("button", { name: "Celo" })),
     [Network.Alfajores]: new Button(
       this.ef.pw.role("button", { name: "Alfajores" }),
-    ),
-    [Network.Baklava]: new Button(
-      this.ef.pw.role("button", { name: "Baklava" }),
     ),
   };
 

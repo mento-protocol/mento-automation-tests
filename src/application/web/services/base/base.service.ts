@@ -28,4 +28,10 @@ export class BaseService implements IBaseService {
   async getPageTitle(): Promise<string> {
     return this.browser.getTitle();
   }
+
+  protected async isRateLoaded(): Promise<boolean> {
+    if (!(await this.page.rateLabel.isDisplayed())) return false;
+    const rateText = await this.page.rateLabel.getText();
+    return rateText !== "...";
+  }
 }

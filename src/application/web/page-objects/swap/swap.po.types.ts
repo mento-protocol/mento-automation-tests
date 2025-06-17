@@ -37,8 +37,8 @@ export interface ISwapPo {
   allSlippageButtons: ElementsList<Button>;
   maxSlippageButtons: Record<string, Button>;
   continueButton: Button;
-  fromAmountInput: Input;
-  toAmountInput: Input;
+  sellAmountInput: Input;
+  buyAmountInput: Input;
   currentPriceLabel: Label;
   useMaxButton: Button;
   considerKeepNotificationLabel: Label;

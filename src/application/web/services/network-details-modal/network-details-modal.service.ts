@@ -1,4 +1,6 @@
+import { timeouts } from "@constants/timeouts.constants";
 import { ClassLog } from "@decorators/logger.decorators";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { NetworkDetailsModalPo } from "@page-objects/index";
 import {
   BaseService,
@@ -24,7 +26,7 @@ export class NetworkDetailsModalService
     this.page = page;
   }
 
-  async switchNetworkByName(
+  async switchToNetworkByName(
     name: Network,
     { shouldClosePopup = false }: ISwitchNetworkByName = {},
   ): Promise<void> {
@@ -36,5 +38,17 @@ export class NetworkDetailsModalService
 
   async getCurrentNetwork(): Promise<string> {
     return this.page.currentNetworkLabel.getText();
+  }
+
+  async waitForNetworkToChange(initialNetwork: string): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => (await this.getCurrentNetwork()) !== initialNetwork,
+      timeouts.s,
+      {
+        throwError: false,
+        errorMessage: `Network didn't change from ${initialNetwork}`,
+        interval: timeouts.xxxxs,
+      },
+    );
   }
 }

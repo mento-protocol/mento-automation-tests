@@ -2,15 +2,17 @@ import { SwapPo } from "@page-objects/index";
 import { ConfirmSwapService, IBaseServiceArgs } from "@services/index";
 import { Token } from "@constants/token.constants";
 import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
+import { SelectTokenModalPo } from "@page-objects/select-token-modal/select-token-modal.po";
+import { SlippageModalPo } from "@page-objects/slippage-modal/slippage-modal.po";
 
 export interface ISwapService {
   start: () => Promise<void>;
   selectTokens: (args: ISelectTokensArgs) => Promise<void>;
   chooseSlippage: (slippage: Slippage) => Promise<void>;
   fillForm: (args: IFillFromOpts) => Promise<void>;
-  continueToConfirmation: () => Promise<void>;
+  proceedToConfirmation: () => Promise<void>;
   swapInputs: () => Promise<ISwapInputs>;
-  getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
+  getRate: (waitTimeout?: number) => Promise<string>;
   getCurrentToTokenName: () => Promise<string>;
   getCurrentFromTokenName: () => Promise<string>;
   getAmountByType: (amountType: AmountType) => Promise<string>;
@@ -18,7 +20,7 @@ export interface ISwapService {
   isAmountRequiredValidationThere: () => Promise<boolean>;
   isAmountExceedValidationThere: () => Promise<boolean>;
   isAmountTooSmallValidationThere: () => Promise<boolean>;
-  isCurrentPriceThere: () => Promise<boolean>;
+  isRateThere: () => Promise<boolean>;
   isConsiderKeepNotificationThere: () => Promise<boolean>;
   isFromInputEmpty: () => Promise<boolean>;
   isErrorValidationThere: () => Promise<boolean>;
@@ -30,6 +32,8 @@ export interface ISwapService {
 export interface ISwapServiceArgs extends IBaseServiceArgs {
   page: SwapPo;
   confirm: ConfirmSwapService;
+  selectTokenModalPage: SelectTokenModalPo;
+  slippageModalPage: SlippageModalPo;
   metamaskHelper: IMetamaskHelper;
 }
 
@@ -39,13 +43,13 @@ export interface ISwapInputs {
 }
 
 export enum AmountType {
-  In = "In",
-  Out = "Out",
+  Sell = "Sell",
+  Buy = "Buy",
 }
 
 export interface IFillFromOpts {
-  fromAmount?: string;
-  toAmount?: string;
+  sellAmount?: string;
+  buyAmount?: string;
   tokens?: ISelectTokensArgs;
   slippage?: Slippage;
 }
@@ -59,4 +63,6 @@ export enum Slippage {
 export interface ISelectTokensArgs {
   from?: Token;
   to?: Token;
+  isSlippage?: boolean;
+  clicksOnTokenSelector?: number;
 }

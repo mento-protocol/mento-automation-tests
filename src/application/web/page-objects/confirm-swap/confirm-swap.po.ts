@@ -1,27 +1,24 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { ElementsList, Button, Label } from "@page-elements/index";
-import { BasePo, IConfirmSwapPo } from "@page-objects/index";
+import { BasePo } from "@page-objects/index";
 
-export class ConfirmSwapPo extends BasePo implements IConfirmSwapPo {
+export class ConfirmSwapPo extends BasePo {
   constructor(protected override ef: ElementFinderHelper) {
     super(ef);
   }
 
-  swapPerformingPopupLabel = new Label(this.ef.pw.text("Performing Swap"));
-  swapPerformingPopupCloseButton = new Button(
-    this.ef.pw.role("button", { name: "Close" }),
-  );
+  swapButton = new Button(this.ef.dataTestId("swapButton"));
+  approveButton = new Button(this.ef.dataTestId("approveButton"));
+
   approveCompleteNotificationLabel = new Label(
-    this.ef.pw.text("Approve complete! Sending swap tx See Details"),
+    this.ef.pw.text("Approve complete! Sending swap tx"),
   );
-  swapCompleteNotificationLabel = new Label(
-    this.ef.pw.text("Swap Complete! See Details"),
-  );
+  swapCompleteNotificationLabel = new Label(this.ef.pw.text("Swap Successful"));
   seeDetailsLinkButton = new Button(
     this.ef.pw.role("link", { name: "See Details" }),
   );
 
-  headerLabel = new Label(this.ef.pw.role("heading", { name: "Confirm Swap" }));
+  headerLabel = new Label(this.ef.pw.text("Confirm Swap"));
   swapInfo = {
     all: new ElementsList(
       Label,
@@ -38,22 +35,12 @@ export class ConfirmSwapPo extends BasePo implements IConfirmSwapPo {
         .getElementByIndex(1),
     ),
   };
-  swapButton = new Button(this.ef.pw.dataTestId("confirm-button"));
-  currentPriceLabel = new Label(
-    this.ef.className(
-      "py-2 w-full flex items-center justify-center text-sm rounded-b text-[#AAB3B6]",
-    ),
-  );
   rejectApprovalTransactionNotificationLabel = new Label(
-    this.ef.pw.text("Unable to execute approval transaction"),
+    this.ef.pw.text("Approval transaction rejected by user"),
   );
   rejectSwapTransactionNotificationLabel = new Label(
-    this.ef.pw.text("Unable to execute swap transaction"),
+    this.ef.pw.text("Swap transaction rejected by user"),
   );
-  approveAndSwapTxsLabel = new Label(
-    this.ef.pw.text("Sending two transactions: Approve and Swap"),
-  );
-  swapTxLabel = new Label(this.ef.pw.text(""));
 
   staticElements = [this.headerLabel];
 }
