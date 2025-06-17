@@ -12,7 +12,7 @@ import {
 const { SPEC_NAMES, SPECS_TYPE, SPECS_FOLDER_NAME } = processEnv;
 
 class SpecSelectorHelper implements ISpecSelectorHelper {
-  private readonly excludeTextOnParallelRun = "swapping,switch-network";
+  private readonly excludeTextOnParallelRun = "swapping";
 
   get(): string[] {
     return this.getFilteredNames({
