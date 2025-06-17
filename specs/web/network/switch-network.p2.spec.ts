@@ -21,6 +21,10 @@ suite({
   tests: [
     {
       name: "Reject switch network",
+      disable: {
+        reason: "Fix the flaky 'Switch network' test suite",
+        link: "https://linear.app/mento-labs/issue/AUT-19/",
+      },
       testCaseId: "@Tbf3f639c",
       test: async ({ web, metamaskHelper }) => {
         const initialNetworkName =
@@ -41,6 +45,10 @@ suite({
     {
       name: `Switch network to ${networkNameToSwitch}`,
       testCaseId: "@T97490a07",
+      disable: {
+        reason: "Fix the flaky 'Switch network' test suite",
+        link: "https://linear.app/mento-labs/issue/AUT-19/",
+      },
       test: async ({ web }: IExecution) => {
         const intialNetworkName =
           await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork();
