@@ -53,6 +53,31 @@ class PrimitiveHelper {
       // Check if decimal part has exactly the specified length
       return parts[1].length === decimalPlaces;
     },
+
+    hasMaxDecimalPlaces(
+      value: string | number,
+      maxDecimalPlaces: number,
+    ): boolean {
+      if (typeof value === "number") {
+        value = value.toString();
+      }
+
+      // Handle invalid inputs
+      if (!value || isNaN(Number(value))) {
+        return false;
+      }
+
+      // Split by decimal point
+      const parts = value.split(".");
+
+      // If no decimal point, it's valid (has 0 decimal places)
+      if (parts.length === 1) {
+        return true;
+      }
+
+      // Check if decimal part has no more than the specified length
+      return parts[1].length <= maxDecimalPlaces;
+    },
   };
 
   getRandomFrom<T>(values: T[]): T {
