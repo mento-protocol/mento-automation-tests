@@ -253,7 +253,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@",
+    id: "@T052ce765",
   },
   {
     token: Token.cGBP,
@@ -274,7 +274,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@",
+    id: "@Tb6f16c86",
   },
   {
     token: Token.cZAR,
@@ -295,7 +295,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@",
+    id: "@T9787390d",
   },
   {
     token: Token.cCAD,
@@ -316,7 +316,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@",
+    id: "@T14202806",
   },
   {
     token: Token.cAUD,
@@ -337,7 +337,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@",
+    id: "@Tee27957f",
   },
   {
     token: Token.cCHF,
@@ -358,7 +358,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@",
+    id: "@Tf78b7915",
   },
   {
     token: Token.cJPY,
@@ -379,7 +379,7 @@ const testCases = [
       Token.cCHF,
       Token.cNGN,
     ],
-    id: "@",
+    id: "@Td80ddce2",
   },
   {
     token: Token.cNGN,
@@ -400,7 +400,7 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
     ],
-    id: "@",
+    id: "@T7084e96f",
   },
 ];
 
@@ -427,7 +427,7 @@ suite({
     },
     ...testCases.map(testCase => {
       return {
-        name: `from ${testCase.token} token`,
+        name: `from "${testCase.token}" token`,
         testCaseId: testCase.id,
         test: async ({ web }: IExecution) => {
           if (testCase.token === Token.cUSD) {
