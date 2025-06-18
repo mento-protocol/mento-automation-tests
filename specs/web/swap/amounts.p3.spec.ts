@@ -3,6 +3,7 @@ import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { AmountType } from "@services/index";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
+import { timeouts } from "@constants/index";
 
 const expectedDecimals = 4;
 const fiveDecimalsAmount = "10.23456";
@@ -147,6 +148,32 @@ suite({
         expect(await web.swap.confirm.getAmountByType(AmountType.Buy)).toBe(
           fourDecimalsAmount,
         );
+      },
+    },
+    {
+      name: `Trading limit error is shown when the 'Sell' amount exceeds limit`,
+      testCaseId: "@",
+      test: async ({ web }) => {
+        await web.swap.fillForm({
+          tokens: { sell: Token.cEUR, buy: Token.CELO },
+          sellAmount: "90000",
+        });
+        expect(
+          await web.swap.waitForExceedsTradingLimitsValidation(timeouts.m),
+        ).toBeTruthy();
+      },
+    },
+    {
+      name: `Trading limit error is shown when the 'Buy' amount exceeds limit`,
+      testCaseId: "@",
+      test: async ({ web }) => {
+        await web.swap.fillForm({
+          tokens: { sell: Token.cEUR, buy: Token.cUSD },
+          buyAmount: "90000",
+        });
+        expect(
+          await web.swap.waitForExceedsTradingLimitsValidation(timeouts.m),
+        ).toBeTruthy();
       },
     },
   ],
