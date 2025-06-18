@@ -29,6 +29,11 @@ class PrimitiveHelper {
   };
 
   number = {
+    toAmount(value: string): number {
+      if (value.includes(",")) return Number(value.replace(/,/g, ""));
+      return Number(value);
+    },
+
     hasExactDecimalNumber(
       value: string | number,
       decimalPlaces: number,

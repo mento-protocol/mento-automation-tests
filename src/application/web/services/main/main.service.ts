@@ -17,6 +17,7 @@ import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/common/common.fixture";
 import { testUtils } from "@helpers/suite/suite.helper";
+import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 const logger = loggerHelper.get("MainService");
 
@@ -101,11 +102,10 @@ export class MainService extends BaseService implements IMainService {
     }: IGetTokenBalanceByNameOpts = {},
   ): Promise<number> {
     shouldOpenSettings && (await this.openWalletSettings());
-    const tokenBalance = Number(
-      await this.walletSettingsPopup.page
-        .getTokenBalanceLabelByName(tokenName)
-        .getText({ throwError }),
-    );
+    const balanceText = await this.walletSettingsPopup.page
+      .getTokenBalanceLabelByName(tokenName)
+      .getText({ throwError });
+    const tokenBalance = primitiveHelper.number.toAmount(balanceText);
     shouldCloseSettings && (await this.closeWalletSettings());
     return tokenBalance;
   }
@@ -203,22 +203,6 @@ export class MainService extends BaseService implements IMainService {
       }),
     ).toBeGreaterThan(initialBalance);
   }
-
-  // TODO: Think about this
-  // async expectDecreasedBalance({
-  //   initialBalance,
-  //   tokenName,
-  // }: IWaitForBalanceToChangeArgs): Promise<void> {
-  //   await this.waitForBalanceToIncrease({
-  //     initialBalance,
-  //     tokenName,
-  //   });
-  //   expect(
-  //     await this.getTokenBalanceByName(tokenName, {
-  //       shouldOpenSettings: false,
-  //     }),
-  //   ).toBeLessThan(initialBalance);
-  // }
 
   async switchNetwork({
     networkName,
