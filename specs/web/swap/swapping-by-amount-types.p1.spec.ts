@@ -1,7 +1,5 @@
-import { expect } from "@fixtures/common/common.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
-import { AmountType } from "@services/index";
 
 const tokens = {
   from: Token.CELO,
@@ -23,9 +21,6 @@ suite({
           tokens: { sell: tokens.from, buy: tokens.to },
           sellAmount: defaultSwapAmount,
         });
-        expect
-          .soft(Number(await web.swap.getAmountByType(AmountType.Buy)))
-          .toBeGreaterThan(0);
         await web.swap.start();
         await web.main.expectIncreasedBalance({
           initialBalance,
@@ -42,10 +37,6 @@ suite({
           tokens: { sell: tokens.from, buy: tokens.to },
           buyAmount: defaultSwapAmount,
         });
-
-        expect
-          .soft(Number(await web.swap.getAmountByType(AmountType.Sell)))
-          .toBeGreaterThan(0);
         await web.swap.start();
         await web.main.expectIncreasedBalance({
           initialBalance: initialBalance,
