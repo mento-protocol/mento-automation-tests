@@ -13,14 +13,14 @@ suite({
       testCaseId: "@T2332ee03",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { from: Token.cEUR, to: Token.CELO },
+          tokens: { sell: Token.cEUR, buy: Token.CELO },
           sellAmount: "0.0001",
         });
         expect(await web.swap.isRateThere()).toBeTruthy();
-        const { beforeSwapPrice, afterSwapPrice } = await web.swap.swapInputs();
-        expect(beforeSwapPrice).not.toEqual(afterSwapPrice);
+        const { beforeSwapRate, afterSwapRate } = await web.swap.swapInputs();
+        expect(beforeSwapRate).not.toEqual(afterSwapRate);
         await web.swap.proceedToConfirmation();
-        expect(afterSwapPrice).toEqual(await web.swap.confirm.getRate());
+        expect(afterSwapRate).toEqual(await web.swap.confirm.getRate());
       },
     },
     {
@@ -28,7 +28,7 @@ suite({
       testCaseId: "@T9906952e",
       test: async ({ web }) => {
         await web.swap.fillForm({
-          tokens: { from: Token.cEUR, to: Token.CELO },
+          tokens: { sell: Token.cEUR, buy: Token.CELO },
           buyAmount: "0.0001",
         });
         expect(await web.swap.isSellInputEmpty()).toBeFalsy();
@@ -42,7 +42,7 @@ suite({
           await web.main.getTokenBalanceByName(Token.CELO)
         ).toString();
         await web.swap.fillForm({
-          tokens: { from: Token.CELO, to: Token.cUSD },
+          tokens: { sell: Token.CELO, buy: Token.cUSD },
         });
         await web.swap.useFullBalance();
         expect(await web.swap.getSellTokenAmount()).toEqual(maxBalance);
@@ -57,7 +57,7 @@ suite({
           await web.main.getTokenBalanceByName(Token.cCHF)
         ).toString();
         await web.swap.fillForm({
-          tokens: { from: Token.cCHF, to: Token.cUSD },
+          tokens: { sell: Token.cCHF, buy: Token.cUSD },
         });
         await web.swap.useFullBalance();
         expect(await web.swap.getSellTokenAmount()).toEqual(maxBalance);

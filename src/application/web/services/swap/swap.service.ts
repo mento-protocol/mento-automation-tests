@@ -15,6 +15,8 @@ import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 import { SelectTokenModalPo } from "@page-objects/select-token-modal/select-token-modal.po";
 import { SlippageModalPo } from "@page-objects/slippage-modal/slippage-modal.po";
+import { Token } from "@constants/token.constants";
+import { expect } from "@fixtures/common/common.fixture";
 
 const logger = loggerHelper.get("SwapService");
 
@@ -35,6 +37,7 @@ export class SwapService extends BaseService {
   }
 
   async proceedToConfirmation(): Promise<void> {
+    await this.confirm.verifyNoValidMedianCase();
     if (await this.page.approveButton.isDisplayed()) {
       await this.page.approveButton.click({ timeout: timeouts.s });
       await this.confirm.confirmApprovalTx();
@@ -43,7 +46,9 @@ export class SwapService extends BaseService {
     }
   }
 
+  // TODO: Re-check this method to use different simpler methods inside (e.g., proceedToConfirmation, etc).
   async start(): Promise<void> {
+    await this.confirm.verifyNoValidMedianCase();
     if (await this.page.approveButton.isDisplayed()) {
       logger.debug(
         "Confirms the approval and swap TXs because sufficient allowance is not exist yet",
@@ -57,39 +62,6 @@ export class SwapService extends BaseService {
       await this.page.swapButton.click();
       await this.confirm.page.verifyIsOpen();
       await this.confirm.confirmSwapTx();
-    }
-  }
-
-  async selectTokens(args: ISelectTokensArgs): Promise<void> {
-    const { clicksOnTokenSelector = 2 } = args;
-    if (args?.from) {
-      await this.page.selectSellTokenButton.click({
-        force: true,
-        timeout: timeouts.s,
-        times: clicksOnTokenSelector,
-      });
-      await this.selectTokenModalPage.verifyIsOpen();
-      await this.selectTokenModalPage.tokens[args?.from].click({
-        timeout: timeouts.xxs,
-      });
-      await this.selectTokenModalPage.verifyIsClosed();
-      await this.page
-        .getSelectedTokenLabel(args.from)
-        .waitUntilDisplayed(timeouts.xxs);
-    }
-    if (args?.to) {
-      await this.page.selectBuyTokenButton.click({
-        force: true,
-        timeout: timeouts.s,
-      });
-      await this.selectTokenModalPage.verifyIsOpen();
-      await this.selectTokenModalPage.tokens[args.to].click({
-        timeout: timeouts.xxs,
-      });
-      await this.selectTokenModalPage.verifyIsClosed();
-      await this.page
-        .getSelectedTokenLabel(args.to)
-        .waitUntilDisplayed(timeouts.xxs);
     }
   }
 
@@ -117,9 +89,10 @@ export class SwapService extends BaseService {
   }
 
   async fillForm(opts: IFillFromOpts): Promise<void> {
-    const { slippage, sellAmount, buyAmount, tokens } = opts;
+    const { slippage, sellAmount, buyAmount, tokens, clicksOnSellTokenButton } =
+      opts;
     slippage && (await this.chooseSlippage(slippage));
-    await this.selectTokens({ isSlippage: !!slippage, ...tokens });
+    await this.selectTokens({ clicksOnSellTokenButton, ...tokens });
     // TODO: Sort out why we need to click on the input before filling when it's only filling
     sellAmount && (await this.page.sellAmountInput.click({ force: true }));
     sellAmount &&
@@ -130,12 +103,22 @@ export class SwapService extends BaseService {
     await this.waitForLoadedRate();
   }
 
-  async swapInputs(): Promise<ISwapInputs> {
-    const beforeSwapPrice = await this.getRate();
+  async swapInputs({
+    shouldReturnRates = true,
+  }: {
+    shouldReturnRates?: boolean;
+  } = {}): Promise<ISwapInputs | undefined> {
+    const beforeSwapRate = shouldReturnRates && (await this.getRate());
     await this.page.swapInputsButton.click({ timeout: timeouts.xxs });
-    await this.waitForLoadedRate();
-    const afterSwapPrice = await this.getRate(timeouts.xxs);
-    return { beforeSwapPrice, afterSwapPrice };
+    shouldReturnRates && (await this.waitForLoadedRate());
+    const afterSwapRate =
+      shouldReturnRates && (await this.getRate(timeouts.xxs));
+    return (
+      shouldReturnRates && {
+        beforeSwapRate,
+        afterSwapRate,
+      }
+    );
   }
 
   async getRate(waitTimeout?: number): Promise<string> {
@@ -146,11 +129,11 @@ export class SwapService extends BaseService {
     return this.page.rateLabel.getText();
   }
 
-  async getCurrentToTokenName(): Promise<string> {
+  async getCurrentBuyTokenName(): Promise<string> {
     return this.page.selectBuyTokenButton.getText();
   }
 
-  async getCurrentFromTokenName(): Promise<string> {
+  async getCurrentSellTokenName(): Promise<string> {
     return this.page.selectSellTokenButton.getText();
   }
 
@@ -226,11 +209,55 @@ export class SwapService extends BaseService {
     return !(await this.page.sellAmountInput.getValue()).length;
   }
 
+  async expectTokenOptionsMatch(expectedTokens: Token[]): Promise<void> {
+    for (const expectedToken of expectedTokens) {
+      expect
+        .soft(
+          await this.selectTokenModalPage.tokens[expectedToken].isDisplayed(),
+          `${expectedToken} is not displayed`,
+        )
+        .toBeTruthy();
+    }
+  }
+
   async waitForLoadedRate(): Promise<boolean> {
     return waiterHelper.wait(async () => this.isRateLoaded(), timeouts.s, {
       throwError: false,
       errorMessage: "Rate is not loaded",
       interval: timeouts.xs,
     });
+  }
+
+  private async selectTokens(args: ISelectTokensArgs): Promise<void> {
+    const { clicksOnSellTokenButton = 2 } = args;
+    if (args?.sell) {
+      await this.page.selectSellTokenButton.click({
+        force: true,
+        timeout: timeouts.s,
+        times: clicksOnSellTokenButton,
+      });
+      await this.selectTokenModalPage.verifyIsOpen();
+      await this.selectTokenModalPage.tokens[args?.sell].click({
+        timeout: timeouts.xxs,
+      });
+      await this.selectTokenModalPage.verifyIsClosed();
+      await this.page
+        .getSelectedTokenLabel(args.sell)
+        .waitUntilDisplayed(timeouts.xxs);
+    }
+    if (args?.buy) {
+      await this.page.selectBuyTokenButton.click({
+        force: true,
+        timeout: timeouts.s,
+      });
+      await this.selectTokenModalPage.verifyIsOpen();
+      await this.selectTokenModalPage.tokens[args.buy].click({
+        timeout: timeouts.xxs,
+      });
+      await this.selectTokenModalPage.verifyIsClosed();
+      await this.page
+        .getSelectedTokenLabel(args.buy)
+        .waitUntilDisplayed(timeouts.xxs);
+    }
   }
 }

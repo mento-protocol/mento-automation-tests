@@ -38,8 +38,8 @@ export interface ISwapServiceArgs extends IBaseServiceArgs {
 }
 
 export interface ISwapInputs {
-  beforeSwapPrice: string;
-  afterSwapPrice: string;
+  beforeSwapRate: string;
+  afterSwapRate: string;
 }
 
 export enum AmountType {
@@ -52,6 +52,7 @@ export interface IFillFromOpts {
   buyAmount?: string;
   tokens?: ISelectTokensArgs;
   slippage?: Slippage;
+  clicksOnSellTokenButton?: number;
 }
 
 export enum Slippage {
@@ -61,8 +62,7 @@ export enum Slippage {
 }
 
 export interface ISelectTokensArgs {
-  from?: Token;
-  to?: Token;
-  isSlippage?: boolean;
-  clicksOnTokenSelector?: number;
+  sell?: Token;
+  buy?: Token;
+  clicksOnSellTokenButton?: number;
 }
