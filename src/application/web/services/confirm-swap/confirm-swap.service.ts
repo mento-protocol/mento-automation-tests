@@ -32,6 +32,7 @@ export class ConfirmSwapService extends BaseService {
   }
 
   async confirmApprovalTx(): Promise<void> {
+    await this.page.approveButton.click({ timeout: timeouts.s });
     await this.metamaskHelper.confirmTransaction();
     await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
       timeouts.xl,

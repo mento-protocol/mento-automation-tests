@@ -48,14 +48,12 @@ export class SwapService extends BaseService {
     }
   }
 
-  // TODO: Re-check this method to use different simpler methods inside (e.g., proceedToConfirmation, etc).
   async start(): Promise<void> {
     await this.confirm.verifyNoValidMedianCase();
     if (await this.page.approveButton.isDisplayed()) {
       logger.debug(
-        "Confirms the approval and swap TXs because sufficient allowance is not exist yet",
+        "Confirms both approval and swap TXs because sufficient allowance is not exist yet",
       );
-      await this.page.approveButton.click({ timeout: timeouts.s });
       await this.confirm.confirmBothTxs();
     } else {
       logger.debug(
