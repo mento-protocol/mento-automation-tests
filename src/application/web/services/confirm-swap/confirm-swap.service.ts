@@ -2,7 +2,11 @@ import { ConfirmSwapPo } from "@page-objects/index";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { ClassLog } from "@decorators/logger.decorators";
-import { IConfirmSwapServiceArgs, BaseService } from "@services/index";
+import {
+  IConfirmSwapServiceArgs,
+  BaseService,
+  AmountType,
+} from "@services/index";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { testUtils } from "@helpers/suite/suite.helper";
 
@@ -69,9 +73,22 @@ export class ConfirmSwapService extends BaseService {
       `Rejection of ${isApprovalTx ? "approval and swap txs" : "swap tx"}`,
     );
     isApprovalTx ? await this.rejectApprovalTx() : await this.rejectSwapTx();
-    // await this.page.swapPerformingPopupLabel.waitUntilDisappeared(timeouts.s, {
-    //   errorMessage: "Swap performing popup is still there",
-    // });
+  }
+
+  async getAmountByType(amountType: AmountType): Promise<string> {
+    const amountInput =
+      amountType === AmountType.Sell
+        ? this.page.sellAmountLabel
+        : this.page.buyAmountLabel;
+    return amountInput.getText();
+  }
+
+  async getUsdAmountByType(amountType: AmountType): Promise<string> {
+    const amountInput =
+      amountType === AmountType.Sell
+        ? this.page.sellUsdAmountLabel
+        : this.page.buyUsdAmountLabel;
+    return (await amountInput.getText()).replaceAll("~$", "");
   }
 
   private async rejectApprovalTx(): Promise<void> {

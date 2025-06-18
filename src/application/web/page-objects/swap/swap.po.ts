@@ -22,6 +22,10 @@ export class SwapPo extends BasePo {
   loadingLabel = new Label(this.ef.pw.dataTestId("loadingLabel"));
   swapButton = new Button(this.ef.dataTestId("swapButton"));
   approveButton = new Button(this.ef.dataTestId("approveButton"));
+
+  sellUsdAmountLabel = new Label(this.ef.dataTestId("sellUsdAmountLabel"));
+  buyUsdAmountLabel = new Label(this.ef.dataTestId("buyUsdAmountLabel"));
+
   sellAmountInput = new Input(this.ef.dataTestId("sellAmountInput"));
   buyAmountInput = new Input(this.ef.dataTestId("buyAmountInput"));
 

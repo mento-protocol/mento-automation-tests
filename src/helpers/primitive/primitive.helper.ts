@@ -28,6 +28,33 @@ class PrimitiveHelper {
     },
   };
 
+  number = {
+    hasExactDecimalNumber(
+      value: string | number,
+      decimalPlaces: number,
+    ): boolean {
+      if (typeof value === "number") {
+        value = value.toString();
+      }
+
+      // Handle invalid inputs
+      if (!value || isNaN(Number(value))) {
+        return false;
+      }
+
+      // Split by decimal point
+      const parts = value.split(".");
+
+      // If no decimal point, check if we expect 0 decimal places
+      if (parts.length === 1) {
+        return decimalPlaces === 0;
+      }
+
+      // Check if decimal part has exactly the specified length
+      return parts[1].length === decimalPlaces;
+    },
+  };
+
   getRandomFrom<T>(values: T[]): T {
     return values[randomInt(values.length)];
   }
