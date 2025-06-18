@@ -1,13 +1,7 @@
 import { Token } from "@constants/token.constants";
-import {
-  Button,
-  Dropdown,
-  ElementsList,
-  Input,
-  Label,
-} from "@page-elements/index";
+import { Button } from "@page-elements/index";
 
-export interface ITokenDropdownOptions extends Record<string, Button> {
+export interface ITokenOptions extends Record<string, Button> {
   [Token.CELO]: Button;
   [Token.cEUR]: Button;
   [Token.cUSD]: Button;
@@ -25,26 +19,4 @@ export interface ITokenDropdownOptions extends Record<string, Button> {
   [Token.cZAR]: Button;
   [Token.cCAD]: Button;
   [Token.cAUD]: Button;
-}
-
-export interface ISwapPo {
-  fromTokenDropdown: Dropdown<ITokenDropdownOptions>;
-  toTokenDropdown: Dropdown<ITokenDropdownOptions>;
-  headerLabel: Label;
-  settingsButton: Button;
-  swapInputsButton: Button;
-  showSlippageButton: Button;
-  allSlippageButtons: ElementsList<Button>;
-  maxSlippageButtons: Record<string, Button>;
-  continueButton: Button;
-  sellAmountInput: Input;
-  buyAmountInput: Input;
-  currentPriceLabel: Label;
-  useMaxButton: Button;
-  considerKeepNotificationLabel: Label;
-  amountRequiredButton: Button;
-  amountExceedsBalanceButton: Button;
-  amountTooSmallButton: Button;
-  errorButton: Button;
-  exceedsTradingLimitErrorLabel: Label;
 }

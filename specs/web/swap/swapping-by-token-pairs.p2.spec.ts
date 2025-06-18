@@ -164,7 +164,10 @@ suite({
             testCase.toToken,
           );
           await web.swap.fillForm({
-            tokens: { from: testCase.fromToken, to: testCase.toToken },
+            tokens: {
+              sell: testCase.fromToken,
+              buy: testCase.toToken,
+            },
             sellAmount: testCase?.fromAmount || defaultSwapAmount,
           });
           await web.swap.start();

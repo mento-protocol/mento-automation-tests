@@ -48,9 +48,9 @@ suite({
           await web.swap.fillForm({
             slippage: testCase.slippage,
             tokens: {
-              from: tokens.from,
-              to: tokens.to,
-              clicksOnTokenSelector: 1,
+              sell: tokens.from,
+              buy: tokens.to,
+              clicksOnSellTokenButton: 1,
             },
             sellAmount: defaultSwapAmount,
           });

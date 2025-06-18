@@ -25,8 +25,8 @@ suite({
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: {
-            from: pairs.rejectApproval.from,
-            to: pairs.rejectApproval.to,
+            sell: pairs.rejectApproval.from,
+            buy: pairs.rejectApproval.to,
           },
           sellAmount: defaultSwapAmount,
         });
@@ -43,8 +43,8 @@ suite({
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: {
-            from: pairs.rejectSwap.from,
-            to: pairs.rejectSwap.to,
+            sell: pairs.rejectSwap.from,
+            buy: pairs.rejectSwap.to,
           },
           sellAmount: defaultSwapAmount,
         });

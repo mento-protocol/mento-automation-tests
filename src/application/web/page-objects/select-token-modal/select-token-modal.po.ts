@@ -1,14 +1,27 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { Button, Label } from "@page-elements/index";
 import { Token } from "@constants/token.constants";
-import { BasePo, ITokenDropdownOptions } from "@page-objects/index";
+import { BasePo, ITokenOptions } from "@page-objects/index";
 
 export class SelectTokenModalPo extends BasePo {
   constructor(protected override ef: ElementFinderHelper) {
     super(ef);
   }
 
-  get tokens(): ITokenDropdownOptions {
+  async getAllTokenNames(): Promise<string[]> {
+    const allTokens = await this.ef.all
+      .dataTestId("tokenOption_", { partial: true })
+      .findElements();
+    return Promise.all(allTokens.map(token => token.textContent()));
+  }
+
+  // TODO:
+  // async getAllTokenSymbols(): Promise<Locator[]> {
+  //   const allTokens = await this.getAllTokens();
+  //   return allTokens.map(token => new Label(token.getByTestId("tokenSymbol_")));
+  // }
+
+  get tokens(): ITokenOptions {
     return {
       [Token.CELO]: new Button(this.ef.dataTestId("tokenOption_CELO")),
       [Token.cEUR]: new Button(this.ef.dataTestId("tokenOption_cEUR")),

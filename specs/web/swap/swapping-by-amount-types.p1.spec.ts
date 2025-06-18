@@ -20,7 +20,7 @@ suite({
       test: async ({ web }) => {
         const initialBalance = await web.main.getTokenBalanceByName(tokens.to);
         await web.swap.fillForm({
-          tokens: { from: tokens.from, to: tokens.to },
+          tokens: { sell: tokens.from, buy: tokens.to },
           sellAmount: defaultSwapAmount,
         });
         expect
@@ -39,7 +39,7 @@ suite({
       test: async ({ web }) => {
         const initialBalance = await web.main.getTokenBalanceByName(tokens.to);
         await web.swap.fillForm({
-          tokens: { from: tokens.from, to: tokens.to },
+          tokens: { sell: tokens.from, buy: tokens.to },
           buyAmount: defaultSwapAmount,
         });
 
