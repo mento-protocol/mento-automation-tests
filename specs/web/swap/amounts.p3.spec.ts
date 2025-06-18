@@ -85,7 +85,7 @@ suite({
         );
         expect
           .soft(
-            primitiveHelper.number.hasExactDecimalNumber(
+            primitiveHelper.number.hasMaxDecimalPlaces(
               swapStageSellUsdAmount,
               expectedDecimals,
             ),
@@ -99,7 +99,7 @@ suite({
           await web.swap.confirm.getUsdAmountByType(AmountType.Sell);
         expect
           .soft(
-            primitiveHelper.number.hasExactDecimalNumber(
+            primitiveHelper.number.hasMaxDecimalPlaces(
               confirmStageSellUsdAmount,
               expectedDecimals,
             ),
@@ -124,7 +124,7 @@ suite({
         );
         expect
           .soft(
-            primitiveHelper.number.hasExactDecimalNumber(
+            primitiveHelper.number.hasMaxDecimalPlaces(
               swapStageBuyUsdAmount,
               expectedDecimals,
             ),
@@ -139,7 +139,7 @@ suite({
           await web.swap.confirm.getUsdAmountByType(AmountType.Buy);
         expect
           .soft(
-            primitiveHelper.number.hasExactDecimalNumber(
+            primitiveHelper.number.hasMaxDecimalPlaces(
               confirmStageBuyUsdAmount,
               expectedDecimals,
             ),
