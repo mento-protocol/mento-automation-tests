@@ -15,12 +15,6 @@ export class SelectTokenModalPo extends BasePo {
     return Promise.all(allTokens.map(token => token.textContent()));
   }
 
-  // TODO:
-  // async getAllTokenSymbols(): Promise<Locator[]> {
-  //   const allTokens = await this.getAllTokens();
-  //   return allTokens.map(token => new Label(token.getByTestId("tokenSymbol_")));
-  // }
-
   get tokens(): ITokenOptions {
     return {
       [Token.CELO]: new Button(this.ef.dataTestId("tokenOption_CELO")),
