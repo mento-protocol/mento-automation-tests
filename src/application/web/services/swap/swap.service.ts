@@ -36,8 +36,10 @@ export class SwapService extends BaseService {
     this.slippageModalPage = slippageModalPage;
   }
 
-  async proceedToConfirmation(): Promise<void> {
-    await this.confirm.verifyNoValidMedianCase();
+  async proceedToConfirmation({
+    shouldVerifyNoValidMedian = true,
+  }: { shouldVerifyNoValidMedian?: boolean } = {}): Promise<void> {
+    shouldVerifyNoValidMedian && (await this.confirm.verifyNoValidMedianCase());
     if (await this.page.approveButton.isDisplayed()) {
       await this.page.approveButton.click({ timeout: timeouts.s });
       await this.confirm.confirmApprovalTx();
@@ -147,6 +149,14 @@ export class SwapService extends BaseService {
         ? this.page.sellAmountInput
         : this.page.buyAmountInput;
     return amountInput.getValue();
+  }
+
+  async getUsdAmountByType(amountType: AmountType): Promise<string> {
+    const amountInput =
+      amountType === AmountType.Sell
+        ? this.page.sellUsdAmountLabel
+        : this.page.buyUsdAmountLabel;
+    return (await amountInput.getText()).replaceAll("~$", "");
   }
 
   async useFullBalance(): Promise<void> {

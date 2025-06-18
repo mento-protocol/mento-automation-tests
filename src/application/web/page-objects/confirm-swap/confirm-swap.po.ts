@@ -7,6 +7,12 @@ export class ConfirmSwapPo extends BasePo {
     super(ef);
   }
 
+  sellAmountLabel = new Label(this.ef.dataTestId("sellAmountLabel"));
+  buyAmountLabel = new Label(this.ef.dataTestId("buyAmountLabel"));
+
+  sellUsdAmountLabel = new Label(this.ef.dataTestId("sellUsdAmountLabel"));
+  buyUsdAmountLabel = new Label(this.ef.dataTestId("buyUsdAmountLabel"));
+
   swapButton = new Button(this.ef.dataTestId("swapButton"));
   approveButton = new Button(this.ef.dataTestId("approveButton"));
 
