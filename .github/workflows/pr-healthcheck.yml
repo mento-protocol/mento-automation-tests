@@ -12,7 +12,10 @@ jobs:
       - name: Define spec names for PR healthcheck
         id: extract-spec-names
         run: |
-          if [[ "${{ github.event.head_commit.message }}" =~ __(.*)__ ]]; then
+          if [[ "${{ github.event.head_commit.message }}" == "__regression__" ]]; then
+            echo "Using the all specs name by 'regression' keyword"
+            echo "spec-names=''" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event.head_commit.message }}" =~ \[([^\]]+)\] ]]; then
             echo "Using the parsed spec names: ${BASH_REMATCH[1]}"
             echo "spec-names=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
           else

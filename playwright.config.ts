@@ -14,14 +14,22 @@ export default defineConfig({
   fullyParallel: configHelper.isParallelRun() || undefined,
   workers: configHelper.getWorkers(),
   outputDir: `${magicStrings.path.artifacts}/test-results`,
-  use: { trace: "on", video: "on", baseURL: envHelper.getBaseWebUrl() },
+  use: {
+    browserName: "chromium",
+    baseURL: envHelper.getBaseWebUrl(),
+    trace: "retain-on-failure",
+    // TODO: turn on when fixed: https://github.com/microsoft/playwright/issues/14813
+    // video: "retain-on-failure",
+    // TODO: turn off when fixed: https://linear.app/mento-labs/issue/AUT-15/
+    screenshot: "only-on-failure",
+  },
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+      },
     },
   ],
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   reporter: configHelper.getReportersList(),
 });

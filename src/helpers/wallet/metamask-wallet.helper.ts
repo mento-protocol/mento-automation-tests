@@ -2,21 +2,8 @@ import { MetaMask } from "@synthetixio/synpress/playwright";
 
 import { ClassLog } from "@decorators/logger.decorators";
 
-export interface IMetamaskHelper {
-  rawModule: MetaMask;
-
-  connectWallet: () => Promise<void>;
-  approveNewNetwork: () => Promise<void>;
-  approveSwitchNetwork: () => Promise<void>;
-  rejectSwitchNetwork: () => Promise<void>;
-  getAddress: () => Promise<string>;
-  confirmTransaction: () => Promise<void>;
-  rejectTransaction: () => Promise<void>;
-  rejectSwapTransaction: () => Promise<void>;
-}
-
 @ClassLog
-export class MetamaskHelper implements IMetamaskHelper {
+export class MetamaskHelper {
   constructor(private metamask: MetaMask) {}
 
   get rawModule() {
