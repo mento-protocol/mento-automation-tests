@@ -13,10 +13,10 @@ jobs:
         id: extract-spec-names
         run: |
           if [[ "${{ github.event.head_commit.message }}" =~ __regression__ ]]; then
-            echo "Using the all specs name by 'regression' keyword"
-            echo "spec-names=''" >> $GITHUB_OUTPUT
+            echo "Using the all spec names by 'regression' keyword"
+            echo "spec-names=.spec" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event.head_commit.message }}" =~ __([^_]+)__ ]]; then
-            echo "Using the parsed spec names: ${BASH_REMATCH[1]}"
+            echo "Using the parsed spec name/s: ${BASH_REMATCH[1]}"
             echo "spec-names=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
           else
             echo "No spec names found in commit message!"
