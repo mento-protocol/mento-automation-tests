@@ -2,6 +2,12 @@ name: Report
 
 on:
   workflow_call:
+    inputs:
+      NAME:
+        description: "The name of the HTML report"
+        type: string
+        required: false
+        default: "playwright-report"
     outputs:
       url:
         description: "The Report URL"
@@ -21,8 +27,8 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: playwright-report
-          path: artifacts/reports/playwright-report
+          name: ${{ inputs.NAME }}
+          path: artifacts/reports/${{ inputs.NAME }}
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
