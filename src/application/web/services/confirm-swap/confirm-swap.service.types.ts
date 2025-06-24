@@ -1,11 +1,11 @@
 import { IBaseServiceArgs } from "@services/index";
 import { ConfirmSwapPo } from "@page-objects/index";
-import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
+import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 
 export interface IConfirmSwapService {
   getRate: () => Promise<string>;
   getCurrentPriceFromSwap: (waitTimeout?: number) => Promise<string>;
-  confirm: (metamaskHelper: IMetamaskHelper) => Promise<void>;
+  confirm: (metamaskHelper: MetamaskHelper) => Promise<void>;
   navigateToCeloExplorer: () => Promise<void>;
   isSwapPerformingPopupThere: () => Promise<boolean>;
   isApproveCompleteNotificationThere: () => Promise<boolean>;

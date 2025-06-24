@@ -1,7 +1,7 @@
 import { SwapPo } from "@page-objects/index";
 import { ConfirmSwapService, IBaseServiceArgs } from "@services/index";
 import { Token } from "@constants/token.constants";
-import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
+import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { SelectTokenModalPo } from "@page-objects/select-token-modal/select-token-modal.po";
 import { SlippageModalPo } from "@page-objects/slippage-modal/slippage-modal.po";
 
@@ -34,7 +34,7 @@ export interface ISwapServiceArgs extends IBaseServiceArgs {
   confirm: ConfirmSwapService;
   selectTokenModalPage: SelectTokenModalPo;
   slippageModalPage: SlippageModalPo;
-  metamaskHelper: IMetamaskHelper;
+  metamaskHelper: MetamaskHelper;
 }
 
 export interface ISwapInputs {

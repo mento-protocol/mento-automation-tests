@@ -1,6 +1,6 @@
 import { Browser } from "@helpers/browser/browser.helper";
 import { envHelper } from "@helpers/env/env.helper";
-import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
+import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { BasePo } from "@page-objects/index";
 import { IBaseServiceArgs } from "@services/index";
 
@@ -13,7 +13,7 @@ export class BaseService implements IBaseService {
   // change browser to protected or move it completely
   public browser: Browser = null;
   protected page: BasePo = null;
-  protected metamaskHelper: IMetamaskHelper = null;
+  protected metamaskHelper: MetamaskHelper = null;
 
   constructor(args: IBaseServiceArgs) {
     const { browser, metamaskHelper } = args;

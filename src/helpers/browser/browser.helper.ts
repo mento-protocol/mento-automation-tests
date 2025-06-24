@@ -146,6 +146,8 @@ export class Browser implements IBrowser {
   ): Promise<void> {
     const { name, body } = args;
     for (const attachment of testFixture.info().attachments) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       if (!attachment?.body.equals(body)) {
         await this.attachInReport({ name, body });
       }

@@ -8,9 +8,9 @@ import type {
 } from "@playwright/test";
 import { MetaMask } from "@synthetixio/synpress/playwright";
 
-import { IMetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { IAssmbleApi } from "@api/assemble-api";
 import { IAssembleWeb } from "../../application/web/assemble-web.types";
+import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 
 export type CommonFixture<IYourFixtures> = TestType<
   PlaywrightTestArgs & PlaywrightTestOptions & IYourFixtures,
@@ -24,7 +24,7 @@ export interface ITestFixtures
 export interface IApplicationFixtures {
   web: IAssembleWeb;
   api: IAssmbleApi;
-  metamaskHelper: IMetamaskHelper;
+  metamaskHelper: MetamaskHelper;
 }
 
 export interface ISynpressFixtures {
@@ -35,8 +35,4 @@ export interface ISynpressFixtures {
   connectToAnvil: () => Promise<void>;
   deployToken: () => Promise<void>;
   deployAndMintERC1155: () => Promise<void>;
-  // todo: Missing type
-  // createAnvilNode: (
-  //   options?: CreateAnvilOptions,
-  // ) => Promise<{ anvil: Anvil; rpcUrl: string; chainId: number }>;
 }

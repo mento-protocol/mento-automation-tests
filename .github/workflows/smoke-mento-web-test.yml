@@ -97,6 +97,8 @@ jobs:
     needs: smoke-test
     if: failure()
     uses: ./.github/workflows/report.yml
+    with:
+      NAME: "smoke-mento-web"
     secrets:
       GCP_SA_KEY: ${{ secrets.E2E_TEST_GCP_SA_KEY }}
 

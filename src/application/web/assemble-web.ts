@@ -27,6 +27,7 @@ export function assembleWeb({
   const ef = new ElementFinderHelper({ page: pwPage });
   const baseDependencies = { browser, metamaskHelper };
   return {
+    ...baseDependencies,
     main: new MainService({
       page: new MainPo(ef),
       ...baseDependencies,
