@@ -129,6 +129,13 @@ export class SwapService extends BaseService {
     return this.page.rateLabel.getText();
   }
 
+  // TODO: Workaround untill the 'Insufficient balance' button doesn't have its own locator
+  async getProceedButtonText(): Promise<string> {
+    return (await this.page.swapButton.isDisplayed())
+      ? await this.page.swapButton.getText()
+      : await this.page.approveButton.getText();
+  }
+
   async getCurrentBuyTokenName(): Promise<string> {
     return this.page.selectBuyTokenButton.getText();
   }
@@ -213,8 +220,12 @@ export class SwapService extends BaseService {
     return this.page.considerKeepNotificationLabel.isDisplayed();
   }
 
-  async isSellInputEmpty(): Promise<boolean> {
-    return !(await this.page.sellAmountInput.getValue()).length;
+  async isAmountEmpty(amountType: AmountType): Promise<boolean> {
+    const amountInput =
+      amountType === AmountType.Sell
+        ? this.page.sellAmountInput
+        : this.page.buyAmountInput;
+    return !(await amountInput.getValue())?.length;
   }
 
   async expectTokenOptionsMatch(expectedTokens: Token[]): Promise<void> {
