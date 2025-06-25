@@ -38,7 +38,7 @@ suite({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
           buyAmount: "0.0001",
         });
-        expect(await web.swap.isSellInputEmpty()).toBeFalsy();
+        expect(await web.swap.isAmountEmpty(AmountType.Sell)).toBeFalsy();
       },
     },
     {
