@@ -11,29 +11,29 @@ suite({
     await web.main.waitForBalanceToLoad({ shouldOpenSettings: true });
   },
   tests: [
-    // {
-    //   name: "Fill the Sell fieldwith an empty amount",
-    //   testCaseId: "@Tcc0fa75f",
-    //   test: async ({ web }) => {
-    //     expect.soft(await web.swap.isProceedButtonEnabled()).toBeFalsy();
-    //   },
-    // },
-    // {
-    //   name: "Fill the Sell field with an amount that exceeds balance",
-    //   testCaseId: "@T2a671992",
-    //   test: async ({ web }) => {
-    //     await web.swap.fillForm({ sellAmount: "700" });
-    //     expect(await web.swap.isAmountExceedValidationThere()).toBeTruthy();
-    //   },
-    // },
-    // {
-    //   name: "Fill the Sell field with an amount that is too small",
-    //   testCaseId: "@T8a97541b",
-    //   test: async ({ web }) => {
-    //     await web.swap.fillForm({ sellAmount: "00" });
-    //     expect(await web.swap.isProceedButtonEnabled()).toBeFalsy();
-    //   },
-    // },
+    {
+      name: "Fill the Sell field with an empty amount",
+      testCaseId: "@Tcc0fa75f",
+      test: async ({ web }) => {
+        expect.soft(await web.swap.isProceedButtonEnabled()).toBeFalsy();
+      },
+    },
+    {
+      name: "Fill the Sell field with an amount that exceeds balance",
+      testCaseId: "@T2a671992",
+      test: async ({ web }) => {
+        await web.swap.fillForm({ sellAmount: "700" });
+        expect(await web.swap.isAmountExceedValidationThere()).toBeTruthy();
+      },
+    },
+    {
+      name: "Fill the Sell field with an amount that is too small",
+      testCaseId: "@T8a97541b",
+      test: async ({ web }) => {
+        await web.swap.fillForm({ sellAmount: "00" });
+        expect(await web.swap.isProceedButtonEnabled()).toBeFalsy();
+      },
+    },
     {
       name: "Fill the Sell field with an amount that is high",
       testCaseId: "@",
