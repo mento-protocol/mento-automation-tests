@@ -4,22 +4,22 @@ import { suite } from "@helpers/suite/suite.helper";
 suite({
   name: "Wallet modal",
   tests: [
-    // {
-    //   name: "Open by header button",
-    //   testCaseId: "@T112a63d0",
-    //   test: async ({ web }) => {
-    //     await web.main.openConnectWalletModalFromHeader();
-    //     expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();
-    //   },
-    // },
-    // {
-    //   name: "Open by main button",
-    //   testCaseId: "@T224b25fc",
-    //   test: async ({ web }) => {
-    //     await web.main.openConnectWalletModal();
-    //     expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();
-    //   },
-    // },
+    {
+      name: "Open by header button",
+      testCaseId: "@T112a63d0",
+      test: async ({ web }) => {
+        await web.main.openConnectWalletModalFromHeader();
+        expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();
+      },
+    },
+    {
+      name: "Open by main button",
+      testCaseId: "@T224b25fc",
+      test: async ({ web }) => {
+        await web.main.openConnectWalletModal();
+        expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();
+      },
+    },
     {
       name: "Close by clicking its button",
       testCaseId: "@T2836c736",

@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       SPECS_REGEX:
-        description: "Specs regex of running test/s"
+        description: "Specs regex which accepts tags or names of running tests"
         required: true
       SPECS_DIR:
-        description: "Specs specific dir of running test/s"
+        description: "Specs specific dir of running tests"
         required: false
         default: ""
       SPECS_TYPE:
         type: choice
-        description: "Specs type of running test/s"
+        description: "Specs type of running tests"
         default: web
         options:
           - web

@@ -5,11 +5,11 @@ on:
   workflow_call:
     inputs:
       SPECS_REGEX:
-        description: "Spec names or tags of running tests"
-        required: false
+        description: "Specs regex which accepts tags or names of running tests"
+        required: true
         type: string
       EXCLUDE_SPECS_REGEX:
-        description: "Spec names or tags of excluded tests"
+        description: "Specs regex which accepts tags or names of excluded tests"
         required: false
         type: string
       SPECS_TYPE:
