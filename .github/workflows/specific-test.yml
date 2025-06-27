@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       SPECS_REGEX:
-        description: "Specs regex which accepts tags or names of running tests"
+        description: "Specs tags or names of running tests"
         required: true
       SPECS_DIR:
         description: "Specs specific dir of running tests"
