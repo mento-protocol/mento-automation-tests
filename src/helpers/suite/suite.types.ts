@@ -17,6 +17,7 @@ export interface ISuiteArgs {
   beforeAll?: (params: Pick<IExecution, "api">) => Promise<void>;
   // Only API is available because web inits in beforeEach per each test
   afterAll?: (params: Pick<IExecution, "api">) => Promise<void>;
+  tags?: string[];
 }
 
 export interface ITest {
@@ -24,6 +25,7 @@ export interface ITest {
   testCaseId: string;
   test: (args: IExecution) => Promise<void>;
   disable?: IDisable;
+  tags?: string[];
 }
 
 export interface IDisable {

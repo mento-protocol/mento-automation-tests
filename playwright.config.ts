@@ -8,7 +8,9 @@ import { envHelper } from "@helpers/env/env.helper";
 export default defineConfig({
   globalTimeout: timeouts.testRun,
   timeout: timeouts.test,
-  testMatch: specSelectorHelper.get(),
+  grep: specSelectorHelper.getSpecsRegex(),
+  grepInvert: specSelectorHelper.getExcludedSpecsRegex(),
+  testDir: specSelectorHelper.getSpecsDir(),
   forbidOnly: envHelper.isCI(),
   retries: configHelper.getTestRetry(),
   fullyParallel: configHelper.isParallelRun() || undefined,
@@ -20,8 +22,6 @@ export default defineConfig({
     trace: "retain-on-failure",
     // TODO: turn on when fixed: https://github.com/microsoft/playwright/issues/14813
     // video: "retain-on-failure",
-    // TODO: turn off when fixed: https://linear.app/mento-labs/issue/AUT-15/
-    screenshot: "only-on-failure",
   },
   projects: [
     {

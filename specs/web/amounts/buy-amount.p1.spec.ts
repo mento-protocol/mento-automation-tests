@@ -5,6 +5,7 @@ import { AmountType } from "@services/swap/swap.service.types";
 
 suite({
   name: "Amounts - Buy",
+  tags: ["@asd"],
   beforeEach: async ({ web }) => web.main.runSwapTestPreconditions(),
   tests: [
     {

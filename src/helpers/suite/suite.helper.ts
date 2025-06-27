@@ -7,13 +7,16 @@ import { TestDetails } from "playwright/types/test";
 const logger = loggerHelper.get("SuiteHelper");
 
 export function suite({
-  name: suiteName,
+  name,
   tests,
   beforeAll,
   beforeEach,
   afterEach,
   afterAll,
+  tags,
 }: ISuiteArgs): void {
+  const suiteName = tags ? `${name} [${tags.join(", ")}]` : name;
+
   testFixture.describe(suiteName, () => {
     testFixture.beforeAll(async ({ api }) => {
       logRunDetails(suiteName);
@@ -31,8 +34,10 @@ export function suite({
         afterEach({ web, metamaskHelper, api }),
       );
 
-    tests.forEach(({ test, name, disable, testCaseId }) => {
-      const testName = `${name} [${testCaseId}]`;
+    tests.forEach(({ test, name, disable, testCaseId, tags }) => {
+      const testName = tags
+        ? `${name} [${testCaseId} ${tags.join(", ")}]`
+        : `${name} [${testCaseId}]`;
 
       testUtils.isDisabled(disable)
         ? testFixture.skip(

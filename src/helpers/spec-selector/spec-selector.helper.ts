@@ -1,66 +1,42 @@
-import path from "node:path";
-
-import { fileHelper } from "@helpers/file/file.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
+import { loggerHelper } from "@helpers/logger/logger.helper";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
-import { configHelper } from "@helpers/config/config.helper";
-import {
-  IGetFilteredNamesArgs,
-  ISpecSelectorHelper,
-} from "@helpers/spec-selector/spec-selector.helper.types";
 
-const { SPEC_NAMES, SPECS_TYPE, SPECS_FOLDER_NAME } = processEnv;
+const { SPECS_REGEX, EXCLUDE_SPECS_REGEX, SPECS_TYPE, SPECS_DIR } = processEnv;
+const log = loggerHelper.get("SpecSelectorHelper");
 
-class SpecSelectorHelper implements ISpecSelectorHelper {
-  private readonly excludeTextOnParallelRun = "swapping";
-
-  get(): string[] {
-    return this.getFilteredNames({
-      allSpecNames: this.getAllNamesByDir(this.getFullDir()),
-      desiredSpecNames: this.getDesiredNames(SPEC_NAMES),
-    });
+class SpecSelectorHelper {
+  getSpecsRegex(): RegExp {
+    if (!SPECS_REGEX.length) return new RegExp(".*");
+    const specNames = new RegExp(SPECS_REGEX.split(",").join("|"));
+    SPECS_REGEX.includes("@")
+      ? log.trace(`Using the '${specNames}' spec tags to filter specs`)
+      : log.trace(`Using the '${specNames}' spec names to filter specs`);
+    return specNames;
   }
 
-  private getDesiredNames(currentSpecNamesString: string): string[] {
-    return currentSpecNamesString?.length
-      ? currentSpecNamesString.split(",")
-      : [];
+  getExcludedSpecsRegex(): RegExp | undefined {
+    if (!EXCLUDE_SPECS_REGEX?.length) return undefined;
+    return new RegExp(EXCLUDE_SPECS_REGEX.split(",").join("|"));
   }
 
-  private getFilteredNames(args: IGetFilteredNamesArgs): string[] {
-    const { allSpecNames, desiredSpecNames } = args;
-    return desiredSpecNames.length
-      ? allSpecNames.filter(specFileName => {
-          return desiredSpecNames.some(desiredSpecName =>
-            specFileName.includes(desiredSpecName),
-          );
-        })
-      : allSpecNames;
+  getSpecsDir(): string {
+    const rootDir = this.getSpecsRootDir();
+    const specificDir = SPECS_DIR?.length ? `/${SPECS_DIR}` : "";
+    SPECS_DIR?.length
+      ? log.trace(`Using the '${SPECS_DIR}' specs dir to filter specs`)
+      : log.trace(`Using the '${SPECS_TYPE}' root specs dir to filter specs`);
+    return `${rootDir}${specificDir}`;
   }
 
-  private getAllNamesByDir(dir: string): string[] {
-    return fileHelper
-      .getFilePathsFromDirSync(dir, {
-        excludeText:
-          configHelper.isParallelRun() && this.excludeTextOnParallelRun,
-      })
-      .map(specFilePath => path.basename(specFilePath));
-  }
-
-  private getFullDir(): string {
-    return `${this.getRootDirByType(SPECS_TYPE)}${
-      SPECS_FOLDER_NAME?.length ? `/${SPECS_FOLDER_NAME}` : ""
-    }`;
-  }
-
-  private getRootDirByType(type: string): string {
-    switch (type) {
+  private getSpecsRootDir(): string {
+    switch (SPECS_TYPE) {
       case "web":
         return magicStrings.path.webSpecs;
       case "api":
         return magicStrings.path.apiSpecs;
       default:
-        throw new Error(`Please specify SPECS_TYPE via: web, api or all`);
+        throw new Error(`Please specify SPECS_TYPE using web or api options`);
     }
   }
 }

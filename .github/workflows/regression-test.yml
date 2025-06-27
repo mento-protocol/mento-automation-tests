@@ -31,8 +31,8 @@ jobs:
     name: "[Mento-Web] Sequential Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPECS_TYPE: web
-      SPEC_NAMES: "swapping,switch-network"
+      SPECS_REGEX: "@regression,@sequential"
+      EXCLUDE_SPECS_REGEX: "@parallel"
       IS_PARALLEL_RUN: "false"
       IS_MAINNET: "false"
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
@@ -47,7 +47,8 @@ jobs:
     name: "[Mento-Web] Parallel Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPECS_TYPE: web
+      SPECS_REGEX: "@regression,@parallel"
+      EXCLUDE_SPECS_REGEX: "@sequential"
       IS_PARALLEL_RUN: "true"
       IS_MAINNET: "true"
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}

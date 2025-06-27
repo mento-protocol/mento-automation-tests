@@ -8,6 +8,7 @@ const tokens = {
 
 suite({
   name: "Swap - By amount type",
+  tags: ["@regression", "@sequential"],
   beforeEach: async ({ web }) => {
     await web.main.runSwapTestPreconditions();
   },

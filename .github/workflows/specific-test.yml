@@ -3,11 +3,11 @@ name: Specific Test Run
 on:
   workflow_dispatch:
     inputs:
-      SPEC_NAMES:
-        description: "Spec names of running test/s"
+      SPECS_REGEX:
+        description: "Specs regex of running test/s"
         required: true
-      SPECS_FOLDER_NAME:
-        description: "Spec folder name of running test/s"
+      SPECS_DIR:
+        description: "Specs specific dir of running test/s"
         required: false
         default: ""
       SPECS_TYPE:
@@ -55,9 +55,9 @@ jobs:
     name: "Specific Test Run"
     uses: ./.github/workflows/common-test.yml
     with:
-      SPEC_NAMES: ${{ inputs.SPEC_NAMES }}
+      SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
-      SPECS_FOLDER_NAME: ${{ inputs.SPECS_FOLDER_NAME }}
+      SPECS_DIR: ${{ inputs.SPECS_DIR }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
       HTML_REPORT_NAME: "specific"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}

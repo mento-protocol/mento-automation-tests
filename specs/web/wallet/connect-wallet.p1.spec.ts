@@ -4,6 +4,7 @@ import { WalletName } from "@services/index";
 
 suite({
   name: "Connect Wallet",
+  tags: ["@regression", "@parallel"],
   tests: [
     {
       name: "Connect Metamask wallet",

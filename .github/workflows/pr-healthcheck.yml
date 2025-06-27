@@ -29,8 +29,7 @@ jobs:
     needs: define-specs
     uses: ./.github/workflows/common-test.yml
     with:
-      SPEC_NAMES: ${{ needs.define-specs.outputs.spec-names }}
-      SPECS_TYPE: "web"
+      SPECS_REGEX: ${{ needs.define-specs.outputs.spec-names }}
       IS_MAINNET: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"
