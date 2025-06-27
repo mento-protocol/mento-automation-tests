@@ -44,7 +44,7 @@ export class SwapPo extends BasePo {
   );
   errorButton = new Button(this.ef.pw.role("button", { name: "Error" }));
   exceedsTradingLimitErrorLabel = new Label(
-    this.ef.pw.text("amount exceeds the current trading limits"),
+    this.ef.pw.text("amount exceeds the current trading limit"),
   );
 
   staticElements = [this.headerLabel];

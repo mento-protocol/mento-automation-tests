@@ -74,7 +74,7 @@ suite({
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
-          sellAmount: "90000",
+          sellAmount: "600000",
         });
         expect(
           await web.swap.waitForExceedsTradingLimitsValidation(timeouts.m),
@@ -87,7 +87,7 @@ suite({
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.cUSD },
-          buyAmount: "90000",
+          buyAmount: "600000",
         });
         expect(
           await web.swap.waitForExceedsTradingLimitsValidation(timeouts.m),

@@ -206,7 +206,18 @@ export class SwapService extends BaseService {
   async waitForExceedsTradingLimitsValidation(
     timeout: number,
   ): Promise<boolean> {
-    return this.page.exceedsTradingLimitErrorLabel.waitUntilDisplayed(timeout);
+    return waiterHelper.wait(
+      async () => this.page.exceedsTradingLimitErrorLabel.isDisplayed(),
+      timeout,
+      {
+        throwError: false,
+        errorMessage: "'Exceeds trading limits' notification is not displayed",
+      },
+    );
+  }
+
+  async getExceedsTradingLimitsErrorText(): Promise<string> {
+    return this.page.exceedsTradingLimitErrorLabel.getText();
   }
 
   async isRateThere(): Promise<boolean> {
