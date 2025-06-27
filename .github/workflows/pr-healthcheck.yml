@@ -24,7 +24,7 @@ jobs:
           else
             echo "No specs regex found in commit message!"
             echo "Using the default 'connect-wallet' spec to validate the PR"
-            echo "spec-names=connect-wallet" >> $GITHUB_OUTPUT
+            echo "specs-regex=connect-wallet" >> $GITHUB_OUTPUT
           fi
 
   test:
