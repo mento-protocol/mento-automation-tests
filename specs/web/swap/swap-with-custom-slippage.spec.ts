@@ -3,6 +3,7 @@ import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { Slippage } from "@services/index";
 import { IExecution } from "@helpers/suite/suite.types";
+import { TestTag } from "@constants/test.constants";
 
 const tokens = {
   from: Token.cEUR,
@@ -13,7 +14,7 @@ const testCases = [
   {
     name: `default (${tokens.from}/${tokens.to})`,
     slippage: undefined,
-    id: "@T751161b4",
+    id: "T751161b4",
     disable: {
       reason: "Default slippage is set by default for all swap tests",
     },
@@ -21,17 +22,18 @@ const testCases = [
   {
     name: `minimal (${tokens.from}/${tokens.to})`,
     slippage: Slippage["0.5%"],
-    id: "@T0046ec8d",
+    id: "T0046ec8d",
   },
   {
     name: `max (${tokens.from}/${tokens.to})`,
     slippage: Slippage["1.5%"],
-    id: "@Tb9505e3a",
+    id: "Tb9505e3a",
   },
 ];
 
 suite({
   name: "Swap - With custom slippage",
+  tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {
     await web.main.runSwapTestPreconditions();
   },

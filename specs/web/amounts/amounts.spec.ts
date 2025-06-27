@@ -4,6 +4,7 @@ import { suite } from "@helpers/suite/suite.helper";
 import { AmountType } from "@services/index";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { timeouts } from "@constants/index";
+import { TestTag } from "@constants/test.constants";
 
 const expectedDecimals = 4;
 const fiveDecimalsAmount = "10.23456";
@@ -11,13 +12,14 @@ const fourDecimalsAmount = "10.2345";
 
 suite({
   name: "Swap - Amounts",
+  tags: [TestTag.Regression, TestTag.Parallel],
   beforeEach: async ({ web }) => {
     await web.main.runSwapTestPreconditions();
   },
   tests: [
     {
       name: "Rates are equal on all the stages",
-      testCaseId: "@T2332ee03",
+      testCaseId: "T2332ee03",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
@@ -32,7 +34,7 @@ suite({
     },
     {
       name: "The 'Sell' input is auto-calculating when 'Buy' is filled`",
-      testCaseId: "@T9906952e",
+      testCaseId: "T9906952e",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
@@ -43,7 +45,7 @@ suite({
     },
     {
       name: `Use max balance using '${Token.CELO}' as 'Sell'`,
-      testCaseId: "@Ta34f8bd6",
+      testCaseId: "Ta34f8bd6",
       test: async ({ web }) => {
         const maxBalance = (
           await web.main.getTokenBalanceByName(Token.CELO)
@@ -58,7 +60,7 @@ suite({
     },
     {
       name: `Use max balance using anything as 'from' besides '${Token.CELO}'`,
-      testCaseId: "@T80d4fbc3",
+      testCaseId: "T80d4fbc3",
       test: async ({ web }) => {
         const maxBalance = (
           await web.main.getTokenBalanceByName(Token.cCHF)
@@ -73,7 +75,7 @@ suite({
     },
     {
       name: `The 'Sell' input and USD amounts should have 4 decimals`,
-      testCaseId: "@",
+      testCaseId: "",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
@@ -112,7 +114,7 @@ suite({
     },
     {
       name: `The 'Buy' input and USD amounts should have 4 decimals`,
-      testCaseId: "@",
+      testCaseId: "",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
@@ -152,7 +154,7 @@ suite({
     },
     {
       name: `Trading limit error is shown when the 'Sell' amount exceeds limit`,
-      testCaseId: "@",
+      testCaseId: "",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
@@ -165,7 +167,7 @@ suite({
     },
     {
       name: `Trading limit error is shown when the 'Buy' amount exceeds limit`,
-      testCaseId: "@",
+      testCaseId: "",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.cUSD },

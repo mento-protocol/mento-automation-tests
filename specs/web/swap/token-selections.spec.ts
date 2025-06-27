@@ -3,6 +3,7 @@ import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { WalletName } from "@services/connect-wallet-modal/connect-wallet-modal.service.types";
+import { TestTag } from "@constants/test.constants";
 
 const testCases = [
   {
@@ -28,7 +29,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@T61ff6eca",
+    id: "T61ff6eca",
   },
   {
     token: Token.cUSD,
@@ -52,7 +53,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@T4cf1f159",
+    id: "T4cf1f159",
   },
   {
     token: Token.cEUR,
@@ -65,7 +66,7 @@ const testCases = [
       Token.axlEUROC,
       Token.eXOF,
     ],
-    id: "@T55e5689d",
+    id: "T55e5689d",
   },
   {
     token: Token.cREAL,
@@ -77,7 +78,7 @@ const testCases = [
       Token.axlUSDC,
       Token.eXOF,
     ],
-    id: "@T1cdcec6e",
+    id: "T1cdcec6e",
   },
   {
     token: Token.USDC,
@@ -100,7 +101,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@T65b923f0",
+    id: "T65b923f0",
   },
   {
     token: Token.USDT,
@@ -121,7 +122,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@T1728aaf3",
+    id: "T1728aaf3",
   },
   {
     token: Token.axlUSDC,
@@ -145,7 +146,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@T3842f1e6",
+    id: "T3842f1e6",
   },
   {
     token: Token.axlEUROC,
@@ -156,7 +157,7 @@ const testCases = [
       Token.axlUSDC,
       Token.eXOF,
     ],
-    id: "@T1b2d5431",
+    id: "T1b2d5431",
   },
   {
     token: Token.eXOF,
@@ -167,7 +168,7 @@ const testCases = [
       Token.cREAL,
       Token.axlEUROC,
     ],
-    id: "@T8b44f3ea",
+    id: "T8b44f3ea",
   },
   {
     token: Token.cKES,
@@ -189,7 +190,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@Tdf1f8d60",
+    id: "Tdf1f8d60",
   },
   {
     token: Token.PUSO,
@@ -211,7 +212,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@Td740bfbf",
+    id: "Td740bfbf",
   },
   {
     token: Token.cCOP,
@@ -232,7 +233,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@T7a80e866",
+    id: "T7a80e866",
   },
   {
     token: Token.cGHS,
@@ -253,7 +254,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@T052ce765",
+    id: "T052ce765",
   },
   {
     token: Token.cGBP,
@@ -274,7 +275,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@Tb6f16c86",
+    id: "Tb6f16c86",
   },
   {
     token: Token.cZAR,
@@ -295,7 +296,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@T9787390d",
+    id: "T9787390d",
   },
   {
     token: Token.cCAD,
@@ -316,7 +317,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@T14202806",
+    id: "T14202806",
   },
   {
     token: Token.cAUD,
@@ -337,7 +338,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@Tee27957f",
+    id: "Tee27957f",
   },
   {
     token: Token.cCHF,
@@ -358,7 +359,7 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
-    id: "@Tf78b7915",
+    id: "Tf78b7915",
   },
   {
     token: Token.cJPY,
@@ -379,7 +380,7 @@ const testCases = [
       Token.cCHF,
       Token.cNGN,
     ],
-    id: "@Td80ddce2",
+    id: "Td80ddce2",
   },
   {
     token: Token.cNGN,
@@ -400,16 +401,17 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
     ],
-    id: "@T7084e96f",
+    id: "T7084e96f",
   },
 ];
 
 suite({
   name: "Swap - Token Exchange Options",
+  tags: [TestTag.Regression, TestTag.Parallel],
   tests: [
     {
       name: "Swap token inputs",
-      testCaseId: "@Td88a4d31",
+      testCaseId: "Td88a4d31",
       test: async ({ web }) => {
         await web.main.connectWalletByName(WalletName.Metamask);
         await web.swap.fillForm({

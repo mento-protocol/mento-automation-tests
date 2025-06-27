@@ -15,6 +15,9 @@ jobs:
           if [[ "${{ github.event.head_commit.message }}" =~ __@regression__ ]]; then
             echo "Using the @regression tag to run regression tests"
             echo "specs-regex=@regression" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event.head_commit.message }}" =~ __@smoke__ ]]; then
+            echo "Using the @smoke tag to run smoke tests"
+            echo "specs-regex=@smoke" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event.head_commit.message }}" =~ __@full__ ]]; then
             echo "Using the @full tag to run all the tests"
             echo "specs-regex=.*" >> $GITHUB_OUTPUT  

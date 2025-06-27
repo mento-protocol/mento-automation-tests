@@ -2,54 +2,55 @@ import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
+import { TestTag } from "@constants/test.constants";
 
 const testCases = [
   // CELO
   {
     fromToken: Token.CELO,
     toToken: Token.cUSD,
-    id: "@Tb3ad24f0",
+    id: "Tb3ad24f0",
     disable: { reason: "It's default pair for other tests" },
   },
   {
     fromToken: Token.CELO,
     toToken: Token.cEUR,
-    id: "@T3af02715",
+    id: "T3af02715",
   },
   {
     fromToken: Token.CELO,
     toToken: Token.cREAL,
-    id: "@T2a476441",
+    id: "T2a476441",
   },
   {
     fromToken: Token.CELO,
     toToken: Token.eXOF,
-    id: "@T13fb8467",
+    id: "T13fb8467",
   },
   // USDT
   {
     fromToken: Token.USDT,
     toToken: Token.cUSD,
-    id: "@T2511996c",
+    id: "T2511996c",
   },
   // cKES
   {
     fromToken: Token.cKES,
     toToken: Token.cUSD,
-    id: "@Tbe02fb8d",
+    id: "Tbe02fb8d",
   },
   // PUSO
   {
     fromToken: Token.PUSO,
     toToken: Token.cUSD,
-    id: "@T7d8911a6",
+    id: "T7d8911a6",
   },
   // cCOP
   {
     fromToken: Token.cCOP,
     toToken: Token.cUSD,
     fromAmount: "430",
-    id: "@Ta2aa287f",
+    id: "Ta2aa287f",
   },
   // USDC
   {
@@ -59,7 +60,7 @@ const testCases = [
       Token.cUSD,
       Token.cREAL,
     ]),
-    id: "@Ta9f2be1e",
+    id: "Ta9f2be1e",
   },
   // axlUSDC
   {
@@ -69,7 +70,7 @@ const testCases = [
       Token.cUSD,
       Token.cREAL,
     ]),
-    id: "@T635a15c9",
+    id: "T635a15c9",
   },
   // axlEUROC
   {
@@ -78,7 +79,7 @@ const testCases = [
       Token.cEUR,
       Token.eXOF,
     ]),
-    id: "@T92258405",
+    id: "T92258405",
   },
   // cGHS
   {
@@ -89,7 +90,7 @@ const testCases = [
       Token.USDC,
       Token.USDT,
     ]),
-    id: "@T8da32b9f",
+    id: "T8da32b9f",
     fromAmount: "0.1",
   },
   // cGBP
@@ -99,13 +100,13 @@ const testCases = [
       Token.CELO,
       Token.cUSD,
     ]),
-    id: "@T22f94bbb",
+    id: "T22f94bbb",
   },
   // cZAR
   {
     fromToken: Token.cZAR,
     toToken: Token.cUSD,
-    id: "@T4b1b444b",
+    id: "T4b1b444b",
     fromAmount: "0.1",
   },
   // cCAD
@@ -115,7 +116,7 @@ const testCases = [
       Token.CELO,
       Token.cUSD,
     ]),
-    id: "@T0869d367",
+    id: "T0869d367",
   },
   // cAUD
   {
@@ -124,32 +125,33 @@ const testCases = [
       Token.CELO,
       Token.cUSD,
     ]),
-    id: "@T1d46dc17",
+    id: "T1d46dc17",
   },
   // cCHF
   {
     fromToken: Token.cCHF,
     toToken: Token.cUSD,
-    id: "@Tc750f6e5",
+    id: "Tc750f6e5",
   },
   // cNGN
   {
     fromToken: Token.cNGN,
     fromAmount: "10",
     toToken: Token.cUSD,
-    id: "@T280cb27f",
+    id: "T280cb27f",
   },
   // cJPY
   {
     fromToken: Token.cJPY,
     toToken: Token.cUSD,
-    id: "@T36d94360",
+    id: "T36d94360",
     fromAmount: "0.1",
   },
 ];
 
 suite({
   name: "Swap - By token pairs",
+  tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {
     await web.main.runSwapTestPreconditions();
   },

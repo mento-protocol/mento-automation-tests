@@ -1,52 +1,50 @@
+import { TestTag } from "@constants/test.constants";
 import { Token } from "@constants/token.constants";
 import { expect } from "@fixtures/common/common.fixture";
 import { suite } from "@helpers/suite/suite.helper";
-import { WalletName } from "@services/connect-wallet-modal/connect-wallet-modal.service.types";
 import { AmountType } from "@services/swap/swap.service.types";
 
 suite({
-  name: "Amounts - Sell",
-  beforeEach: async ({ web }) => {
-    await web.main.connectWalletByName(WalletName.Metamask);
-    await web.main.waitForBalanceToLoad({ shouldOpenSettings: true });
-  },
+  name: "Amounts - Buy",
+  tags: [TestTag.Regression, TestTag.Parallel],
+  beforeEach: async ({ web }) => web.main.runSwapTestPreconditions(),
   tests: [
     {
-      name: "Fill the Sell field with an empty amount",
-      testCaseId: "@Tcc0fa75f",
+      name: "Fill the Buy field with an empty amount",
+      testCaseId: "Tc952219e",
       test: async ({ web }) => {
         expect.soft(await web.swap.isProceedButtonEnabled()).toBeFalsy();
       },
     },
     {
-      name: "Fill the Sell field with an amount that exceeds balance",
-      testCaseId: "@T2a671992",
+      name: "Fill the Buy field with an amount that exceeds balance",
+      testCaseId: "T88e163ac",
       test: async ({ web }) => {
-        await web.swap.fillForm({ sellAmount: "700" });
+        await web.swap.fillForm({ buyAmount: "700" });
         expect(await web.swap.isAmountExceedValidationThere()).toBeTruthy();
       },
     },
     {
-      name: "Fill the Sell field with an amount that is too small",
-      testCaseId: "@T8a97541b",
+      name: "Fill the Buy field with an amount that is too small",
+      testCaseId: "T26953592",
       test: async ({ web }) => {
-        await web.swap.fillForm({ sellAmount: "00" });
+        await web.swap.fillForm({ buyAmount: "00" });
         expect(await web.swap.isProceedButtonEnabled()).toBeFalsy();
       },
     },
     {
-      name: "Fill the Sell field with an amount that is high",
-      testCaseId: "@",
+      name: "Fill the Buy field with an amount that is high",
+      testCaseId: "",
       test: async ({ web }) => {
         const celoBalance = await web.main.getTokenBalanceByName(Token.CELO);
-        await web.swap.fillForm({ buyAmount: celoBalance.toString() });
+        await web.swap.fillForm({ sellAmount: celoBalance.toString() });
         const highBuyAmount = await web.swap.getAmountByType(AmountType.Buy);
         await web.browser.refresh();
-        await web.swap.fillForm({ sellAmount: highBuyAmount.toString() });
+        await web.swap.fillForm({ buyAmount: highBuyAmount.toString() });
         expect.soft(await web.swap.isAmountEmpty(AmountType.Sell)).toBeFalsy();
         expect.soft(await web.swap.isProceedButtonThere()).toBeTruthy();
         expect.soft(await web.swap.isProceedButtonEnabled()).toBeTruthy();
-        // TODO: Workaround untill the 'Insufficient balance' button doesn't have its own locator ()
+        // TODO: Workaround untill the 'Insufficient balance' button doesn't have its own locator
         expect(await web.swap.getProceedButtonText()).not.toBe(
           "Insufficient Balance",
         );

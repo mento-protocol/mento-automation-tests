@@ -1,3 +1,4 @@
+import { TestTag } from "@constants/test.constants";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 
@@ -8,14 +9,14 @@ const tokens = {
 
 suite({
   name: "Swap - By amount type",
-  tags: ["@regression", "@sequential"],
+  tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
   beforeEach: async ({ web }) => {
     await web.main.runSwapTestPreconditions();
   },
   tests: [
     {
       name: `Sell (${tokens.from}/${tokens.to})`,
-      testCaseId: "@Tab822de9",
+      testCaseId: "Tab822de9",
       test: async ({ web }) => {
         const initialBalance = await web.main.getTokenBalanceByName(tokens.to);
         await web.swap.fillForm({
@@ -31,7 +32,7 @@ suite({
     },
     {
       name: `Buy (${tokens.from}/${tokens.to})`,
-      testCaseId: "@T3c8db175",
+      testCaseId: "T3c8db175",
       test: async ({ web }) => {
         const initialBalance = await web.main.getTokenBalanceByName(tokens.to);
         await web.swap.fillForm({
