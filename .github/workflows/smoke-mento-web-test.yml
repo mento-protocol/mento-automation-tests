@@ -37,7 +37,7 @@ jobs:
     timeout-minutes: 60
     env:
       SPECS_TYPE: "web"
-      SPEC_NAMES: "p1"
+      SPECS_REGEX: "@smoke"
       IS_PARALLEL_RUN: "false"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}

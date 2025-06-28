@@ -1,3 +1,4 @@
+import { TestTag } from "@constants/test.constants";
 import { expect } from "@fixtures/common/common.fixture";
 import { envHelper } from "@helpers/env/env.helper";
 import { suite } from "@helpers/suite/suite.helper";
@@ -10,6 +11,7 @@ const networkNameToSwitch = envHelper.isMainnet()
 
 suite({
   name: "Switch network",
+  tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {
     await web.main.connectWalletByName(WalletName.Metamask);
     await web.main.openNetworkDetails();
@@ -25,7 +27,7 @@ suite({
         reason: "Fix the flaky 'Switch network' test suite",
         link: "https://linear.app/mento-labs/issue/AUT-19/",
       },
-      testCaseId: "@Tbf3f639c",
+      testCaseId: "Tbf3f639c",
       test: async ({ web, metamaskHelper }) => {
         const initialNetworkName =
           await web.main.walletSettingsPopup.networkDetails.getCurrentNetwork();
@@ -44,7 +46,7 @@ suite({
     },
     {
       name: `Switch network to ${networkNameToSwitch}`,
-      testCaseId: "@T97490a07",
+      testCaseId: "T97490a07",
       disable: {
         reason: "Fix the flaky 'Switch network' test suite",
         link: "https://linear.app/mento-labs/issue/AUT-19/",

@@ -4,16 +4,21 @@ name: Common Test Run
 on:
   workflow_call:
     inputs:
-      SPEC_NAMES:
-        description: "Spec names of running tests"
+      SPECS_REGEX:
+        description: "Specs regex which accepts tags or names of running tests"
+        required: true
+        type: string
+      EXCLUDE_SPECS_REGEX:
+        description: "Specs regex which accepts tags or names of excluded tests"
         required: false
         type: string
       SPECS_TYPE:
-        description: "Spec type of running tests"
+        description: "Specs type of running tests"
         required: false
         type: string
-      SPECS_FOLDER_NAME:
-        description: "Spec relative folder name of running tests"
+        default: "web"
+      SPECS_DIR:
+        description: "Specs specific dir of running tests"
         required: false
         type: string
       IS_PARALLEL_RUN:
@@ -76,8 +81,9 @@ jobs:
     timeout-minutes: 60
     env:
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
-      SPEC_NAMES: ${{ inputs.SPEC_NAMES }}
-      SPECS_FOLDER_NAME: ${{ inputs.SPECS_FOLDER_NAME }}
+      SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
+      EXCLUDE_SPECS_REGEX: ${{ inputs.EXCLUDE_SPECS_REGEX }}
+      SPECS_DIR: ${{ inputs.SPECS_DIR }}
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
@@ -98,7 +104,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           cache: npm
-          node-version: 18.20.0
+          node-version: 20.11.1
 
       - name: Install dependencies
         run: npm ci

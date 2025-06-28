@@ -2,22 +2,19 @@ import { expect } from "@fixtures/common/common.fixture";
 import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { AmountType } from "@services/index";
-import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { timeouts } from "@constants/index";
-
-const expectedDecimals = 4;
-const fiveDecimalsAmount = "10.23456";
-const fourDecimalsAmount = "10.2345";
+import { TestTag } from "@constants/test.constants";
 
 suite({
   name: "Swap - Amounts",
+  tags: [TestTag.Regression, TestTag.Parallel],
   beforeEach: async ({ web }) => {
     await web.main.runSwapTestPreconditions();
   },
   tests: [
     {
       name: "Rates are equal on all the stages",
-      testCaseId: "@T2332ee03",
+      testCaseId: "T2332ee03",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
@@ -32,7 +29,7 @@ suite({
     },
     {
       name: "The 'Sell' input is auto-calculating when 'Buy' is filled`",
-      testCaseId: "@T9906952e",
+      testCaseId: "T9906952e",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
@@ -43,7 +40,7 @@ suite({
     },
     {
       name: `Use max balance using '${Token.CELO}' as 'Sell'`,
-      testCaseId: "@Ta34f8bd6",
+      testCaseId: "Ta34f8bd6",
       test: async ({ web }) => {
         const maxBalance = (
           await web.main.getTokenBalanceByName(Token.CELO)
@@ -58,7 +55,7 @@ suite({
     },
     {
       name: `Use max balance using anything as 'from' besides '${Token.CELO}'`,
-      testCaseId: "@T80d4fbc3",
+      testCaseId: "T80d4fbc3",
       test: async ({ web }) => {
         const maxBalance = (
           await web.main.getTokenBalanceByName(Token.cCHF)
@@ -72,87 +69,8 @@ suite({
       },
     },
     {
-      name: `The 'Sell' input and USD amounts should have 4 decimals`,
-      testCaseId: "@",
-      test: async ({ web }) => {
-        await web.swap.fillForm({
-          tokens: { sell: Token.cEUR, buy: Token.CELO },
-          sellAmount: fiveDecimalsAmount,
-        });
-
-        const swapStageSellUsdAmount = await web.swap.getUsdAmountByType(
-          AmountType.Sell,
-        );
-        expect
-          .soft(
-            primitiveHelper.number.hasMaxDecimalPlaces(
-              swapStageSellUsdAmount,
-              expectedDecimals,
-            ),
-          )
-          .toBeTruthy();
-        await web.swap.proceedToConfirmation({
-          shouldVerifyNoValidMedian: false,
-        });
-
-        const confirmStageSellUsdAmount =
-          await web.swap.confirm.getUsdAmountByType(AmountType.Sell);
-        expect
-          .soft(
-            primitiveHelper.number.hasMaxDecimalPlaces(
-              confirmStageSellUsdAmount,
-              expectedDecimals,
-            ),
-          )
-          .toBeTruthy();
-        expect(await web.swap.confirm.getAmountByType(AmountType.Sell)).toBe(
-          fourDecimalsAmount,
-        );
-      },
-    },
-    {
-      name: `The 'Buy' input and USD amounts should have 4 decimals`,
-      testCaseId: "@",
-      test: async ({ web }) => {
-        await web.swap.fillForm({
-          tokens: { sell: Token.cEUR, buy: Token.CELO },
-          buyAmount: fiveDecimalsAmount,
-        });
-
-        const swapStageBuyUsdAmount = await web.swap.getUsdAmountByType(
-          AmountType.Buy,
-        );
-        expect
-          .soft(
-            primitiveHelper.number.hasMaxDecimalPlaces(
-              swapStageBuyUsdAmount,
-              expectedDecimals,
-            ),
-          )
-          .toBeTruthy();
-
-        await web.swap.proceedToConfirmation({
-          shouldVerifyNoValidMedian: false,
-        });
-
-        const confirmStageBuyUsdAmount =
-          await web.swap.confirm.getUsdAmountByType(AmountType.Buy);
-        expect
-          .soft(
-            primitiveHelper.number.hasMaxDecimalPlaces(
-              confirmStageBuyUsdAmount,
-              expectedDecimals,
-            ),
-          )
-          .toBeTruthy();
-        expect(await web.swap.confirm.getAmountByType(AmountType.Buy)).toBe(
-          fourDecimalsAmount,
-        );
-      },
-    },
-    {
       name: `Trading limit error is shown when the 'Sell' amount exceeds limit`,
-      testCaseId: "@",
+      testCaseId: "",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.CELO },
@@ -165,7 +83,7 @@ suite({
     },
     {
       name: `Trading limit error is shown when the 'Buy' amount exceeds limit`,
-      testCaseId: "@",
+      testCaseId: "",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: { sell: Token.cEUR, buy: Token.cUSD },

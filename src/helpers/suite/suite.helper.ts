@@ -13,8 +13,11 @@ export function suite({
   beforeEach,
   afterEach,
   afterAll,
+  tags: rawTags = [],
 }: ISuiteArgs): void {
-  testFixture.describe(suiteName, () => {
+  const tags = composeTags(rawTags);
+
+  testFixture.describe(suiteName, { tag: tags }, () => {
     testFixture.beforeAll(async ({ api }) => {
       logRunDetails(suiteName);
       beforeAll && (await beforeAll({ api }));
@@ -31,21 +34,28 @@ export function suite({
         afterEach({ web, metamaskHelper, api }),
       );
 
-    tests.forEach(({ test, name, disable, testCaseId }) => {
-      const testName = `${name} [${testCaseId}]`;
+    tests.forEach(
+      ({ test, name: testName, disable, testCaseId, tags: rawTags = [] }) => {
+        const tags = composeTags([...rawTags, testCaseId]);
 
-      testUtils.isDisabled(disable)
-        ? testFixture.skip(
-            testName,
-            testUtils.getDisableDetailsOnStart(disable),
-            async ({ web, metamaskHelper }) => {
-              await test({ web, metamaskHelper });
-            },
-          )
-        : testFixture(testName, async ({ web, metamaskHelper, api }) => {
-            await test({ web, metamaskHelper, api });
-          });
-    });
+        testUtils.isDisabled(disable)
+          ? testFixture.skip(
+              testName,
+              {
+                tag: tags,
+                ...testUtils.getDisableDetailsOnStart(disable),
+              },
+              async ({ web, metamaskHelper }) =>
+                await test({ web, metamaskHelper }),
+            )
+          : testFixture(
+              testName,
+              { tag: tags },
+              async ({ web, metamaskHelper, api }) =>
+                await test({ web, metamaskHelper, api }),
+            );
+      },
+    );
   });
 }
 
@@ -106,4 +116,8 @@ function logRunDetails(suiteName: string): void {
     : `'Alfajores' testnet`;
   const config = `\n        ENV: ${env}\n        CHAIN: ${chain}\n        PID: ${process.pid}`;
   logger.info(`Running '${suiteName}' suite with configuration: ${config}`);
+}
+
+function composeTags(tags: string[]): string[] {
+  return tags?.map(tag => `@${tag}`);
 }

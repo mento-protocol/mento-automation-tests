@@ -1,6 +1,7 @@
 import { expect } from "@fixtures/common/common.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
+import { TestTag } from "@constants/test.constants";
 
 const pairs = {
   rejectApproval: {
@@ -15,13 +16,14 @@ const pairs = {
 
 suite({
   name: "Swap - Transaction rejection",
+  tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {
     await web.main.runSwapTestPreconditions();
   },
   tests: [
     {
       name: `Reject approval tx (${pairs.rejectApproval.from}/${pairs.rejectApproval.to})`,
-      testCaseId: "@Td5aa1954",
+      testCaseId: "Td5aa1954",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: {
@@ -39,7 +41,7 @@ suite({
     },
     {
       name: `Reject swap tx (${pairs.rejectSwap.from}/${pairs.rejectSwap.to})`,
-      testCaseId: "@T09fd373a",
+      testCaseId: "T09fd373a",
       test: async ({ web }) => {
         await web.swap.fillForm({
           tokens: {
