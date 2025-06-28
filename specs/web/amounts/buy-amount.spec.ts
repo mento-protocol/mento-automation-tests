@@ -6,7 +6,7 @@ import { AmountType } from "@services/swap/swap.service.types";
 
 suite({
   name: "Amounts - Buy",
-  tags: [TestTag.Regression, TestTag.Parallel],
+  tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
   beforeEach: async ({ web }) => web.main.runSwapTestPreconditions(),
   tests: [
     {

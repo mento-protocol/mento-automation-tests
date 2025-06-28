@@ -10,8 +10,8 @@ const fiveDecimalsAmount = "10.23456";
 const fourDecimalsAmount = "10.2345";
 
 suite({
-  name: "Swap - Amounts",
-  tags: [TestTag.Regression, TestTag.Sequential],
+  name: "Swap - Amount Decimals",
+  tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
   beforeEach: async ({ web }) => await web.main.runSwapTestPreconditions(),
   tests: [
     {

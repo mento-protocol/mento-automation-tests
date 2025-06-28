@@ -7,7 +7,7 @@ import { AmountType } from "@services/swap/swap.service.types";
 
 suite({
   name: "Amounts - Sell",
-  tags: [TestTag.Regression, TestTag.Parallel],
+  tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
   beforeEach: async ({ web }) => {
     await web.main.connectWalletByName(WalletName.Metamask);
     await web.main.waitForBalanceToLoad({ shouldOpenSettings: true });
