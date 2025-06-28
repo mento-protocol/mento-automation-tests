@@ -1,4 +1,4 @@
-# Web Regression Test Run is splitted by sequential and parallel jobs. Swap tests can't be run in parallel mode
+# Web Regression Test Run using matrix strategy to run tests sequentialy and parallelly
 name: Web Regression Test Run
 
 on:
@@ -27,34 +27,37 @@ on:
         type: string
 
 jobs:
-  mento_web_sequential_regression_test:
-    name: "[Mento-Web] Sequential Regression Test Run"
+  mento_web_regression_test:
+    name: "[Mento-Web] ${{ matrix.name }} Regression Test Run"
     uses: ./.github/workflows/common-test.yml
+    strategy:
+      matrix:
+        include:
+          - name: "Sequential"
+            specs_regex: "@regression,@sequential"
+            exclude_specs_regex: "@parallel"
+            is_parallel_run: "false"
+            is_mainnet: "false"
+            html_report_name: "mento-web-sequential-regression"
+            testomatio_title: "[Mento-Web] Sequential-Regression"
+            notification_message: "[Mento-Web] Sequential-Regression"
+          - name: "Parallel"
+            specs_regex: "@regression,@parallel"
+            exclude_specs_regex: "@sequential"
+            is_parallel_run: "true"
+            is_mainnet: "true"
+            html_report_name: "mento-web-parallel-regression"
+            testomatio_title: "[Mento-Web] Parallel-Regression"
+            notification_message: "[Mento-Web] Parallel-Regression"
     with:
-      SPECS_REGEX: "@regression,@sequential"
-      EXCLUDE_SPECS_REGEX: "@parallel"
-      IS_PARALLEL_RUN: "false"
-      IS_MAINNET: "false"
+      SPECS_REGEX: ${{ matrix.specs_regex }}
+      EXCLUDE_SPECS_REGEX: ${{ matrix.exclude_specs_regex }}
+      IS_PARALLEL_RUN: ${{ matrix.is_parallel_run }}
+      IS_MAINNET: ${{ matrix.is_mainnet }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
-      HTML_REPORT_NAME: "mento-web-sequential-regression"
+      HTML_REPORT_NAME: ${{ matrix.html_report_name }}
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
-      TESTOMATIO_TITLE: "[Mento-Web] Sequential-Regression"
+      TESTOMATIO_TITLE: ${{ matrix.testomatio_title }}
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
-      NOTIFICATION_MESSAGE: "[Mento-Web] Sequential-Regression"
-    secrets: inherit
-
-  mento_web_parallel_regression_test:
-    name: "[Mento-Web] Parallel Regression Test Run"
-    uses: ./.github/workflows/common-test.yml
-    with:
-      SPECS_REGEX: "@regression,@parallel"
-      EXCLUDE_SPECS_REGEX: "@sequential"
-      IS_PARALLEL_RUN: "true"
-      IS_MAINNET: "true"
-      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
-      HTML_REPORT_NAME: "mento-web-parallel-regression"
-      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true'  }}
-      TESTOMATIO_TITLE: "[Mento-Web] Parallel-Regression"
-      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
-      NOTIFICATION_MESSAGE: "[Mento-Web] Parallel-Regression"
+      NOTIFICATION_MESSAGE: ${{ matrix.notification_message }}
     secrets: inherit
