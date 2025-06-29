@@ -31,7 +31,11 @@ export class SwapPo extends BasePo {
 
   useMaxButton = new Button(this.ef.pw.role("button", { name: "MAX" }));
   considerKeepNotificationLabel = new Label(
-    this.ef.pw.text("Consider keeping some CELO"),
+    this.ef.pw.text(
+      "Consider keeping some CELO",
+      {},
+      { takeFirstElement: true },
+    ),
   );
   amountRequiredButton = new Button(
     this.ef.pw.role("button", { name: "Amount Required" }),
@@ -39,12 +43,15 @@ export class SwapPo extends BasePo {
   insufficientBalanceButton = new Button(
     this.ef.pw.text("Insufficient Balance"),
   );
+  swapsExceedsLimitsButton = new Button(
+    this.ef.pw.text("Swap exceeds trading limits"),
+  );
   amountTooSmallButton = new Button(
     this.ef.pw.role("button", { name: "Amount too small" }),
   );
   errorButton = new Button(this.ef.pw.role("button", { name: "Error" }));
-  exceedsTradingLimitErrorLabel = new Label(
-    this.ef.pw.text("amount exceeds the current trading limits"),
+  exceedsTradingLimitNotificationLabel = new Label(
+    this.ef.pw.text("amount exceeds the current trading limit"),
   );
 
   staticElements = [this.headerLabel];

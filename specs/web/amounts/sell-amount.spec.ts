@@ -48,10 +48,7 @@ suite({
         expect.soft(await web.swap.isAmountEmpty(AmountType.Sell)).toBeFalsy();
         expect.soft(await web.swap.isProceedButtonThere()).toBeTruthy();
         expect.soft(await web.swap.isProceedButtonEnabled()).toBeTruthy();
-        // TODO: Workaround untill the 'Insufficient balance' button doesn't have its own locator ()
-        expect(await web.swap.getProceedButtonText()).not.toBe(
-          "Insufficient Balance",
-        );
+        expect(await web.swap.isInsufficientBalanceButtonThere()).toBeFalsy();
       },
     },
   ],

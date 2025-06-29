@@ -42,3 +42,8 @@ class SpecSelectorHelper {
 }
 
 export const specSelectorHelper = new SpecSelectorHelper();
+
+export interface IGetFilteredNamesArgs {
+  desiredSpecNames: string[];
+  allSpecNames: string[];
+}
