@@ -16,10 +16,7 @@ suite({
       name: "Rates are equal on all the stages",
       testCaseId: "T2332ee03",
       test: async ({ web }) => {
-        await web.swap.fillForm({
-          tokens: { sell: Token.cEUR, buy: Token.CELO },
-          sellAmount: "0.0001",
-        });
+        await web.swap.fillForm({ sellAmount: "0.0001" });
         expect(await web.swap.isRateThere()).toBeTruthy();
         const { beforeSwapRate, afterSwapRate } = await web.swap.swapInputs();
         expect(beforeSwapRate).not.toEqual(afterSwapRate);
@@ -31,10 +28,7 @@ suite({
       name: "The 'Sell' input is auto-calculating when 'Buy' is filled`",
       testCaseId: "T9906952e",
       test: async ({ web }) => {
-        await web.swap.fillForm({
-          tokens: { sell: Token.cEUR, buy: Token.CELO },
-          buyAmount: "0.0001",
-        });
+        await web.swap.fillForm({ buyAmount: "0.0001" });
         expect(await web.swap.isAmountEmpty(AmountType.Sell)).toBeFalsy();
       },
     },
@@ -49,7 +43,7 @@ suite({
           tokens: { sell: Token.CELO, buy: Token.cUSD },
         });
         await web.swap.useFullBalance();
-        expect(await web.swap.getSellTokenAmount()).toEqual(maxBalance);
+        expect.soft(await web.swap.getSellTokenAmount()).toEqual(maxBalance);
         expect(await web.swap.isConsiderKeepNotificationThere()).toBeTruthy();
       },
     },
@@ -72,12 +66,18 @@ suite({
       name: `Trading limit error is shown when the 'Sell' amount exceeds limit`,
       testCaseId: "",
       test: async ({ web }) => {
+        await web.swap.swapInputs({
+          shouldReturnRates: false,
+          clicksOnButton: 2,
+        });
         await web.swap.fillForm({
-          tokens: { sell: Token.cEUR, buy: Token.CELO },
           sellAmount: "600000",
         });
         expect(
-          await web.swap.waitForExceedsTradingLimitsValidation(timeouts.m),
+          await web.swap.waitForExceedsTradingLimitsNotification(timeouts.m),
+        ).toBeTruthy();
+        expect(
+          await web.swap.waitForExceedsTradingLimitsButton(timeouts.s),
         ).toBeTruthy();
       },
     },
@@ -85,12 +85,20 @@ suite({
       name: `Trading limit error is shown when the 'Buy' amount exceeds limit`,
       testCaseId: "",
       test: async ({ web }) => {
+        await web.swap.swapInputs({
+          shouldReturnRates: false,
+          clicksOnButton: 2,
+        });
         await web.swap.fillForm({
-          tokens: { sell: Token.cEUR, buy: Token.cUSD },
           buyAmount: "600000",
         });
+        expect
+          .soft(
+            await web.swap.waitForExceedsTradingLimitsNotification(timeouts.s),
+          )
+          .toBeTruthy();
         expect(
-          await web.swap.waitForExceedsTradingLimitsValidation(timeouts.m),
+          await web.swap.waitForExceedsTradingLimitsButton(timeouts.s),
         ).toBeTruthy();
       },
     },

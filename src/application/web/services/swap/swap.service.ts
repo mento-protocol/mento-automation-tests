@@ -7,6 +7,7 @@ import {
   ISwapServiceArgs,
   ConfirmSwapService,
   Slippage,
+  ISwapInputsParams,
 } from "@services/index";
 import { SwapPo } from "@page-objects/index";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
@@ -94,22 +95,32 @@ export class SwapService extends BaseService {
     slippage && (await this.chooseSlippage(slippage));
     await this.selectTokens({ clicksOnSellTokenButton, ...tokens });
     // TODO: Sort out why we need to click on the input before filling when it's only filling
-    sellAmount && (await this.page.sellAmountInput.click({ force: true }));
+    sellAmount &&
+      (await this.page.sellAmountInput.click({
+        force: true,
+        timeout: timeouts.xs,
+      }));
     sellAmount &&
       (await this.page.sellAmountInput.enterText(sellAmount, { force: true }));
     buyAmount && (await this.page.buyAmountInput.click({ force: true }));
     buyAmount &&
-      (await this.page.buyAmountInput.enterText(buyAmount, { force: true }));
+      (await this.page.buyAmountInput.enterText(buyAmount, {
+        force: true,
+        timeout: timeouts.xs,
+      }));
     await this.waitForLoadedRate();
   }
 
   async swapInputs({
     shouldReturnRates = true,
-  }: {
-    shouldReturnRates?: boolean;
-  } = {}): Promise<ISwapInputs | undefined> {
+    clicksOnButton = 1,
+  }: ISwapInputsParams = {}): Promise<ISwapInputs | undefined> {
     const beforeSwapRate = shouldReturnRates && (await this.getRate());
-    await this.page.swapInputsButton.click({ timeout: timeouts.xxs });
+    await this.page.swapInputsButton.click({
+      timeout: timeouts.xxs,
+      force: true,
+      times: clicksOnButton,
+    });
     shouldReturnRates && (await this.waitForLoadedRate());
     const afterSwapRate =
       shouldReturnRates && (await this.getRate(timeouts.xxs));
@@ -129,11 +140,12 @@ export class SwapService extends BaseService {
     return this.page.rateLabel.getText();
   }
 
-  // TODO: Workaround untill the 'Insufficient balance' button doesn't have its own locator
-  async getProceedButtonText(): Promise<string> {
-    return (await this.page.swapButton.isDisplayed())
-      ? await this.page.swapButton.getText()
-      : await this.page.approveButton.getText();
+  async isInsufficientBalanceButtonThere(): Promise<boolean> {
+    return this.page.insufficientBalanceButton.isDisplayed();
+  }
+
+  async isSwapsExceedsLimitsButtonThere(): Promise<boolean> {
+    return this.page.swapsExceedsLimitsButton.isDisplayed();
   }
 
   async getCurrentBuyTokenName(): Promise<string> {
@@ -165,7 +177,11 @@ export class SwapService extends BaseService {
   }
 
   async useFullBalance(): Promise<void> {
-    await this.page.useMaxButton.click({ timeout: timeouts.xxs });
+    await this.page.useMaxButton.click({
+      timeout: timeouts.xxs,
+      force: true,
+      times: 2,
+    });
     await this.page.considerKeepNotificationLabel.waitUntilDisplayed(
       timeouts.xs,
       { throwError: false },
@@ -203,11 +219,11 @@ export class SwapService extends BaseService {
     });
   }
 
-  async waitForExceedsTradingLimitsValidation(
+  async waitForExceedsTradingLimitsNotification(
     timeout: number,
   ): Promise<boolean> {
     return waiterHelper.wait(
-      async () => this.page.exceedsTradingLimitErrorLabel.isDisplayed(),
+      async () => this.page.exceedsTradingLimitNotificationLabel.isDisplayed(),
       timeout,
       {
         throwError: false,
@@ -216,8 +232,19 @@ export class SwapService extends BaseService {
     );
   }
 
+  async waitForExceedsTradingLimitsButton(timeout: number): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => this.page.swapsExceedsLimitsButton.isDisplayed(),
+      timeout,
+      {
+        throwError: false,
+        errorMessage: "Swaps exceeds trading limits button is not displayed",
+      },
+    );
+  }
+
   async getExceedsTradingLimitsErrorText(): Promise<string> {
-    return this.page.exceedsTradingLimitErrorLabel.getText();
+    return this.page.exceedsTradingLimitNotificationLabel.getText();
   }
 
   async isRateThere(): Promise<boolean> {
@@ -254,7 +281,7 @@ export class SwapService extends BaseService {
     return waiterHelper.wait(async () => this.isRateLoaded(), timeouts.s, {
       throwError: false,
       errorMessage: "Rate is not loaded",
-      interval: timeouts.xs,
+      interval: timeouts.s,
     });
   }
 
