@@ -122,7 +122,8 @@ export class SwapService extends BaseService {
       force: true,
       times: clicksOnButton,
     });
-    shouldReturnRates && (await this.waitForLoadedRate());
+    shouldReturnRates &&
+      (await this.waitForLoadedRate({ timeout: timeouts.m, throwError: true }));
     const afterSwapRate = shouldReturnRates && (await this.getRate());
     return (
       shouldReturnRates && {
