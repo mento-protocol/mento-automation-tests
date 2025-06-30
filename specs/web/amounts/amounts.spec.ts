@@ -16,7 +16,7 @@ suite({
       name: "Rates are equal on all the stages",
       testCaseId: "T2332ee03",
       test: async ({ web }) => {
-        await web.swap.fillForm({ sellAmount: "0.0001" });
+        await web.swap.fillForm({ sellAmount: "1" });
         expect(await web.swap.isRateThere()).toBeTruthy();
         const { beforeSwapRate, afterSwapRate } = await web.swap.swapInputs();
         expect(beforeSwapRate).not.toEqual(afterSwapRate);

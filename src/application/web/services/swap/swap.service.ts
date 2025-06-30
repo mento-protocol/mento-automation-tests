@@ -8,6 +8,7 @@ import {
   ConfirmSwapService,
   Slippage,
   ISwapInputsParams,
+  IWaitForLoadedRateParams,
 } from "@services/index";
 import { SwapPo } from "@page-objects/index";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
@@ -122,8 +123,7 @@ export class SwapService extends BaseService {
       times: clicksOnButton,
     });
     shouldReturnRates && (await this.waitForLoadedRate());
-    const afterSwapRate =
-      shouldReturnRates && (await this.getRate(timeouts.xxs));
+    const afterSwapRate = shouldReturnRates && (await this.getRate());
     return (
       shouldReturnRates && {
         beforeSwapRate,
@@ -132,11 +132,7 @@ export class SwapService extends BaseService {
     );
   }
 
-  async getRate(waitTimeout?: number): Promise<string> {
-    waitTimeout &&
-      (await waiterHelper.sleep(waitTimeout, {
-        sleepReason: "re-calculating after swapping inputs",
-      }));
+  async getRate(): Promise<string> {
     return this.page.rateLabel.getText();
   }
 
@@ -277,12 +273,21 @@ export class SwapService extends BaseService {
     }
   }
 
-  async waitForLoadedRate(): Promise<boolean> {
-    return waiterHelper.wait(async () => this.isRateLoaded(), timeouts.s, {
-      throwError: false,
-      errorMessage: "Rate is not loaded",
-      interval: timeouts.s,
-    });
+  async waitForLoadedRate({
+    timeout = timeouts.s,
+    throwError = false,
+  }: IWaitForLoadedRateParams = {}): Promise<boolean> {
+    const result = await waiterHelper.wait(
+      async () => this.isRateLoaded(),
+      timeout,
+      {
+        throwError,
+        errorMessage: "Rate is not loaded!",
+        interval: timeouts.action,
+      },
+    );
+    result && logger.info(`Rate is loaded successfully!`);
+    return result;
   }
 
   private async selectTokens(args: ISelectTokensArgs): Promise<void> {
