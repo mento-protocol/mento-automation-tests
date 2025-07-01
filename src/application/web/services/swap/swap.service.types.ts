@@ -63,6 +63,7 @@ export interface IFillFromOpts {
   tokens?: ISelectTokensArgs;
   slippage?: Slippage;
   clicksOnSellTokenButton?: number;
+  waitForLoadedRate?: boolean;
 }
 
 export enum Slippage {

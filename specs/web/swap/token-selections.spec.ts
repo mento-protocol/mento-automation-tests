@@ -2,13 +2,12 @@ import { expect } from "@fixtures/common/common.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
-import { WalletName } from "@services/connect-wallet-modal/connect-wallet-modal.service.types";
 import { TestTag } from "@constants/test.constants";
 
 const testCases = [
   {
     token: Token.CELO,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.cUSD,
       Token.cEUR,
       Token.cREAL,
@@ -29,11 +28,12 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
+    expectedInvalidTokens: [],
     id: "T61ff6eca",
   },
   {
     token: Token.cUSD,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cEUR,
       Token.cREAL,
@@ -53,11 +53,12 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
+    expectedInvalidTokens: [Token.axlEUROC],
     id: "T4cf1f159",
   },
   {
     token: Token.cEUR,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.cREAL,
@@ -65,28 +66,58 @@ const testCases = [
       Token.axlUSDC,
       Token.axlEUROC,
       Token.eXOF,
+    ],
+    expectedInvalidTokens: [
+      Token.USDT,
+      Token.cKES,
+      Token.PUSO,
+      Token.cCOP,
+      Token.cGHS,
+      Token.cGBP,
+      Token.cZAR,
+      Token.cCAD,
+      Token.cAUD,
+      Token.cCHF,
+      Token.cJPY,
+      Token.cNGN,
     ],
     id: "T55e5689d",
   },
   {
     token: Token.cREAL,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.cEUR,
       Token.USDC,
       Token.axlUSDC,
       Token.eXOF,
+    ],
+    expectedInvalidTokens: [
+      Token.USDT,
+      Token.axlEUROC,
+      Token.cKES,
+      Token.PUSO,
+      Token.cCOP,
+      Token.cGHS,
+      Token.cGBP,
+      Token.cZAR,
+      Token.cCAD,
+      Token.cAUD,
+      Token.cCHF,
+      Token.cJPY,
+      Token.cNGN,
     ],
     id: "T1cdcec6e",
   },
   {
     token: Token.USDC,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.cEUR,
       Token.cREAL,
+      Token.USDT,
       Token.axlUSDC,
       Token.axlEUROC,
       Token.cKES,
@@ -101,11 +132,12 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
+    expectedInvalidTokens: [Token.eXOF],
     id: "T65b923f0",
   },
   {
     token: Token.USDT,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -122,11 +154,17 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
+    ],
     id: "T1728aaf3",
   },
   {
     token: Token.axlUSDC,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.cEUR,
@@ -146,39 +184,50 @@ const testCases = [
       Token.cJPY,
       Token.cNGN,
     ],
+    expectedInvalidTokens: [Token.eXOF],
     id: "T3842f1e6",
   },
   {
     token: Token.axlEUROC,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cEUR,
       Token.USDC,
       Token.axlUSDC,
       Token.eXOF,
     ],
+    expectedInvalidTokens: [
+      Token.cUSD,
+      Token.cREAL,
+      Token.USDT,
+      Token.cKES,
+      Token.PUSO,
+      Token.cCOP,
+      Token.cGHS,
+      Token.cGBP,
+      Token.cZAR,
+      Token.cCAD,
+      Token.cAUD,
+      Token.cCHF,
+      Token.cJPY,
+      Token.cNGN,
+    ],
     id: "T1b2d5431",
   },
   {
     token: Token.eXOF,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.cEUR,
       Token.cREAL,
       Token.axlEUROC,
     ],
-    id: "T8b44f3ea",
-  },
-  {
-    token: Token.cKES,
-    expectedTokens: [
-      Token.CELO,
-      Token.cUSD,
+    expectedInvalidTokens: [
       Token.USDC,
       Token.USDT,
       Token.axlUSDC,
-      Token.axlEUROC,
+      Token.cKES,
       Token.PUSO,
       Token.cCOP,
       Token.cGHS,
@@ -189,19 +238,45 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
       Token.cNGN,
+    ],
+    id: "T8b44f3ea",
+  },
+  {
+    token: Token.cKES,
+    expectedValidTokens: [
+      Token.CELO,
+      Token.cUSD,
+      Token.USDC,
+      Token.USDT,
+      Token.axlUSDC,
+      Token.PUSO,
+      Token.cCOP,
+      Token.cGHS,
+      Token.cGBP,
+      Token.cZAR,
+      Token.cCAD,
+      Token.cAUD,
+      Token.cCHF,
+      Token.cJPY,
+      Token.cNGN,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "Tdf1f8d60",
   },
   {
     token: Token.PUSO,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
       Token.USDT,
       Token.axlUSDC,
       Token.cKES,
-      Token.PUSO,
       Token.cCOP,
       Token.cGHS,
       Token.cGBP,
@@ -211,12 +286,18 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
       Token.cNGN,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "Td740bfbf",
   },
   {
     token: Token.cCOP,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -232,12 +313,18 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
       Token.cNGN,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "T7a80e866",
   },
   {
     token: Token.cGHS,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -253,12 +340,18 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
       Token.cNGN,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "T052ce765",
   },
   {
     token: Token.cGBP,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -274,12 +367,18 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
       Token.cNGN,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "Tb6f16c86",
   },
   {
     token: Token.cZAR,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -295,12 +394,18 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
       Token.cNGN,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "T9787390d",
   },
   {
     token: Token.cCAD,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -316,12 +421,18 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
       Token.cNGN,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "T14202806",
   },
   {
     token: Token.cAUD,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -337,12 +448,18 @@ const testCases = [
       Token.cCHF,
       Token.cJPY,
       Token.cNGN,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "Tee27957f",
   },
   {
     token: Token.cCHF,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -358,12 +475,18 @@ const testCases = [
       Token.cAUD,
       Token.cJPY,
       Token.cNGN,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "Tf78b7915",
   },
   {
     token: Token.cJPY,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -380,11 +503,17 @@ const testCases = [
       Token.cCHF,
       Token.cNGN,
     ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
+    ],
     id: "Td80ddce2",
   },
   {
     token: Token.cNGN,
-    expectedTokens: [
+    expectedValidTokens: [
       Token.CELO,
       Token.cUSD,
       Token.USDC,
@@ -400,20 +529,25 @@ const testCases = [
       Token.cAUD,
       Token.cCHF,
       Token.cJPY,
+    ],
+    expectedInvalidTokens: [
+      Token.cEUR,
+      Token.cREAL,
+      Token.axlEUROC,
+      Token.eXOF,
     ],
     id: "T7084e96f",
   },
 ];
 
 suite({
-  name: "Swap - Token Exchange Options",
+  name: "Swap - Token selections",
   tags: [TestTag.Regression, TestTag.Parallel],
   tests: [
     {
       name: "Swap token inputs",
       testCaseId: "Td88a4d31",
       test: async ({ web }) => {
-        await web.main.connectWalletByName(WalletName.Metamask);
         await web.swap.fillForm({
           sellAmount: defaultSwapAmount,
           tokens: {
@@ -427,23 +561,68 @@ suite({
         expect(await web.swap.getCurrentBuyTokenName()).toEqual(Token.cREAL);
       },
     },
+    // TODO:
+    // {
+    //   name: "Select an invalid pair from Buy to Sell dropdowns",
+    //   testCaseId: "Td88a4d31",
+    //   test: async ({ web }) => {
+    //     // await web.swap.fillForm({
+    //     //   sellAmount: defaultSwapAmount,
+    //     //   tokens: {
+    //     //     sell: Token.cREAL,
+    //     //     buy: Token.axlEUROC,
+    //     //     clicksOnSellTokenButton: 1,
+    //     //   },
+    //     // });
+    //     await web.swap.openSelectTokenModal("sell");
+    //     await web.swap.selectSellToken(Token.cREAL);
+    //     await web.swap.openSelectTokenModal("buy");
+    //     await web.swap.selectTokenModalPage.tokens[Token.axlEUROC].click();
+    //     expect(await web.swap.getCurrentSellTokenName()).toEqual(Token.CELO);
+    //     expect(await web.swap.getCurrentBuyTokenName()).toEqual(Token.cREAL);
+    //   },
+    // },
+    // TODO:
+    // {
+    //   name: "Select an invalid pair from Buy to Sell dropdowns",
+    //   testCaseId: "Td88a4d31",
+    //   test: async ({ web }) => {
+    //     await web.main.connectWalletByName(WalletName.Metamask);
+    //     await web.swap.fillForm({
+    //       sellAmount: defaultSwapAmount,
+    //       tokens: {
+    //         sell: Token.cREAL,
+    //         buy: Token.CELO,
+    //         clicksOnSellTokenButton: 1,
+    //       },
+    //     });
+    //     await web.swap.swapInputs();
+    //     expect(await web.swap.getCurrentSellTokenName()).toEqual(Token.CELO);
+    //     expect(await web.swap.getCurrentBuyTokenName()).toEqual(Token.cREAL);
+    //   },
+    // },
     ...testCases.map(testCase => {
       return {
-        name: `from "${testCase.token}" token`,
+        name: `"${testCase.token}" token`,
         testCaseId: testCase.id,
         test: async ({ web }: IExecution) => {
           if (testCase.token === Token.cUSD) {
             await web.swap.swapInputs({ shouldReturnRates: false });
           }
           await web.swap.fillForm({
-            tokens: { sell: testCase.token, clicksOnSellTokenButton: 1 },
+            tokens: { sell: testCase.token },
+            waitForLoadedRate: false,
+            clicksOnSellTokenButton: 1,
           });
-          await web.swap.page.selectBuyTokenButton.click({
-            force: true,
+          await web.swap.openSelectTokenModal({
+            tokenType: "buy",
           });
-          expect(
-            await web.swap.selectTokenModalPage.getAllTokenNames(),
-          ).toEqual(testCase.expectedTokens);
+          const validTokens =
+            await web.swap.selectTokenModalPage.getAllValidTokenNames();
+          expect.soft(validTokens).toEqual(testCase.expectedValidTokens);
+          const invalidTokens =
+            await web.swap.selectTokenModalPage.getAllInvalidTokenNames();
+          expect(invalidTokens).toEqual(testCase.expectedInvalidTokens);
         },
       };
     }),

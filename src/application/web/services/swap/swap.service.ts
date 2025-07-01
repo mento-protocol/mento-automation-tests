@@ -90,9 +90,14 @@ export class SwapService extends BaseService {
     await this.slippageModalPage.verifyIsOpen();
   }
 
-  async fillForm(opts: IFillFromOpts): Promise<void> {
-    const { slippage, sellAmount, buyAmount, tokens, clicksOnSellTokenButton } =
-      opts;
+  async fillForm({
+    slippage,
+    sellAmount,
+    buyAmount,
+    tokens,
+    clicksOnSellTokenButton,
+    waitForLoadedRate = true,
+  }: IFillFromOpts): Promise<void> {
     slippage && (await this.chooseSlippage(slippage));
     await this.selectTokens({ clicksOnSellTokenButton, ...tokens });
     // TODO: Sort out why we need to click on the input before filling when it's only filling
@@ -109,7 +114,7 @@ export class SwapService extends BaseService {
         force: true,
         timeout: timeouts.xs,
       }));
-    await this.waitForLoadedRate();
+    waitForLoadedRate && (await this.waitForLoadedRate());
   }
 
   async swapInputs({
@@ -291,33 +296,61 @@ export class SwapService extends BaseService {
     return result;
   }
 
+  async openSelectTokenModal({
+    tokenType,
+    clicksOnButton,
+  }: {
+    tokenType: "sell" | "buy";
+    clicksOnButton?: number;
+  }): Promise<void> {
+    const selectTokenButton =
+      tokenType === "sell"
+        ? this.page.selectSellTokenButton
+        : this.page.selectBuyTokenButton;
+    // TODO: think about
+    // waiterHelper.retry(
+    //   async () => {
+    //     await selectTokenButton.click({
+    //       force: true,
+    //       timeout: timeouts.s,
+    //       times: clicksOnButton,
+    //     });
+    //     return this.selectTokenModalPage.verifyIsOpen();
+    //   },
+    //   3,
+    //   { errorMessage: "Select token modal is not opened" },
+    // );
+    await selectTokenButton.click({
+      force: true,
+      timeout: timeouts.s,
+      times: clicksOnButton,
+    });
+    await this.selectTokenModalPage.verifyIsOpen();
+  }
+
+  async selectToken(token: Token): Promise<void> {
+    await this.selectTokenModalPage.tokens[token].click({
+      force: true,
+      timeout: timeouts.s,
+    });
+    await this.selectTokenModalPage.verifyIsClosed();
+  }
+
   private async selectTokens(args: ISelectTokensArgs): Promise<void> {
     const { clicksOnSellTokenButton = 2 } = args;
     if (args?.sell) {
-      await this.page.selectSellTokenButton.click({
-        force: true,
-        timeout: timeouts.s,
-        times: clicksOnSellTokenButton,
+      await this.openSelectTokenModal({
+        tokenType: "sell",
+        clicksOnButton: clicksOnSellTokenButton,
       });
-      await this.selectTokenModalPage.verifyIsOpen();
-      await this.selectTokenModalPage.tokens[args?.sell].click({
-        timeout: timeouts.xxs,
-      });
-      await this.selectTokenModalPage.verifyIsClosed();
+      await this.selectToken(args.sell);
       await this.page
         .getSelectedTokenLabel(args.sell)
         .waitUntilDisplayed(timeouts.xxs);
     }
     if (args?.buy) {
-      await this.page.selectBuyTokenButton.click({
-        force: true,
-        timeout: timeouts.s,
-      });
-      await this.selectTokenModalPage.verifyIsOpen();
-      await this.selectTokenModalPage.tokens[args.buy].click({
-        timeout: timeouts.xxs,
-      });
-      await this.selectTokenModalPage.verifyIsClosed();
+      await this.openSelectTokenModal({ tokenType: "buy" });
+      await this.selectToken(args.buy);
       await this.page
         .getSelectedTokenLabel(args.buy)
         .waitUntilDisplayed(timeouts.xxs);
