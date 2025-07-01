@@ -42,6 +42,16 @@ export interface ISwapInputs {
   afterSwapRate: string;
 }
 
+export interface ISwapInputsParams {
+  shouldReturnRates?: boolean;
+  clicksOnButton?: number;
+}
+
+export interface IWaitForLoadedRateParams {
+  timeout?: number;
+  throwError?: boolean;
+}
+
 export enum AmountType {
   Sell = "Sell",
   Buy = "Buy",
