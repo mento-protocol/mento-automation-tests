@@ -12,6 +12,9 @@ export class SwapPo extends BasePo {
     return new Label(this.ef.pw.text(tokenName, { exact: true }));
   }
 
+  invalidPairTooltip = new Label(
+    this.ef.pw.dataTestId("invalidPairTooltip", {}, { takeFirstElement: true }),
+  );
   selectSellTokenButton = new Button(
     this.ef.dataTestId("selectSellTokenButton"),
   );

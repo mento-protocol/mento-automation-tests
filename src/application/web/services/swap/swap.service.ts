@@ -97,23 +97,15 @@ export class SwapService extends BaseService {
     tokens,
     clicksOnSellTokenButton,
     waitForLoadedRate = true,
+    isSellTokenFirst = true,
   }: IFillFromOpts): Promise<void> {
     slippage && (await this.chooseSlippage(slippage));
-    await this.selectTokens({ clicksOnSellTokenButton, ...tokens });
-    // TODO: Sort out why we need to click on the input before filling when it's only filling
-    sellAmount &&
-      (await this.page.sellAmountInput.click({
-        force: true,
-        timeout: timeouts.xs,
-      }));
-    sellAmount &&
-      (await this.page.sellAmountInput.enterText(sellAmount, { force: true }));
-    buyAmount && (await this.page.buyAmountInput.click({ force: true }));
-    buyAmount &&
-      (await this.page.buyAmountInput.enterText(buyAmount, {
-        force: true,
-        timeout: timeouts.xs,
-      }));
+    await this.selectTokens({
+      clicksOnSellTokenButton,
+      isSellTokenFirst,
+      ...tokens,
+    });
+    await this.fillAmounts(sellAmount, buyAmount);
     waitForLoadedRate && (await this.waitForLoadedRate());
   }
 
@@ -178,6 +170,11 @@ export class SwapService extends BaseService {
     return (await amountInput.getText()).replaceAll("~$", "");
   }
 
+  async getInvalidPairTooltipText(): Promise<string> {
+    await this.page.invalidPairTooltip.waitUntilDisplayed(timeouts.s);
+    return this.page.invalidPairTooltip.getText();
+  }
+
   async useFullBalance(): Promise<void> {
     await this.page.useMaxButton.click({
       timeout: timeouts.xxs,
@@ -188,6 +185,16 @@ export class SwapService extends BaseService {
       timeouts.xs,
       { throwError: false },
     );
+  }
+
+  async isTokenDropdownInEmptyState(
+    tokenType: "sell" | "buy",
+  ): Promise<boolean> {
+    const button =
+      tokenType === "sell"
+        ? this.page.selectSellTokenButton
+        : this.page.selectBuyTokenButton;
+    return (await button.getText()) === "?Select";
   }
 
   async isProceedButtonThere(): Promise<boolean> {
@@ -328,32 +335,82 @@ export class SwapService extends BaseService {
     await this.selectTokenModalPage.verifyIsOpen();
   }
 
-  async selectToken(token: Token): Promise<void> {
+  async selectToken({
+    token,
+    shouldOpenModal = true,
+    clicksToOpenModal = 1,
+    tokenDropdown,
+  }: {
+    token: Token;
+    tokenDropdown: "sell" | "buy";
+    shouldOpenModal?: boolean;
+    clicksToOpenModal?: number;
+  }): Promise<void> {
+    if (shouldOpenModal) {
+      await this.openSelectTokenModal({
+        tokenType: tokenDropdown,
+        clicksOnButton: clicksToOpenModal,
+      });
+    }
+
     await this.selectTokenModalPage.tokens[token].click({
       force: true,
       timeout: timeouts.s,
     });
     await this.selectTokenModalPage.verifyIsClosed();
+    await this.page
+      .getSelectedTokenLabel(token)
+      .waitUntilDisplayed(timeouts.xxs);
   }
 
   private async selectTokens(args: ISelectTokensArgs): Promise<void> {
-    const { clicksOnSellTokenButton = 2 } = args;
-    if (args?.sell) {
-      await this.openSelectTokenModal({
-        tokenType: "sell",
-        clicksOnButton: clicksOnSellTokenButton,
-      });
-      await this.selectToken(args.sell);
-      await this.page
-        .getSelectedTokenLabel(args.sell)
-        .waitUntilDisplayed(timeouts.xxs);
+    const { clicksOnSellTokenButton = 2, isSellTokenFirst = true } = args;
+
+    if (isSellTokenFirst) {
+      if (args?.sell) {
+        await this.selectToken({
+          token: args.sell,
+          tokenDropdown: "sell",
+          clicksToOpenModal: clicksOnSellTokenButton,
+        });
+      }
+      if (args?.buy) {
+        await this.selectToken({
+          token: args.buy,
+          tokenDropdown: "buy",
+        });
+      }
+    } else {
+      if (args?.buy) {
+        await this.selectToken({ token: args.buy, tokenDropdown: "buy" });
+      }
+      if (args?.sell) {
+        await this.selectToken({
+          token: args.sell,
+          tokenDropdown: "sell",
+          clicksToOpenModal: clicksOnSellTokenButton,
+        });
+      }
     }
-    if (args?.buy) {
-      await this.openSelectTokenModal({ tokenType: "buy" });
-      await this.selectToken(args.buy);
-      await this.page
-        .getSelectedTokenLabel(args.buy)
-        .waitUntilDisplayed(timeouts.xxs);
-    }
+  }
+
+  private async fillAmounts(
+    sellAmount: string,
+    buyAmount: string,
+  ): Promise<void> {
+    // TODO: Sort out why we need to click on the input before filling when it's only filling
+    sellAmount &&
+      (await this.page.sellAmountInput.click({
+        force: true,
+        timeout: timeouts.xs,
+      }));
+    sellAmount &&
+      (await this.page.sellAmountInput.enterText(sellAmount, { force: true }));
+    buyAmount && (await this.page.buyAmountInput.click({ force: true }));
+    buyAmount &&
+      (await this.page.buyAmountInput.enterText(buyAmount, {
+        force: true,
+        timeout: timeouts.xs,
+      }));
   }
 }
