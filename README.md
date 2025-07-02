@@ -8,15 +8,16 @@
 
 ## Pre-requisites
 
-- [node.js](https://nodejs.org/en) >= 18.20.0
+- [node.js](https://nodejs.org/en) >= 20.11.1
 - [npm](https://nodejs.org/en) >= 10.5.0
 
 ## Pre-conditions
 
 1. Execute `npm install`.
-2. Fill the `SEED_PHRASE`, and `WALLET_PASSWORD` variables.
-3. Specify the `IS_MAINNET` variable (ensure you re-built synpress cache when changing a chain by this flag!).
-4. Execute `npm run build-synpress-cache`.
+2. Execute `npm run install-playwright`.
+3. Fill the `SEED_PHRASE`, and `WALLET_PASSWORD` variables.
+4. Specify the `IS_MAINNET` variable (ensure you re-built synpress cache when changing a chain by this flag!).
+5. Execute `npm run build-synpress-cache`.
 
 ## Environment Variables
 
