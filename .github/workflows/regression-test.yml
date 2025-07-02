@@ -31,6 +31,7 @@ jobs:
     name: "[Mento-Web] ${{ matrix.name }} Regression Test Run"
     uses: ./.github/workflows/common-test.yml
     strategy:
+      fail-fast: false
       matrix:
         include:
           - name: "Sequential"

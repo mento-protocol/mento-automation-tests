@@ -78,7 +78,7 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
       SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
