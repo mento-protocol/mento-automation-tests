@@ -12,10 +12,19 @@ export class SwapPo extends BasePo {
     return new Label(this.ef.pw.text(tokenName, { exact: true }));
   }
 
+  invalidPairTooltip = new Label(
+    this.ef.pw.dataTestId("invalidPairTooltip", {}, { takeFirstElement: true }),
+  );
   selectSellTokenButton = new Button(
     this.ef.dataTestId("selectSellTokenButton"),
   );
   selectBuyTokenButton = new Button(this.ef.dataTestId("selectBuyTokenButton"));
+  selectTokenToSellLabel = new Button(
+    this.ef.pw.role("button", { name: "Select token to sell" }),
+  );
+  selectTokenToBuyLabel = new Button(
+    this.ef.pw.role("button", { name: "Select token to buy" }),
+  );
   headerLabel = new Label(this.ef.pw.text("Swap"));
   slippageButton = new Button(this.ef.dataTestId("slippageButton"));
   swapInputsButton = new Button(this.ef.dataTestId("swapInputsButton"));
@@ -41,10 +50,10 @@ export class SwapPo extends BasePo {
     this.ef.pw.role("button", { name: "Amount Required" }),
   );
   insufficientBalanceButton = new Button(
-    this.ef.pw.text("Insufficient Balance"),
+    this.ef.pw.dataTestId("insufficientBalanceButton"),
   );
   swapsExceedsLimitsButton = new Button(
-    this.ef.pw.text("Swap exceeds trading limits"),
+    this.ef.pw.dataTestId("swapsExceedsTradingLimitButton"),
   );
   amountTooSmallButton = new Button(
     this.ef.pw.role("button", { name: "Amount too small" }),

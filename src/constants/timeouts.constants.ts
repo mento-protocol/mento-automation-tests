@@ -10,7 +10,7 @@ export const timeouts = {
     return Number(TEST_RUN_TIMEOUT) ?? timeouts.minute * 55;
   },
   get isOpenPage(): number {
-    return this.m;
+    return this.l;
   },
   get action(): number {
     return this.xxxs;

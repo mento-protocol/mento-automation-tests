@@ -8,9 +8,14 @@ export class SelectTokenModalPo extends BasePo {
     super(ef);
   }
 
-  async getAllTokenNames(): Promise<string[]> {
+  async getAllValidTokenNames(): Promise<string[]> {
+    const allTokens = await this.ef.all.dataTestId("validToken").findElements();
+    return Promise.all(allTokens.map(token => token.textContent()));
+  }
+
+  async getAllInvalidTokenNames(): Promise<string[]> {
     const allTokens = await this.ef.all
-      .dataTestId("tokenOption_", { partial: true })
+      .dataTestId("invalidToken")
       .findElements();
     return Promise.all(allTokens.map(token => token.textContent()));
   }

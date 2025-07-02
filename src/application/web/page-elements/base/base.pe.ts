@@ -120,7 +120,8 @@ export abstract class BasePe implements IBasePe {
       await (await this.element).waitFor({ timeout, state: "visible" });
       return true;
     } catch (error) {
-      logger.warn(`${errorMessage}: ${this.locator}`);
+      const errorLogType = throwError ? "error" : "warn";
+      logger[errorLogType](`${errorMessage}: ${this.locator}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }
