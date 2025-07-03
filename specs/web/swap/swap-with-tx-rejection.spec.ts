@@ -30,7 +30,7 @@ suite({
             sell: pairs.rejectApproval.from,
             buy: pairs.rejectApproval.to,
           },
-          sellAmount: defaultSwapAmount,
+          sellAmount: "30",
         });
         await web.swap.page.approveButton.click();
         await web.swap.confirm.rejectByType("approval");
