@@ -1,8 +1,10 @@
+import { AppName } from "@constants/apps.constants";
 import { magicStrings } from "@constants/magic-strings.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 
-const { SPECS_REGEX, EXCLUDE_SPECS_REGEX, SPECS_TYPE, SPECS_DIR } = processEnv;
+const { SPECS_REGEX, EXCLUDE_SPECS_REGEX, SPECS_TYPE, SPECS_DIR, APP } =
+  processEnv;
 const log = loggerHelper.get("SpecSelectorHelper");
 
 class SpecSelectorHelper {
@@ -30,13 +32,27 @@ class SpecSelectorHelper {
   }
 
   private getSpecsRootDir(): string {
+    const appDir = this.getAppDirs();
     switch (SPECS_TYPE) {
       case "web":
-        return magicStrings.path.webSpecs;
+        return appDir.webSpecs;
       case "api":
-        return magicStrings.path.apiSpecs;
+        return appDir.apiSpecs;
       default:
         throw new Error(`Please specify SPECS_TYPE using web or api options`);
+    }
+  }
+
+  private getAppDirs(): { webSpecs: string; apiSpecs: string } {
+    switch (APP) {
+      case AppName.AppMento:
+        return magicStrings.path.appMento;
+      case AppName.Governance:
+        return magicStrings.path.governance;
+      default:
+        throw new Error(
+          `Please specify APP using app-mento or governance options`,
+        );
     }
   }
 }

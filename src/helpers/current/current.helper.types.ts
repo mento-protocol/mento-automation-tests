@@ -1,5 +1,5 @@
 import { Browser } from "@playwright/test";
-import { IAssmbleApi } from "@api/assemble-api";
+import { IAssmbleApi } from "../../apps/shared/api/assemble-api";
 
 export interface ICurrent {
   browsers: Browser[];

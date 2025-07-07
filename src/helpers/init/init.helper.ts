@@ -1,9 +1,8 @@
 import { APIRequestContext } from "@playwright/test";
 
 import { IInitBrowser, IInitWebOptions } from "@helpers/init/init.types";
-import { IAssembleWeb } from "../../application/web/assemble-web.types";
-import { assembleWeb } from "../../application/web/assemble-web";
-import { assembleApi, IAssmbleApi } from "@api/assemble-api";
+import { assembleWeb, IAssembleWeb } from "../../apps/shared/web/assemble-web";
+import { assembleApi, IAssmbleApi } from "../../apps/shared/api/assemble-api";
 import { current } from "@helpers/current/current.helper";
 import { Browser } from "@helpers/browser/browser.helper";
 

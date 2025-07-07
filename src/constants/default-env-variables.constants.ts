@@ -1,4 +1,6 @@
-export const defaultEnvVariables = `ENV=prod
+export const defaultEnvVariables = `APP=app-mento
+#APP=governance
+ENV=prod
 SEED_PHRASE=""
 WALLET_PASSWORD=""
 IS_MAINNET=

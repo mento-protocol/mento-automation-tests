@@ -1,7 +1,7 @@
 import { Browser } from "@playwright/test";
 
 import { ICurrent } from "@helpers/current/current.helper.types";
-import { IAssmbleApi } from "@api/assemble-api";
+import { IAssmbleApi } from "../../apps/shared/api/assemble-api";
 
 export const current: ICurrent = {
   browsers: [],

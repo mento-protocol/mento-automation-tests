@@ -8,8 +8,8 @@ import type {
 } from "@playwright/test";
 import { MetaMask } from "@synthetixio/synpress/playwright";
 
-import { IAssmbleApi } from "@api/assemble-api";
-import { IAssembleWeb } from "../../application/web/assemble-web.types";
+import { IAssmbleApi } from "../../apps/shared/api/assemble-api";
+import { IAssembleWeb } from "../../apps/shared/web/assemble-web";
 import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 
 export type CommonFixture<IYourFixtures> = TestType<

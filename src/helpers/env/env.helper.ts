@@ -2,7 +2,7 @@ import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
-const { ENV, CI, CUSTOM_URL, IS_MAINNET, SEED_PHRASE, WALLET_PASSWORD } =
+const { ENV, CI, CUSTOM_URL, IS_MAINNET, SEED_PHRASE, WALLET_PASSWORD, APP } =
   processEnv;
 
 export class EnvHelper {
@@ -14,11 +14,11 @@ export class EnvHelper {
     if (this.isCustomUrl()) {
       return CUSTOM_URL;
     }
-    return magicStrings.url.web[this.getEnv()].base;
+    return magicStrings.url[this.getApp()].web[this.getEnv()].base;
   }
 
   getBaseApiUrl(): string {
-    return magicStrings.url.api[this.getEnv()].base;
+    return magicStrings.url[this.getApp()].api[this.getEnv()].base;
   }
 
   getSeedPhrase(): string {
@@ -27,6 +27,10 @@ export class EnvHelper {
 
   getWalletPassword(): string {
     return WALLET_PASSWORD;
+  }
+
+  getApp(): string {
+    return APP;
   }
 
   isCI(): boolean {
