@@ -10,21 +10,21 @@ const tokens = {
 suite({
   name: "Swap - By amount type",
   tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
-  beforeEach: async ({ web }) => {
-    await web.main.runSwapTestPreconditions();
-  },
+  beforeEach: async ({ web }) =>
+    await web.app.appMento.main.runSwapTestPreconditions(),
   tests: [
     {
       name: `Sell (${tokens.from}/${tokens.to})`,
       testCaseId: "Tab822de9",
       test: async ({ web }) => {
-        const initialBalance = await web.main.getTokenBalanceByName(tokens.to);
-        await web.swap.fillForm({
+        const app = web.app.appMento;
+        const initialBalance = await app.main.getTokenBalanceByName(tokens.to);
+        await app.swap.fillForm({
           tokens: { sell: tokens.from, buy: tokens.to },
           sellAmount: defaultSwapAmount,
         });
-        await web.swap.start();
-        await web.main.expectIncreasedBalance({
+        await app.swap.start();
+        await app.main.expectIncreasedBalance({
           initialBalance,
           tokenName: tokens.to,
         });
@@ -34,13 +34,14 @@ suite({
       name: `Buy (${tokens.from}/${tokens.to})`,
       testCaseId: "T3c8db175",
       test: async ({ web }) => {
-        const initialBalance = await web.main.getTokenBalanceByName(tokens.to);
-        await web.swap.fillForm({
+        const app = web.app.appMento;
+        const initialBalance = await app.main.getTokenBalanceByName(tokens.to);
+        await app.swap.fillForm({
           tokens: { sell: tokens.from, buy: tokens.to },
           buyAmount: defaultSwapAmount,
         });
-        await web.swap.start();
-        await web.main.expectIncreasedBalance({
+        await app.swap.start();
+        await app.main.expectIncreasedBalance({
           initialBalance: initialBalance,
           tokenName: tokens.to,
         });

@@ -5,7 +5,7 @@ import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { Token } from "@constants/token.constants";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
-import { expect } from "@fixtures/common/common.fixture";
+import { expect } from "@fixtures/test.fixture";
 import { testUtils } from "@helpers/suite/suite.helper";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { MainAppMentoPage } from "./main.page";

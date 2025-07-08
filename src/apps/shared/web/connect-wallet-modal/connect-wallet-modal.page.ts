@@ -11,9 +11,7 @@ export class ConnectWalletModalPage extends BasePage {
   connectWalletModalLabel = new Label(this.ef.id("rk_connect_title"));
 
   walletList = {
-    [WalletName.Metamask]: new Button(
-      this.ef.dataTestId("rk-wallet-option-metaMask"),
-    ),
+    [WalletName.Metamask]: new Button(this.ef.pw.text("MetaMask")),
   };
 
   closeButton = new Button(this.ef.pw.label("Close"));

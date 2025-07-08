@@ -1,10 +1,9 @@
-import { IAssmbleApi } from "../../apps/shared/api/assemble-api";
-import { IAssembleWeb } from "../../apps/shared/web/assemble-web";
 import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
+import { IApi, IWeb } from "../assembler/assember";
 
 export interface IExecution {
-  web?: IAssembleWeb;
-  api?: IAssmbleApi;
+  web?: IWeb;
+  api?: IApi;
   metamaskHelper?: MetamaskHelper;
 }
 

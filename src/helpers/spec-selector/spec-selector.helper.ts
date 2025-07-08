@@ -3,8 +3,13 @@ import { magicStrings } from "@constants/magic-strings.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 
-const { SPECS_REGEX, EXCLUDE_SPECS_REGEX, SPECS_TYPE, SPECS_DIR, APP } =
-  processEnv;
+const {
+  SPECS_REGEX,
+  EXCLUDE_SPECS_REGEX,
+  SPECS_TYPE,
+  SPECS_DIR,
+  APP_NAME: APP,
+} = processEnv;
 const log = loggerHelper.get("SpecSelectorHelper");
 
 class SpecSelectorHelper {

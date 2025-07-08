@@ -1,4 +1,4 @@
-import { expect } from "@fixtures/common/common.fixture";
+import { expect } from "@fixtures/test.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { TestTag } from "@constants/test.constants";
@@ -17,25 +17,25 @@ const pairs = {
 suite({
   name: "Swap - Transaction rejection",
   tags: [TestTag.Regression, TestTag.Sequential],
-  beforeEach: async ({ web }) => {
-    await web.main.runSwapTestPreconditions();
-  },
+  beforeEach: async ({ web }) =>
+    await web.app.appMento.main.runSwapTestPreconditions(),
   tests: [
     {
       name: `Reject approval tx (${pairs.rejectApproval.from}/${pairs.rejectApproval.to})`,
       testCaseId: "Td5aa1954",
       test: async ({ web }) => {
-        await web.swap.fillForm({
+        const app = web.app.appMento;
+        await app.swap.fillForm({
           tokens: {
             sell: pairs.rejectApproval.from,
             buy: pairs.rejectApproval.to,
           },
           sellAmount: "30",
         });
-        await web.swap.page.approveButton.click();
-        await web.swap.confirm.rejectByType("approval");
+        await app.swap.page.approveButton.click();
+        await app.swap.confirm.rejectByType("approval");
         expect(
-          await web.swap.confirm.isRejectApprovalTxNotificationThere(),
+          await app.swap.confirm.isRejectApprovalTxNotificationThere(),
         ).toBeTruthy();
       },
     },
@@ -43,19 +43,20 @@ suite({
       name: `Reject swap tx (${pairs.rejectSwap.from}/${pairs.rejectSwap.to})`,
       testCaseId: "T09fd373a",
       test: async ({ web }) => {
-        await web.swap.fillForm({
+        const app = web.app.appMento;
+        await app.swap.fillForm({
           tokens: {
             sell: pairs.rejectSwap.from,
             buy: pairs.rejectSwap.to,
           },
           sellAmount: defaultSwapAmount,
         });
-        await web.swap.proceedToConfirmation();
-        await web.swap.confirm.page.verifyIsOpen();
-        await web.swap.confirm.page.swapButton.click();
-        await web.swap.confirm.rejectByType("swap");
+        await app.swap.proceedToConfirmation();
+        await app.swap.confirm.page.verifyIsOpen();
+        await app.swap.confirm.page.swapButton.click();
+        await app.swap.confirm.rejectByType("swap");
         expect(
-          await web.swap.confirm.isRejectSwapTxNotificationThere(),
+          await app.swap.confirm.isRejectSwapTxNotificationThere(),
         ).toBeTruthy();
       },
     },

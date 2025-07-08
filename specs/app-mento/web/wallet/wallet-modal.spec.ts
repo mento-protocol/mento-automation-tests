@@ -1,5 +1,5 @@
 import { TestTag } from "@constants/test.constants";
-import { expect } from "@fixtures/common/common.fixture";
+import { expect } from "@fixtures/test.fixture";
 import { suite } from "@helpers/suite/suite.helper";
 
 suite({
@@ -10,28 +10,31 @@ suite({
       name: "Open by header button",
       testCaseId: "T112a63d0",
       test: async ({ web }) => {
-        await web.main.openConnectWalletModalFromHeader();
-        expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();
+        const app = web.app.appMento;
+        await app.main.openConnectWalletModalFromHeader();
+        expect(await app.main.connectWalletModal.page.isOpen()).toBeTruthy();
       },
     },
     {
       name: "Open by main button",
       testCaseId: "T224b25fc",
       test: async ({ web }) => {
-        await web.main.openConnectWalletModal();
-        expect(await web.main.connectWalletModal.page.isOpen()).toBeTruthy();
+        const app = web.app.appMento;
+        await app.main.openConnectWalletModal();
+        expect(await app.main.connectWalletModal.page.isOpen()).toBeTruthy();
       },
     },
     {
       name: "Close by clicking its button",
       testCaseId: "T2836c736",
       test: async ({ web }) => {
-        await web.main.openConnectWalletModal();
-        await web.main.connectWalletModal.close();
+        const app = web.app.appMento;
+        await app.main.openConnectWalletModal();
+        await app.main.connectWalletModal.close();
         expect
-          .soft(await web.main.connectWalletModal.page.isOpen())
+          .soft(await app.main.connectWalletModal.page.isOpen())
           .toBeFalsy();
-        expect(await web.main.page.isOpen()).toBeTruthy();
+        expect(await app.main.page.isOpen()).toBeTruthy();
       },
     },
   ],

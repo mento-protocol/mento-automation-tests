@@ -1,9 +1,17 @@
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
+import { AppName } from "@constants/apps.constants";
 
-const { ENV, CI, CUSTOM_URL, IS_MAINNET, SEED_PHRASE, WALLET_PASSWORD, APP } =
-  processEnv;
+const {
+  ENV,
+  CI,
+  CUSTOM_URL,
+  IS_MAINNET,
+  SEED_PHRASE,
+  WALLET_PASSWORD,
+  APP_NAME,
+} = processEnv;
 
 export class EnvHelper {
   getEnv(): string {
@@ -29,8 +37,8 @@ export class EnvHelper {
     return WALLET_PASSWORD;
   }
 
-  getApp(): string {
-    return APP;
+  getApp(): AppName {
+    return APP_NAME as AppName;
   }
 
   isCI(): boolean {

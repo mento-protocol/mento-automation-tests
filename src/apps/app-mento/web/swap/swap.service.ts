@@ -3,7 +3,7 @@ import { timeouts } from "@constants/timeouts.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 import { Token } from "@constants/token.constants";
-import { expect } from "@fixtures/common/common.fixture";
+import { expect } from "@fixtures/test.fixture";
 import { SwapPage } from "./swap.page";
 import { BaseService } from "@shared/web/base/base.service";
 import { SelectTokenModalPage } from "../select-token-modal/select-token-modal.page";

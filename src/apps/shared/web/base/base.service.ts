@@ -1,11 +1,11 @@
-import { Browser } from "@helpers/browser/browser.helper";
+import { BrowserHelper } from "@helpers/browser/browser.helper";
 import { envHelper } from "@helpers/env/env.helper";
 import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { BasePage } from "./base.page";
 
 export class BaseService {
   // change browser to protected or move it completely
-  public browser: Browser = null;
+  public browser: BrowserHelper = null;
   protected page: BasePage = null;
   protected metamaskHelper: MetamaskHelper = null;
 
@@ -32,7 +32,7 @@ export class BaseService {
 }
 
 export interface IBaseServiceArgs {
-  browser: Browser;
+  browser: BrowserHelper;
   page: BasePage;
   metamaskHelper: MetamaskHelper;
 }

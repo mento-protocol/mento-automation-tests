@@ -152,9 +152,8 @@ const testCases = [
 suite({
   name: "Swap - By token pairs",
   tags: [TestTag.Regression, TestTag.Sequential],
-  beforeEach: async ({ web }) => {
-    await web.main.runSwapTestPreconditions();
-  },
+  beforeEach: async ({ web }) =>
+    await web.app.appMento.main.runSwapTestPreconditions(),
   tests: [
     ...testCases.map(testCase => {
       return {
@@ -162,18 +161,19 @@ suite({
         testCaseId: testCase.id,
         disable: testCase?.disable,
         test: async ({ web }: IExecution) => {
-          const initialBalance = await web.main.getTokenBalanceByName(
+          const app = web.app.appMento;
+          const initialBalance = await app.main.getTokenBalanceByName(
             testCase.toToken,
           );
-          await web.swap.fillForm({
+          await app.swap.fillForm({
             tokens: {
               sell: testCase.fromToken,
               buy: testCase.toToken,
             },
             sellAmount: testCase?.fromAmount || defaultSwapAmount,
           });
-          await web.swap.start();
-          await web.main.expectIncreasedBalance({
+          await app.swap.start();
+          await app.main.expectIncreasedBalance({
             initialBalance,
             tokenName: testCase.toToken,
           });

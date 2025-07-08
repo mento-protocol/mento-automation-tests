@@ -1,7 +1,7 @@
 import { IDisable, ISuiteArgs } from "@helpers/suite/suite.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { envHelper } from "@helpers/env/env.helper";
-import { testFixture } from "@fixtures/common/common.fixture";
+import { testFixture } from "@fixtures/test.fixture";
 import { TestDetails } from "playwright/types/test";
 
 const logger = loggerHelper.get("SuiteHelper");

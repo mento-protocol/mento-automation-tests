@@ -7,6 +7,7 @@ import {
   WalletName,
 } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { MainGovernancePage } from "./main.page";
+import { envHelper } from "@helpers/env/env.helper";
 
 const logger = loggerHelper.get("MainGovernanceService");
 
@@ -41,6 +42,10 @@ export class MainGovernanceService extends BaseService {
     await this.openConnectWalletModal();
     await this.connectWalletModal.selectWalletByName(walletName);
     await this.metamaskHelper.connectWallet();
+    if (!envHelper.isMainnet()) {
+      await this.metamaskHelper.approveNewNetwork();
+      await this.metamaskHelper.approveSwitchNetwork();
+    }
   }
 
   async isWalletConnected(): Promise<boolean> {

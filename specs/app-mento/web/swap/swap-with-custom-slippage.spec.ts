@@ -1,4 +1,4 @@
-import { expect } from "@fixtures/common/common.fixture";
+import { expect } from "@fixtures/test.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
@@ -34,9 +34,8 @@ const testCases = [
 suite({
   name: "Swap - With custom slippage",
   tags: [TestTag.Regression, TestTag.Sequential],
-  beforeEach: async ({ web }) => {
-    await web.main.runSwapTestPreconditions();
-  },
+  beforeEach: async ({ web }) =>
+    await web.app.appMento.main.runSwapTestPreconditions(),
   tests: [
     ...testCases.map(testCase => {
       return {
@@ -44,10 +43,11 @@ suite({
         testCaseId: testCase.id,
         disable: testCase?.disable,
         test: async ({ web }: IExecution) => {
-          const initialBalance = await web.main.getTokenBalanceByName(
+          const app = web.app.appMento;
+          const initialBalance = await app.main.getTokenBalanceByName(
             tokens.to,
           );
-          await web.swap.fillForm({
+          await app.swap.fillForm({
             slippage: testCase.slippage,
             tokens: {
               sell: tokens.from,
@@ -56,9 +56,9 @@ suite({
             },
             sellAmount: defaultSwapAmount,
           });
-          expect.soft(await web.swap.isRateThere()).toBeTruthy();
-          await web.swap.start();
-          await web.main.expectIncreasedBalance({
+          expect.soft(await app.swap.isRateThere()).toBeTruthy();
+          await app.swap.start();
+          await app.main.expectIncreasedBalance({
             tokenName: tokens.to,
             initialBalance,
           });

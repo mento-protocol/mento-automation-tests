@@ -1,4 +1,4 @@
-import { expect } from "@fixtures/common/common.fixture";
+import { expect } from "@fixtures/test.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
@@ -16,7 +16,8 @@ suite({
       name: "Swap token inputs",
       testCaseId: "Td88a4d31",
       test: async ({ web }) => {
-        await web.swap.fillForm({
+        const app = web.app.appMento;
+        await app.swap.fillForm({
           sellAmount: defaultSwapAmount,
           waitForLoadedRate: false,
           tokens: {
@@ -25,17 +26,18 @@ suite({
             clicksOnSellTokenButton: 1,
           },
         });
-        await web.swap.swapInputs({ shouldReturnRates: false });
-        expect(await web.swap.getCurrentSellTokenName()).toEqual(Token.CELO);
-        expect(await web.swap.getCurrentBuyTokenName()).toEqual(Token.cREAL);
+        await app.swap.swapInputs({ shouldReturnRates: false });
+        expect(await app.swap.getCurrentSellTokenName()).toEqual(Token.CELO);
+        expect(await app.swap.getCurrentBuyTokenName()).toEqual(Token.cREAL);
       },
     },
     {
       name: "Select an invalid pair for 'Sell' token",
       testCaseId: "Td88a4d31",
       test: async ({ web }) => {
-        await web.main.connectWalletByName(WalletName.Metamask);
-        await web.swap.fillForm({
+        const app = web.app.appMento;
+        await app.main.connectWalletByName(WalletName.Metamask);
+        await app.swap.fillForm({
           waitForLoadedRate: false,
           tokens: {
             sell: Token.cREAL,
@@ -44,10 +46,10 @@ suite({
           },
         });
         expect
-          .soft(await web.swap.isTokenDropdownInEmptyState("sell"))
+          .soft(await app.swap.isTokenDropdownInEmptyState("sell"))
           .toEqual(true);
         expect
-          .soft(await web.swap.getCurrentBuyTokenName())
+          .soft(await app.swap.getCurrentBuyTokenName())
           .toEqual(Token.axlEUROC);
         // TODO: Investigate why this assertion is failing when it's displayed
         // expect(await web.swap.page.selectTokenToBuyLabel.isDisplayed()).toEqual(
@@ -59,8 +61,9 @@ suite({
       name: "Select an invalid pair for 'Buy' token",
       testCaseId: "Td88a4d31",
       test: async ({ web }) => {
-        await web.main.connectWalletByName(WalletName.Metamask);
-        await web.swap.fillForm({
+        const app = web.app.appMento;
+        await app.main.connectWalletByName(WalletName.Metamask);
+        await app.swap.fillForm({
           waitForLoadedRate: false,
           isSellTokenFirst: false,
           tokens: {
@@ -70,10 +73,10 @@ suite({
           },
         });
         expect
-          .soft(await web.swap.isTokenDropdownInEmptyState("buy"))
+          .soft(await app.swap.isTokenDropdownInEmptyState("buy"))
           .toEqual(true);
         expect
-          .soft(await web.swap.getCurrentSellTokenName())
+          .soft(await app.swap.getCurrentSellTokenName())
           .toEqual(Token.cREAL);
         // TODO: Investigate why this assertion is failing when it's displayed
         // expect(
@@ -85,15 +88,16 @@ suite({
       name: "Hover over invalid pair tooltip",
       testCaseId: "Td88a4d31",
       test: async ({ web }) => {
-        await web.swap.selectToken({
+        const app = web.app.appMento;
+        await app.swap.selectToken({
           token: Token.cREAL,
           tokenDropdown: "sell",
         });
-        await web.swap.openSelectTokenModal({
+        await app.swap.openSelectTokenModal({
           tokenType: "buy",
         });
-        await web.swap.selectTokenModalPage.tokens.axlEUROC.hover();
-        expect(await web.swap.getInvalidPairTooltipText()).toEqual(
+        await app.swap.selectTokenModalPage.tokens.axlEUROC.hover();
+        expect(await app.swap.getInvalidPairTooltipText()).toEqual(
           "Invalid pair",
         );
       },
@@ -103,22 +107,23 @@ suite({
         name: `"${testCase.token}" token`,
         testCaseId: testCase.id,
         test: async ({ web }: IExecution) => {
+          const app = web.app.appMento;
           if (testCase.token === Token.cUSD) {
-            await web.swap.swapInputs({ shouldReturnRates: false });
+            await app.swap.swapInputs({ shouldReturnRates: false });
           }
-          await web.swap.fillForm({
+          await app.swap.fillForm({
             tokens: { sell: testCase.token },
             waitForLoadedRate: false,
             clicksOnSellTokenButton: 1,
           });
-          await web.swap.openSelectTokenModal({
+          await app.swap.openSelectTokenModal({
             tokenType: "buy",
           });
           const validTokens =
-            await web.swap.selectTokenModalPage.getAllValidTokenNames();
+            await app.swap.selectTokenModalPage.getAllValidTokenNames();
           expect.soft(validTokens).toEqual(testCase.expectedValidTokens);
           const invalidTokens =
-            await web.swap.selectTokenModalPage.getAllInvalidTokenNames();
+            await app.swap.selectTokenModalPage.getAllInvalidTokenNames();
           expect(invalidTokens).toEqual(testCase.expectedInvalidTokens);
         },
       };

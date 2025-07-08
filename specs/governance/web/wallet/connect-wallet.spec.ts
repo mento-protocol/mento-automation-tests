@@ -1,5 +1,5 @@
 import { TestTag } from "@constants/test.constants";
-import { expect } from "@fixtures/common/common.fixture";
+import { expect } from "@fixtures/test.fixture";
 import { suite } from "@helpers/suite/suite.helper";
 import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
@@ -9,10 +9,11 @@ suite({
   tests: [
     {
       name: "Connect Metamask wallet",
-      testCaseId: "TODO: Add test case and paste an id",
+      // TODO: Add test case and paste an id
+      testCaseId: "",
       test: async ({ web }) => {
-        await web.main.connectWalletByName(WalletName.Metamask);
-        expect(await web.main.isWalletConnected()).toBeTruthy();
+        await web.app.governance.main.connectWalletByName(WalletName.Metamask);
+        expect(await web.app.governance.main.isWalletConnected()).toBeTruthy();
       },
     },
   ],
