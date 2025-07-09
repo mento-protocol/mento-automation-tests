@@ -143,7 +143,7 @@ jobs:
   report:
     needs: test
     if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
-    uses: ./.github/actions/report.yml
+    uses: ./.github/actions/report.yml@main
     with:
       NAME: ${{ inputs.HTML_REPORT_NAME }}
     secrets:
@@ -152,7 +152,7 @@ jobs:
   notification:
     needs: [test, report]
     if: always()
-    uses: ./.github/actions/notification.yml
+    uses: ./.github/actions/notification.yml@main
     with:
       JOB_STATUS: ${{ needs.test.result }}
       MESSAGE: "${{ inputs.NOTIFICATION_MESSAGE }} by ${{ github.actor }}"
