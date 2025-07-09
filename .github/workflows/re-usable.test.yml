@@ -1,24 +1,28 @@
-# Generic workflow to build all test's workflows
-name: Common Test Run
+# Re-usable workflow to build all test's workflows
+name: "Re-usable Test Workflow"
 
 on:
   workflow_call:
     inputs:
+      APP_NAME:
+        description: "App name"
+        required: true
+        type: string
       SPECS_REGEX:
-        description: "Specs regex which accepts tags or names of running tests"
+        description: "Specs regex (supports: Tags, Spec names, Test names)"
         required: true
         type: string
       EXCLUDE_SPECS_REGEX:
-        description: "Specs regex which accepts tags or names of excluded tests"
+        description: "Exclude specs regex (supports: Tags, Spec names, Test names)"
         required: false
         type: string
       SPECS_TYPE:
-        description: "Specs type of running tests"
+        description: "Specs type (supports: web, api)"
         required: false
         type: string
         default: "web"
       SPECS_DIR:
-        description: "Specs specific dir of running tests"
+        description: "Specs dir"
         required: false
         type: string
       IS_PARALLEL_RUN:
@@ -139,7 +143,7 @@ jobs:
   report:
     needs: test
     if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
-    uses: ./.github/workflows/report.yml
+    uses: ./.github/actions/report.yml
     with:
       NAME: ${{ inputs.HTML_REPORT_NAME }}
     secrets:
@@ -148,7 +152,7 @@ jobs:
   notification:
     needs: [test, report]
     if: always()
-    uses: ./.github/workflows/notification.yml
+    uses: ./.github/actions/notification.yml
     with:
       JOB_STATUS: ${{ needs.test.result }}
       MESSAGE: "${{ inputs.NOTIFICATION_MESSAGE }} by ${{ github.actor }}"

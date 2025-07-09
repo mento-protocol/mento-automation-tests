@@ -3,16 +3,23 @@ name: Specific Test Run
 on:
   workflow_dispatch:
     inputs:
+      APP_NAME:
+        description: "App name"
+        required: true
+        type: choice
+        options:
+          - "app-mento"
+          - "governance"
       SPECS_REGEX:
-        description: "Specs tags or names of running tests"
+        description: "Specs regex (supports: Tags, Spec names, Test names)"
         required: true
       SPECS_DIR:
-        description: "Specs specific dir of running tests"
+        description: "Specs dir"
         required: false
         default: ""
       SPECS_TYPE:
         type: choice
-        description: "Specs type of running tests"
+        description: "Specs type (supports: web or api)"
         default: web
         options:
           - web
@@ -53,7 +60,7 @@ on:
 jobs:
   test:
     name: "Specific Test Run"
-    uses: ./.github/workflows/common-test.yml
+    uses: ./.github/workflows/re-usable.test.yml
     with:
       SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}

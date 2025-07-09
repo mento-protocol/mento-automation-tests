@@ -1,4 +1,4 @@
-name: Smoke Test Run
+name: "[App-Mento] Smoke Test Run"
 
 on:
   workflow_call:
@@ -16,7 +16,7 @@ on:
         type: string
         description: "Test run title"
         required: false
-        default: "[Mento-Web] Smoke"
+        default: "[App-Mento] Smoke"
     secrets:
       E2E_TEST_SEED_PHRASE:
         required: true
@@ -41,7 +41,7 @@ jobs:
       IS_PARALLEL_RUN: "false"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
-      HTML_REPORT_NAME: "smoke-mento-web"
+      HTML_REPORT_NAME: "smoke-app-mento"
       HTML_REPORT_GENERATION: "onFailure"
       TESTOMAT_REPORT_GENERATION: "true"
       SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
@@ -96,19 +96,19 @@ jobs:
   report:
     needs: smoke-test
     if: failure()
-    uses: ./.github/workflows/report.yml
+    uses: ./.github/actions/report.yml
     with:
-      NAME: "smoke-mento-web"
+      NAME: "smoke-app-mento"
     secrets:
       GCP_SA_KEY: ${{ secrets.E2E_TEST_GCP_SA_KEY }}
 
   notification:
     needs: [smoke-test, report]
     if: always()
-    uses: ./.github/workflows/notification.yml
+    uses: ./.github/actions/notification.yml
     with:
       JOB_STATUS: ${{ needs.smoke-test.result }}
-      MESSAGE: "[Mento-Web] Smoke by ${{ github.actor }}"
+      MESSAGE: "[App-Mento] Smoke by ${{ github.actor }}"
       JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       REPORT_URL: ${{ needs.report.outputs.url }}
     secrets:

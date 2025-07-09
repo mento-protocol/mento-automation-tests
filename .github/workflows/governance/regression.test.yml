@@ -1,5 +1,5 @@
-# Web Regression Test Run using matrix strategy to run tests sequentialy and parallelly
-name: Web Regression Test Run
+# Regression Test Run using matrix strategy to run tests sequentialy and parallelly
+name: "[Governance] Regression Test Run"
 
 on:
   schedule:
@@ -27,9 +27,9 @@ on:
         type: string
 
 jobs:
-  mento_web_regression_test:
-    name: "[Mento-Web] ${{ matrix.name }} Regression Test Run"
-    uses: ./.github/workflows/common-test.yml
+  app_mento_regression_test:
+    name: "[Governance] ${{ matrix.name }} Regression Test Run"
+    uses: ./.github/workflows/re-usable.test.yml
     strategy:
       fail-fast: false
       matrix:
@@ -39,17 +39,17 @@ jobs:
             exclude_specs_regex: "@parallel"
             is_parallel_run: "false"
             is_mainnet: "false"
-            html_report_name: "mento-web-sequential-regression"
-            testomatio_title: "[Mento-Web] Sequential-Regression"
-            notification_message: "[Mento-Web] Sequential-Regression"
+            html_report_name: "app-mento-sequential-regression"
+            testomatio_title: "[App-Mento] Sequential-Regression"
+            notification_message: "[App-Mento] Sequential-Regression"
           - name: "Parallel"
             specs_regex: "@regression,@parallel"
             exclude_specs_regex: "@sequential"
             is_parallel_run: "true"
             is_mainnet: "true"
-            html_report_name: "mento-web-parallel-regression"
-            testomatio_title: "[Mento-Web] Parallel-Regression"
-            notification_message: "[Mento-Web] Parallel-Regression"
+            html_report_name: "app-mento-parallel-regression"
+            testomatio_title: "[App-Mento] Parallel-Regression"
+            notification_message: "[App-Mento] Parallel-Regression"
     with:
       SPECS_REGEX: ${{ matrix.specs_regex }}
       EXCLUDE_SPECS_REGEX: ${{ matrix.exclude_specs_regex }}

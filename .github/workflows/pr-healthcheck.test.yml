@@ -30,12 +30,16 @@ jobs:
             echo "specs-regex=connect-wallet" >> $GITHUB_OUTPUT
           fi
 
+  # TODO: Define app name based on the commit changes
+  # define-app:
+
   test:
     name: "PR Healthcheck Test Run"
     needs: define-specs
-    uses: ./.github/workflows/common-test.yml
+    uses: ./.github/workflows/re-usable.test.yml
     with:
       SPECS_REGEX: ${{ needs.define-specs.outputs.specs-regex }}
+      APP_NAME: "app-mento"
       IS_MAINNET: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"

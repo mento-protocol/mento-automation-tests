@@ -3,13 +3,8 @@ import { magicStrings } from "@constants/magic-strings.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 
-const {
-  SPECS_REGEX,
-  EXCLUDE_SPECS_REGEX,
-  SPECS_TYPE,
-  SPECS_DIR,
-  APP_NAME: APP,
-} = processEnv;
+const { SPECS_REGEX, EXCLUDE_SPECS_REGEX, SPECS_TYPE, SPECS_DIR, APP_NAME } =
+  processEnv;
 const log = loggerHelper.get("SpecSelectorHelper");
 
 class SpecSelectorHelper {
@@ -24,6 +19,7 @@ class SpecSelectorHelper {
 
   getExcludedSpecsRegex(): RegExp | undefined {
     if (!EXCLUDE_SPECS_REGEX?.length) return undefined;
+    log.trace(`Excluding specs by '${EXCLUDE_SPECS_REGEX}' regex`);
     return new RegExp(EXCLUDE_SPECS_REGEX.split(",").join("|"));
   }
 
@@ -44,12 +40,12 @@ class SpecSelectorHelper {
       case "api":
         return appDir.apiSpecs;
       default:
-        throw new Error(`Please specify SPECS_TYPE using web or api options`);
+        return appDir.webSpecs;
     }
   }
 
   private getAppDirs(): { webSpecs: string; apiSpecs: string } {
-    switch (APP) {
+    switch (APP_NAME) {
       case AppName.AppMento:
         return magicStrings.path.appMento;
       case AppName.Governance:
