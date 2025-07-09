@@ -36,6 +36,7 @@ jobs:
   smoke-test:
     timeout-minutes: 60
     env:
+      APP_NAME: "app-mento"
       SPECS_TYPE: "web"
       SPECS_REGEX: "@smoke"
       IS_PARALLEL_RUN: "false"
