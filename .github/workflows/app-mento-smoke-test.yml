@@ -96,7 +96,7 @@ jobs:
   report:
     needs: smoke-test
     if: failure()
-    uses: ./.github/actions/report.yml
+    uses: ./.github/workflows/report.yml
     with:
       NAME: "smoke-app-mento"
     secrets:
@@ -105,7 +105,7 @@ jobs:
   notification:
     needs: [smoke-test, report]
     if: always()
-    uses: ./.github/actions/notification.yml
+    uses: ./.github/workflows/notification.yml
     with:
       JOB_STATUS: ${{ needs.smoke-test.result }}
       MESSAGE: "[App-Mento] Smoke by ${{ github.actor }}"
