@@ -18,6 +18,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
+      "@shared/*": ["./src/apps/shared/*"],
       "@api/*": ["./src/application/api/*"],
       "@services/*": ["./src/application/web/services/*"],
       "@page-objects/*": ["./src/application/web/page-objects/*"],

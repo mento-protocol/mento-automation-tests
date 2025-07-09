@@ -1,0 +1,163 @@
+# Re-usable workflow to build all test's workflows
+name: "Re-usable Test Workflow"
+
+on:
+  workflow_call:
+    inputs:
+      APP_NAME:
+        description: "App name"
+        required: true
+        type: string
+      SPECS_REGEX:
+        description: "Specs regex (supports: Tags, Spec names, Test names)"
+        required: true
+        type: string
+      EXCLUDE_SPECS_REGEX:
+        description: "Exclude specs regex (supports: Tags, Spec names, Test names)"
+        required: false
+        type: string
+      SPECS_TYPE:
+        description: "Specs type (supports: web, api)"
+        required: false
+        type: string
+        default: "web"
+      SPECS_DIR:
+        description: "Specs dir"
+        required: false
+        type: string
+      IS_PARALLEL_RUN:
+        description: "Parallel run flag of running tests"
+        required: false
+        default: "false"
+        type: string
+      CUSTOM_URL:
+        description: "Custom base url to run tests against different URLs"
+        required: false
+        type: string
+      IS_MAINNET:
+        description: "Mainnet test run flag"
+        required: false
+        default: "false"
+        type: string
+      HTML_REPORT_NAME:
+        description: "HTML report name"
+        required: false
+        type: string
+      HTML_REPORT_GENERATION:
+        description: "HTML report generation"
+        required: false
+        default: "onFailure"
+        type: string
+      TESTOMAT_REPORT_GENERATION:
+        description: "Testomat test run report generation"
+        required: false
+        default: "true"
+        type: string
+      TESTOMATIO_TITLE:
+        description: "Title of test run in the Testomat"
+        required: false
+        type: string
+      NOTIFICATION_MESSAGE:
+        description: "Notification message for Discord"
+        required: false
+        type: string
+
+    secrets:
+      E2E_TEST_SEED_PHRASE:
+        description: "Seed phrase to import wallet"
+        required: true
+      E2E_TEST_WALLET_PASSWORD:
+        description: "Wallet password to login to wallet"
+        required: true
+      TESTOMAT_API_KEY:
+        description: "API key to sync with Testomat account"
+        required: true
+      DISCORD_TEST_RUN_WEBHOOK_ID:
+        required: true
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN:
+        required: true
+      E2E_TEST_GCP_SA_KEY:
+        description: "Google Cloud Service Account key JSON"
+        required: true
+
+jobs:
+  test:
+    timeout-minutes: 90
+    env:
+      SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
+      SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
+      EXCLUDE_SPECS_REGEX: ${{ inputs.EXCLUDE_SPECS_REGEX }}
+      SPECS_DIR: ${{ inputs.SPECS_DIR }}
+      IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      IS_MAINNET: ${{ inputs.IS_MAINNET }}
+      HTML_REPORT_NAME: ${{ inputs.HTML_REPORT_NAME }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
+      WALLET_PASSWORD: ${{ secrets.E2E_TEST_WALLET_PASSWORD }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.48.2-jammy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          cache: npm
+          node-version: 20.11.1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify env config
+        run: npm run verify-env-config
+
+      - name: Code-Check
+        run: npm run codeCheck
+
+      - name: Build Synpress cache
+        run: xvfb-run npx synpress src/wallet-setups
+
+      - name: Set current datetime
+        run: |
+          CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
+          echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
+
+      - name: Run Playwright tests
+        run: xvfb-run npx playwright test
+        env:
+          TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
+
+      - name: Upload Playwright report
+        if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.HTML_REPORT_NAME }}
+          path: artifacts/reports/${{ inputs.HTML_REPORT_NAME }}/
+          retention-days: 30
+
+  report:
+    needs: test
+    if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+    uses: ./.github/actions/report.yml
+    with:
+      NAME: ${{ inputs.HTML_REPORT_NAME }}
+    secrets:
+      GCP_SA_KEY: ${{ secrets.E2E_TEST_GCP_SA_KEY }}
+
+  notification:
+    needs: [test, report]
+    if: always()
+    uses: ./.github/actions/notification.yml
+    with:
+      JOB_STATUS: ${{ needs.test.result }}
+      MESSAGE: "${{ inputs.NOTIFICATION_MESSAGE }} by ${{ github.actor }}"
+      JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      REPORT_URL: ${{ needs.report.outputs.url }}
+    secrets:
+      DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}

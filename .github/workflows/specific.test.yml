@@ -1,0 +1,76 @@
+name: Specific Test Run
+
+on:
+  workflow_dispatch:
+    inputs:
+      APP_NAME:
+        description: "App name"
+        required: true
+        type: choice
+        options:
+          - "app-mento"
+          - "governance"
+      SPECS_REGEX:
+        description: "Specs regex (supports: Tags, Spec names, Test names)"
+        required: true
+      SPECS_DIR:
+        description: "Specs dir"
+        required: false
+        default: ""
+      SPECS_TYPE:
+        type: choice
+        description: "Specs type (supports: web or api)"
+        default: web
+        options:
+          - web
+          - api
+      HTML_REPORT_GENERATION:
+        type: choice
+        description: "HTML report generation"
+        default: "onFailure"
+        options:
+          - "true"
+          - "false"
+          - "onFailure"
+      TESTOMAT_REPORT_GENERATION:
+        type: choice
+        description: "Testomat test run report generation"
+        default: "true"
+        options:
+          - "true"
+          - "false"
+      IS_PARALLEL_RUN:
+        type: choice
+        description: "Parallel run flag of running tests"
+        default: "false"
+        options:
+          - "true"
+          - "false"
+      CUSTOM_URL:
+        description: "Custom base url to run tests against different URLs"
+        required: false
+        type: string
+      IS_MAINNET:
+        type: choice
+        description: "Mainnet test run flag"
+        default: "false"
+        options:
+          - "true"
+          - "false"
+jobs:
+  test:
+    name: "Specific Test Run"
+    uses: ./.github/workflows/re-usable.test.yml
+    with:
+      SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
+      SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
+      SPECS_DIR: ${{ inputs.SPECS_DIR }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      HTML_REPORT_NAME: "specific"
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMATIO_TITLE: "[Mento-Web] Specific"
+      IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      IS_MAINNET: ${{ inputs.IS_MAINNET }}
+      NOTIFICATION_MESSAGE: "[Mento-Web] Specific Test"
+    secrets: inherit

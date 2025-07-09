@@ -1,14 +1,14 @@
+import { AppName } from "./apps.constants";
+
 export const magicStrings = {
   url: {
-    web: {
-      prod: {
-        base: "https://app.mento.org/",
-      },
+    [AppName.AppMento]: {
+      web: { prod: { base: "https://app.mento.org" } },
+      api: { prod: { base: "" } },
     },
-    api: {
-      prod: {
-        base: "",
-      },
+    [AppName.Governance]: {
+      web: { prod: { base: "https://governance.mento.org" } },
+      api: { prod: { base: "" } },
     },
   },
   chain: {
@@ -36,11 +36,17 @@ export const magicStrings = {
     get allSpecs() {
       return `${this.root}/specs`;
     },
-    get apiSpecs() {
-      return `${this.root}/specs/api`;
+    get appMento() {
+      return {
+        webSpecs: `${this.root}/specs/app-mento/web`,
+        apiSpecs: `${this.root}/specs/app-mento/api`,
+      };
     },
-    get webSpecs() {
-      return `${this.root}/specs/web`;
+    get governance() {
+      return {
+        webSpecs: `${this.root}/specs/governance/web`,
+        apiSpecs: `${this.root}/specs/governance/api`,
+      };
     },
   },
 };

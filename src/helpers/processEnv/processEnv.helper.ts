@@ -3,6 +3,7 @@ import { config } from "dotenv";
 config();
 
 interface IProcessEnvHelper {
+  APP_NAME: string;
   ENV: string;
   USER_PASSWORD: string;
   SPECS_REGEX: string;

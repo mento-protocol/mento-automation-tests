@@ -8,7 +8,7 @@ import {
   IScrollBy,
   ISetLocalStorage,
 } from "@helpers/browser/browser.helper.types";
-import { testFixture } from "@fixtures/common/common.fixture";
+import { testFixture } from "@fixtures/test.fixture";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 export interface IBrowser {
@@ -27,7 +27,7 @@ export interface IBrowser {
   readFromClipboard: () => Promise<string>;
 }
 
-export class Browser implements IBrowser {
+export class BrowserHelper {
   private pwPage: Page = null;
   private pwContext: BrowserContext = null;
 
