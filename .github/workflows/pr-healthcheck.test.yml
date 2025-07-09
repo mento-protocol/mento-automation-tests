@@ -36,7 +36,7 @@ jobs:
   test:
     name: "PR Healthcheck Test Run"
     needs: define-specs
-    uses: ./.github/workflows/re-usable.test.yml@main
+    uses: ./.github/workflows/re-usable.test.yml
     with:
       SPECS_REGEX: ${{ needs.define-specs.outputs.specs-regex }}
       APP_NAME: "app-mento"
