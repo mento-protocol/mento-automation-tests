@@ -84,6 +84,7 @@ jobs:
   test:
     timeout-minutes: 90
     env:
+      APP_NAME: ${{ inputs.APP_NAME }}
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
       SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
       EXCLUDE_SPECS_REGEX: ${{ inputs.EXCLUDE_SPECS_REGEX }}
