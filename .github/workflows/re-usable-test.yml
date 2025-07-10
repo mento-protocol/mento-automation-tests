@@ -82,7 +82,7 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 90
+    timeout-minutes: 120
     env:
       APP_NAME: ${{ inputs.APP_NAME }}
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}

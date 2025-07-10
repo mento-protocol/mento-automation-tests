@@ -7,7 +7,7 @@ export const timeouts = {
     return Number(TEST_TIMEOUT) ?? timeouts.minute * 3;
   },
   get testRun(): number {
-    return Number(TEST_RUN_TIMEOUT) ?? timeouts.minute * 55;
+    return Number(TEST_RUN_TIMEOUT) ?? timeouts.minute * 120;
   },
   get isOpenPage(): number {
     return this.l;

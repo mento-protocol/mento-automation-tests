@@ -19,10 +19,7 @@ import { AppName } from "@constants/apps.constants";
 import { MainGovernanceService } from "../../apps/governance/web/main/main.service";
 import { MainGovernancePage } from "../../apps/governance/web/main/main.page";
 import { envHelper } from "@helpers/env/env.helper";
-import { loggerHelper } from "@helpers/logger/logger.helper";
 import { HttpClient } from "@shared/api/http/http-client";
-
-const log = loggerHelper.get("Assembler");
 
 /**
  * 🚀 Goal
@@ -67,20 +64,20 @@ export class Assembler {
     this.httpClient = httpClient;
   }
 
+  //❗️ Assembling WEB only for a specified app by 'APP_NAME' variable in .env
   async web(): Promise<IWeb> {
     const baseDependencies: IBaseDependencies = {
       browser: this.browserHelper,
       metamaskHelper: this.metamaskHelper,
     };
-    log.warn(`❗️ Assembling WEB only for the '${this.appName}' app`);
     return {
       ...baseDependencies,
       app: this.apps.web[this.appName](this.elementFinder, baseDependencies),
     };
   }
 
+  //❗️ Assembling API only for a specified app by 'APP_NAME' variable in .env
   async api(): Promise<IApi> {
-    log.warn(`❗️ Assembling API only for the '${this.appName}' app`);
     return {
       httpClient: this.httpClient,
       // TODO: enable app assembling when there're use cases

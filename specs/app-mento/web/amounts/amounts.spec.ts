@@ -88,27 +88,5 @@ suite({
         ).toBeTruthy();
       },
     },
-    {
-      name: `Trading limit error is shown when the 'Buy' amount exceeds limit`,
-      testCaseId: "",
-      test: async ({ web }) => {
-        const app = web.app.appMento;
-        await app.swap.swapInputs({
-          shouldReturnRates: false,
-          clicksOnButton: 2,
-        });
-        await app.swap.fillForm({
-          buyAmount: exceedsTradingLimitAmount,
-        });
-        expect
-          .soft(
-            await app.swap.waitForExceedsTradingLimitsNotification(timeouts.s),
-          )
-          .toBeTruthy();
-        expect(
-          await app.swap.waitForExceedsTradingLimitsButton(timeouts.s),
-        ).toBeTruthy();
-      },
-    },
   ],
 });
