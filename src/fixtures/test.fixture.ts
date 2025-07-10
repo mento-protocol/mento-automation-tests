@@ -23,6 +23,9 @@ export const testFixture = synpressFixture.extend<IApplicationFixtures>({
       metamaskHelper,
     });
     const web = await assembler.web();
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await web.browser.collectErrors();
+    await web.browser.attachErrors();
     await use(web);
   },
 
