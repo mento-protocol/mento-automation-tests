@@ -91,6 +91,14 @@ export class BrowserHelper {
     return this.execute(() => navigator.clipboard.readText());
   }
 
+  async pasteFromClipboard(text: string): Promise<void> {
+    await this.execute(
+      ([textToWrite]) => navigator.clipboard.writeText(textToWrite as string),
+      [text],
+    );
+    await this.pwPage.keyboard.press("Meta+V");
+  }
+
   hasConsoleErrorsMatchingText(text: string): boolean {
     return this.consoleErrors.some(error => error.includes(text));
   }

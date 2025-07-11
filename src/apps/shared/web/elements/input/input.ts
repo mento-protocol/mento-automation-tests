@@ -1,8 +1,8 @@
-import { IElementSearcher } from "@helpers/element-finder/types/index.types";
+import { ElementSearcher } from "@helpers/element-finder/types/index.types";
 import { BaseElement, IInput } from "../index";
 
 export class Input extends BaseElement implements IInput {
-  constructor(protected override elementSearcher: IElementSearcher) {
+  constructor(protected override elementSearcher: ElementSearcher) {
     super(elementSearcher);
   }
 

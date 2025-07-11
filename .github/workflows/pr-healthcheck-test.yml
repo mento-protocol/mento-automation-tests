@@ -3,6 +3,26 @@ name: "[Automated-Tests] PR Healthcheck Test Run"
 on: push
 
 jobs:
+  define-app:
+    name: "Define App Name for PR Healthcheck"
+    runs-on: ubuntu-latest
+    outputs:
+      app-name: ${{ steps.extract-app-name.outputs.app-name }}
+    steps:
+      - name: Define app name for PR healthcheck
+        id: extract-app-name
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" =~ @app-mento ]]; then
+            echo "Using the @app-mento tag to run app-mento tests"
+            echo "app-name=app-mento" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event.head_commit.message }}" =~ @governance ]]; then
+            echo "Using the @governance tag to run governance tests"
+            echo "app-name=governance" >> $GITHUB_OUTPUT
+          else
+            echo "No app name found in commit message!"
+            echo "Using the default 'app-mento' app to validate the PR"
+            echo "app-name=app-mento" >> $GITHUB_OUTPUT
+          fi
   define-specs:
     name: "Define Specs Regex for PR Healthcheck"
     runs-on: ubuntu-latest
@@ -35,11 +55,11 @@ jobs:
 
   test:
     name: "PR Healthcheck Test Run"
-    needs: define-specs
+    needs: [define-app, define-specs]
     uses: ./.github/workflows/re-usable-test.yml
     with:
       SPECS_REGEX: ${{ needs.define-specs.outputs.specs-regex }}
-      APP_NAME: "app-mento"
+      APP_NAME: ${{ needs.define-app.outputs.app-name }}
       IS_MAINNET: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"

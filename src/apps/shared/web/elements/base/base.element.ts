@@ -44,7 +44,7 @@ export abstract class BaseElement {
   }
 
   async click({
-    timeout = timeouts.action,
+    timeout = timeouts.xs,
     throwError = true,
     force = false,
     times,
