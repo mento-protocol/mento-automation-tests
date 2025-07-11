@@ -77,7 +77,7 @@ const testCases = [
     fromToken: Token.axlEUROC,
     toToken: retryDataHelper.getRandomToken(Token.axlEUROC, [
       Token.cEUR,
-      Token.eXOF,
+      Token.cUSD,
     ]),
     id: "T92258405",
   },
