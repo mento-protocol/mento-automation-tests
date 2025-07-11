@@ -27,21 +27,22 @@ on:
         type: string
 
 jobs:
-  app_mento_regression_test:
+  app_governance_regression_test:
     name: "[Governance] ${{ matrix.name }} Regression Test Run"
     uses: ./.github/workflows/re-usable-test.yml
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: "Sequential"
-            specs_regex: "@regression,@sequential"
-            exclude_specs_regex: "@parallel"
-            is_parallel_run: "false"
-            is_mainnet: "false"
-            html_report_name: "app-mento-sequential-regression"
-            testomatio_title: "[Governance] Sequential-Regression"
-            notification_message: "[Governance] Sequential-Regression"
+          # Enable once we have sequential tests
+          # - name: "Sequential"
+          #   specs_regex: "@regression,@sequential"
+          #   exclude_specs_regex: "@parallel"
+          #   is_parallel_run: "false"
+          #   is_mainnet: "false"
+          #   html_report_name: "app-mento-sequential-regression"
+          #   testomatio_title: "[Governance] Sequential-Regression"
+          #   notification_message: "[Governance] Sequential-Regression"
           - name: "Parallel"
             specs_regex: "@regression,@parallel"
             exclude_specs_regex: "@sequential"
