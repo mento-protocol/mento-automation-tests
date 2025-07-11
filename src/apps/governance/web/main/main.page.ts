@@ -1,5 +1,5 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import { Button } from "@shared/web/elements/index";
+import { Button, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
 
 export class MainGovernancePage extends BasePage {
@@ -7,9 +7,17 @@ export class MainGovernancePage extends BasePage {
     super(ef);
   }
 
+  headerLabel = new Label(this.ef.pw.text("Mento Governance"));
   headerConnectWalletButton = new Button(
-    this.ef.pw.role("button", { name: "Connect wallet", exact: true }),
+    this.ef.pw.role("button", { name: "Connect Wallet", exact: true }),
   );
 
-  staticElements = [this.headerConnectWalletButton];
+  createProposalButton = new Button(this.ef.pw.text("Create New Proposal "));
+  votingPowerButton = new Button(this.ef.pw.text("Manage"));
+
+  staticElements = [
+    this.headerLabel,
+    this.createProposalButton,
+    this.votingPowerButton,
+  ];
 }
