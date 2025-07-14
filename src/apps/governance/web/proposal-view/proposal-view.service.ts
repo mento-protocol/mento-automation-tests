@@ -2,6 +2,7 @@ import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { ClassLog } from "@decorators/logger.decorators";
 import { ProposalViewPage } from "./proposal-view.page";
 import { timeouts } from "@constants/timeouts.constants";
+import { expect } from "@fixtures/test.fixture";
 
 export enum ProposalState {
   Active = "active",
@@ -33,6 +34,10 @@ export class ProposalViewService extends BaseService {
     return await this.page.proposalTitleLabel.getText();
   }
 
+  async getProposalDescription(): Promise<string> {
+    return await this.page.proposalDescriptionLabel.getText();
+  }
+
   async getProposalState(): Promise<string> {
     return await this.page.proposalStateLabel.getText();
   }
@@ -41,5 +46,20 @@ export class ProposalViewService extends BaseService {
     return this.page.votingInfoLoader.waitUntilDisappeared(timeouts.s, {
       errorMessage: "Voting info is not loaded!",
     });
+  }
+
+  async expectProposal({
+    title,
+    description,
+    state = ProposalState.Active,
+  }: {
+    title: string;
+    description: string;
+    state: ProposalState;
+  }): Promise<void> {
+    expect.soft(await this.getProposalTitle()).toBe(title);
+    expect.soft(await this.getProposalDescription()).toBe(description);
+    await this.waitForLoadedVotingInfo();
+    expect(await this.getProposalState()).toBe(state);
   }
 }

@@ -8,6 +8,9 @@ export class ProposalViewPage extends BasePage {
   }
 
   proposalTitleLabel = new Label(this.ef.pw.dataTestId("proposalTitleLabel"));
+  proposalDescriptionLabel = new Label(
+    this.ef.pw.dataTestId("proposalDescriptionLabel"),
+  );
   proposalStateLabel = new Label(this.ef.pw.dataTestId("proposalStateLabel"));
   votingInfoLoader = new Label(
     this.ef.pw.text("Loading voting information..."),

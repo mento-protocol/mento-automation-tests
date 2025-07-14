@@ -34,18 +34,25 @@ export class CreateProposalService extends BaseService {
   }: ICreateProposalArgs = {}): Promise<void> {
     await this.passProposalDetailsStage({ title, description });
     await this.passExecutionCodeStage({ executionCode, shouldCheckDetails });
-    await this.passReviewStage({ title, description, shouldCheckDetails });
+    await this.passReviewStage({
+      title,
+      description,
+      executionCode,
+      shouldCheckDetails,
+    });
   }
 
   async passReviewStage({
     title,
     description,
+    executionCode,
     shouldCheckDetails,
   }: ICreateProposalArgs): Promise<void> {
     if (shouldCheckDetails) {
       await this.expectProposalDetailsOnReview({
         title,
         description,
+        executionCode,
       });
     }
     await this.page.reviewStage.createProposalButton.click();
@@ -130,6 +137,7 @@ export class CreateProposalService extends BaseService {
   async expectProposalDetailsOnReview({
     title,
     description,
+    executionCode,
   }: ICreateProposalArgs): Promise<void> {
     expect
       .soft(await this.page.reviewStage.stageLabel.getText())
@@ -139,7 +147,7 @@ export class CreateProposalService extends BaseService {
       .toEqual(description);
     expect
       .soft(await this.getExecutionCodeFromReviewStage())
-      .toEqual(this.defaultExecutionCode);
+      .toEqual(executionCode);
   }
 
   async getProposalDetailsFromReviewStage(): Promise<string> {

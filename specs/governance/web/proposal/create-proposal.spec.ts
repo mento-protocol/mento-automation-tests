@@ -1,10 +1,20 @@
 import { TestTag } from "@constants/test.constants";
-import { expect } from "@fixtures/test.fixture";
 import { suite } from "@helpers/suite/suite.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { ProposalState } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
 
-const proposalTitle = `[${Date.now()}] Automation-Proposal`;
+const id = Date.now();
+const proposal = {
+  title: `[${id}] Automation-Proposal`,
+  description: `[${id}] Automation-Proposal-Description`,
+  executionCode: [
+    {
+      address: "0x1230000000000000000000000000000000000000",
+      value: 1,
+      data: "0x123",
+    },
+  ],
+};
 
 suite({
   name: "Proposal - Create",
@@ -19,14 +29,16 @@ suite({
       test: async ({ web }) => {
         const app = web.app.governance;
         await app.main.openCreateProposalPage();
-        await app.createProposal.createValid({ title: proposalTitle });
-        expect
-          .soft(await app.proposalView.getProposalTitle())
-          .toBe(proposalTitle);
-        await app.proposalView.waitForLoadedVotingInfo();
-        expect(await app.proposalView.getProposalState()).toBe(
-          ProposalState.Active,
-        );
+        await app.createProposal.createValid({
+          title: proposal.title,
+          description: proposal.description,
+          executionCode: proposal.executionCode,
+        });
+        await app.proposalView.expectProposal({
+          title: proposal.title,
+          description: proposal.description,
+          state: ProposalState.Active,
+        });
       },
     },
   ],
