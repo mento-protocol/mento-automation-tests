@@ -1,41 +1,30 @@
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
-import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
-import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import {
   ConnectWalletModalService,
   WalletName,
 } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { MainGovernancePage } from "./main.page";
 import { envHelper } from "@helpers/env/env.helper";
-
-const logger = loggerHelper.get("MainGovernanceService");
+import { CreateProposalPage } from "../create-proposal/create-proposal.page";
 
 @ClassLog
 export class MainGovernanceService extends BaseService {
   public override page: MainGovernancePage = null;
   public connectWalletModal: ConnectWalletModalService = null;
+  public createProposalPage: CreateProposalPage = null;
 
   constructor(args: IMainGovernanceServiceArgs) {
-    const { page, connectWalletModal } = args;
+    const { page, connectWalletModal, createProposalPage } = args;
     super(args);
     this.page = page;
     this.connectWalletModal = connectWalletModal;
+    this.createProposalPage = createProposalPage;
   }
 
   async openConnectWalletModal(): Promise<void> {
     await this.page.headerConnectWalletButton.click();
     await this.connectWalletModal.page.verifyIsOpen();
-  }
-
-  async openAppWithConnectedWallet(
-    walletName = WalletName.Metamask,
-  ): Promise<void> {
-    processEnv.WALLET_ADDRESS = await this.metamaskHelper.getAddress();
-    if (!(await this.isWalletConnected())) {
-      return await this.connectWalletByName(walletName);
-    }
-    logger.debug(`'${walletName}' wallet is already connected`);
   }
 
   async connectWalletByName(walletName: WalletName): Promise<void> {
@@ -44,8 +33,13 @@ export class MainGovernanceService extends BaseService {
     await this.metamaskHelper.connectWallet();
     if (!envHelper.isMainnet()) {
       await this.metamaskHelper.approveNewNetwork();
-      await this.metamaskHelper.approveSwitchNetwork();
+      await this.metamaskHelper.rejectSwitchNetwork();
     }
+  }
+
+  async openCreateProposalPage(): Promise<void> {
+    await this.page.createProposalButton.click();
+    await this.createProposalPage.verifyIsOpen();
   }
 
   async isWalletConnected(): Promise<boolean> {
@@ -56,4 +50,5 @@ export class MainGovernanceService extends BaseService {
 export interface IMainGovernanceServiceArgs extends IBaseServiceArgs {
   page: MainGovernancePage;
   connectWalletModal: ConnectWalletModalService;
+  createProposalPage: CreateProposalPage;
 }

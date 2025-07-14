@@ -20,6 +20,12 @@ import { MainGovernanceService } from "../../apps/governance/web/main/main.servi
 import { MainGovernancePage } from "../../apps/governance/web/main/main.page";
 import { envHelper } from "@helpers/env/env.helper";
 import { HttpClient } from "@shared/api/http/http-client";
+import { VotingPowerService } from "../../apps/governance/web/voting-power/voting-power.service";
+import { CreateProposalService } from "../../apps/governance/web/create-proposal/create-proposal.service";
+import { ProposalViewPage } from "../../apps/governance/web/proposal-view/proposal-view.page";
+import { ProposalViewService } from "../../apps/governance/web/proposal-view/proposal-view.service";
+import { VotingPowerPage } from "../../apps/governance/web/voting-power/voting-power.page";
+import { CreateProposalPage } from "../../apps/governance/web/create-proposal/create-proposal.page";
 
 /**
  * 🚀 Goal
@@ -135,6 +141,20 @@ export class Assembler {
                 page: new ConnectWalletModalPage(ef),
                 ...baseDependencies,
               }),
+              createProposalPage: new CreateProposalPage(ef),
+            }),
+            createProposal: new CreateProposalService({
+              page: new CreateProposalPage(ef),
+              proposalViewPage: new ProposalViewPage(ef),
+              ...baseDependencies,
+            }),
+            votingPower: new VotingPowerService({
+              page: new VotingPowerPage(ef),
+              ...baseDependencies,
+            }),
+            proposalView: new ProposalViewService({
+              page: new ProposalViewPage(ef),
+              ...baseDependencies,
             }),
           },
         };
@@ -202,4 +222,7 @@ interface IAppMentoApp {
 
 interface IGovernanceApp {
   main: MainGovernanceService;
+  createProposal: CreateProposalService;
+  votingPower: VotingPowerService;
+  proposalView: ProposalViewService;
 }

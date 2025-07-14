@@ -72,6 +72,10 @@ export class BrowserHelper {
     return this.pwPage.title();
   }
 
+  async enterTextByKeyboard(text: string): Promise<void> {
+    return this.pwPage.keyboard.type(text);
+  }
+
   async pause(): Promise<void> {
     return this.pwPage.pause();
   }
@@ -89,6 +93,14 @@ export class BrowserHelper {
 
   async readFromClipboard(): Promise<string> {
     return this.execute(() => navigator.clipboard.readText());
+  }
+
+  async pasteFromClipboard(text: string): Promise<void> {
+    await this.execute(
+      ([textToWrite]) => navigator.clipboard.writeText(textToWrite as string),
+      [text],
+    );
+    await this.pwPage.keyboard.press("Meta+V");
   }
 
   hasConsoleErrorsMatchingText(text: string): boolean {
