@@ -1,4 +1,6 @@
+import { Address } from "viem";
 import { AppName } from "./apps.constants";
+import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 export const magicStrings = {
   url: {
@@ -28,6 +30,33 @@ export const magicStrings = {
       rpcUrl: "https://forno.celo.org",
       chainId: 42220,
       symbol: "CELO",
+    },
+  },
+  governance: {
+    abi: [
+      "function propose(address[] targets, uint256[] values, bytes[] calldatas, string description) external returns (uint256)",
+      "function proposalCount() external view returns (uint256)",
+      "function proposals(uint256) external view returns (address proposer, uint256 id, address[] targets, uint256[] values, string[] signatures, bytes[] calldatas, uint256 startBlock, uint256 endBlock, uint256 forVotes, uint256 againstVotes, uint256 abstainVotes, bool canceled, bool executed)",
+    ],
+    testnet: {
+      governorAddress: "0x558e92236f85Bb4e8A63ec0D5Bf9d34087Eab744" as Address,
+    },
+    mainnet: {
+      governorAddress: "0x47036d78bB3169b4F5560dD77BF93f4412A59852" as Address,
+    },
+    get proposalData() {
+      const id = primitiveHelper.string.generateId();
+      return {
+        title: `[${id}] Automation-Proposal`,
+        description: `[${id}] Automation-Proposal-Description`,
+        executionCode: [
+          {
+            address: "0x1230000000000000000000000000000000000000" as Address,
+            value: 1,
+            data: "0x1234",
+          },
+        ],
+      };
     },
   },
   path: {

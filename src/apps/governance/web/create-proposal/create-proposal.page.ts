@@ -27,7 +27,6 @@ export class CreateProposalPage extends BasePage {
     codeInput: new Input(this.ef.pw.dataTestId("executionCodeInput")),
   };
 
-  // Review stage
   reviewStage = {
     stageLabel: new Label(this.ef.pw.dataTestId("reviewStageLabel")),
     createProposalButton: new Button(

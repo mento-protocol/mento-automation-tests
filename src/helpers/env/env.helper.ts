@@ -2,6 +2,7 @@ import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { AppName } from "@constants/apps.constants";
+import { Address } from "viem";
 
 const {
   ENV,
@@ -11,6 +12,7 @@ const {
   SEED_PHRASE,
   WALLET_PASSWORD,
   APP_NAME,
+  PRIVATE_KEY,
 } = processEnv;
 
 export class EnvHelper {
@@ -37,8 +39,24 @@ export class EnvHelper {
     return WALLET_PASSWORD;
   }
 
+  getPrivateKey(): string {
+    return PRIVATE_KEY;
+  }
+
   getApp(): AppName {
     return APP_NAME as AppName;
+  }
+
+  getChain(): string {
+    return this.isMainnet() ? "mainnet" : "testnet";
+  }
+
+  getGovernorAddress(): Address {
+    return magicStrings.governance[this.getChain()].governorAddress;
+  }
+
+  getRpcUrl(): string {
+    return magicStrings.chain[this.getChain()].rpcUrl;
   }
 
   isCI(): boolean {

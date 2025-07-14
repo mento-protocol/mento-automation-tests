@@ -56,6 +56,10 @@ export class MainGovernanceService extends BaseService {
   async isWalletConnected(): Promise<boolean> {
     return !(await this.page.headerConnectWalletButton.isDisplayed());
   }
+
+  async isProposalThereByTitle(title: string): Promise<boolean> {
+    return (await this.page.getProposalByTitle(title)).isDisplayed();
+  }
 }
 
 export interface IMainGovernanceServiceArgs extends IBaseServiceArgs {

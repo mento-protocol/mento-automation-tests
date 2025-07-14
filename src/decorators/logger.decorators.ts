@@ -22,6 +22,12 @@ export function ClassLog(target: Function) {
         logger.trace(
           `${String(propertyKey)} ${JSON.stringify(
             secureArgs({ argsToCheck: args, argsToHide }),
+            (key, value) => {
+              if (typeof value === "bigint") {
+                return value.toString();
+              }
+              return value;
+            },
           )}`,
         );
         return originalMethod.apply(this, args);

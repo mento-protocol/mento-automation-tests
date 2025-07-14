@@ -1,4 +1,4 @@
-import { randomInt } from "node:crypto";
+import { randomInt, randomUUID } from "node:crypto";
 
 export interface IJsonStringifyOptions {
   replacer?: () => unknown;
@@ -25,6 +25,11 @@ class PrimitiveHelper {
         return source.slice(0, -1);
       }
       return source;
+    },
+
+    generateId(): string {
+      // Generate a UUID and remove anything after the first '-'
+      return randomUUID().split("-")[0];
     },
   };
 

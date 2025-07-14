@@ -26,6 +26,7 @@ import { ProposalViewPage } from "../../apps/governance/web/proposal-view/propos
 import { ProposalViewService } from "../../apps/governance/web/proposal-view/proposal-view.service";
 import { VotingPowerPage } from "../../apps/governance/web/voting-power/voting-power.page";
 import { CreateProposalPage } from "../../apps/governance/web/create-proposal/create-proposal.page";
+import { ContractHelper } from "@helpers/contract/contract.helper";
 
 /**
  * 🚀 Goal
@@ -56,17 +57,20 @@ export class Assembler {
   private readonly elementFinder: ElementFinderHelper = null;
   private readonly browserHelper: BrowserHelper = null;
   private readonly metamaskHelper: MetamaskHelper = null;
+  private readonly contractHelper: ContractHelper = null;
   private readonly httpClient: HttpClient = null;
 
   constructor({
     elementFinder,
     browserHelper,
     metamaskHelper,
+    contractHelper,
     httpClient,
   }: AssemblerDependacies) {
     this.elementFinder = elementFinder;
     this.browserHelper = browserHelper;
     this.metamaskHelper = metamaskHelper;
+    this.contractHelper = contractHelper;
     this.httpClient = httpClient;
   }
 
@@ -75,6 +79,7 @@ export class Assembler {
     const baseDependencies: IBaseDependencies = {
       browser: this.browserHelper,
       metamaskHelper: this.metamaskHelper,
+      contractHelper: this.contractHelper,
     };
     return {
       ...baseDependencies,
@@ -169,6 +174,7 @@ export interface IWebAssemblerDependacies {
   elementFinder: ElementFinderHelper;
   browserHelper: BrowserHelper;
   metamaskHelper: MetamaskHelper;
+  contractHelper: ContractHelper;
 
   httpClient?: never;
 }
@@ -179,6 +185,7 @@ export interface IApiAssemblerDependacies {
   elementFinder?: never;
   browserHelper?: never;
   metamaskHelper?: never;
+  contractHelper?: never;
 }
 
 export type AssemblerDependacies =
@@ -188,11 +195,13 @@ export type AssemblerDependacies =
 interface IBaseDependencies {
   browser: BrowserHelper;
   metamaskHelper: MetamaskHelper;
+  contractHelper: ContractHelper;
 }
 
 export interface IWeb {
   browser: BrowserHelper;
   metamaskHelper: MetamaskHelper;
+  contractHelper: ContractHelper;
   app: WebApps;
 }
 

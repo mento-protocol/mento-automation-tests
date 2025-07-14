@@ -7,6 +7,7 @@ import { BrowserHelper } from "@helpers/browser/browser.helper";
 import { Assembler, IApi, IWeb } from "@helpers/assembler/assember";
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { HttpClient } from "@shared/api/http/http-client";
+import { ContractHelper } from "@helpers/contract/contract.helper";
 
 const synpressFixture = testWithSynpress(metaMaskFixtures(basicSetup));
 
@@ -16,11 +17,19 @@ export const testFixture = synpressFixture.extend<IApplicationFixtures>({
     await use(metamaskHelper);
   },
 
-  web: async ({ context, page, metamaskHelper }, use) => {
+  // @ts-ignore
+  // eslint-disable-next-line
+  contractHelper: async ({}, use) => {
+    const contractHelper = new ContractHelper();
+    await use(contractHelper);
+  },
+
+  web: async ({ context, page, metamaskHelper, contractHelper }, use) => {
     const assembler = new Assembler({
       browserHelper: new BrowserHelper({ pwPage: page, pwContext: context }),
       elementFinder: new ElementFinderHelper({ page }),
       metamaskHelper,
+      contractHelper,
     });
     const web = await assembler.web();
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
@@ -42,4 +51,5 @@ export interface IApplicationFixtures {
   web: IWeb;
   api: IApi;
   metamaskHelper: MetamaskHelper;
+  contractHelper: ContractHelper;
 }
