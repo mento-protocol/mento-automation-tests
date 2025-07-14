@@ -1,14 +1,14 @@
 import { TestTag } from "@constants/test.constants";
 import { expect } from "@fixtures/test.fixture";
 import { suite } from "@helpers/suite/suite.helper";
-import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
+import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { ProposalState } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
 
 const proposalTitle = `[${Date.now()}] Automation-Proposal`;
 
 suite({
   name: "Proposal - Create",
-  tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
+  tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
   beforeEach: async ({ web }) => {
     await web.app.governance.main.connectWalletByName(WalletName.Metamask);
   },
@@ -20,8 +20,6 @@ suite({
         const app = web.app.governance;
         await app.main.openCreateProposalPage();
         await app.createProposal.createValid({ title: proposalTitle });
-        await app.createProposal.page.verifyIsClosed();
-        await app.proposalView.page.verifyIsOpen();
         expect
           .soft(await app.proposalView.getProposalTitle())
           .toBe(proposalTitle);

@@ -36,11 +36,17 @@ export class CreateProposalPage extends BasePage {
     seeAllProposalDetailsButton: new Button(
       this.ef.pw.dataTestId("seeAll_proposalDetailsButton"),
     ),
+    proposalDetailsContent: new Label(
+      this.ef.pw.dataTestId("proposalDetailsContent"),
+    ),
     seeLessProposalDetailsButton: new Button(
       this.ef.pw.dataTestId("seeLess_proposalDetailsButton"),
     ),
     seeAllExecutionCodeButton: new Button(
       this.ef.pw.dataTestId("seeAll_executionCodeButton"),
+    ),
+    executionCodeContent: new Label(
+      this.ef.pw.dataTestId("executionCodeContent"),
     ),
     seeLessExecutionCodeButton: new Button(
       this.ef.pw.dataTestId("seeLess_executionCodeButton"),

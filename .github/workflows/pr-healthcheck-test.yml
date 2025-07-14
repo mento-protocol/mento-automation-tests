@@ -1,4 +1,4 @@
-name: "[Automated-Tests] PR Healthcheck Test Run"
+name: "[AQA] PR Healthcheck Test Run"
 
 on: push
 

@@ -34,21 +34,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Enable once we have sequential tests
-          # - name: "Sequential"
-          #   specs_regex: "@regression,@sequential"
-          #   exclude_specs_regex: "@parallel"
-          #   is_parallel_run: "false"
-          #   is_mainnet: "false"
-          #   html_report_name: "app-mento-sequential-regression"
-          #   testomatio_title: "[Governance] Sequential-Regression"
-          #   notification_message: "[Governance] Sequential-Regression"
+          - name: "Sequential"
+            specs_regex: "@regression,@sequential"
+            exclude_specs_regex: "@parallel"
+            is_parallel_run: "false"
+            is_mainnet: "false"
+            html_report_name: "governance-sequential-regression"
+            testomatio_title: "[Governance] Sequential-Regression"
+            notification_message: "[Governance] Sequential-Regression"
           - name: "Parallel"
             specs_regex: "@regression,@parallel"
             exclude_specs_regex: "@sequential"
             is_parallel_run: "true"
-            is_mainnet: "true"
-            html_report_name: "app-mento-parallel-regression"
+            is_mainnet: "false"
+            html_report_name: "governance-parallel-regression"
             testomatio_title: "[Governance] Parallel-Regression"
             notification_message: "[Governance] Parallel-Regression"
     with:

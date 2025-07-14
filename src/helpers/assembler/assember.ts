@@ -145,6 +145,7 @@ export class Assembler {
             }),
             createProposal: new CreateProposalService({
               page: new CreateProposalPage(ef),
+              proposalViewPage: new ProposalViewPage(ef),
               ...baseDependencies,
             }),
             votingPower: new VotingPowerService({
