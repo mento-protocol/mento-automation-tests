@@ -72,6 +72,10 @@ export class BrowserHelper {
     return this.pwPage.title();
   }
 
+  async enterTextByKeyboard(text: string): Promise<void> {
+    return this.pwPage.keyboard.type(text);
+  }
+
   async pause(): Promise<void> {
     return this.pwPage.pause();
   }

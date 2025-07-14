@@ -63,5 +63,5 @@ jobs:
       IS_MAINNET: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"
-      NOTIFICATION_MESSAGE: "[Automated-Tests] PR Healthcheck"
+      NOTIFICATION_MESSAGE: "[AQA] PR Healthcheck"
     secrets: inherit

@@ -7,7 +7,12 @@ export const magicStrings = {
       api: { prod: { base: "" } },
     },
     [AppName.Governance]: {
-      web: { prod: { base: "https://governance.mento.org" } },
+      web: {
+        prod: {
+          // TODO: Replace with a correct URL once deployed
+          base: "https://governancementoorg-git-feature-web3-shared-package-mentolabs.vercel.app/",
+        },
+      },
       api: { prod: { base: "" } },
     },
   },

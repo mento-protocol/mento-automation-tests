@@ -23,5 +23,9 @@ export class ProposalViewPage extends BasePage {
     this.ef.pw.dataTestId("rejectProposalButton"),
   );
 
+  failedToCastVoteNotificationLabel = new Label(
+    this.ef.pw.text("Failed to cast vote"),
+  );
+
   staticElements = [this.proposalTitleLabel, this.proposalStateLabel];
 }

@@ -98,6 +98,7 @@ export class CreateProposalService extends BaseService {
 
   async fillDescription(description: string): Promise<void> {
     await this.page.proposalDetailsStage.descriptionInput.click();
-    await this.browser.pasteFromClipboard(description);
+    // TODO: Wrap this into the enterText method of the input element
+    await this.browser.enterTextByKeyboard(description);
   }
 }
