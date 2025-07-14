@@ -104,7 +104,7 @@ suite({
     },
     ...testCases.map(testCase => {
       return {
-        name: `"${testCase.token}" token`,
+        name: `"${testCase.token}" token selections`,
         testCaseId: testCase.id,
         test: async ({ web }: IExecution) => {
           const app = web.app.appMento;
@@ -121,10 +121,10 @@ suite({
           });
           const validTokens =
             await app.swap.selectTokenModalPage.getAllValidTokenNames();
-          expect.soft(validTokens).toEqual(testCase.expectedValidTokens);
+          expect.soft(validTokens).toEqual(testCase.validTokens);
           const invalidTokens =
             await app.swap.selectTokenModalPage.getAllInvalidTokenNames();
-          expect(invalidTokens).toEqual(testCase.expectedInvalidTokens);
+          expect(invalidTokens).toEqual(testCase.invalidTokens);
         },
       };
     }),
