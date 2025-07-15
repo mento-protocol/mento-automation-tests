@@ -9,11 +9,11 @@ suite({
   tests: [
     {
       name: "Connect Metamask wallet",
-      // TODO: Add test case and paste an id
-      testCaseId: "",
+      testCaseId: "@T1eb92bd5",
       test: async ({ web }) => {
-        await web.app.governance.main.connectWalletByName(WalletName.Metamask);
-        expect(await web.app.governance.main.isWalletConnected()).toBeTruthy();
+        const app = web.app.governance.main;
+        await app.connectWalletByName(WalletName.Metamask);
+        expect(await app.isWalletConnected()).toBeTruthy();
       },
     },
   ],
