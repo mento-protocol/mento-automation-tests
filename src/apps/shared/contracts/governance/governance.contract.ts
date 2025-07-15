@@ -8,7 +8,6 @@ import {
   stringToBytes,
   toHex,
 } from "viem";
-import { ethers, providers, Signer } from "ethers";
 
 import { ClassLog } from "@decorators/logger.decorators";
 import { envHelper } from "@helpers/env/env.helper";
@@ -18,29 +17,27 @@ import {
   ICreateProposalParams,
   ICreateProposalResult,
   IProposalData,
-} from "../governance.helper.types";
+} from "./governance.contact.types";
+import { BaseContract } from "../base/base.contract";
 
 const log = loggerHelper.get("GovernanceHelper");
 
 @ClassLog
-export class GovernanceHelper {
-  private readonly governorAddress: Address = null;
-  private readonly provider: providers.Provider = null;
-  private readonly signer: Signer = null;
-
-  private readonly governorAbi = magicStrings.governance.abi;
+export class GovernanceContract extends BaseContract {
   private readonly proposalData = magicStrings.governance.proposalData;
 
   constructor() {
-    this.governorAddress = envHelper.getGovernorAddress();
-    this.provider = new ethers.providers.JsonRpcProvider(envHelper.getRpcUrl());
-    this.signer = new ethers.Wallet(envHelper.getPrivateKey(), this.provider);
+    super({
+      contractAddress: envHelper.getGovernorAddress(),
+      contractAbi: magicStrings.governance.abi,
+    });
   }
 
   async createProposal({
     title = this.proposalData.title,
     description = this.proposalData.description,
     executionCode = this.proposalData.executionCode,
+    throwError = true,
   }: ICreateProposalParams): Promise<ICreateProposalResult> {
     try {
       const proposal: ICreateProposalParams = {
@@ -51,22 +48,19 @@ export class GovernanceHelper {
 
       const proposalId = this.createProposalId(proposal);
       const proposalData = this.prepareProposalData(proposal);
-      const transactionHash = await this.callContract(proposalData);
+      const txHash = await this.callContract({
+        functionName: "propose",
+        functionParams: Object.values(proposalData),
+      });
 
       return {
         proposalId,
-        success: true,
-        transactionHash,
+        txHash,
       };
     } catch (error) {
-      log.error(`Error in 'createProposal' method: ${error}`);
-      log.error(`Error stack: ${error.stack}`);
-      return {
-        proposalId: "",
-        success: false,
-        error:
-          error instanceof Error ? error.message : "Unknown error occurred",
-      };
+      const errorMessage = `Error in 'createProposal' method: ${error}\nError stack: ${error.stack}`;
+      log.error(errorMessage);
+      if (throwError) throw new Error(errorMessage);
     }
   }
 
@@ -92,39 +86,6 @@ export class GovernanceHelper {
         },
       ),
     };
-  }
-
-  private async callContract(proposalData: IProposalData): Promise<string> {
-    try {
-      const contract = new ethers.Contract(
-        this.governorAddress,
-        this.governorAbi,
-        this.signer,
-      );
-
-      // Call the propose function
-      const tx = await contract.propose(
-        proposalData.targets,
-        proposalData.values,
-        proposalData.calldatas,
-        proposalData.description,
-        {
-          gasLimit: 5000000, // Adjust gas limit as needed
-        },
-      );
-
-      // Wait for transaction to be mined
-      const receipt = await tx.wait();
-
-      return receipt.transactionHash;
-    } catch (error) {
-      console.error("Contract call failed:", error);
-      throw new Error(
-        `Contract call failed: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-      );
-    }
   }
 
   private createProposalId(proposal: ICreateProposalParams): string {

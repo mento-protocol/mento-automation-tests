@@ -1,10 +1,5 @@
 import { randomInt, randomUUID } from "node:crypto";
 
-export interface IJsonStringifyOptions {
-  replacer?: () => unknown;
-  spaces?: number;
-}
-
 class PrimitiveHelper {
   string = {
     toBoolean(str: string): boolean {
@@ -28,7 +23,6 @@ class PrimitiveHelper {
     },
 
     generateId(): string {
-      // Generate a UUID and remove anything after the first '-'
       return randomUUID().split("-")[0];
     },
   };
@@ -122,3 +116,8 @@ class PrimitiveHelper {
 }
 
 export const primitiveHelper = new PrimitiveHelper();
+
+export interface IJsonStringifyOptions {
+  replacer?: () => unknown;
+  spaces?: number;
+}

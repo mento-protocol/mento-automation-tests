@@ -1,10 +1,10 @@
-import { GovernanceHelper } from "./governance/governance.helper";
+import { GovernanceContract } from "@shared/contracts/governance/governance.contract";
 
 export class ContractHelper {
-  public readonly governance: GovernanceHelper;
+  constructor() {}
 
-  constructor() {
-    this.governance = new GovernanceHelper();
+  public get governance() {
+    return new GovernanceContract();
   }
 }
 

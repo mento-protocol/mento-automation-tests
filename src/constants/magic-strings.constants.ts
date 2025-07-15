@@ -12,10 +12,14 @@ export const magicStrings = {
       web: {
         prod: {
           // TODO: Replace with a correct URL once deployed
-          base: "https://governancementoorg-git-feature-web3-shared-package-mentolabs.vercel.app/",
+          base: "https://governancementoorg-git-feature-web3-shared-package-mentolabs.vercel.app",
         },
       },
-      api: { prod: { base: "" } },
+      api: {
+        prod: {
+          base: "",
+        },
+      },
     },
   },
   chain: {

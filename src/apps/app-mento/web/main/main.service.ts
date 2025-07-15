@@ -66,7 +66,7 @@ export class MainAppMentoService extends BaseService {
   async openAppWithConnectedWallet(
     walletName = WalletName.Metamask,
   ): Promise<void> {
-    processEnv.WALLET_ADDRESS = await this.metamaskHelper.getAddress();
+    processEnv.WALLET_ADDRESS = await this.metamask.getAddress();
     if (!(await this.isWalletConnected())) {
       return await this.connectWalletByName(walletName);
     }
@@ -76,7 +76,7 @@ export class MainAppMentoService extends BaseService {
   async connectWalletByName(walletName: WalletName): Promise<void> {
     await this.openConnectWalletModalFromHeader();
     await this.connectWalletModal.selectWalletByName(walletName);
-    await this.metamaskHelper.connectWallet();
+    await this.metamask.connectWallet();
   }
 
   async isWalletConnected(): Promise<boolean> {

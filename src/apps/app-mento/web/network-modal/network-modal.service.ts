@@ -19,8 +19,8 @@ export class NetworkModalService extends BaseService {
     { shouldClosePopup = false }: ISwitchNetworkByName = {},
   ): Promise<void> {
     await this.page.networkButtons[name].click();
-    await this.metamaskHelper.approveNewNetwork();
-    await this.metamaskHelper.approveSwitchNetwork();
+    await this.metamask.approveNewNetwork();
+    await this.metamask.approveSwitchNetwork();
     shouldClosePopup && (await this.page.closeButton.click());
   }
 

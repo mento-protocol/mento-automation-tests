@@ -30,6 +30,24 @@ export class ProposalViewService extends BaseService {
     this.page = page;
   }
 
+  async approveProposal(): Promise<void> {
+    await this.page.approveProposalButton.click();
+    await this.page.waitingForConfirmationLabel.waitUntilDisplayed(timeouts.s, {
+      errorMessage: "'Waiting for confirmation label' is not displayed!",
+    });
+    await this.page.waitingForConfirmationDescriptionLabel.waitUntilDisplayed(
+      timeouts.s,
+      {
+        errorMessage:
+          "'Waiting for confirmation description' is not displayed!",
+      },
+    );
+    expect
+      .soft(await this.page.waitingForConfirmationDescriptionLabel.getText())
+      .toBe("You are voting to Approve on this proposal");
+    await this.metamask.confirmTransaction();
+  }
+
   async getProposalTitle(): Promise<string> {
     return await this.page.proposalTitleLabel.getText();
   }
@@ -46,6 +64,28 @@ export class ProposalViewService extends BaseService {
     return this.page.votingInfoLoader.waitUntilDisappeared(timeouts.s, {
       errorMessage: "Voting info is not loaded!",
     });
+  }
+
+  async isVoteCastSuccessfully(timeout = timeouts.s): Promise<boolean> {
+    return this.page.voteCastSuccessfullyNotificationLabel.waitUntilDisplayed(
+      timeout,
+      {
+        errorMessage: "Vote cast successfully notification is not displayed!",
+        throwError: false,
+      },
+    );
+  }
+
+  async isParticipantAddressDisplayed(
+    address: string,
+    timeout = timeouts.m,
+  ): Promise<boolean> {
+    return this.page
+      .getParticipantAddress(address)
+      .waitUntilDisplayed(timeout, {
+        errorMessage: "Participant address is not displayed!",
+        throwError: false,
+      });
   }
 
   async expectProposal({

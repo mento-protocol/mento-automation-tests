@@ -8,19 +8,23 @@ import { MainGovernancePage } from "./main.page";
 import { envHelper } from "@helpers/env/env.helper";
 import { CreateProposalPage } from "../create-proposal/create-proposal.page";
 import { timeouts } from "@constants/timeouts.constants";
+import { ProposalViewPage } from "../proposal-view/proposal-view.page";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 @ClassLog
 export class MainGovernanceService extends BaseService {
   public override page: MainGovernancePage = null;
   public connectWalletModal: ConnectWalletModalService = null;
   public createProposalPage: CreateProposalPage = null;
+  public proposalView: ProposalViewPage = null;
 
   constructor(args: IMainGovernanceServiceArgs) {
-    const { page, connectWalletModal, createProposalPage } = args;
+    const { page, connectWalletModal, createProposalPage, proposalView } = args;
     super(args);
     this.page = page;
     this.connectWalletModal = connectWalletModal;
     this.createProposalPage = createProposalPage;
+    this.proposalView = proposalView;
   }
 
   async openConnectWalletModal(): Promise<void> {
@@ -31,10 +35,10 @@ export class MainGovernanceService extends BaseService {
   async connectWalletByName(walletName: WalletName): Promise<void> {
     await this.openConnectWalletModal();
     await this.connectWalletModal.selectWalletByName(walletName);
-    await this.metamaskHelper.connectWallet();
+    await this.metamask.connectWallet();
     if (!envHelper.isMainnet()) {
-      await this.metamaskHelper.approveNewNetwork();
-      await this.metamaskHelper.rejectSwitchNetwork();
+      await this.metamask.approveNewNetwork();
+      await this.metamask.rejectSwitchNetwork();
     }
     await this.waitForWalletToBeConnected();
   }
@@ -44,11 +48,33 @@ export class MainGovernanceService extends BaseService {
     await this.createProposalPage.verifyIsOpen();
   }
 
+  async openProposalByTitle(title: string): Promise<void> {
+    await this.waitForProposalByTitle(title);
+    await (await this.page.getProposalByTitle(title)).click();
+    await this.proposalView.verifyIsOpen();
+  }
+
   async waitForWalletToBeConnected(): Promise<boolean> {
     return this.page.headerConnectWalletButton.waitUntilDisappeared(
       timeouts.s,
       {
         throwError: false,
+      },
+    );
+  }
+
+  async waitForProposalByTitle(title: string): Promise<boolean> {
+    return waiterHelper.retry(
+      async () => {
+        await this.browser.refresh();
+        return (await this.page.getProposalByTitle(title)).waitUntilDisplayed(
+          timeouts.xs,
+          { throwError: false },
+        );
+      },
+      3,
+      {
+        errorMessage: `'${title}' proposal hasn't displayed`,
       },
     );
   }
@@ -66,4 +92,5 @@ export interface IMainGovernanceServiceArgs extends IBaseServiceArgs {
   page: MainGovernancePage;
   connectWalletModal: ConnectWalletModalService;
   createProposalPage: CreateProposalPage;
+  proposalView: ProposalViewPage;
 }

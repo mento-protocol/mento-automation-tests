@@ -51,7 +51,7 @@ import { ContractHelper } from "@helpers/contract/contract.helper";
  * 🔌 API:
  * • httpClient: HttpClient
  */
-export class Assembler {
+export class AssemblerHelper {
   private readonly appName = envHelper.getApp();
 
   private readonly elementFinder: ElementFinderHelper = null;
@@ -78,8 +78,8 @@ export class Assembler {
   async web(): Promise<IWeb> {
     const baseDependencies: IBaseDependencies = {
       browser: this.browserHelper,
-      metamaskHelper: this.metamaskHelper,
-      contractHelper: this.contractHelper,
+      metamask: this.metamaskHelper,
+      contract: this.contractHelper,
     };
     return {
       ...baseDependencies,
@@ -147,6 +147,7 @@ export class Assembler {
                 ...baseDependencies,
               }),
               createProposalPage: new CreateProposalPage(ef),
+              proposalView: new ProposalViewPage(ef),
             }),
             createProposal: new CreateProposalService({
               page: new CreateProposalPage(ef),
@@ -194,14 +195,14 @@ export type AssemblerDependacies =
 
 interface IBaseDependencies {
   browser: BrowserHelper;
-  metamaskHelper: MetamaskHelper;
-  contractHelper: ContractHelper;
+  metamask: MetamaskHelper;
+  contract: ContractHelper;
 }
 
 export interface IWeb {
   browser: BrowserHelper;
-  metamaskHelper: MetamaskHelper;
-  contractHelper: ContractHelper;
+  metamask: MetamaskHelper;
+  contract: ContractHelper;
   app: WebApps;
 }
 

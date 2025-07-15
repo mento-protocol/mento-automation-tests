@@ -7,6 +7,10 @@ export class ProposalViewPage extends BasePage {
     super(ef);
   }
 
+  getParticipantAddress(address: string) {
+    return new Label(this.ef.pw.dataTestId(`participantAddress_${address}`));
+  }
+
   proposalTitleLabel = new Label(this.ef.pw.dataTestId("proposalTitleLabel"));
   proposalDescriptionLabel = new Label(
     this.ef.pw.dataTestId("proposalDescriptionLabel"),
@@ -26,7 +30,17 @@ export class ProposalViewPage extends BasePage {
     this.ef.pw.dataTestId("rejectProposalButton"),
   );
 
-  failedToCastVoteNotificationLabel = new Label(
+  waitingForConfirmationLabel = new Label(
+    this.ef.pw.dataTestId("waitingForConfirmationLabel"),
+  );
+  waitingForConfirmationDescriptionLabel = new Label(
+    this.ef.pw.dataTestId("waitingForConfirmationDescriptionLabel"),
+  );
+
+  voteCastSuccessfullyNotificationLabel = new Label(
+    this.ef.pw.text("Vote cast successfully!"),
+  );
+  voteCastFailedNotificationLabel = new Label(
     this.ef.pw.text("Failed to cast vote"),
   );
 

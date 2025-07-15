@@ -1,10 +1,12 @@
 import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
-import { IApi, IWeb } from "../assembler/assember";
+import { IApi, IWeb } from "../assembler/assembler.helper";
+import { ContractHelper } from "@helpers/contract/contract.helper";
 
 export interface IExecution {
   web?: IWeb;
   api?: IApi;
   metamaskHelper?: MetamaskHelper;
+  contractHelper?: ContractHelper;
 }
 
 export interface ISuiteArgs {

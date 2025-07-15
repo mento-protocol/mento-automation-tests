@@ -7,16 +7,15 @@ interface IExecutionCode {
 }
 
 export interface ICreateProposalParams {
-  title: string;
-  description: string;
-  executionCode: IExecutionCode[];
+  title?: string;
+  description?: string;
+  executionCode?: IExecutionCode[];
+  throwError?: boolean;
 }
 
 export interface ICreateProposalResult {
   proposalId: string;
-  success: boolean;
-  error?: string;
-  transactionHash?: string;
+  txHash: string;
 }
 
 export interface IProposalValidationResult {
