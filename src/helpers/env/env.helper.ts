@@ -1,8 +1,10 @@
+import { Address } from "viem";
+
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { AppName } from "@constants/apps.constants";
-import { Address } from "viem";
+import { web3Helper } from "@helpers/web3/web3.helper";
 
 const {
   ENV,
@@ -12,7 +14,6 @@ const {
   SEED_PHRASE,
   WALLET_PASSWORD,
   APP_NAME,
-  PRIVATE_KEY,
 } = processEnv;
 
 export class EnvHelper {
@@ -40,7 +41,8 @@ export class EnvHelper {
   }
 
   getPrivateKey(): string {
-    return PRIVATE_KEY;
+    const mnemonicSeedPhrase = this.getSeedPhrase();
+    return web3Helper.extractPrivateKey(mnemonicSeedPhrase);
   }
 
   getApp(): AppName {

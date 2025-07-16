@@ -33,9 +33,11 @@ suite({
           .soft(await app.proposalView.isVoteCastSuccessfully())
           .toBeTruthy();
         // TODO: Turn on the assertion after it's fixed
-        // expect(
-        //   await app.proposalView.isParticipantAddressDisplayed(await web.metamask.getAddress()),
-        // ).toBeTruthy();
+        expect(
+          await app.proposalView.isParticipantAddressDisplayed(
+            await web.metamask.getAddress(),
+          ),
+        ).toBeTruthy();
       },
     },
   ],

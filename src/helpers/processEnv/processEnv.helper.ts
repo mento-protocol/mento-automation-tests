@@ -13,7 +13,6 @@ interface IProcessEnvHelper {
   CI: string;
   SEED_PHRASE: string;
   WALLET_PASSWORD: string;
-  PRIVATE_KEY: string;
   TEST_RUN_TIMEOUT: string;
   TEST_TIMEOUT: string;
   LOG_LEVEL: string;
