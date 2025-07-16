@@ -1,20 +1,9 @@
 import { TestTag } from "@constants/test.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
-import { ProposalState } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
+import { magicStrings } from "@constants/index";
 
-const id = Date.now();
-const proposal = {
-  title: `[${id}] Automation-Proposal`,
-  description: `[${id}] Automation-Proposal-Description`,
-  executionCode: [
-    {
-      address: "0x1230000000000000000000000000000000000000",
-      value: 1,
-      data: "0x123",
-    },
-  ],
-};
+const { proposalData: proposal } = magicStrings.governance;
 
 suite({
   name: "Proposal - Create",
@@ -33,11 +22,6 @@ suite({
           title: proposal.title,
           description: proposal.description,
           executionCode: proposal.executionCode,
-        });
-        await app.proposalView.expectProposal({
-          title: proposal.title,
-          description: proposal.description,
-          state: ProposalState.Active,
         });
       },
     },

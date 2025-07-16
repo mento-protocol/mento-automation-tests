@@ -20,14 +20,16 @@ export class ProposalViewPage extends BasePage {
     this.ef.pw.text("Loading voting information..."),
   );
 
-  approveProposalButton = new Button(
-    this.ef.pw.dataTestId("approveProposalButton"),
-  );
-  abstainProposalButton = new Button(
-    this.ef.pw.dataTestId("abstainProposalButton"),
-  );
-  rejectProposalButton = new Button(
-    this.ef.pw.dataTestId("rejectProposalButton"),
+  quorumReachedLabel = new Button(this.ef.pw.dataTestId("quorumReachedLabel"));
+
+  voteButtons = {
+    approve: new Button(this.ef.pw.dataTestId("approveProposalButton")),
+    abstain: new Button(this.ef.pw.dataTestId("abstainProposalButton")),
+    reject: new Button(this.ef.pw.dataTestId("rejectProposalButton")),
+  };
+
+  usedVoteOptionButton = new Button(
+    this.ef.pw.dataTestId("usedVoteOptionButton"),
   );
 
   waitingForConfirmationLabel = new Label(

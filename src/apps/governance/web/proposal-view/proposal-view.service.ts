@@ -3,6 +3,8 @@ import { ClassLog } from "@decorators/logger.decorators";
 import { ProposalViewPage } from "./proposal-view.page";
 import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/test.fixture";
+import { primitiveHelper } from "@helpers/primitive/primitive.helper";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 export enum ProposalState {
   Active = "active",
@@ -30,8 +32,11 @@ export class ProposalViewService extends BaseService {
     this.page = page;
   }
 
-  async approveProposal(): Promise<void> {
-    await this.page.approveProposalButton.click();
+  async vote(
+    vote: Vote,
+    { shouldConfirmTx = true }: { shouldConfirmTx?: boolean } = {},
+  ): Promise<void> {
+    await this.page.voteButtons[vote].click();
     await this.page.waitingForConfirmationLabel.waitUntilDisplayed(timeouts.s, {
       errorMessage: "'Waiting for confirmation label' is not displayed!",
     });
@@ -44,8 +49,33 @@ export class ProposalViewService extends BaseService {
     );
     expect
       .soft(await this.page.waitingForConfirmationDescriptionLabel.getText())
-      .toBe("You are voting to Approve on this proposal");
-    await this.metamask.confirmTransaction();
+      .toBe(
+        `You are voting to ${primitiveHelper.string.capitalize(
+          vote,
+        )} on this proposal`,
+      );
+    shouldConfirmTx
+      ? await this.metamask.confirmTransaction()
+      : await this.metamask.rejectTransaction();
+  }
+
+  async getReachedQuorum(): Promise<number> {
+    await this.page.quorumReachedLabel.waitUntilDisplayed(timeouts.s, {
+      errorMessage: "Reached quorum label is not displayed!",
+    });
+    const rawQuorumText = await this.page.quorumReachedLabel.getText();
+    const currentQuorum = rawQuorumText.split(" ")[0];
+    const currentQuorumAsNumber =
+      primitiveHelper.number.convertAbbreviatedToNumber(currentQuorum);
+    return currentQuorumAsNumber;
+  }
+
+  async getUsedVoteOption(): Promise<Vote> {
+    await this.page.usedVoteOptionButton.waitUntilDisplayed(timeouts.s, {
+      errorMessage: "Used vote option button is not displayed!",
+    });
+    const vote = await this.page.usedVoteOptionButton.getText();
+    return vote.replace("Your vote: ", "").toLowerCase() as Vote;
   }
 
   async getProposalTitle(): Promise<string> {
@@ -66,12 +96,37 @@ export class ProposalViewService extends BaseService {
     });
   }
 
+  async waitForReachedQuorumToChange(initialQuorum: number): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => this.isReachedQuorumChanged(initialQuorum),
+      timeouts.s,
+      {
+        errorMessage: "Reached quorum is not changed!",
+        throwError: false,
+      },
+    );
+  }
+
+  async isReachedQuorumChanged(initialQuorum: number): Promise<boolean> {
+    const currentQuorum = await this.getReachedQuorum();
+    return currentQuorum !== initialQuorum;
+  }
+
   async isVoteCastSuccessfully(timeout = timeouts.s): Promise<boolean> {
     return this.page.voteCastSuccessfullyNotificationLabel.waitUntilDisplayed(
       timeout,
       {
         errorMessage: "Vote cast successfully notification is not displayed!",
         throwError: false,
+      },
+    );
+  }
+
+  async isVoteCastFailed(timeout = timeouts.s): Promise<boolean> {
+    return this.page.voteCastFailedNotificationLabel.waitUntilDisplayed(
+      timeout,
+      {
+        errorMessage: "Vote cast failed notification is not displayed!",
       },
     );
   }
@@ -88,7 +143,7 @@ export class ProposalViewService extends BaseService {
       });
   }
 
-  async expectProposal({
+  async expectProposalSuccessfully({
     title,
     description,
     state = ProposalState.Active,
@@ -102,4 +157,32 @@ export class ProposalViewService extends BaseService {
     await this.waitForLoadedVotingInfo();
     expect(await this.getProposalState()).toBe(state);
   }
+
+  async expectVote({
+    initialReachedQuorum,
+    vote,
+  }: {
+    initialReachedQuorum: number;
+    vote: Vote;
+  }): Promise<void> {
+    expect.soft(await this.isVoteCastSuccessfully()).toBeTruthy();
+    await this.waitForReachedQuorumToChange(initialReachedQuorum);
+    expect
+      .soft(await this.getReachedQuorum())
+      .toBeGreaterThan(initialReachedQuorum);
+    expect.soft(await this.getUsedVoteOption()).toBe(vote);
+    // TODO: Turn on the assertion after it's fixed
+    // TODO: Add additional click on certain participants section
+    // expect(
+    //   await this.isParticipantAddressDisplayed(
+    //     await this.metamask.getAddress(),
+    //   ),
+    // ).toBeTruthy();
+  }
+}
+
+export enum Vote {
+  Approve = "approve",
+  Reject = "reject",
+  Abstain = "abstain",
 }

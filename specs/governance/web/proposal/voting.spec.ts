@@ -1,11 +1,14 @@
-import { TestTag } from "@constants/test.constants";
+import { magicStrings, TestTag } from "@constants/index";
 import { suite } from "@helpers/suite/suite.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
-import { expect } from "@fixtures/test.fixture";
-import { magicStrings } from "@constants/index";
-import { ProposalState } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
+import { Vote } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
 
-const { proposalData } = magicStrings.governance;
+const { proposalData: proposal } = magicStrings.governance;
+const testCases = [
+  { name: "Approve successfully", vote: Vote.Approve },
+  { name: "Reject successfully", vote: Vote.Reject },
+  { name: "Abstain successfully", vote: Vote.Abstain },
+];
 
 suite({
   name: "Proposal - Voting",
@@ -13,32 +16,19 @@ suite({
   beforeEach: async ({ web }) => {
     const app = web.app.governance;
     await app.main.connectWalletByName(WalletName.Metamask);
-    await web.contract.governance.createProposal(proposalData);
+    await web.contract.governance.createProposal(proposal);
+    // TODO: Change to open by GQL request - directly to the proposal view page to exclude UI interaction
+    await app.main.openProposalByTitle(proposal.title);
   },
-  tests: [
-    {
-      name: "Approve a proposal successfully",
-      testCaseId: "",
-      test: async ({ web }) => {
-        const app = web.app.governance;
-        // TODO: Change to open by GQL request - directly to the proposal view page
-        await app.main.openProposalByTitle(proposalData.title);
-        await app.proposalView.expectProposal({
-          title: proposalData.title,
-          description: proposalData.description,
-          state: ProposalState.Active,
-        });
-        await app.proposalView.approveProposal();
-        expect
-          .soft(await app.proposalView.isVoteCastSuccessfully())
-          .toBeTruthy();
-        // TODO: Turn on the assertion after it's fixed
-        expect(
-          await app.proposalView.isParticipantAddressDisplayed(
-            await web.metamask.getAddress(),
-          ),
-        ).toBeTruthy();
-      },
+  tests: testCases.map(({ name, vote }) => ({
+    name,
+    testCaseId: "",
+    test: async ({ web }) => {
+      const app = web.app.governance;
+      const initialReachedQuorum = await app.proposalView.getReachedQuorum();
+
+      await app.proposalView.vote(vote);
+      await app.proposalView.expectVote({ initialReachedQuorum, vote });
     },
-  ],
+  })),
 });

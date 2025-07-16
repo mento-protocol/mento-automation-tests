@@ -25,6 +25,10 @@ class PrimitiveHelper {
     generateId(): string {
       return randomUUID().split("-")[0];
     },
+
+    capitalize(str: string): string {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    },
   };
 
   number = {
@@ -81,6 +85,27 @@ class PrimitiveHelper {
 
       // Check if decimal part has no more than the specified length
       return parts[1].length <= maxDecimalPlaces;
+    },
+
+    convertAbbreviatedToNumber(abbreviatedNumber: string): number {
+      const cleanInput = abbreviatedNumber.trim();
+      const lastChar = cleanInput.slice(-1).toUpperCase();
+
+      if (["K", "M", "B"].includes(lastChar)) {
+        const numberStr = cleanInput.slice(0, -1);
+        const number = parseFloat(numberStr);
+
+        switch (lastChar) {
+          case "K":
+            return number * 1000;
+          case "M":
+            return number * 1000000;
+          case "B":
+            return number * 1000000000;
+        }
+      }
+
+      return parseFloat(cleanInput) || 0;
     },
   };
 
