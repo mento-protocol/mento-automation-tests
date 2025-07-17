@@ -7,12 +7,12 @@ export class BaseService {
   // change browser to protected or move it completely
   public browser: BrowserHelper = null;
   protected page: BasePage = null;
-  protected metamaskHelper: MetamaskHelper = null;
+  protected metamask: MetamaskHelper = null;
 
   constructor(args: IBaseServiceArgs) {
-    const { browser, metamaskHelper } = args;
+    const { browser, metamask: metamaskHelper } = args;
     this.browser = browser;
-    this.metamaskHelper = metamaskHelper;
+    this.metamask = metamaskHelper;
   }
 
   async navigateToApp(): Promise<void> {
@@ -34,5 +34,5 @@ export class BaseService {
 export interface IBaseServiceArgs {
   browser: BrowserHelper;
   page: BasePage;
-  metamaskHelper: MetamaskHelper;
+  metamask: MetamaskHelper;
 }

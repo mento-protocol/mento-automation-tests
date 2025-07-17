@@ -1,10 +1,5 @@
 import { randomInt } from "node:crypto";
 
-export interface IJsonStringifyOptions {
-  replacer?: () => unknown;
-  spaces?: number;
-}
-
 class PrimitiveHelper {
   string = {
     toBoolean(str: string): boolean {
@@ -25,6 +20,14 @@ class PrimitiveHelper {
         return source.slice(0, -1);
       }
       return source;
+    },
+
+    generateId(): string {
+      return Date.now().toString();
+    },
+
+    capitalize(str: string): string {
+      return str.charAt(0).toUpperCase() + str.slice(1);
     },
   };
 
@@ -83,6 +86,27 @@ class PrimitiveHelper {
       // Check if decimal part has no more than the specified length
       return parts[1].length <= maxDecimalPlaces;
     },
+
+    convertAbbreviatedToNumber(abbreviatedNumber: string): number {
+      const cleanInput = abbreviatedNumber.trim();
+      const lastChar = cleanInput.slice(-1).toUpperCase();
+
+      if (["K", "M", "B"].includes(lastChar)) {
+        const numberStr = cleanInput.slice(0, -1);
+        const number = parseFloat(numberStr);
+
+        switch (lastChar) {
+          case "K":
+            return number * 1000;
+          case "M":
+            return number * 1000000;
+          case "B":
+            return number * 1000000000;
+        }
+      }
+
+      return parseFloat(cleanInput) || 0;
+    },
   };
 
   getRandomFrom<T>(values: T[]): T {
@@ -117,3 +141,8 @@ class PrimitiveHelper {
 }
 
 export const primitiveHelper = new PrimitiveHelper();
+
+export interface IJsonStringifyOptions {
+  replacer?: () => unknown;
+  spaces?: number;
+}

@@ -30,7 +30,7 @@ export class ConfirmSwapService extends BaseService {
 
   async confirmApprovalTx(): Promise<void> {
     await this.page.approveButton.click({ timeout: timeouts.s });
-    await this.metamaskHelper.confirmTransaction();
+    await this.metamask.confirmTransaction();
     await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
       timeouts.xl,
       { errorMessage: "Approve tx notification is not displayed" },
@@ -40,7 +40,7 @@ export class ConfirmSwapService extends BaseService {
   async confirmSwapTx(): Promise<void> {
     await this.page.swapButton.click({ timeout: timeouts.s });
     await this.verifyTradingSuspendedCase();
-    await this.metamaskHelper.confirmTransaction();
+    await this.metamask.confirmTransaction();
     await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
       timeouts.xl,
       { errorMessage: "Swap tx notification is not displayed" },
@@ -94,7 +94,7 @@ export class ConfirmSwapService extends BaseService {
         throwError: false,
       })
     ) {
-      await this.metamaskHelper.rejectTransaction();
+      await this.metamask.rejectTransaction();
     } else {
       throw new Error("No approval tx defined");
     }
@@ -106,14 +106,14 @@ export class ConfirmSwapService extends BaseService {
         throwError: false,
       })
     ) {
-      await this.metamaskHelper.confirmTransaction();
+      await this.metamask.confirmTransaction();
       await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
         timeouts.xl,
         { errorMessage: "Approve tx notification is not displayed" },
       );
-      await this.metamaskHelper.rejectTransaction();
+      await this.metamask.rejectTransaction();
     } else {
-      await this.metamaskHelper.rejectTransaction();
+      await this.metamask.rejectTransaction();
     }
   }
 

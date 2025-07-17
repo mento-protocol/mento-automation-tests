@@ -26,6 +26,7 @@ import { ProposalViewPage } from "../../apps/governance/web/proposal-view/propos
 import { ProposalViewService } from "../../apps/governance/web/proposal-view/proposal-view.service";
 import { VotingPowerPage } from "../../apps/governance/web/voting-power/voting-power.page";
 import { CreateProposalPage } from "../../apps/governance/web/create-proposal/create-proposal.page";
+import { ContractHelper } from "@helpers/contract/contract.helper";
 
 /**
  * 🚀 Goal
@@ -50,23 +51,26 @@ import { CreateProposalPage } from "../../apps/governance/web/create-proposal/cr
  * 🔌 API:
  * • httpClient: HttpClient
  */
-export class Assembler {
+export class AssemblerHelper {
   private readonly appName = envHelper.getApp();
 
   private readonly elementFinder: ElementFinderHelper = null;
   private readonly browserHelper: BrowserHelper = null;
   private readonly metamaskHelper: MetamaskHelper = null;
+  private readonly contractHelper: ContractHelper = null;
   private readonly httpClient: HttpClient = null;
 
   constructor({
     elementFinder,
     browserHelper,
     metamaskHelper,
+    contractHelper,
     httpClient,
   }: AssemblerDependacies) {
     this.elementFinder = elementFinder;
     this.browserHelper = browserHelper;
     this.metamaskHelper = metamaskHelper;
+    this.contractHelper = contractHelper;
     this.httpClient = httpClient;
   }
 
@@ -74,7 +78,8 @@ export class Assembler {
   async web(): Promise<IWeb> {
     const baseDependencies: IBaseDependencies = {
       browser: this.browserHelper,
-      metamaskHelper: this.metamaskHelper,
+      metamask: this.metamaskHelper,
+      contract: this.contractHelper,
     };
     return {
       ...baseDependencies,
@@ -142,6 +147,7 @@ export class Assembler {
                 ...baseDependencies,
               }),
               createProposalPage: new CreateProposalPage(ef),
+              proposalView: new ProposalViewPage(ef),
             }),
             createProposal: new CreateProposalService({
               page: new CreateProposalPage(ef),
@@ -169,6 +175,7 @@ export interface IWebAssemblerDependacies {
   elementFinder: ElementFinderHelper;
   browserHelper: BrowserHelper;
   metamaskHelper: MetamaskHelper;
+  contractHelper: ContractHelper;
 
   httpClient?: never;
 }
@@ -179,6 +186,7 @@ export interface IApiAssemblerDependacies {
   elementFinder?: never;
   browserHelper?: never;
   metamaskHelper?: never;
+  contractHelper?: never;
 }
 
 export type AssemblerDependacies =
@@ -187,12 +195,14 @@ export type AssemblerDependacies =
 
 interface IBaseDependencies {
   browser: BrowserHelper;
-  metamaskHelper: MetamaskHelper;
+  metamask: MetamaskHelper;
+  contract: ContractHelper;
 }
 
 export interface IWeb {
   browser: BrowserHelper;
-  metamaskHelper: MetamaskHelper;
+  metamask: MetamaskHelper;
+  contract: ContractHelper;
   app: WebApps;
 }
 

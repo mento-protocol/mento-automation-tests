@@ -138,7 +138,7 @@ export abstract class BaseElement {
       await (await this.element).waitFor({ timeout, state: "hidden" });
       return true;
     } catch (error) {
-      console.error(`${errorMessage}: ${this.elementSearcher.locator}`);
+      logger.error(`${errorMessage}: ${this.elementSearcher.locator}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }

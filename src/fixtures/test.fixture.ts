@@ -4,9 +4,14 @@ import { testWithSynpress } from "@synthetixio/synpress";
 import basicSetup from "../wallet-setups/basic.setup";
 import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { BrowserHelper } from "@helpers/browser/browser.helper";
-import { Assembler, IApi, IWeb } from "@helpers/assembler/assember";
+import {
+  AssemblerHelper,
+  IApi,
+  IWeb,
+} from "@helpers/assembler/assembler.helper";
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { HttpClient } from "@shared/api/http/http-client";
+import { ContractHelper } from "@helpers/contract/contract.helper";
 
 const synpressFixture = testWithSynpress(metaMaskFixtures(basicSetup));
 
@@ -16,11 +21,17 @@ export const testFixture = synpressFixture.extend<IApplicationFixtures>({
     await use(metamaskHelper);
   },
 
-  web: async ({ context, page, metamaskHelper }, use) => {
-    const assembler = new Assembler({
+  contractHelper: async ({}, use) => {
+    const contractHelper = new ContractHelper();
+    await use(contractHelper);
+  },
+
+  web: async ({ context, page, metamaskHelper, contractHelper }, use) => {
+    const assembler = new AssemblerHelper({
       browserHelper: new BrowserHelper({ pwPage: page, pwContext: context }),
       elementFinder: new ElementFinderHelper({ page }),
       metamaskHelper,
+      contractHelper,
     });
     const web = await assembler.web();
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
@@ -30,7 +41,9 @@ export const testFixture = synpressFixture.extend<IApplicationFixtures>({
   },
 
   api: async ({ request }, use) => {
-    const assembler = new Assembler({ httpClient: new HttpClient(request) });
+    const assembler = new AssemblerHelper({
+      httpClient: new HttpClient(request),
+    });
     const api = await assembler.api();
     await use(api);
   },
@@ -42,4 +55,5 @@ export interface IApplicationFixtures {
   web: IWeb;
   api: IApi;
   metamaskHelper: MetamaskHelper;
+  contractHelper: ContractHelper;
 }

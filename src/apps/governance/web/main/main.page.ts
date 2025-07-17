@@ -15,6 +15,15 @@ export class MainGovernancePage extends BasePage {
   createProposalButton = new Button(this.ef.pw.text("Create New Proposal "));
   votingPowerButton = new Button(this.ef.pw.text("Manage"));
 
+  async getProposalByTitle(title: string): Promise<Button> {
+    return new Button(this.ef.pw.dataTestId(`proposal_${title}`));
+  }
+
+  // async getAllProposals(): Promise<string[]> {
+  //   const allProposals = await this.ef.all.dataTestId("proposal_").findElements();
+  //   return Promise.all(allTokens.map(token => ));
+  // }
+
   staticElements = [
     this.headerLabel,
     this.createProposalButton,

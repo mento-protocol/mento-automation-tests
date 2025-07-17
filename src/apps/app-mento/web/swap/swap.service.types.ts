@@ -11,7 +11,7 @@ export interface ISwapServiceArgs extends IBaseServiceArgs {
   confirm: ConfirmSwapService;
   selectTokenModalPage: SelectTokenModalPage;
   slippageModalPage: SlippageModalPage;
-  metamaskHelper: MetamaskHelper;
+  metamask: MetamaskHelper;
 }
 
 export interface ISwapInputs {

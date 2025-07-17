@@ -110,7 +110,7 @@ function logRetryFailedAndThrow(
   caughtError: Error,
 ): never {
   const message = `Retry failed: ${errorMessage}
-      ${caughtError.message || ""}`;
+      ${caughtError?.message || ""}`;
   logger.error(message);
   throw new Error(message);
 }

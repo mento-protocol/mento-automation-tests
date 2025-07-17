@@ -26,12 +26,13 @@ export function suite({
 
     beforeEach &&
       testFixture.beforeEach(
-        async ({ web, metamaskHelper, api }) =>
-          await beforeEach({ web, metamaskHelper, api }),
+        async ({ web, metamaskHelper, api, contractHelper }) =>
+          await beforeEach({ web, metamaskHelper, api, contractHelper }),
       );
     afterEach &&
-      testFixture.afterEach(async ({ web, metamaskHelper, api }) =>
-        afterEach({ web, metamaskHelper, api }),
+      testFixture.afterEach(
+        async ({ web, metamaskHelper, api, contractHelper }) =>
+          afterEach({ web, metamaskHelper, api, contractHelper }),
       );
 
     tests.forEach(
@@ -45,14 +46,14 @@ export function suite({
                 tag: tags,
                 ...testUtils.getDisableDetailsOnStart(disable),
               },
-              async ({ web, metamaskHelper }) =>
-                await test({ web, metamaskHelper }),
+              async ({ web, metamaskHelper, contractHelper }) =>
+                await test({ web, metamaskHelper, contractHelper }),
             )
           : testFixture(
               testName,
               { tag: tags },
-              async ({ web, metamaskHelper, api }) =>
-                await test({ web, metamaskHelper, api }),
+              async ({ web, metamaskHelper, api, contractHelper }) =>
+                await test({ web, metamaskHelper, api, contractHelper }),
             );
       },
     );

@@ -57,7 +57,7 @@ export class CreateProposalService extends BaseService {
     }
     await this.page.reviewStage.createProposalButton.click();
     await this.verifyCreationPopupAppeared();
-    await this.metamaskHelper.confirmTransaction();
+    await this.metamask.confirmTransaction();
     await this.verifyProposalCreation();
   }
 
