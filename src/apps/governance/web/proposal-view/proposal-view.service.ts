@@ -107,6 +107,18 @@ export class ProposalViewService extends BaseService {
     );
   }
 
+  async waitForParticipantAddress(
+    address: string,
+    timeout = timeouts.m,
+  ): Promise<boolean> {
+    return this.page
+      .getParticipantAddress(address)
+      .waitUntilDisplayed(timeout, {
+        errorMessage: "Participant address is not displayed!",
+        throwError: false,
+      });
+  }
+
   async isReachedQuorumChanged(initialQuorum: number): Promise<boolean> {
     const currentQuorum = await this.getReachedQuorum();
     return currentQuorum !== initialQuorum;
@@ -131,18 +143,6 @@ export class ProposalViewService extends BaseService {
     );
   }
 
-  async isParticipantAddressDisplayed(
-    address: string,
-    timeout = timeouts.m,
-  ): Promise<boolean> {
-    return this.page
-      .getParticipantAddress(address)
-      .waitUntilDisplayed(timeout, {
-        errorMessage: "Participant address is not displayed!",
-        throwError: false,
-      });
-  }
-
   async expectProposalSuccessfully({
     title,
     description,
@@ -165,19 +165,15 @@ export class ProposalViewService extends BaseService {
     initialReachedQuorum: number;
     vote: Vote;
   }): Promise<void> {
+    const address = await this.metamask.getAddress();
     expect.soft(await this.isVoteCastSuccessfully()).toBeTruthy();
     await this.waitForReachedQuorumToChange(initialReachedQuorum);
     expect
       .soft(await this.getReachedQuorum())
       .toBeGreaterThan(initialReachedQuorum);
     expect.soft(await this.getUsedVoteOption()).toBe(vote);
-    // TODO: Turn on the assertion after it's fixed
-    // TODO: Add additional click on certain participants section
-    // expect(
-    //   await this.isParticipantAddressDisplayed(
-    //     await this.metamask.getAddress(),
-    //   ),
-    // ).toBeTruthy();
+    if (vote !== Vote.Approve) await this.page.participantsTabs[vote].click();
+    expect(await this.waitForParticipantAddress(address)).toBeTruthy();
   }
 }
 

@@ -72,7 +72,7 @@ export class MainGovernanceService extends BaseService {
           { throwError: false },
         );
       },
-      3,
+      5,
       {
         errorMessage: `'${title}' proposal hasn't displayed`,
       },

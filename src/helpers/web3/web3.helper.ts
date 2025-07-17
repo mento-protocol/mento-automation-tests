@@ -20,6 +20,11 @@ class Web3Helper {
       throw new Error("Failed to extract private key");
     }
   }
+
+  truncateAddress(address: string): string {
+    const changedAddress = address.toLowerCase();
+    return `${changedAddress.slice(0, 6)}...${changedAddress.slice(-4)}`;
+  }
 }
 
 export const web3Helper = new Web3Helper();

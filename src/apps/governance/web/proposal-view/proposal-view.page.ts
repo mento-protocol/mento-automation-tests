@@ -1,6 +1,7 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { Button, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
+import { web3Helper } from "@helpers/web3/web3.helper";
 
 export class ProposalViewPage extends BasePage {
   constructor(protected override ef: ElementFinderHelper) {
@@ -8,7 +9,12 @@ export class ProposalViewPage extends BasePage {
   }
 
   getParticipantAddress(address: string) {
-    return new Label(this.ef.pw.dataTestId(`participantAddress_${address}`));
+    return new Label(
+      this.ef.pw.role("button", {
+        name: `${web3Helper.truncateAddress(address)}`,
+        exact: true,
+      }),
+    );
   }
 
   proposalTitleLabel = new Label(this.ef.pw.dataTestId("proposalTitleLabel"));
@@ -31,6 +37,12 @@ export class ProposalViewPage extends BasePage {
   usedVoteOptionButton = new Button(
     this.ef.pw.dataTestId("usedVoteOptionButton"),
   );
+
+  participantsTabs = {
+    approve: new Button(this.ef.pw.dataTestId("participantsTabButton_approve")),
+    abstain: new Button(this.ef.pw.dataTestId("participantsTabButton_abstain")),
+    reject: new Button(this.ef.pw.dataTestId("participantsTabButton_reject")),
+  };
 
   waitingForConfirmationLabel = new Label(
     this.ef.pw.dataTestId("waitingForConfirmationLabel"),
