@@ -19,12 +19,14 @@ import {
   IProposalData,
 } from "./governance.contact.types";
 import { BaseContract } from "../base/base.contract";
+import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 
 const log = loggerHelper.get("GovernanceHelper");
 
 @ClassLog
 export class GovernanceContract extends BaseContract {
-  private readonly proposalData = magicStrings.governance.proposalData;
+  private readonly proposalData =
+    magicStrings.governance.generateProposalData();
 
   constructor() {
     super({
@@ -38,7 +40,7 @@ export class GovernanceContract extends BaseContract {
     description = this.proposalData.description,
     executionCode = this.proposalData.executionCode,
     throwError = true,
-  }: ICreateProposalParams): Promise<ICreateProposalResult> {
+  }: ICreateProposalParams = {}): Promise<ICreateProposalResult> {
     try {
       const proposal: ICreateProposalParams = {
         title,
@@ -75,16 +77,10 @@ export class GovernanceContract extends BaseContract {
       calldatas: proposal.executionCode.map(transaction =>
         isHex(transaction.data) ? transaction.data : toHex(transaction.data),
       ),
-      description: JSON.stringify(
-        {
-          title: proposal.title,
-          description: proposal.description,
-        },
-        (_, value) => {
-          if (typeof value === "bigint") return value?.toString() || "";
-          return value || "";
-        },
-      ),
+      description: primitiveHelper.jsonStringify({
+        title: proposal.title,
+        description: proposal.description,
+      }),
     };
   }
 

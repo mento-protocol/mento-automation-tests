@@ -3,8 +3,6 @@ import { suite } from "@helpers/suite/suite.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { magicStrings } from "@constants/index";
 
-const { proposalData: proposal } = magicStrings.governance;
-
 suite({
   name: "Proposal - Create",
   tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
@@ -17,11 +15,13 @@ suite({
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.governance;
+        const proposalData = magicStrings.governance.generateProposalData();
+
         await app.main.openCreateProposalPage();
         await app.createProposal.createValid({
-          title: proposal.title,
-          description: proposal.description,
-          executionCode: proposal.executionCode,
+          title: proposalData.title,
+          description: proposalData.description,
+          executionCode: proposalData.executionCode,
         });
       },
     },

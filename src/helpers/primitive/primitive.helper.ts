@@ -1,4 +1,4 @@
-import { randomInt, randomUUID } from "node:crypto";
+import { randomInt } from "node:crypto";
 
 class PrimitiveHelper {
   string = {
@@ -23,7 +23,7 @@ class PrimitiveHelper {
     },
 
     generateId(): string {
-      return randomUUID().split("-")[0];
+      return Date.now().toString();
     },
 
     capitalize(str: string): string {

@@ -6,22 +6,6 @@ import { expect } from "@fixtures/test.fixture";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
-export enum ProposalState {
-  Active = "active",
-  Canceled = "canceled",
-  Defeated = "defeated",
-  Executed = "executed",
-  Expired = "expired",
-  NoState = "nostate",
-  Pending = "pending",
-  Queued = "queued",
-  Succeeded = "succeeded",
-}
-
-export interface IProposalViewServiceArgs extends IBaseServiceArgs {
-  page: ProposalViewPage;
-}
-
 @ClassLog
 export class ProposalViewService extends BaseService {
   public override page: ProposalViewPage = null;
@@ -124,7 +108,7 @@ export class ProposalViewService extends BaseService {
     return currentQuorum !== initialQuorum;
   }
 
-  async isVoteCastSuccessfully(timeout = timeouts.s): Promise<boolean> {
+  async isVoteCastSuccessfully(timeout = timeouts.m): Promise<boolean> {
     return this.page.voteCastSuccessfullyNotificationLabel.waitUntilDisplayed(
       timeout,
       {
@@ -181,4 +165,20 @@ export enum Vote {
   Approve = "approve",
   Reject = "reject",
   Abstain = "abstain",
+}
+
+export enum ProposalState {
+  Active = "active",
+  Canceled = "canceled",
+  Defeated = "defeated",
+  Executed = "executed",
+  Expired = "expired",
+  NoState = "nostate",
+  Pending = "pending",
+  Queued = "queued",
+  Succeeded = "succeeded",
+}
+
+export interface IProposalViewServiceArgs extends IBaseServiceArgs {
+  page: ProposalViewPage;
 }

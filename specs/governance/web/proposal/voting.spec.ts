@@ -3,7 +3,6 @@ import { suite } from "@helpers/suite/suite.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { Vote } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
 
-const { proposalData: proposal } = magicStrings.governance;
 const testCases = [
   { name: "Approve successfully", vote: Vote.Approve },
   { name: "Reject successfully", vote: Vote.Reject },
@@ -15,10 +14,12 @@ suite({
   tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
   beforeEach: async ({ web }) => {
     const app = web.app.governance;
+    const proposalData = magicStrings.governance.generateProposalData();
+
     await app.main.connectWalletByName(WalletName.Metamask);
-    await web.contract.governance.createProposal(proposal);
+    await web.contract.governance.createProposal(proposalData);
     // TODO: Change to open by GQL request - directly to the proposal view page to exclude UI interaction
-    await app.main.openProposalByTitle(proposal.title);
+    await app.main.openProposalByTitle(proposalData.title);
   },
   tests: testCases.map(({ name, vote }) => ({
     name,

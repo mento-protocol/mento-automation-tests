@@ -48,11 +48,10 @@ export const magicStrings = {
     mainnet: {
       governorAddress: "0x47036d78bB3169b4F5560dD77BF93f4412A59852" as Address,
     },
-    get proposalData() {
-      const id = primitiveHelper.string.generateId();
+    generateProposalData() {
       return {
-        title: `[${id}] Automation-Proposal`,
-        description: `[${id}] Automation-Proposal-Description`,
+        title: `[${primitiveHelper.string.generateId()}] AQA Proposal`,
+        description: `AQA Proposal Description`,
         executionCode: [
           {
             address: "0x1230000000000000000000000000000000000000" as Address,
