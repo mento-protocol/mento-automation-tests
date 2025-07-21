@@ -139,7 +139,10 @@ export class ProposalViewService extends BaseService {
     expect.soft(await this.getProposalTitle()).toBe(title);
     expect.soft(await this.getProposalDescription()).toBe(description);
     await this.waitForLoadedVotingInfo();
-    expect(await this.getProposalState()).toBe(state);
+    expect.soft(await this.getProposalState()).toBe(state);
+    for (const voteButton of Object.values(this.page.voteButtons)) {
+      expect.soft(await voteButton.isDisplayed()).toBeTruthy();
+    }
   }
 
   async expectVote({

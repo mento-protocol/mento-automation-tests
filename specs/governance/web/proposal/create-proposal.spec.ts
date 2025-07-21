@@ -2,6 +2,7 @@ import { TestTag } from "@constants/test.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { magicStrings } from "@constants/index";
+import { ProposalState } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
 
 suite({
   name: "Proposal - Create",
@@ -22,6 +23,11 @@ suite({
           title: proposalData.title,
           description: proposalData.description,
           executionCode: proposalData.executionCode,
+        });
+        await app.proposalView.expectProposalSuccessfully({
+          title: proposalData.title,
+          description: proposalData.description,
+          state: ProposalState.Active,
         });
       },
     },
