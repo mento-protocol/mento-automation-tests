@@ -17,6 +17,11 @@ on:
         description: "Test run title"
         required: false
         default: "[App-Mento] Smoke"
+      HTML_REPORT_NAME:
+        type: string
+        description: "HTML report name"
+        required: false
+        default: "smoke-app-mento"
     secrets:
       E2E_TEST_SEED_PHRASE:
         required: true
@@ -42,7 +47,7 @@ jobs:
       IS_PARALLEL_RUN: "false"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
-      HTML_REPORT_NAME: "smoke-app-mento"
+      HTML_REPORT_NAME: ${{ inputs.HTML_REPORT_NAME }}
       HTML_REPORT_GENERATION: "onFailure"
       TESTOMAT_REPORT_GENERATION: "true"
       SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
@@ -90,8 +95,8 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: artifacts/reports/playwright-report/
+          name: ${{ inputs.HTML_REPORT_NAME }}
+          path: artifacts/reports/${{ inputs.HTML_REPORT_NAME }}/
           retention-days: 30
 
   report:
