@@ -53,7 +53,7 @@ export class CreateProposalPage extends BasePage {
   };
 
   confirmProposalPopup = new Label(
-    this.ef.pw.text("Please sign a transaction in connected wallet"),
+    this.ef.pw.text("Please sign the transaction in your wallet"),
   );
   proposalSuccessToast = new Label(
     this.ef.pw.text("Proposal created successfully!"),
