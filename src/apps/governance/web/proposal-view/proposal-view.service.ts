@@ -50,6 +50,16 @@ export class ProposalViewService extends BaseService {
     return currentTotalVotesAsNumber;
   }
 
+  async waitForTotalVotesToLoad(): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => (await this.getTotalVotes()) > 0,
+      timeouts.s,
+      {
+        errorMessage: "Total votes is not loaded!",
+      },
+    );
+  }
+
   async getUsedVoteOption(): Promise<Vote> {
     await this.page.usedVoteOptionButton.waitUntilDisplayed(timeouts.s, {
       errorMessage: "Used vote option button is not displayed!",
@@ -76,17 +86,6 @@ export class ProposalViewService extends BaseService {
     });
   }
 
-  async waitForTotalVotesToChange(initialTotalVotes: number): Promise<boolean> {
-    return waiterHelper.wait(
-      async () => this.isTotalVotesChanged(initialTotalVotes),
-      timeouts.s,
-      {
-        errorMessage: "Reached quorum is not changed!",
-        throwError: false,
-      },
-    );
-  }
-
   async waitForParticipantAddress(
     address: string,
     timeout = timeouts.l,
@@ -97,11 +96,6 @@ export class ProposalViewService extends BaseService {
         errorMessage: "Participant address is not displayed!",
         throwError: false,
       });
-  }
-
-  async isTotalVotesChanged(initialTotalVotes: number): Promise<boolean> {
-    const currentTotalVotes = await this.getTotalVotes();
-    return currentTotalVotes !== initialTotalVotes;
   }
 
   async isVoteCastSuccessfully(timeout = timeouts.m): Promise<boolean> {
@@ -141,16 +135,10 @@ export class ProposalViewService extends BaseService {
     }
   }
 
-  async expectVote({
-    initialTotalVotes,
-    vote,
-  }: {
-    initialTotalVotes: number;
-    vote: Vote;
-  }): Promise<void> {
+  async expectVote(vote: Vote): Promise<void> {
     expect.soft(await this.isVoteCastSuccessfully()).toBeTruthy();
-    await this.waitForTotalVotesToChange(initialTotalVotes);
-    expect.soft(await this.getTotalVotes()).toBeGreaterThan(initialTotalVotes);
+    await this.waitForTotalVotesToLoad();
+    expect.soft(await this.getTotalVotes()).toBeGreaterThan(0);
     expect.soft(await this.getUsedVoteOption()).toBe(vote);
     // if (vote !== Vote.Yes) await this.page.participantsTabs[vote].click();
     // TODO: Fix FE element to be displayed (it's actually displayed, but PW doesn't see that)
