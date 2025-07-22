@@ -10,6 +10,7 @@ import { CreateProposalPage } from "../create-proposal/create-proposal.page";
 import { timeouts } from "@constants/timeouts.constants";
 import { ProposalViewPage } from "../proposal-view/proposal-view.page";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
+import { VotingPowerPage } from "../voting-power/voting-power.page";
 
 @ClassLog
 export class MainGovernanceService extends BaseService {
@@ -17,14 +18,22 @@ export class MainGovernanceService extends BaseService {
   public connectWalletModal: ConnectWalletModalService = null;
   public createProposalPage: CreateProposalPage = null;
   public proposalView: ProposalViewPage = null;
+  public votingPowerPage: VotingPowerPage = null;
 
   constructor(args: IMainGovernanceServiceArgs) {
-    const { page, connectWalletModal, createProposalPage, proposalView } = args;
+    const {
+      page,
+      connectWalletModal,
+      createProposalPage,
+      proposalView,
+      votingPowerPage,
+    } = args;
     super(args);
     this.page = page;
     this.connectWalletModal = connectWalletModal;
     this.createProposalPage = createProposalPage;
     this.proposalView = proposalView;
+    this.votingPowerPage = votingPowerPage;
   }
 
   async openConnectWalletModal(): Promise<void> {
@@ -46,6 +55,11 @@ export class MainGovernanceService extends BaseService {
   async openCreateProposalPage(): Promise<void> {
     await this.page.createProposalButton.click();
     await this.createProposalPage.verifyIsOpen();
+  }
+
+  async openVotingPowerPage(): Promise<void> {
+    await this.page.navButtons.votingPower.click();
+    await this.votingPowerPage.verifyIsOpen();
   }
 
   async openProposalByTitle(title: string): Promise<void> {
@@ -93,4 +107,5 @@ export interface IMainGovernanceServiceArgs extends IBaseServiceArgs {
   connectWalletModal: ConnectWalletModalService;
   createProposalPage: CreateProposalPage;
   proposalView: ProposalViewPage;
+  votingPowerPage: VotingPowerPage;
 }

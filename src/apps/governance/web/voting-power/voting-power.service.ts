@@ -11,6 +11,11 @@ export class VotingPowerService extends BaseService {
     super(args);
     this.page = page;
   }
+
+  async enterAmount(amount: string): Promise<void> {
+    await this.page.lockAmountInput.click();
+    await this.browser.enterTextByKeyboard(amount);
+  }
 }
 
 interface IVotingPowerServiceArgs extends IBaseServiceArgs {

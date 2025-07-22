@@ -11,9 +11,14 @@ export class MainGovernancePage extends BasePage {
   headerConnectWalletButton = new Button(
     this.ef.pw.role("button", { name: "Connect Wallet", exact: true }),
   );
+  navButtons = {
+    home: new Button(this.ef.pw.text("Home")),
+    createProposal: new Button(this.ef.pw.text("Create Proposal")),
+    votingPower: new Button(this.ef.pw.text("My Voting Power")),
+  };
 
   createProposalButton = new Button(this.ef.pw.text("Create New Proposal "));
-  votingPowerButton = new Button(this.ef.pw.text("Manage"));
+  votingPowerButton = new Button(this.ef.pw.text("My Voting Power"));
 
   async getProposalByTitle(title: string): Promise<Button> {
     return new Button(this.ef.pw.dataTestId(`proposal_${title}`));
