@@ -8,13 +8,9 @@ export class ProposalViewPage extends BasePage {
     super(ef);
   }
 
-  getParticipantAddress(address: string) {
-    return new Label(
-      this.ef.pw.role("button", {
-        name: `${web3Helper.truncateAddress(address)}`,
-        exact: true,
-      }),
-    );
+  getParticipantAddressLabel(address: string) {
+    const truncatedAddress = web3Helper.truncateAddress(address);
+    return new Label(this.ef.pw.role("button", { name: truncatedAddress }));
   }
 
   proposalTitleLabel = new Label(this.ef.pw.dataTestId("proposalTitleLabel"));
@@ -27,11 +23,12 @@ export class ProposalViewPage extends BasePage {
   );
 
   quorumReachedLabel = new Button(this.ef.pw.dataTestId("quorumReachedLabel"));
+  totalVotesLabel = new Label(this.ef.pw.dataTestId("totalVotesLabel"));
 
   voteButtons = {
-    approve: new Button(this.ef.pw.dataTestId("approveProposalButton")),
+    yes: new Button(this.ef.pw.dataTestId("yesProposalButton")),
     abstain: new Button(this.ef.pw.dataTestId("abstainProposalButton")),
-    reject: new Button(this.ef.pw.dataTestId("rejectProposalButton")),
+    no: new Button(this.ef.pw.dataTestId("noProposalButton")),
   };
 
   usedVoteOptionButton = new Button(

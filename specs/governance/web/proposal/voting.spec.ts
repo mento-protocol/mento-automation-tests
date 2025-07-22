@@ -4,8 +4,8 @@ import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-moda
 import { Vote } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
 
 const testCases = [
-  { name: "Approve successfully", vote: Vote.Approve },
-  { name: "Reject successfully", vote: Vote.Reject },
+  { name: "Yes successfully", vote: Vote.Yes },
+  { name: "No successfully", vote: Vote.No },
   { name: "Abstain successfully", vote: Vote.Abstain },
 ];
 
@@ -26,10 +26,10 @@ suite({
     testCaseId: "",
     test: async ({ web }) => {
       const app = web.app.governance;
-      const initialReachedQuorum = await app.proposalView.getReachedQuorum();
+      const initialTotalVotes = await app.proposalView.getTotalVotes();
 
       await app.proposalView.vote(vote);
-      await app.proposalView.expectVote({ initialReachedQuorum, vote });
+      await app.proposalView.expectVote({ initialTotalVotes, vote });
     },
   })),
 });
