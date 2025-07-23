@@ -29,6 +29,21 @@ export class VotingPowerPage extends BasePage {
   topUpLockPopupDescriptionLabel = new Label(
     this.ef.pw.text("Continue in wallet"),
   );
+  lockUpdatedSuccessfullyNotificationLabel = new Label(
+    this.ef.pw.text("Lock updated successfully"),
+  );
+  veMentoReceiveLabel = new Label(this.ef.pw.dataTestId("veMentoReceiveLabel"));
+
+  existingLock = {
+    veMentoLabel: new Label(this.ef.pw.dataTestId("existingLockVeMentoLabel")),
+    mentoLabel: new Label(this.ef.pw.dataTestId("existingLockMentoLabel")),
+    withdrawableMentoLabel: new Label(
+      this.ef.pw.dataTestId("existingLockWithdrawableMentoLabel"),
+    ),
+    expirationDateLabel: new Label(
+      this.ef.pw.dataTestId("existingLockExpirationDateLabel"),
+    ),
+  };
 
   staticElements = [this.headerLabel];
 }

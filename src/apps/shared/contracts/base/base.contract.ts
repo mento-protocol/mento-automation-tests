@@ -1,8 +1,8 @@
 import { ethers, providers, Signer } from "ethers";
+import { Address, TransactionReceipt } from "viem";
 
 import { envHelper } from "@helpers/env/env.helper";
 import { loggerHelper } from "@helpers/logger/logger.helper";
-import { Address } from "viem";
 
 const log = loggerHelper.get("BaseContract");
 
@@ -26,7 +26,10 @@ export class BaseContract {
     functionName,
     functionParams,
     throwError = true,
-  }: ICallContractParams): Promise<string> {
+  }: ICallContractParams): Promise<{
+    txHash: string;
+    receipt: TransactionReceipt;
+  }> {
     try {
       const contract = new ethers.Contract(
         this.contractAddress,
@@ -43,7 +46,7 @@ export class BaseContract {
         gasLimit: 400000,
       });
 
-      const receipt = await tx.wait();
+      const receipt: TransactionReceipt = await tx.wait();
 
       if (!receipt.status || !receipt.transactionHash) {
         const errorMessage = `Contract call failed.\nTX Hash: ${receipt?.transactionHash}\nStatus: ${receipt?.status}\n`;
@@ -51,7 +54,7 @@ export class BaseContract {
         if (throwError) throw new Error(errorMessage);
       }
 
-      return tx.hash;
+      return { txHash: tx.hash, receipt };
     } catch (error) {
       const errorMessage = `Error in 'callContract' method: ${error}\nError stack: ${error.stack}`;
       log.error(errorMessage);

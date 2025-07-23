@@ -1,7 +1,7 @@
 import { TestTag } from "@constants/test.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
-import { timeouts } from "@constants/index";
+import { expect } from "@fixtures/test.fixture";
 
 suite({
   name: "Lock - Top-up",
@@ -17,21 +17,21 @@ suite({
         const app = web.app.governance;
 
         await app.main.openVotingPowerPage();
-        // TODO: Sort out with entering amount
-        await app.votingPower.enterAmount("100");
-        await app.votingPower.page.topUpLockButton.waitUntilDisplayed(
-          timeouts.s,
-          {
-            errorMessage: "Top-up lock button is not displayed!",
-          },
-        );
-        await app.votingPower.page.topUpLockButton.click();
-        await app.votingPower.page.topUpLockPopupDescriptionLabel.waitUntilDisplayed(
-          timeouts.s,
-          {
-            errorMessage: "Top-up lock popup title label is not displayed!",
-          },
-        );
+
+        const { veMento: initialVeMento, mento: initialMento } =
+          await app.votingPower.getCurrentLockValues();
+
+        await app.votingPower.topUpLock("10");
+        await app.votingPower.waitForLockValuesToChange({
+          initialVeMento,
+          initialMento,
+        });
+
+        const { veMento: currentVeMento, mento: currentMento } =
+          await app.votingPower.getCurrentLockValues();
+
+        expect.soft(currentVeMento).toBeGreaterThan(initialVeMento);
+        expect.soft(currentMento).toBeGreaterThan(initialMento);
       },
     },
   ],

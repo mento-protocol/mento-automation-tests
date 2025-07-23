@@ -68,6 +68,11 @@ export class MainGovernanceService extends BaseService {
     await this.proposalView.verifyIsOpen();
   }
 
+  async openProposalById(id: string): Promise<void> {
+    await this.navigateToAppPage(`/proposals/${id}`);
+    await this.proposalView.verifyIsOpen();
+  }
+
   async waitForWalletToBeConnected(): Promise<boolean> {
     return this.page.headerConnectWalletButton.waitUntilDisappeared(
       timeouts.s,

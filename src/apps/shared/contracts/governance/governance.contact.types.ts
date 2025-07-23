@@ -1,4 +1,4 @@
-import { Address } from "viem";
+import { Address, TransactionReceipt } from "viem";
 
 interface IExecutionCode {
   address: Address;
@@ -14,8 +14,8 @@ export interface ICreateProposalParams {
 }
 
 export interface ICreateProposalResult {
-  proposalId: string;
   txHash: string;
+  receipt: TransactionReceipt;
 }
 
 export interface IProposalValidationResult {

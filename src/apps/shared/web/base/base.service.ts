@@ -4,6 +4,8 @@ import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { BasePage } from "./base.page";
 
 export class BaseService {
+  private readonly baseWebUrl = envHelper.getBaseWebUrl();
+
   // change browser to protected or move it completely
   public browser: BrowserHelper = null;
   protected page: BasePage = null;
@@ -16,7 +18,11 @@ export class BaseService {
   }
 
   async navigateToApp(): Promise<void> {
-    return this.browser.openUrl(envHelper.getBaseWebUrl());
+    return this.browser.openUrl(this.baseWebUrl);
+  }
+
+  async navigateToAppPage(page: string): Promise<void> {
+    return this.browser.openUrl(`${this.baseWebUrl}/${page}`);
   }
 
   async getPageTitle(): Promise<string> {
