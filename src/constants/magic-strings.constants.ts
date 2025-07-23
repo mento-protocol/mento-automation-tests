@@ -11,8 +11,7 @@ export const magicStrings = {
     [AppName.Governance]: {
       web: {
         prod: {
-          // TODO: Replace with a correct URL once deployed
-          base: "https://governancementoorg-git-feature-web3-shared-package-mentolabs.vercel.app",
+          base: "https://governancementoorg.vercel.app/",
         },
       },
       api: {
@@ -51,7 +50,9 @@ export const magicStrings = {
     generateProposalData() {
       return {
         title: `[${primitiveHelper.string.generateId()}] AQA Proposal`,
-        description: `AQA Proposal Description`,
+        description: `AQA Proposal Description - ${primitiveHelper.string.generateRandom(
+          73,
+        )}`,
         executionCode: [
           {
             address: "0x1230000000000000000000000000000000000000" as Address,

@@ -139,9 +139,7 @@ export class CreateProposalService extends BaseService {
     description,
     executionCode,
   }: ICreateProposalArgs): Promise<void> {
-    expect
-      .soft(await this.page.reviewStage.stageLabel.getText())
-      .toBe(`Review - ${title}`);
+    expect.soft(await this.page.reviewStage.stageLabel.getText()).toBe(title);
     expect
       .soft(await this.getProposalDetailsFromReviewStage())
       .toEqual(description);
@@ -151,12 +149,16 @@ export class CreateProposalService extends BaseService {
   }
 
   async getProposalDetailsFromReviewStage(): Promise<string> {
-    await this.page.reviewStage.seeAllProposalDetailsButton.click();
+    if (await this.page.reviewStage.seeAllProposalDetailsButton.isDisplayed()) {
+      await this.page.reviewStage.seeAllProposalDetailsButton.click();
+    }
     return await this.page.reviewStage.proposalDetailsContent.getText();
   }
 
   async getExecutionCodeFromReviewStage(): Promise<Record<string, unknown>[]> {
-    await this.page.reviewStage.seeAllExecutionCodeButton.click();
+    if (await this.page.reviewStage.seeAllExecutionCodeButton.isDisplayed()) {
+      await this.page.reviewStage.seeAllExecutionCodeButton.click();
+    }
     return JSON.parse(
       await this.page.reviewStage.executionCodeContent.getText(),
     );
