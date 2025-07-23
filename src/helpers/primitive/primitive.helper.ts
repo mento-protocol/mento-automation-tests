@@ -26,6 +26,16 @@ class PrimitiveHelper {
       return Date.now().toString();
     },
 
+    generateRandom(length: number = 10): string {
+      const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let randomString: string = "";
+      for (let i = 0; i < length; i++) {
+        randomString += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return randomString;
+    },
+
     capitalize(str: string): string {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
