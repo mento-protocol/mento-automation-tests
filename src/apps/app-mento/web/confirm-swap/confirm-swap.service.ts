@@ -6,6 +6,7 @@ import { testUtils } from "@helpers/suite/suite.helper";
 import { ConfirmSwapPage } from "./confirm-swap.page";
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { AmountType } from "../swap/swap.service.types";
+import { expect } from "@fixtures/test.fixture";
 
 const logger = loggerHelper.get("ConfirmSwapService");
 
@@ -31,20 +32,34 @@ export class ConfirmSwapService extends BaseService {
   async confirmApprovalTx(): Promise<void> {
     await this.page.approveButton.click({ timeout: timeouts.s });
     await this.metamask.confirmTransaction();
-    await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
-      timeouts.xl,
-      { errorMessage: "Approve tx notification is not displayed" },
-    );
+    expect
+      .soft(
+        await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
+          timeouts.xl,
+          {
+            errorMessage: "Approve tx notification is not displayed",
+            throwError: false,
+          },
+        ),
+      )
+      .toBeTruthy();
   }
 
   async confirmSwapTx(): Promise<void> {
     await this.page.swapButton.click({ timeout: timeouts.s });
     await this.verifyTradingSuspendedCase();
     await this.metamask.confirmTransaction();
-    await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
-      timeouts.xl,
-      { errorMessage: "Swap tx notification is not displayed" },
-    );
+    expect
+      .soft(
+        await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
+          timeouts.xl,
+          {
+            errorMessage: "Swap tx notification is not displayed",
+            throwError: false,
+          },
+        ),
+      )
+      .toBeTruthy();
   }
 
   async verifyNoValidMedianCase(): Promise<void> {

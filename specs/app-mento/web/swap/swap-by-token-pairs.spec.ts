@@ -38,6 +38,7 @@ const testCases = [
     fromToken: Token.cKES,
     toToken: Token.cUSD,
     id: "Tbe02fb8d",
+    fromAmount: "0.1",
   },
   // PUSO
   {

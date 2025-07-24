@@ -17,7 +17,7 @@ export class ConfirmSwapPage extends BasePage {
   approveButton = new Button(this.ef.dataTestId("approveButton"));
 
   approveCompleteNotificationLabel = new Label(
-    this.ef.pw.text("Approve complete! Sending swap tx"),
+    this.ef.pw.text("Approve Successful"),
   );
   swapCompleteNotificationLabel = new Label(this.ef.pw.text("Swap Successful"));
   seeDetailsLinkButton = new Button(
