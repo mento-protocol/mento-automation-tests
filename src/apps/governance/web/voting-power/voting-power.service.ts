@@ -82,6 +82,20 @@ export class VotingPowerService extends BaseService {
     );
   }
 
+  async waitForLockValues(): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => {
+        const { veMento: currentVeMento, mento: currentMento } =
+          await this.getCurrentLockValues();
+        return currentVeMento !== 0 && currentMento !== 0;
+      },
+      timeouts.s,
+      {
+        errorMessage: "Lock values are not displayed!",
+      },
+    );
+  }
+
   async waitForLockValuesToChange({
     initialVeMento,
     initialMento,

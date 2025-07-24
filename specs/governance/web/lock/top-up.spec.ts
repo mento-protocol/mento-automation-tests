@@ -17,6 +17,7 @@ suite({
         const app = web.app.governance;
 
         await app.main.openVotingPowerPage();
+        await app.votingPower.waitForLockValues();
 
         const { veMento: initialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
