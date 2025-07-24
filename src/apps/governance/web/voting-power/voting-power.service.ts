@@ -4,6 +4,9 @@ import { VotingPowerPage } from "./voting-power.page";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/index";
 import { expect } from "@fixtures/test.fixture";
+import { loggerHelper } from "@helpers/logger/logger.helper";
+
+const log = loggerHelper.get("VotingPowerService");
 
 @ClassLog
 export class VotingPowerService extends BaseService {
@@ -18,19 +21,21 @@ export class VotingPowerService extends BaseService {
   async topUpLock(amount: string): Promise<void> {
     await waiterHelper.waitForAnimation();
     await this.enterAmount(amount);
-    // expect.soft(await this.getReceiveVeMento()).toBeGreaterThan(0);
     await this.handleTopUp();
   }
 
   async handleTopUp() {
-    await this.page.enterAmountButton.waitUntilDisappeared(timeouts.xs);
     if (await this.waitForActionButton("approveMentoButton")) {
+      log.debug("Approving mento first to be able to top up lock");
       await this.page.approveMentoButton.click();
       await this.verifyConfirmationPopupIsOpened();
       await this.metamask.confirmTransaction();
       await this.verifyConfirmationPopupIsClosed();
     }
-    if (await this.waitForActionButton("topUpLockButton")) {
+    if (
+      await this.waitForActionButton("topUpLockButton", { throwError: true })
+    ) {
+      log.debug("Topping up lock directly");
       await this.page.topUpLockButton.click();
       await this.verifyConfirmationPopupIsOpened();
       await this.metamask.confirmTransaction();
@@ -51,10 +56,11 @@ export class VotingPowerService extends BaseService {
 
   async waitForActionButton(
     buttonName: "approveMentoButton" | "topUpLockButton",
+    { throwError = false }: { throwError?: boolean } = {},
   ): Promise<boolean> {
     return this.page[buttonName].waitUntilDisplayed(timeouts.xs, {
       errorMessage: `${buttonName} is not there!`,
-      throwError: false,
+      throwError,
     });
   }
 
@@ -98,6 +104,7 @@ export class VotingPowerService extends BaseService {
 
   async enterAmount(amount: string): Promise<void> {
     await this.page.lockAmountInput.enterText(amount);
+    await this.page.enterAmountButton.waitUntilDisappeared(timeouts.xs);
   }
 
   async getCurrentLockValues(): Promise<{ veMento: number; mento: number }> {
