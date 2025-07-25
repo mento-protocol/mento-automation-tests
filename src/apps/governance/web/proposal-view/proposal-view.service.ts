@@ -53,9 +53,9 @@ export class ProposalViewService extends BaseService {
   async waitForTotalVotesToLoad(): Promise<boolean> {
     return waiterHelper.wait(
       async () => (await this.getTotalVotes()) > 0,
-      timeouts.s,
+      timeouts.m,
       {
-        errorMessage: "Total votes is not loaded!",
+        errorMessage: "Total votes are not loaded!",
       },
     );
   }
