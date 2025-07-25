@@ -5,7 +5,8 @@ import { expect } from "@fixtures/test.fixture";
 
 suite({
   name: "Lock - Top-up",
-  tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
+  // TODO: Add TestTag.Smoke once all the locks bugs are fixed
+  tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {
     await web.app.governance.main.connectWalletByName(WalletName.Metamask);
   },
