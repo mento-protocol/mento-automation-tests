@@ -87,13 +87,14 @@ export class MainGovernanceService extends BaseService {
       async () => {
         await this.browser.refresh();
         return (await this.page.getProposalByTitle(title)).waitUntilDisplayed(
-          timeouts.xs,
+          timeouts.m,
           { throwError: false },
         );
       },
       5,
       {
         errorMessage: `'${title}' proposal hasn't displayed`,
+        interval: timeouts.xs,
       },
     );
   }
