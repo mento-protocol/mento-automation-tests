@@ -2,7 +2,6 @@ import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { ClassLog } from "@decorators/logger.decorators";
 import { timeouts } from "@constants/timeouts.constants";
 import { CreateProposalPage } from "./create-proposal.page";
-import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { ProposalViewPage } from "../proposal-view/proposal-view.page";
 import { expect } from "@fixtures/test.fixture";
 
@@ -107,7 +106,6 @@ export class CreateProposalService extends BaseService {
   }: ICreateProposalArgs): Promise<void> {
     await this.page.proposalDetailsStage.titleInput.enterText(title);
     await this.fillDescription(description);
-    await waiterHelper.waitForAnimation();
     await this.page.nextButton.click();
     await this.verifyExecutionCodeStageOpened();
   }

@@ -26,10 +26,10 @@ class PrimitiveHelper {
       return Date.now().toString();
     },
 
-    generateRandom(length: number = 10): string {
+    generateRandom(length = 10): string {
       const chars =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      let randomString: string = "";
+      let randomString = "";
       for (let i = 0; i < length; i++) {
         randomString += chars[Math.floor(Math.random() * chars.length)];
       }
