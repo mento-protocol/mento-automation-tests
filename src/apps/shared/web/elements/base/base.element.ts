@@ -52,7 +52,7 @@ export abstract class BaseElement {
     const element = await this.element;
     await this.waitUntilDisplayed(timeout, { throwError });
     try {
-      if (await this.isEnabled()) {
+      if (await this.waitUntilEnabled(timeout, { throwError: false })) {
         await element.click({ force, timeout, clickCount: times });
       } else {
         logger.warn(
