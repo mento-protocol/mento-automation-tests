@@ -11,7 +11,7 @@ export const magicStrings = {
     [AppName.Governance]: {
       web: {
         prod: {
-          base: "https://governancementoorg.vercel.app",
+          base: "https://governance.mento.org",
         },
       },
       api: {
