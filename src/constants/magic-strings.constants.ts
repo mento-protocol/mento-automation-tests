@@ -13,6 +13,9 @@ export const magicStrings = {
         prod: {
           base: "https://governance.mento.org",
         },
+        qa: {
+          base: "https://governancementoorg-qa.vercel.app",
+        },
       },
       api: {
         prod: {
