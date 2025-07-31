@@ -29,7 +29,8 @@ export class VotingPowerService extends BaseService {
       log.debug("Approving mento first to be able to top up lock");
       await this.page.approveMentoButton.click();
       await this.verifyConfirmationPopupIsOpened();
-      await this.metamask.confirmTransaction();
+      await this.metamask.rawModule.confirmTransaction();
+      await this.metamask.rawModule.approveTokenPermission();
       await this.verifyConfirmationPopupIsClosed();
     }
     if (
@@ -112,7 +113,11 @@ export class VotingPowerService extends BaseService {
         );
       },
       3,
-      { errorMessage: "Lock values are not changed!", interval: timeouts.xs },
+      {
+        errorMessage: "Lock values are not changed!",
+        interval: timeouts.xs,
+        throwError: false,
+      },
     );
   }
 

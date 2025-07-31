@@ -42,6 +42,7 @@ jobs:
     timeout-minutes: 60
     env:
       APP_NAME: "governance"
+      ENV: "qa"
       SPECS_TYPE: "web"
       SPECS_REGEX: "@smoke"
       IS_PARALLEL_RUN: "false"
