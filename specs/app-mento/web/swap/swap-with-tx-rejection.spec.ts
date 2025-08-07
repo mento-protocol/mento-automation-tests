@@ -32,8 +32,9 @@ suite({
           },
           sellAmount: "30",
         });
-        await app.swap.page.approveButton.click();
-        await app.swap.confirm.rejectByType("approval");
+        await app.swap.proceedToConfirmationWithRejection({
+          rejectType: "approval",
+        });
         expect(
           await app.swap.confirm.isRejectApprovalTxNotificationThere(),
         ).toBeTruthy();
@@ -51,10 +52,9 @@ suite({
           },
           sellAmount: defaultSwapAmount,
         });
-        await app.swap.proceedToConfirmation();
-        await app.swap.confirm.page.verifyIsOpen();
-        await app.swap.confirm.page.swapButton.click();
-        await app.swap.confirm.rejectByType("swap");
+        await app.swap.proceedToConfirmationWithRejection({
+          rejectType: "swap",
+        });
         expect(
           await app.swap.confirm.isRejectSwapTxNotificationThere(),
         ).toBeTruthy();
