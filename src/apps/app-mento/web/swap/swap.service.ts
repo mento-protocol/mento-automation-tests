@@ -20,7 +20,7 @@ import {
   Slippage,
 } from "./swap.service.types";
 
-const logger = loggerHelper.get("SwapService");
+const log = loggerHelper.get("SwapService");
 
 @ClassLog
 export class SwapService extends BaseService {
@@ -50,15 +50,54 @@ export class SwapService extends BaseService {
     }
   }
 
+  async proceedToConfirmationWithRejection({
+    rejectType,
+    shouldVerifyNoValidMedian = true,
+  }: {
+    rejectType: "swap" | "approval";
+    shouldVerifyNoValidMedian?: boolean;
+  }): Promise<void> {
+    shouldVerifyNoValidMedian && (await this.confirm.verifyNoValidMedianCase());
+
+    log.debug(`Proceeding to confirmation with rejection type: ${rejectType}`);
+
+    if (rejectType === "approval") {
+      log.debug("Rejecting approval TX");
+      if (await this.page.approveButton.isDisplayed()) {
+        await this.page.approveButton.click({ timeout: timeouts.s });
+        return this.confirm.rejectByType(rejectType);
+      }
+      throw new Error("Approval button is not displayed");
+    }
+
+    if (rejectType === "swap") {
+      if (await this.page.approveButton.isDisplayed()) {
+        log.debug("Confirming the approval TX and rejecting swap TX");
+        await this.confirm.confirmApprovalTx();
+        await this.confirm.page.verifyIsOpen();
+        await this.confirm.page.swapButton.click();
+        return this.confirm.rejectByType(rejectType);
+      } else {
+        log.debug("Absent of the approval TX - rejecting swap TX directly");
+        await this.page.swapButton.click();
+        await this.confirm.page.verifyIsOpen();
+        await this.confirm.page.swapButton.click();
+        return this.confirm.rejectByType(rejectType);
+      }
+    }
+
+    throw new Error(`Invalid reject type: ${rejectType}`);
+  }
+
   async start(): Promise<void> {
     await this.confirm.verifyNoValidMedianCase();
     if (await this.page.approveButton.isDisplayed()) {
-      logger.debug(
+      log.debug(
         "Confirms both approval and swap TXs because sufficient allowance is not exist yet",
       );
       await this.confirm.confirmBothTxs();
     } else {
-      logger.debug(
+      log.debug(
         "Confirms only swap TX because sufficient allowance already exists",
       );
       await this.page.swapButton.click();
@@ -299,7 +338,7 @@ export class SwapService extends BaseService {
         interval: timeouts.action,
       },
     );
-    result && logger.info(`Rate is loaded successfully!`);
+    result && log.info(`Rate is loaded successfully!`);
     return result;
   }
 
