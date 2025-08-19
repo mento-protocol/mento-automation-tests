@@ -27,6 +27,7 @@ export interface ITest {
   test: (args: IExecution) => Promise<void>;
   disable?: IDisable;
   tags?: string[];
+  timeout?: number;
 }
 
 export interface IDisable {

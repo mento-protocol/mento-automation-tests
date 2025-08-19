@@ -36,7 +36,14 @@ export function suite({
       );
 
     tests.forEach(
-      ({ test, name: testName, disable, testCaseId, tags: rawTags = [] }) => {
+      ({
+        test,
+        name: testName,
+        disable,
+        testCaseId,
+        timeout,
+        tags: rawTags = [],
+      }) => {
         const tags = composeTags([...rawTags, testCaseId]);
 
         testUtils.isDisabled(disable)
@@ -52,8 +59,10 @@ export function suite({
           : testFixture(
               testName,
               { tag: tags },
-              async ({ web, metamaskHelper, api, contractHelper }) =>
-                await test({ web, metamaskHelper, api, contractHelper }),
+              async ({ web, metamaskHelper, api, contractHelper }) => {
+                timeout && testFixture.setTimeout(timeout);
+                await test({ web, metamaskHelper, api, contractHelper });
+              },
             );
       },
     );
