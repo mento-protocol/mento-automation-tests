@@ -20,8 +20,6 @@ export default defineConfig({
     browserName: "chromium",
     baseURL: envHelper.getBaseWebUrl(),
     trace: "retain-on-failure",
-    // TODO: turn on when fixed: https://github.com/microsoft/playwright/issues/14813
-    // video: "retain-on-failure",
   },
   projects: [
     {

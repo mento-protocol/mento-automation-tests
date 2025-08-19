@@ -80,6 +80,23 @@ export class ProposalViewService extends BaseService {
     return await this.page.proposalStateLabel.getText();
   }
 
+  async waitForProposalState(
+    state: ProposalState,
+    timeout = timeouts.m,
+  ): Promise<boolean> {
+    await this.page.proposalStateLabel.waitUntilDisplayed(timeouts.xs, {
+      errorMessage: "Proposal state is not displayed!",
+    });
+    return waiterHelper.wait(
+      async () => (await this.getProposalState()) === state,
+      timeout,
+      {
+        errorMessage: "Proposal state is not changed!",
+        throwError: false,
+      },
+    );
+  }
+
   async waitForLoadedVotingInfo(): Promise<boolean> {
     return this.page.votingInfoLoader.waitUntilDisappeared(timeouts.s, {
       errorMessage: "Voting info is not loaded!",
