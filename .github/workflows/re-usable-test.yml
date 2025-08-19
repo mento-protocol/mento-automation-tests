@@ -158,7 +158,7 @@ jobs:
 
   notification:
     needs: [test, report]
-    if: always()
+    if: failure()
     uses: ./.github/workflows/notification.yml
     with:
       JOB_STATUS: ${{ needs.test.result }}
