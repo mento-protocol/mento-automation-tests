@@ -2,6 +2,9 @@ import { BrowserHelper } from "@helpers/browser/browser.helper";
 import { envHelper } from "@helpers/env/env.helper";
 import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { BasePage } from "./base.page";
+import { timeouts } from "@constants/timeouts.constants";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
+import { Page } from "@playwright/test";
 
 export class BaseService {
   private readonly baseWebUrl = envHelper.getBaseWebUrl();
@@ -29,11 +32,36 @@ export class BaseService {
     return this.browser.getTitle();
   }
 
+  async getPageUrl(): Promise<string> {
+    return this.browser.getCurrentUrl();
+  }
+
   // TODO: Move to another service
   protected async isRateLoaded(): Promise<boolean> {
     if (!(await this.page.rateLabel.isDisplayed())) return false;
     const rateText = await this.page.rateLabel.getText();
     return rateText !== "...";
+  }
+
+  async waitForUrlToChange({
+    initialUrl,
+    page,
+    timeout = timeouts.xxs,
+  }: {
+    initialUrl: string;
+    timeout?: number;
+    page?: Page;
+  }): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => {
+        const currentPageUrl = page ? page.url() : await this.getPageUrl();
+        return initialUrl !== currentPageUrl;
+      },
+      timeout,
+      {
+        errorMessage: `initial url is still the same: ${initialUrl}`,
+      },
+    );
   }
 }
 

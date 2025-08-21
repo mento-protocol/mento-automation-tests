@@ -74,4 +74,9 @@ export class EnvHelper {
   }
 }
 
+export enum Chain {
+  Mainnet = "mainnet",
+  Testnet = "testnet",
+}
+
 export const envHelper = new EnvHelper();
