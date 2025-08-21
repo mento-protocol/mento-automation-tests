@@ -11,6 +11,9 @@ import { timeouts } from "@constants/timeouts.constants";
 import { ProposalViewPage } from "../proposal-view/proposal-view.page";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { VotingPowerPage } from "../voting-power/voting-power.page";
+import { loggerHelper } from "@helpers/logger/logger.helper";
+
+const log = loggerHelper.get("MainGovernanceService");
 
 @ClassLog
 export class MainGovernanceService extends BaseService {
@@ -46,8 +49,7 @@ export class MainGovernanceService extends BaseService {
     await this.connectWalletModal.selectWalletByName(walletName);
     await this.metamask.connectWallet();
     if (!envHelper.isMainnet()) {
-      await this.metamask.approveNewNetwork();
-      await this.metamask.rejectSwitchNetwork();
+      await this.cancelSwitchNetworkTxOnStart();
     }
     await this.waitForWalletToBeConnected();
   }
@@ -105,6 +107,18 @@ export class MainGovernanceService extends BaseService {
 
   async isProposalThereByTitle(title: string): Promise<boolean> {
     return (await this.page.getProposalByTitle(title)).isDisplayed();
+  }
+
+  private async cancelSwitchNetworkTxOnStart(): Promise<void> {
+    try {
+      await this.metamask.approveNewNetwork();
+      await this.metamask.rejectSwitchNetwork();
+    } catch (error) {
+      log.warn(
+        "Failed to approve new network and after rejecting switch network tx",
+      );
+      log.error(error);
+    }
   }
 }
 
