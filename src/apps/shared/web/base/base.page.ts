@@ -1,5 +1,3 @@
-import { BrowserContext } from "@playwright/test";
-
 import { ElementFinderInterface } from "@helpers/element-finder/types/element-finder.types";
 import { timeouts } from "@constants/timeouts.constants";
 import { promiseHelper } from "@helpers/promise/promise.helper";
@@ -7,7 +5,7 @@ import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
 import { BaseElement, Label } from "@shared/web/elements/index";
 
-const logger = loggerHelper.get("BasePage");
+const log = loggerHelper.get("BasePage");
 
 @ClassLog
 export abstract class BasePage {
@@ -16,17 +14,6 @@ export abstract class BasePage {
   protected constructor(protected ef: ElementFinderInterface) {}
 
   rateLabel = new Label(this.ef.dataTestId("rateLabel"));
-
-  async navigateToNewTab(
-    currentBrowserContext: BrowserContext,
-    navigateMethod: () => unknown,
-  ) {
-    const [newTabPage] = await Promise.all([
-      currentBrowserContext.waitForEvent("page"),
-      navigateMethod(),
-    ]);
-    return newTabPage;
-  }
 
   async isOpen(options: IIsOpenOpts = {}): Promise<boolean> {
     let { retry = 0 } = options;
@@ -67,7 +54,7 @@ export abstract class BasePage {
         "Po",
         "",
       )}' page didn't get opened - some of static elements are not there`;
-      logger.error(errorMessage);
+      log.error(errorMessage);
       throw new Error(errorMessage);
     }
   }
@@ -78,7 +65,7 @@ export abstract class BasePage {
         "Po",
         "",
       )}' page didn't get closed - some of static elements are still there`;
-      logger.error(errorMessage);
+      log.error(errorMessage);
       throw new Error(errorMessage);
     }
   }

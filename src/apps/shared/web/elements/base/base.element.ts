@@ -43,6 +43,10 @@ export abstract class BaseElement {
     }
   }
 
+  async getAttribute(attribute: string): Promise<string> {
+    return (await this.element).getAttribute(attribute);
+  }
+
   async click({
     timeout = timeouts.xs,
     throwError = true,

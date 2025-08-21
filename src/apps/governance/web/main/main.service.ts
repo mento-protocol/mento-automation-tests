@@ -75,6 +75,14 @@ export class MainGovernanceService extends BaseService {
     await this.proposalView.verifyIsOpen();
   }
 
+  async openContractAddressesSection(): Promise<void> {
+    await this.page.contractAddressesSection.click();
+    await this.page.contractAddresseLinkButtons.governor.waitUntilDisplayed(
+      timeouts.xxs,
+      { errorMessage: "Contract addresses section is not opened" },
+    );
+  }
+
   async waitForWalletToBeConnected(): Promise<boolean> {
     return this.page.headerConnectWalletButton.waitUntilDisappeared(
       timeouts.s,

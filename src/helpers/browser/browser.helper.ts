@@ -10,6 +10,7 @@ import {
 } from "@helpers/browser/browser.helper.types";
 import { testFixture } from "@fixtures/test.fixture";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 export interface IBrowser {
   openUrl: (url: string) => Promise<void>;
@@ -50,6 +51,10 @@ export class BrowserHelper {
 
   async openUrl(url: string): Promise<void> {
     await this.pwPage.goto(url);
+  }
+
+  async getCurrentUrl(): Promise<string> {
+    return this.pwPage.url();
   }
 
   async setLocalStorage(params: ISetLocalStorage): Promise<void> {
@@ -126,6 +131,22 @@ export class BrowserHelper {
     });
   }
 
+  async getNewTabPage({
+    navigateCallback,
+    waitTimeout,
+    currentPage = this.pwPage,
+  }: IGetNewTabPageParams): Promise<Page> {
+    const [newTabPage] = await Promise.all([
+      currentPage.waitForEvent("popup"),
+      navigateCallback(),
+      waitTimeout &&
+        waiterHelper.sleep(waitTimeout, {
+          sleepReason: "wait for tab switching",
+        }),
+    ]);
+    return newTabPage;
+  }
+
   async attachErrors(): Promise<void> {
     await this.attachConsoleErrorLogs();
     await this.attachPageErrors();
@@ -165,4 +186,10 @@ export class BrowserHelper {
       }
     }
   }
+}
+
+interface IGetNewTabPageParams {
+  navigateCallback: () => Promise<void>;
+  currentPage?: Page;
+  waitTimeout?: number;
 }
