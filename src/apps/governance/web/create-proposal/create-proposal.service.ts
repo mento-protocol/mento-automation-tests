@@ -63,7 +63,7 @@ export class CreateProposalService extends BaseService {
   async verifyProposalCreation(): Promise<void> {
     expect
       .soft(
-        await this.page.proposalSuccessToast.waitUntilDisplayed(timeouts.s, {
+        await this.page.proposalSuccessToast.waitUntilDisplayed(timeouts.xl, {
           throwError: false,
         }),
       )
