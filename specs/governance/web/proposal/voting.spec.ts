@@ -8,14 +8,27 @@ import {
 import { expect } from "@fixtures/test.fixture";
 
 const testCases = [
-  { name: "'Yes' successfully", vote: Vote.Yes, timeout: timeouts.minute * 6 },
-  { name: "'No' successfully", vote: Vote.No },
-  { name: "'Abstain' successfully", vote: Vote.Abstain },
+  {
+    name: "'Yes' successfully",
+    vote: Vote.Yes,
+    timeout: timeouts.minute * 6,
+    tags: [],
+  },
+  {
+    name: "'No' successfully",
+    vote: Vote.No,
+    tags: [TestTag.Smoke],
+  },
+  {
+    name: "'Abstain' successfully",
+    vote: Vote.Abstain,
+    tags: [TestTag.Smoke],
+  },
 ];
 
 suite({
   name: "Proposal - Voting",
-  tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
+  tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {
     const app = web.app.governance;
     const proposalData = magicStrings.governance.generateProposalData();
@@ -25,10 +38,11 @@ suite({
     // TODO: Use the navigateToAppPage method once there's a correct proposalId gotten
     await app.main.openProposalByTitle(proposalData.title);
   },
-  tests: testCases.map(({ name, vote, timeout }) => ({
+  tests: testCases.map(({ name, vote, timeout, tags }) => ({
     name,
     testCaseId: "",
     timeout,
+    tags,
     test: async ({ web }) => {
       const app = web.app.governance;
 
