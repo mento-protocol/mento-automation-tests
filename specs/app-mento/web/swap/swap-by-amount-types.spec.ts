@@ -1,5 +1,5 @@
 import { TestTag } from "@constants/test.constants";
-import { defaultSwapAmount, Token } from "@constants/token.constants";
+import { Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 
 const tokens = {
@@ -21,7 +21,7 @@ suite({
         const initialBalance = await app.main.getTokenBalanceByName(tokens.to);
         await app.swap.fillForm({
           tokens: { sell: tokens.from, buy: tokens.to },
-          sellAmount: defaultSwapAmount,
+          sellAmount: "0.1",
         });
         await app.swap.start();
         await app.main.expectIncreasedBalance({
@@ -38,7 +38,7 @@ suite({
         const initialBalance = await app.main.getTokenBalanceByName(tokens.to);
         await app.swap.fillForm({
           tokens: { sell: tokens.from, buy: tokens.to },
-          buyAmount: defaultSwapAmount,
+          buyAmount: "0.1",
         });
         await app.swap.start();
         await app.main.expectIncreasedBalance({
