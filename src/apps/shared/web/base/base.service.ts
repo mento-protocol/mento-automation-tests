@@ -1,10 +1,12 @@
+import { Page } from "@playwright/test";
+
 import { BrowserHelper } from "@helpers/browser/browser.helper";
 import { envHelper } from "@helpers/env/env.helper";
 import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { BasePage } from "./base.page";
 import { timeouts } from "@constants/timeouts.constants";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
-import { Page } from "@playwright/test";
+import { CeloScanService } from "../celo-scan/celo-scan.service";
 
 export class BaseService {
   private readonly baseWebUrl = envHelper.getBaseWebUrl();
@@ -29,11 +31,15 @@ export class BaseService {
   }
 
   async getPageTitle(): Promise<string> {
-    return this.browser.getTitle();
+    return this.browser.getPageTitle();
   }
 
   async getPageUrl(): Promise<string> {
-    return this.browser.getCurrentUrl();
+    return this.browser.getCurrentPageUrl();
+  }
+
+  async pressButton(buttonName: string): Promise<void> {
+    await this.browser.pressButton(buttonName);
   }
 
   // TODO: Move to another service
@@ -68,5 +74,6 @@ export class BaseService {
 export interface IBaseServiceArgs {
   browser: BrowserHelper;
   page: BasePage;
-  metamask: MetamaskHelper;
+  metamask?: MetamaskHelper;
+  celoScan?: CeloScanService;
 }

@@ -27,6 +27,8 @@ import { ProposalViewService } from "../../apps/governance/web/proposal-view/pro
 import { VotingPowerPage } from "../../apps/governance/web/voting-power/voting-power.page";
 import { CreateProposalPage } from "../../apps/governance/web/create-proposal/create-proposal.page";
 import { ContractHelper } from "@helpers/contract/contract.helper";
+import { CeloScanService } from "@shared/web/celo-scan/celo-scan.service";
+import { CeloScanPage } from "@shared/web/celo-scan/celo-scan.page";
 
 /**
  * 🚀 Goal
@@ -80,6 +82,11 @@ export class AssemblerHelper {
       browser: this.browserHelper,
       metamask: this.metamaskHelper,
       contract: this.contractHelper,
+      celoScan: new CeloScanService({
+        page: new CeloScanPage(this.elementFinder),
+        metamask: this.metamaskHelper,
+        browser: this.browserHelper,
+      }),
     };
     return {
       ...baseDependencies,
@@ -198,12 +205,14 @@ interface IBaseDependencies {
   browser: BrowserHelper;
   metamask: MetamaskHelper;
   contract: ContractHelper;
+  celoScan: CeloScanService;
 }
 
 export interface IWeb {
   browser: BrowserHelper;
   metamask: MetamaskHelper;
   contract: ContractHelper;
+  celoScan: CeloScanService;
   app: WebApps;
 }
 

@@ -4,6 +4,7 @@ import { timeouts } from "@constants/timeouts.constants";
 import { CreateProposalPage } from "./create-proposal.page";
 import { ProposalViewPage } from "../proposal-view/proposal-view.page";
 import { expect } from "@fixtures/test.fixture";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 @ClassLog
 export class CreateProposalService extends BaseService {
@@ -25,47 +26,63 @@ export class CreateProposalService extends BaseService {
     this.proposalViewPage = proposalViewPage;
   }
 
-  async createValid({
+  async create({
     title = `[${Date.now()}] Automation-Proposal`,
-    description = `[${Date.now()}] Automation-Proposal-Description`,
+    descriptionDetails = {
+      text: `[${Date.now()}] Automation-Proposal-Description`,
+      markdownOptionFormat: "Quote",
+    },
     executionCode = this.defaultExecutionCode,
     shouldCheckDetails = true,
-  }: ICreateProposalArgs = {}): Promise<void> {
-    await this.passProposalDetailsStage({ title, description });
+    shouldReturnTxUrl = false,
+  }: ICreateProposalArgs = {}): Promise<string> {
+    await this.passProposalDetailsStage({ title, descriptionDetails });
     await this.passExecutionCodeStage({ executionCode, shouldCheckDetails });
-    await this.passReviewStage({
+    return await this.passReviewStage({
       title,
-      description,
+      descriptionDetails,
       executionCode,
       shouldCheckDetails,
+      shouldReturnTxUrl,
     });
   }
 
   async passReviewStage({
     title,
-    description,
+    descriptionDetails,
     executionCode,
     shouldCheckDetails,
-  }: ICreateProposalArgs): Promise<void> {
+    shouldReturnTxUrl,
+  }: ICreateProposalArgs): Promise<string> {
     if (shouldCheckDetails) {
       await this.expectProposalDetailsOnReview({
         title,
-        description,
+        descriptionDetails,
         executionCode,
       });
     }
+
     await this.page.reviewStage.createProposalButton.click();
     await this.verifyCreationPopupAppeared();
     await this.metamask.confirmTransaction();
     await this.verifyProposalCreation();
+
+    if (shouldReturnTxUrl) {
+      return await this.page.proposalSuccessToast.seeDetailsButton.getAttribute(
+        "href",
+      );
+    }
   }
 
   async verifyProposalCreation(): Promise<void> {
     expect
       .soft(
-        await this.page.proposalSuccessToast.waitUntilDisplayed(timeouts.xl, {
-          throwError: false,
-        }),
+        await this.page.proposalSuccessToast.toast.waitUntilDisplayed(
+          timeouts.xl,
+          {
+            throwError: false,
+          },
+        ),
       )
       .toBeTruthy();
     await this.verifyCreationPopupDisappeared();
@@ -102,18 +119,36 @@ export class CreateProposalService extends BaseService {
 
   async passProposalDetailsStage({
     title,
-    description,
+    descriptionDetails,
   }: ICreateProposalArgs): Promise<void> {
     await this.page.proposalDetailsStage.titleInput.enterText(title);
-    await this.fillDescription(description);
+    await this.fillDescription(descriptionDetails);
     await this.page.nextButton.click();
     await this.verifyExecutionCodeStageOpened();
   }
 
-  async fillDescription(description: string): Promise<void> {
-    await this.page.proposalDetailsStage.descriptionInput.click();
+  async fillDescription({
+    text,
+    markdownOptionFormat,
+  }: {
+    text: string;
+    markdownOptionFormat?: string;
+  }): Promise<void> {
+    if (markdownOptionFormat) {
+      await this.useMarkdownOptionFormat(markdownOptionFormat);
+    }
     // TODO: Wrap this into the enterText method of the input element
-    await this.browser.enterTextByKeyboard(description);
+    await this.browser.enterTextByKeyboard(text);
+  }
+
+  async useMarkdownOptionFormat(markdownOptionFormat: string): Promise<void> {
+    await this.page.proposalDetailsStage.descriptionInput.click();
+    await this.browser.enterTextByKeyboard(`/${markdownOptionFormat}`);
+    await waiterHelper.sleep(timeouts.xxs, {
+      sleepReason: "Waiting for markdown option format to be applied!",
+    });
+    await this.page.proposalDetailsStage.descriptionInput.click();
+    await this.browser.pressButton("Enter");
   }
 
   async passExecutionCodeStage({
@@ -134,13 +169,13 @@ export class CreateProposalService extends BaseService {
 
   async expectProposalDetailsOnReview({
     title,
-    description,
+    descriptionDetails,
     executionCode,
   }: ICreateProposalArgs): Promise<void> {
     expect.soft(await this.page.reviewStage.stageLabel.getText()).toBe(title);
     expect
       .soft(await this.getProposalDetailsFromReviewStage())
-      .toEqual(description);
+      .toContain(descriptionDetails.text);
     expect
       .soft(await this.getExecutionCodeFromReviewStage())
       .toEqual(executionCode);
@@ -169,11 +204,15 @@ export class CreateProposalService extends BaseService {
   }
 }
 
-export interface ICreateProposalArgs {
+interface ICreateProposalArgs {
   title?: string;
-  description?: string;
-  executionCode?: Record<string, unknown>[];
+  descriptionDetails?: {
+    text: string;
+    markdownOptionFormat?: string;
+  };
+  executionCode?: Array<Record<string, unknown>>;
   shouldCheckDetails?: boolean;
+  shouldReturnTxUrl?: boolean;
 }
 
 export interface ICreateProposalServiceArgs extends IBaseServiceArgs {

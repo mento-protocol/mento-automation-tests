@@ -53,8 +53,12 @@ export class BrowserHelper {
     await this.pwPage.goto(url);
   }
 
-  async getCurrentUrl(): Promise<string> {
+  async getCurrentPageUrl(): Promise<string> {
     return this.pwPage.url();
+  }
+
+  async pressButton(buttonName: string, timeout?: number): Promise<void> {
+    await this.pwPage.keyboard.press(buttonName, { delay: timeout });
   }
 
   async setLocalStorage(params: ISetLocalStorage): Promise<void> {
@@ -73,7 +77,7 @@ export class BrowserHelper {
     await this.pwPage.mouse.wheel(x, y);
   }
 
-  async getTitle(): Promise<string> {
+  async getPageTitle(): Promise<string> {
     return this.pwPage.title();
   }
 
