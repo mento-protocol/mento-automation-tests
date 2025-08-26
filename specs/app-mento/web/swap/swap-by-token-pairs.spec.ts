@@ -50,7 +50,7 @@ const testCases = [
   {
     fromToken: Token.cCOP,
     toToken: Token.cUSD,
-    fromAmount: "430",
+    fromAmount: "45",
     id: "Ta2aa287f",
   },
   // USDC
