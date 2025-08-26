@@ -27,9 +27,12 @@ suite({
         const app = web.app.appMento;
         const fromToken = pairs.rejectApproval.from;
         const toToken = pairs.rejectApproval.to;
+        const fromTokenBalance = (
+          await app.main.getTokenBalanceByName(fromToken)
+        ).toString();
 
         await app.swap.fillForm({
-          sellAmount: "20",
+          sellAmount: fromTokenBalance,
           tokens: { sell: fromToken, buy: toToken },
         });
         await app.swap.proceedToConfirmationWithRejection({
