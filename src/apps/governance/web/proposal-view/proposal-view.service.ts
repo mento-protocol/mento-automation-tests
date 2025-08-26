@@ -5,15 +5,18 @@ import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/test.fixture";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
+import { CeloScanService } from "@shared/web/celo-scan/celo-scan.service";
 
 @ClassLog
 export class ProposalViewService extends BaseService {
   public override page: ProposalViewPage = null;
+  public celoScan: CeloScanService = null;
 
   constructor(args: IProposalViewServiceArgs) {
-    const { page } = args;
+    const { page, celoScan } = args;
     super(args);
     this.page = page;
+    this.celoScan = celoScan;
   }
 
   async vote(
@@ -144,12 +147,19 @@ export class ProposalViewService extends BaseService {
     state: ProposalState;
   }): Promise<void> {
     expect.soft(await this.getProposalTitle()).toBe(title);
-    expect.soft(await this.getProposalDescription()).toBe(description);
+    expect.soft(await this.getProposalDescription()).toContain(description);
     await this.waitForLoadedVotingInfo();
     expect.soft(await this.getProposalState()).toBe(state);
     for (const voteButton of Object.values(this.page.voteButtons)) {
       expect.soft(await voteButton.isDisplayed()).toBeTruthy();
     }
+  }
+
+  async expectDescriptionSubmittedInMarkdown(txUrl: string): Promise<void> {
+    await this.celoScan.openLogs(txUrl);
+    const logsLength = await this.celoScan.page.logRows.getLength();
+    const descriptionLog = await this.celoScan.getLogRowContent(logsLength - 1);
+    expect.soft(descriptionLog).not.toMatch(/<[^>]+>/);
   }
 
   async expectVote(vote: Vote): Promise<void> {

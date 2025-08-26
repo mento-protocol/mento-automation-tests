@@ -5,7 +5,6 @@ import {
   WalletName,
 } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { MainGovernancePage } from "./main.page";
-import { envHelper } from "@helpers/env/env.helper";
 import { CreateProposalPage } from "../create-proposal/create-proposal.page";
 import { timeouts } from "@constants/timeouts.constants";
 import { ProposalViewPage } from "../proposal-view/proposal-view.page";
@@ -48,9 +47,6 @@ export class MainGovernanceService extends BaseService {
     await this.openConnectWalletModal();
     await this.connectWalletModal.selectWalletByName(walletName);
     await this.metamask.connectWallet();
-    if (!envHelper.isMainnet()) {
-      await this.cancelSwitchNetworkTxOnStart();
-    }
     await this.waitForWalletToBeConnected();
   }
 
@@ -117,6 +113,8 @@ export class MainGovernanceService extends BaseService {
     return (await this.page.getProposalByTitle(title)).isDisplayed();
   }
 
+  // In case of switching network on start, we need to cancel the tx.
+  // Sometimes dApp wants to switch network to default one.
   private async cancelSwitchNetworkTxOnStart(): Promise<void> {
     try {
       await this.metamask.approveNewNetwork();

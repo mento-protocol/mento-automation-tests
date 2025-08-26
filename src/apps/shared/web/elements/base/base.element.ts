@@ -103,6 +103,20 @@ export abstract class BaseElement {
     }
   }
 
+  async getHTML({
+    timeout = timeouts.action,
+    throwError = true,
+  }: IGetTextParams = {}): Promise<string> {
+    try {
+      await this.waitUntilDisplayed(timeout, { throwError });
+      return (await this.element).innerHTML({ timeout });
+    } catch (error) {
+      const errorMessage = `Can't get HTML on element with '${this.locator}' locator.\nError details: ${error.message}`;
+      logger.error(errorMessage);
+      if (throwError) throw new Error(errorMessage);
+    }
+  }
+
   async hover({
     throwError = true,
     timeout,

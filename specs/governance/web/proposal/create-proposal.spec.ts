@@ -19,16 +19,21 @@ suite({
         const proposalData = magicStrings.governance.generateProposalData();
 
         await app.main.openCreateProposalPage();
-        await app.createProposal.createValid({
+        const txUrl = await app.createProposal.create({
           title: proposalData.title,
-          description: proposalData.description,
+          descriptionDetails: {
+            text: proposalData.description,
+            markdownOptionFormat: "Quote",
+          },
           executionCode: proposalData.executionCode,
+          shouldReturnTxUrl: true,
         });
         await app.proposalView.expectProposalSuccessfully({
           title: proposalData.title,
           description: proposalData.description,
           state: ProposalState.Active,
         });
+        await app.proposalView.expectDescriptionSubmittedInMarkdown(txUrl);
       },
     },
   ],

@@ -55,9 +55,11 @@ export class CreateProposalPage extends BasePage {
   confirmProposalPopup = new Label(
     this.ef.pw.text("Please sign the transaction in your wallet"),
   );
-  proposalSuccessToast = new Label(
-    this.ef.pw.text("Proposal created successfully!"),
-  );
+  proposalSuccessToast = {
+    toast: new Label(this.ef.pw.text("Proposal created successfully!")),
+    seeDetailsButton: new Button(this.ef.pw.text("See Details")),
+  };
+
   proposalCreationRejectedByUserToastLabel = new Label(
     this.ef.pw.text("Proposal creation rejected by user"),
   );
