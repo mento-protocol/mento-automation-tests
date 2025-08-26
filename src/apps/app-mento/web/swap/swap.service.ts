@@ -42,12 +42,12 @@ export class SwapService extends BaseService {
     shouldVerifyNoValidMedian = true,
   }: { shouldVerifyNoValidMedian?: boolean } = {}): Promise<void> {
     shouldVerifyNoValidMedian && (await this.confirm.verifyNoValidMedianCase());
-    if (await this.page.approveButton.isDisplayed()) {
-      await this.page.approveButton.click({ timeout: timeouts.s });
-      await this.confirm.confirmApprovalTx();
-    } else {
-      await this.page.swapButton.click();
-    }
+
+    (await this.page.approveButton.isDisplayed())
+      ? await this.confirm.confirmApprovalTx()
+      : await this.page.swapButton.click();
+
+    await this.confirm.page.verifyIsOpen();
   }
 
   async proceedToConfirmationWithRejection({

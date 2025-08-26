@@ -25,16 +25,17 @@ suite({
       testCaseId: "Td5aa1954",
       test: async ({ web }) => {
         const app = web.app.appMento;
+        const fromToken = pairs.rejectApproval.from;
+        const toToken = pairs.rejectApproval.to;
+
         await app.swap.fillForm({
-          tokens: {
-            sell: pairs.rejectApproval.from,
-            buy: pairs.rejectApproval.to,
-          },
-          sellAmount: "30",
+          sellAmount: "20",
+          tokens: { sell: fromToken, buy: toToken },
         });
         await app.swap.proceedToConfirmationWithRejection({
           rejectType: "approval",
         });
+
         expect(
           await app.swap.confirm.isRejectApprovalTxNotificationThere(),
         ).toBeTruthy();
@@ -45,16 +46,17 @@ suite({
       testCaseId: "T09fd373a",
       test: async ({ web }) => {
         const app = web.app.appMento;
+        const fromToken = pairs.rejectSwap.from;
+        const toToken = pairs.rejectSwap.to;
+
         await app.swap.fillForm({
-          tokens: {
-            sell: pairs.rejectSwap.from,
-            buy: pairs.rejectSwap.to,
-          },
+          tokens: { sell: fromToken, buy: toToken },
           sellAmount: defaultSwapAmount,
         });
         await app.swap.proceedToConfirmationWithRejection({
           rejectType: "swap",
         });
+
         expect(
           await app.swap.confirm.isRejectSwapTxNotificationThere(),
         ).toBeTruthy();
