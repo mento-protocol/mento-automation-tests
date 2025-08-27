@@ -10,13 +10,13 @@ export class NetworkModalPage extends BasePage {
 
   private readonly baseLocator = "networkModal";
 
-  titleLabel = new Label(this.ef.pw.text("Network details"));
+  titleLabel = new Label(this.ef.pw.text("Switch Networks"));
 
   closeButton = new Button(this.ef.title("Close"));
   networkButtons = {
     [Network.Celo]: new Button(this.ef.pw.role("button", { name: "Celo" })),
     [Network.Alfajores]: new Button(
-      this.ef.pw.role("button", { name: "Alfajores" }),
+      this.ef.pw.role("button", { name: "Celo Alfajores" }),
     ),
   };
 
