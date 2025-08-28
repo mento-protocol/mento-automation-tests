@@ -5,7 +5,6 @@ export * from "./button/button.types";
 export * from "./dropdown/dropdown";
 export * from "./dropdown/dropdown.types";
 export * from "./element-list/element-list";
-export * from "./element-list/element-list.types";
 export * from "./input/input";
 export * from "./input/input.types";
 export * from "./label/label";

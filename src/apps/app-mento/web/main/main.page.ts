@@ -1,28 +1,36 @@
-import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import { Button, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
+import { Button, Label } from "@shared/web/elements/index";
+import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 
 export class MainAppMentoPage extends BasePage {
   constructor(protected override ef: ElementFinderHelper) {
     super(ef);
   }
-
   headerConnectWalletButton = new Button(
-    this.ef.pw.role("button", { name: "Connect", exact: true }),
+    this.ef.role("button", { name: "Connect", exact: true }),
   );
 
   connectWalletButton = new Button(
-    this.ef.pw.role("button", { name: "Connect Wallet", exact: true }),
+    this.ef.role("button", {
+      name: "Connect Wallet",
+      exact: true,
+    }),
   );
 
-  walletSettingsButton = new Button(this.ef.pw.text("0x", { exact: false }));
+  walletSettingsButton = new Button(this.ef.text("0x", { exact: false }));
+
+  networkDetailsButton = new Button(
+    this.ef.class(
+      "px-2.5 h-7 mt-2 bg-gray-100 dark:bg-neutral-800 rounded-[100px] justify-end items-center gap-1.5 inline-flex",
+    ),
+  );
 
   addressCopiedNotificationLabel = new Label(
-    this.ef.pw.text("Address copied to clipboard"),
+    this.ef.text("Address copied to clipboard"),
   );
 
   failedSwitchNetworkNotificationLabel = new Label(
-    this.ef.pw.text("Could not switch"),
+    this.ef.text("Could not switch"),
   );
 
   staticElements = [this.headerConnectWalletButton];

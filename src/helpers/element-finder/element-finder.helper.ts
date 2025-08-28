@@ -1,64 +1,94 @@
-import { ElementsFinderHelper } from "./elements-finder.helper";
+import { Locator, Page } from "@playwright/test";
+
 import {
-  IElementFinderArgs,
-  IElementSearcher,
-  IElementSearchOptions,
-  FindElement,
-} from "./types/index.types";
-import { Locator } from "@playwright/test";
-import { BaseElementFinderHelper } from "@helpers/element-finder/base-element-finder.helper";
-import { ElementFinderInterface } from "@helpers/element-finder/types/element-finder.types";
-import { PwElementFinderHelper } from "@helpers/element-finder/pw/pw-element-finder.helper";
+  AttributeRoles,
+  ElementAttribute,
+  IBuildLocatorParams,
+  ICustomFinderParams,
+  IPwByRoleFinderParams,
+  IPwFinderParams,
+} from "./element-finder.helpet.types";
 
-export class ElementFinderHelper
-  extends BaseElementFinderHelper<IElementSearcher>
-  implements ElementFinderInterface
-{
-  private readonly searchRoot: FindElement = null;
+export class ElementFinderHelper {
+  constructor(protected readonly pwPage: Page) {}
 
-  constructor(params: IElementFinderArgs) {
-    super(params);
-    const { searchRoot } = params;
-    this.searchRoot = searchRoot;
+  text(text: string | RegExp, options: IPwFinderParams = {}): Locator {
+    return this.pwPage.getByText(text, options);
   }
 
-  get all(): ElementsFinderHelper {
-    return new ElementsFinderHelper({
-      page: this.page,
-      searchRoot: this.searchRoot,
+  altText(text: string, options: IPwFinderParams = {}): Locator {
+    return this.pwPage.getByAltText(text, options);
+  }
+
+  title(text: string, options: IPwFinderParams = {}): Locator {
+    return this.pwPage.getByTitle(text, options);
+  }
+
+  label(text: string, options: IPwFinderParams = {}): Locator {
+    return this.pwPage.getByLabel(text, options);
+  }
+
+  role(role: AttributeRoles, options: IPwByRoleFinderParams = {}): Locator {
+    return this.pwPage.getByRole(role, options);
+  }
+
+  custom(params: IBuildLocatorParams): Locator {
+    return this.pwPage.locator(this.buildLocator(params));
+  }
+
+  dataTestId(
+    dataTestId: string,
+    { exact = true, followBy }: ICustomFinderParams = {},
+  ): Locator {
+    return exact
+      ? this.pwPage.getByTestId(dataTestId)
+      : this.custom({
+          attributeName: ElementAttribute.testId,
+          attributeValue: dataTestId,
+          exact,
+          followBy,
+        });
+  }
+
+  class(className: string, { exact, followBy }: ICustomFinderParams = {}) {
+    return this.custom({
+      attributeName: ElementAttribute.className,
+      attributeValue: className,
+      exact,
+      followBy,
     });
   }
 
-  get pw(): PwElementFinderHelper {
-    return new PwElementFinderHelper({
-      page: this.page,
-      searchRoot: this.searchRoot,
+  id(id: string, { exact, followBy }: ICustomFinderParams = {}) {
+    return this.custom({
+      attributeName: ElementAttribute.id,
+      attributeValue: id,
+      exact,
+      followBy,
     });
   }
 
-  protected search(
-    locator: string,
-    options: IElementSearchOptions = {},
-  ): IElementSearcher {
-    const { takeFirstElement, frameLocator } = options;
-    const findElement = async (): Promise<Locator> => {
-      const root = this.searchRoot ? await this.searchRoot() : this.page;
-      const element =
-        frameLocator?.length > 0
-          ? root.frameLocator(frameLocator).locator(locator)
-          : root.locator(locator);
-      return takeFirstElement ? element.first() : element;
-    };
-    const nested = (): ElementFinderInterface => {
-      return new ElementFinderHelper({
-        page: this.page,
-        searchRoot: () => findElement(),
-      });
-    };
-    return {
-      findElement,
-      nested,
-      locator,
-    };
+  name(name: string, { exact, followBy }: ICustomFinderParams = {}) {
+    return this.custom({
+      attributeName: ElementAttribute.name,
+      attributeValue: name,
+      exact,
+      followBy,
+    });
+  }
+
+  private buildLocator({
+    attributeName,
+    attributeValue,
+    followBy: followingBy,
+    exact = true,
+  }: IBuildLocatorParams): string {
+    const locatorParts: string[] = [];
+    const operator = exact ? "=" : "*=";
+    const attributeSelector = `[${attributeName}${operator}"${attributeValue}"]`;
+
+    locatorParts.push(attributeSelector);
+    if (followingBy) locatorParts.push(followingBy);
+    return locatorParts.join(" ");
   }
 }

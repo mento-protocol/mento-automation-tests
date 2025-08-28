@@ -12,9 +12,9 @@ export class WalletSettingsPopupPage extends BasePage {
     return new Label(this.ef.dataTestId(`walletSettings_${name}_balance`));
   }
 
-  copyAddressButton = new Button(this.ef.pw.text("Copy Address"));
-  changeNetworkButton = new Button(this.ef.pw.text("Change Network"));
-  disconnectButton = new Button(this.ef.pw.text("Disconnect"));
+  copyAddressButton = new Button(this.ef.text("Copy Address"));
+  changeNetworkButton = new Button(this.ef.text("Change Network"));
+  disconnectButton = new Button(this.ef.text("Disconnect"));
 
   staticElements = [this.copyAddressButton];
 }

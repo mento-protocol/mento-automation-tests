@@ -1,8 +1,8 @@
-import { ElementSearcher } from "@helpers/element-finder/types/index.types";
+import { Locator } from "@playwright/test";
 import { BaseElement, IButton } from "../index";
 
 export class Button extends BaseElement implements IButton {
-  constructor(protected override elementSearcher: ElementSearcher) {
-    super(elementSearcher);
+  constructor(protected override element: Locator) {
+    super(element);
   }
 }

@@ -29,7 +29,7 @@ export const testFixture = synpressFixture.extend<IApplicationFixtures>({
   web: async ({ context, page, metamaskHelper, contractHelper }, use) => {
     const assembler = new AssemblerHelper({
       browserHelper: new BrowserHelper({ pwPage: page, pwContext: context }),
-      elementFinder: new ElementFinderHelper({ page }),
+      elementFinder: new ElementFinderHelper(page),
       metamaskHelper,
       contractHelper,
     });

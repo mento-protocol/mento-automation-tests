@@ -7,9 +7,9 @@ export class SlippageModalPage extends BasePage {
     super(ef);
   }
 
-  headerLabel = new Label(this.ef.pw.text("Slippage Tolerance"));
-  closeButton = new Button(this.ef.pw.text("Close"));
-  confirmButton = new Button(this.ef.pw.text("Confirm"));
+  headerLabel = new Label(this.ef.text("Slippage Tolerance"));
+  closeButton = new Button(this.ef.text("Close"));
+  confirmButton = new Button(this.ef.text("Confirm"));
   customSlippageInput = new Input(this.ef.dataTestId("customSlippageInput"));
   slippageButtons = {
     "0.5%": new Button(this.ef.dataTestId("slippageOption_0.5")),

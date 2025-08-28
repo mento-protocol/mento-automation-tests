@@ -7,61 +7,55 @@ export class CreateProposalPage extends BasePage {
     super(ef);
   }
 
-  headerPageLabel = new Label(this.ef.pw.text("Create New Proposal"));
+  headerPageLabel = new Label(this.ef.text("Create New Proposal"));
 
-  nextButton = new Button(
-    this.ef.pw.role("button", { name: "Next" }, { takeFirstElement: true }),
-  );
-  previousButton = new Button(this.ef.pw.dataTestId("previousButton"));
+  nextButton = new Button(this.ef.role("button", { name: "Next" }).first());
+  previousButton = new Button(this.ef.dataTestId("previousButton"));
 
   proposalDetailsStage = {
-    stageLabel: new Label(this.ef.pw.dataTestId("proposalDetailsStageLabel")),
-    titleInput: new Input(this.ef.pw.dataTestId("proposalTitleInput")),
-    descriptionInput: new Input(
-      this.ef.pw.dataTestId("proposalDescriptionInput"),
-    ),
+    stageLabel: new Label(this.ef.dataTestId("proposalDetailsStageLabel")),
+    titleInput: new Input(this.ef.dataTestId("proposalTitleInput")),
+    descriptionInput: new Input(this.ef.dataTestId("proposalDescriptionInput")),
   };
 
   executionCodeStage = {
-    stageLabel: new Label(this.ef.pw.dataTestId("executionCodeStageLabel")),
-    codeInput: new Input(this.ef.pw.dataTestId("executionCodeInput")),
+    stageLabel: new Label(this.ef.dataTestId("executionCodeStageLabel")),
+    codeInput: new Input(this.ef.dataTestId("executionCodeInput")),
   };
 
   reviewStage = {
-    stageLabel: new Label(this.ef.pw.dataTestId("reviewStageLabel")),
+    stageLabel: new Label(this.ef.dataTestId("reviewStageLabel")),
     createProposalButton: new Button(
-      this.ef.pw.dataTestId("createProposalButton"),
+      this.ef.dataTestId("createProposalButton"),
     ),
     seeAllProposalDetailsButton: new Button(
-      this.ef.pw.dataTestId("seeAll_proposalDetailsButton"),
+      this.ef.dataTestId("seeAll_proposalDetailsButton"),
     ),
     proposalDetailsContent: new Label(
-      this.ef.pw.dataTestId("proposalDetailsContent"),
+      this.ef.dataTestId("proposalDetailsContent"),
     ),
     seeLessProposalDetailsButton: new Button(
-      this.ef.pw.dataTestId("seeLess_proposalDetailsButton"),
+      this.ef.dataTestId("seeLess_proposalDetailsButton"),
     ),
     seeAllExecutionCodeButton: new Button(
-      this.ef.pw.dataTestId("seeAll_executionCodeButton"),
+      this.ef.dataTestId("seeAll_executionCodeButton"),
     ),
-    executionCodeContent: new Label(
-      this.ef.pw.dataTestId("executionCodeContent"),
-    ),
+    executionCodeContent: new Label(this.ef.dataTestId("executionCodeContent")),
     seeLessExecutionCodeButton: new Button(
-      this.ef.pw.dataTestId("seeLess_executionCodeButton"),
+      this.ef.dataTestId("seeLess_executionCodeButton"),
     ),
   };
 
   confirmProposalPopup = new Label(
-    this.ef.pw.text("Please sign the transaction in your wallet"),
+    this.ef.text("Please sign the transaction in your wallet"),
   );
   proposalSuccessToast = {
-    toast: new Label(this.ef.pw.text("Proposal created successfully!")),
-    seeDetailsButton: new Button(this.ef.pw.text("See Details")),
+    toast: new Label(this.ef.text("Proposal created successfully!")),
+    seeDetailsButton: new Button(this.ef.text("See Details")),
   };
 
   proposalCreationRejectedByUserToastLabel = new Label(
-    this.ef.pw.text("Proposal creation rejected by user"),
+    this.ef.text("Proposal creation rejected by user"),
   );
 
   staticElements = [this.headerPageLabel, this.proposalDetailsStage.titleInput];

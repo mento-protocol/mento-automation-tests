@@ -9,14 +9,12 @@ export class SelectTokenModalPage extends BasePage {
   }
 
   async getAllValidTokenNames(): Promise<string[]> {
-    const allTokens = await this.ef.all.dataTestId("validToken").findElements();
+    const allTokens = await this.ef.dataTestId("validToken").all();
     return Promise.all(allTokens.map(token => token.textContent()));
   }
 
   async getAllInvalidTokenNames(): Promise<string[]> {
-    const allTokens = await this.ef.all
-      .dataTestId("invalidToken")
-      .findElements();
+    const allTokens = await this.ef.dataTestId("invalidToken").all();
     return Promise.all(allTokens.map(token => token.textContent()));
   }
 
@@ -45,7 +43,7 @@ export class SelectTokenModalPage extends BasePage {
     };
   }
 
-  title = new Label(this.ef.pw.text("Select asset to", { exact: false }));
+  title = new Label(this.ef.text("Select asset to", { exact: false }));
 
   staticElements = [this.title];
 }

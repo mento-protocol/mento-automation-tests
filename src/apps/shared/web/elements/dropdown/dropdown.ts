@@ -1,14 +1,13 @@
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import {
   BaseElement,
-  IDropdown,
   IDropdownArgs,
   ISelectOptionByNameParams,
 } from "../index";
 
 const logger = loggerHelper.get("DropdownPe");
 
-export class Dropdown<Options> extends BaseElement implements IDropdown {
+export class Dropdown<Options> extends BaseElement {
   readonly options: Options = null;
   constructor(args: IDropdownArgs<Options>) {
     const { dropdownButton, options } = args;

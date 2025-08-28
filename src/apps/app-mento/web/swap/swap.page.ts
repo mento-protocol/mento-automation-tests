@@ -9,26 +9,26 @@ export class SwapPage extends BasePage {
   }
 
   getSelectedTokenLabel(tokenName: Token) {
-    return new Label(this.ef.pw.text(tokenName, { exact: true }));
+    return new Label(this.ef.text(tokenName, { exact: true }));
   }
 
   invalidPairTooltip = new Label(
-    this.ef.pw.dataTestId("invalidPairTooltip", {}, { takeFirstElement: true }),
+    this.ef.dataTestId("invalidPairTooltip").first(),
   );
   selectSellTokenButton = new Button(
     this.ef.dataTestId("selectSellTokenButton"),
   );
   selectBuyTokenButton = new Button(this.ef.dataTestId("selectBuyTokenButton"));
   selectTokenToSellLabel = new Button(
-    this.ef.pw.role("button", { name: "Select token to sell" }),
+    this.ef.role("button", { name: "Select token to sell" }),
   );
   selectTokenToBuyLabel = new Button(
-    this.ef.pw.role("button", { name: "Select token to buy" }),
+    this.ef.role("button", { name: "Select token to buy" }),
   );
-  headerLabel = new Label(this.ef.pw.text("Swap"));
+  headerLabel = new Label(this.ef.text("Swap"));
   slippageButton = new Button(this.ef.dataTestId("slippageButton"));
   swapInputsButton = new Button(this.ef.dataTestId("swapInputsButton"));
-  loadingLabel = new Label(this.ef.pw.dataTestId("loadingLabel"));
+  loadingLabel = new Label(this.ef.dataTestId("loadingLabel"));
   swapButton = new Button(this.ef.dataTestId("swapButton"));
   approveButton = new Button(this.ef.dataTestId("approveButton"));
 
@@ -38,29 +38,25 @@ export class SwapPage extends BasePage {
   sellAmountInput = new Input(this.ef.dataTestId("sellAmountInput"));
   buyAmountInput = new Input(this.ef.dataTestId("buyAmountInput"));
 
-  useMaxButton = new Button(this.ef.pw.role("button", { name: "MAX" }));
+  useMaxButton = new Button(this.ef.role("button", { name: "MAX" }));
   considerKeepNotificationLabel = new Label(
-    this.ef.pw.text(
-      "Consider keeping some CELO",
-      {},
-      { takeFirstElement: true },
-    ),
+    this.ef.text("Consider keeping some CELO").first(),
   );
   amountRequiredButton = new Button(
-    this.ef.pw.role("button", { name: "Amount Required" }),
+    this.ef.role("button", { name: "Amount Required" }),
   );
   insufficientBalanceButton = new Button(
-    this.ef.pw.dataTestId("insufficientBalanceButton"),
+    this.ef.dataTestId("insufficientBalanceButton"),
   );
   swapsExceedsLimitsButton = new Button(
-    this.ef.pw.dataTestId("swapsExceedsTradingLimitButton"),
+    this.ef.dataTestId("swapsExceedsTradingLimitButton"),
   );
   amountTooSmallButton = new Button(
-    this.ef.pw.role("button", { name: "Amount too small" }),
+    this.ef.role("button", { name: "Amount too small" }),
   );
-  errorButton = new Button(this.ef.pw.role("button", { name: "Error" }));
+  errorButton = new Button(this.ef.role("button", { name: "Error" }));
   exceedsTradingLimitNotificationLabel = new Label(
-    this.ef.pw.text("amount exceeds the current trading limit"),
+    this.ef.text("amount exceeds the current trading limit"),
   );
 
   staticElements = [this.headerLabel];

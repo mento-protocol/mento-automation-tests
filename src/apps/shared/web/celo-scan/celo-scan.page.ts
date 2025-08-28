@@ -7,14 +7,11 @@ export class CeloScanPage extends BasePage {
     super(ef);
   }
 
-  logsButton = new Button(this.ef.pw.text("Logs"));
+  logsButton = new Button(this.ef.text("Logs"));
 
   header = new Label(this.ef.id("masterTopBar"));
 
-  logRows = new ElementsList(
-    Label,
-    this.ef.all.className("mt-2 mt-sm-1 d-lg-flex"),
-  );
+  logRows = new ElementsList(Label, this.ef.class("mt-2 mt-sm-1 d-lg-flex"));
 
   staticElements = [this.header];
 }
