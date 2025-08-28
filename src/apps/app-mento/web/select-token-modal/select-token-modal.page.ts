@@ -18,6 +18,10 @@ export class SelectTokenModalPage extends BasePage {
     return Promise.all(allTokens.map(token => token.textContent()));
   }
 
+  anyToken = new Button(
+    this.ef.dataTestId("tokenOption_", { exact: false }).first(),
+  );
+
   get tokens(): ITokenDropdownOptions {
     return {
       [Token.CELO]: new Button(this.ef.dataTestId("tokenOption_CELO")),
@@ -45,7 +49,7 @@ export class SelectTokenModalPage extends BasePage {
 
   title = new Label(this.ef.text("Select asset to", { exact: false }));
 
-  staticElements = [this.title];
+  staticElements = [this.title, this.anyToken];
 }
 
 export interface ITokenDropdownOptions extends Record<string, Button> {

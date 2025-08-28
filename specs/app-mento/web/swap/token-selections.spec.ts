@@ -5,6 +5,7 @@ import { IExecution } from "@helpers/suite/suite.types";
 import { TestTag } from "@constants/test.constants";
 import { testSuites } from "@constants/test-suites.constant";
 import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 const testCases = testSuites.swap.tokenSelections;
 
@@ -118,6 +119,9 @@ suite({
           });
           await app.swap.openSelectTokenModal({
             tokenType: "buy",
+          });
+          await waiterHelper.sleep(2000, {
+            sleepReason: "To get all tokens set",
           });
           const validTokens =
             await app.swap.selectTokenModalPage.getAllValidTokenNames();
