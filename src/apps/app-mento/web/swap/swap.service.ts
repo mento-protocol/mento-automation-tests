@@ -353,19 +353,6 @@ export class SwapService extends BaseService {
       tokenType === "sell"
         ? this.page.selectSellTokenButton
         : this.page.selectBuyTokenButton;
-    // TODO: think about
-    // waiterHelper.retry(
-    //   async () => {
-    //     await selectTokenButton.click({
-    //       force: true,
-    //       timeout: timeouts.s,
-    //       times: clicksOnButton,
-    //     });
-    //     return this.selectTokenModalPage.verifyIsOpen();
-    //   },
-    //   3,
-    //   { errorMessage: "Select token modal is not opened" },
-    // );
     await selectTokenButton.click({
       force: true,
       timeout: timeouts.s,

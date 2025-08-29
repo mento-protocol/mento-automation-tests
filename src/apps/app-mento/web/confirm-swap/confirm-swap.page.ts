@@ -17,35 +17,31 @@ export class ConfirmSwapPage extends BasePage {
   approveButton = new Button(this.ef.dataTestId("approveButton"));
 
   approveCompleteNotificationLabel = new Label(
-    this.ef.pw.text("Approve Successful"),
+    this.ef.text("Approve Successful"),
   );
-  swapCompleteNotificationLabel = new Label(this.ef.pw.text("Swap Successful"));
+  swapCompleteNotificationLabel = new Label(this.ef.text("Swap Successful"));
   seeDetailsLinkButton = new Button(
-    this.ef.pw.role("link", { name: "See Details" }),
+    this.ef.role("link", { name: "See Details" }),
   );
 
-  headerLabel = new Label(this.ef.pw.text("Confirm Swap"));
+  headerLabel = new Label(this.ef.text("Confirm Swap"));
   swapInfo = {
     all: new ElementsList(
       Label,
-      this.ef.all.className("w-32 pr-4 text-right dark:text-white"),
+      this.ef.class("w-32 pr-4 text-right dark:text-white"),
     ),
     maxSlippage: new Label(
-      this.ef.all
-        .className("w-32 pr-4 text-right dark:text-white")
-        .getElementByIndex(0),
+      this.ef.class("w-32 pr-4 text-right dark:text-white").nth(0),
     ),
     minReceived: new Label(
-      this.ef.all
-        .className("w-32 pr-4 text-right dark:text-white")
-        .getElementByIndex(1),
+      this.ef.class("w-32 pr-4 text-right dark:text-white").first(),
     ),
   };
   rejectApprovalTransactionNotificationLabel = new Label(
-    this.ef.pw.text("Approval transaction rejected by user"),
+    this.ef.text("Approval transaction rejected by user"),
   );
   rejectSwapTransactionNotificationLabel = new Label(
-    this.ef.pw.text("Swap transaction rejected by user"),
+    this.ef.text("Swap transaction rejected by user"),
   );
 
   staticElements = [this.headerLabel];

@@ -1,6 +1,5 @@
 import { Locator } from "@playwright/test";
 
-import { ElementSearcher } from "@helpers/element-finder/types/index.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import {
   IClickParams,
@@ -15,18 +14,10 @@ import { timeouts } from "@constants/timeouts.constants";
 const logger = loggerHelper.get("BaseElement");
 
 export abstract class BaseElement {
-  protected constructor(protected elementSearcher: ElementSearcher) {}
-
-  protected get element(): Promise<Locator> {
-    return this.elementSearcher.findElement();
-  }
-
-  protected get locator(): string {
-    return this.elementSearcher.locator;
-  }
+  protected constructor(protected element: Locator) {}
 
   async isDisplayed(): Promise<boolean> {
-    return (await this.element).isVisible();
+    return await this.element.isVisible();
   }
 
   async isEnabled({
@@ -34,10 +25,9 @@ export abstract class BaseElement {
     throwError = true,
   }: IGetTextParams = {}): Promise<boolean> {
     try {
-      await this.waitUntilDisplayed(timeout, { throwError });
-      return (await this.element).isEnabled({ timeout });
+      return await this.element.isEnabled({ timeout });
     } catch (error) {
-      const errorMessage = `Can't get text on element with '${this.locator}' locator.\nError details: ${error.message}`;
+      const errorMessage = `Can't check for enabled on '${this.element}' element.\nDetails: ${error.message}`;
       logger.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
@@ -53,37 +43,30 @@ export abstract class BaseElement {
     force = false,
     times,
   }: IClickParams = {}): Promise<void> {
-    const element = await this.element;
-    await this.waitUntilDisplayed(timeout, { throwError });
     try {
-      if (await this.waitUntilEnabled(timeout, { throwError: false })) {
-        await element.click({ force, timeout, clickCount: times });
+      if (await this.isEnabled()) {
+        await this.element.click({ timeout, force, clickCount: times });
       } else {
         logger.warn(
-          `Element with '${this.locator}' is disabled - force clicking...`,
+          `Element with '${this.element}' is disabled - force clicking...`,
         );
-        await element.click({ force: true, timeout, clickCount: times });
+        await this.element.click({ force: true, timeout, clickCount: times });
       }
     } catch (error) {
-      const errorMessage = `Can't click on element with '${this.locator}' locator.\nError details: ${error.message}`;
+      const errorMessage = `Can't click on '${this.element}' element.\nDetails: ${error.message}`;
       if (throwError) throw new Error(errorMessage);
       logger.error(errorMessage);
     }
   }
 
-  async jsClick(): Promise<void> {
-    return (await this.element).dispatchEvent("click");
-  }
-
   async getText({
     timeout = timeouts.action,
     throwError = true,
-  }: IGetTextParams = {}): Promise<string> {
+  }: IGetValueParams = {}): Promise<string> {
     try {
-      await this.waitUntilDisplayed(timeout, { throwError });
-      return (await this.element).textContent({ timeout });
+      return await this.element.textContent({ timeout });
     } catch (error) {
-      const errorMessage = `Can't get text on element with '${this.locator}' locator.\nError details: ${error.message}`;
+      const errorMessage = `Can't get text on '${this.element}' element'.\nDetails: ${error.message}`;
       logger.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
@@ -94,10 +77,9 @@ export abstract class BaseElement {
     throwError = true,
   }: IGetValueParams = {}): Promise<string> {
     try {
-      await this.waitUntilDisplayed(timeout, { throwError });
-      return (await this.element).inputValue();
+      return await this.element.inputValue({ timeout });
     } catch (error) {
-      const errorMessage = `Can't get value on element with '${this.locator}' locator.\nError details: ${error.message}`;
+      const errorMessage = `Can't get value on '${this.element}' element'.\nDetails: ${error.message}`;
       logger.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
@@ -111,7 +93,7 @@ export abstract class BaseElement {
       await this.waitUntilDisplayed(timeout, { throwError });
       return (await this.element).innerHTML({ timeout });
     } catch (error) {
-      const errorMessage = `Can't get HTML on element with '${this.locator}' locator.\nError details: ${error.message}`;
+      const errorMessage = `Can't get HTML on element with '${this.element}' locator.\nError details: ${error.message}`;
       logger.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
@@ -121,8 +103,13 @@ export abstract class BaseElement {
     throwError = true,
     timeout,
   }: IHoverParams = {}): Promise<void> {
-    await this.waitUntilDisplayed(timeout, { throwError });
-    await (await this.element).hover();
+    try {
+      return await this.element.hover({ timeout });
+    } catch (error) {
+      const errorMessage = `Can't hover on '${this.element}' element.\nDetails: ${error.message}`;
+      logger.error(errorMessage);
+      if (throwError) throw new Error(errorMessage);
+    }
   }
 
   async waitUntilDisplayed(
@@ -133,11 +120,11 @@ export abstract class BaseElement {
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
     try {
-      await (await this.element).waitFor({ timeout, state: "visible" });
+      await this.element.waitFor({ timeout, state: "visible" });
       return true;
     } catch (error) {
       const errorLogType = throwError ? "error" : "warn";
-      logger[errorLogType](`${errorMessage}: ${this.locator}`);
+      logger[errorLogType](`${errorMessage}: ${this.element}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }
@@ -153,10 +140,10 @@ export abstract class BaseElement {
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
     try {
-      await (await this.element).waitFor({ timeout, state: "hidden" });
+      await this.element.waitFor({ timeout, state: "hidden" });
       return true;
     } catch (error) {
-      logger.error(`${errorMessage}: ${this.elementSearcher.locator}`);
+      logger.error(`${errorMessage}: ${this.element}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }
@@ -172,10 +159,10 @@ export abstract class BaseElement {
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
     try {
-      await (await this.element).waitFor({ timeout, state: "attached" });
+      await this.element.waitFor({ timeout, state: "attached" });
       return true;
     } catch (error) {
-      logger.error(`${errorMessage}: ${this.elementSearcher.locator}`);
+      logger.error(`${errorMessage}: ${this.element}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }
@@ -191,9 +178,9 @@ export abstract class BaseElement {
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
     try {
-      return waiterHelper.wait(async () => this.isEnabled(), timeout);
+      return await waiterHelper.wait(async () => this.isEnabled(), timeout);
     } catch (error) {
-      logger.warn(`${errorMessage}: ${this.elementSearcher.locator}`);
+      logger.warn(`${errorMessage}: ${this.element}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }

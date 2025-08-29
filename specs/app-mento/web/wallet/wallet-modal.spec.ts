@@ -32,8 +32,8 @@ suite({
         await app.main.openConnectWalletModal();
         await app.main.connectWalletModal.close();
         expect
-          .soft(await app.main.connectWalletModal.page.isOpen())
-          .toBeFalsy();
+          .soft(await app.main.connectWalletModal.page.isNotOpen())
+          .toBeTruthy();
         expect(await app.main.page.isOpen()).toBeTruthy();
       },
     },

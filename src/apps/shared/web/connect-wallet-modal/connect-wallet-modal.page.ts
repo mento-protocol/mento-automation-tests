@@ -11,10 +11,10 @@ export class ConnectWalletModalPage extends BasePage {
   connectWalletModalLabel = new Label(this.ef.id("rk_connect_title"));
 
   walletList = {
-    [WalletName.Metamask]: new Button(this.ef.pw.text("MetaMask")),
+    [WalletName.Metamask]: new Button(this.ef.text("MetaMask")),
   };
 
-  closeButton = new Button(this.ef.pw.label("Close"));
+  closeButton = new Button(this.ef.label("Close"));
 
   staticElements = [this.connectWalletModalLabel];
 }

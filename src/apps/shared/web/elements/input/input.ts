@@ -1,9 +1,10 @@
-import { ElementSearcher } from "@helpers/element-finder/types/index.types";
+import { Locator } from "@playwright/test";
+
 import { BaseElement, IInput } from "../index";
 
 export class Input extends BaseElement implements IInput {
-  constructor(protected override elementSearcher: ElementSearcher) {
-    super(elementSearcher);
+  constructor(protected override element: Locator) {
+    super(element);
   }
 
   async enterText(

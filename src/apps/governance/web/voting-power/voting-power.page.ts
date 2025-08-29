@@ -7,41 +7,41 @@ export class VotingPowerPage extends BasePage {
     super(ef);
   }
 
-  headerLabel = new Label(this.ef.pw.dataTestId("yourVotingPowerTitleLabel"));
+  headerLabel = new Label(this.ef.dataTestId("yourVotingPowerTitleLabel"));
 
   // TODO: Should be specified as "lockAmountInput"
-  lockAmountInput = new Input(this.ef.pw.dataTestId("sellAmountInput"));
-  datepickerButton = new Button(this.ef.pw.dataTestId("datepickerButton"));
+  lockAmountInput = new Input(this.ef.dataTestId("sellAmountInput"));
+  datepickerButton = new Button(this.ef.dataTestId("datepickerButton"));
 
-  enterAmountButton = new Button(this.ef.pw.dataTestId("enterAmountButton"));
+  enterAmountButton = new Button(this.ef.dataTestId("enterAmountButton"));
   insufficientBalanceButton = new Button(
-    this.ef.pw.dataTestId("insufficientBalanceButton"),
+    this.ef.dataTestId("insufficientBalanceButton"),
   );
-  approveMentoButton = new Button(this.ef.pw.dataTestId("approveMentoButton"));
-  topUpLockButton = new Button(this.ef.pw.dataTestId("topUpLockButton"));
-  extendLockButton = new Button(this.ef.pw.dataTestId("extendLockButton"));
+  approveMentoButton = new Button(this.ef.dataTestId("approveMentoButton"));
+  topUpLockButton = new Button(this.ef.dataTestId("topUpLockButton"));
+  extendLockButton = new Button(this.ef.dataTestId("extendLockButton"));
   topUpAndExtendLockButton = new Button(
-    this.ef.pw.dataTestId("topUpAndExtendLockButton"),
+    this.ef.dataTestId("topUpAndExtendLockButton"),
   );
 
   // actionButton = new Button(this.ef.pw.dataTestId("actionButton"));
 
   topUpLockPopupDescriptionLabel = new Label(
-    this.ef.pw.text("Continue in wallet"),
+    this.ef.text("Continue in wallet"),
   );
   lockUpdatedSuccessfullyNotificationLabel = new Label(
-    this.ef.pw.text("Lock updated successfully"),
+    this.ef.text("Lock updated successfully"),
   );
-  veMentoReceiveLabel = new Label(this.ef.pw.dataTestId("veMentoReceiveLabel"));
+  veMentoReceiveLabel = new Label(this.ef.dataTestId("veMentoReceiveLabel"));
 
   existingLock = {
-    veMentoLabel: new Label(this.ef.pw.dataTestId("existingLockVeMentoLabel")),
-    mentoLabel: new Label(this.ef.pw.dataTestId("existingLockMentoLabel")),
+    veMentoLabel: new Label(this.ef.dataTestId("existingLockVeMentoLabel")),
+    mentoLabel: new Label(this.ef.dataTestId("existingLockMentoLabel")),
     withdrawableMentoLabel: new Label(
-      this.ef.pw.dataTestId("existingLockWithdrawableMentoLabel"),
+      this.ef.dataTestId("existingLockWithdrawableMentoLabel"),
     ),
     expirationDateLabel: new Label(
-      this.ef.pw.dataTestId("existingLockExpirationDateLabel"),
+      this.ef.dataTestId("existingLockExpirationDateLabel"),
     ),
   };
 

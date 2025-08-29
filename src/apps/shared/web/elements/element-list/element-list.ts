@@ -1,30 +1,30 @@
 import { Locator } from "@playwright/test";
-import _ from "lodash";
+import { BaseElement } from "../base/base.element";
 
-import { Constructable, IElementList, BaseElement } from "../index";
-import { IElementsSearcher } from "@helpers/element-finder/types/index.types";
-
-export class ElementsList<T extends BaseElement> implements IElementList<T> {
+export class ElementsList<T extends BaseElement> {
   constructor(
-    protected DesiredComponent: Constructable<T>,
-    public es: IElementsSearcher,
+    protected DesiredElement: Constructable<T>,
+    public element: Locator,
   ) {}
 
-  get elements(): Promise<Locator[]> {
-    return this.es.findElements();
+  async getElements(): Promise<Locator[]> {
+    return this.element.all();
   }
 
   getElementByIndex(index: number): T {
-    return new this.DesiredComponent(this.es.getElementByIndex(index));
+    return new this.DesiredElement(this.element.nth(index));
   }
 
   async getLength(): Promise<number> {
-    return (await this.elements).length;
+    return (await this.getElements()).length;
   }
 
-  async getAllElements(): Promise<T[]> {
-    return _.times(await this.getLength()).map(index =>
-      this.getElementByIndex(index),
-    );
-  }
+  // async getAllElements(): Promise<T[]> {
+  //   return _.times(await this.getLength()).map(index =>
+  //     this.getElementByIndex(index),
+  //   );
+  // }
 }
+
+// eslint-disable-next-line
+export type Constructable<T> = new (...args: any[]) => T;

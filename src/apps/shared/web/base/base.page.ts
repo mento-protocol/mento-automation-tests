@@ -1,9 +1,9 @@
-import { ElementFinderInterface } from "@helpers/element-finder/types/element-finder.types";
 import { timeouts } from "@constants/timeouts.constants";
 import { promiseHelper } from "@helpers/promise/promise.helper";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
-import { BaseElement, Label } from "@shared/web/elements/index";
+import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
+import { BaseElement, Label } from "../elements";
 
 const log = loggerHelper.get("BasePage");
 
@@ -11,7 +11,7 @@ const log = loggerHelper.get("BasePage");
 export abstract class BasePage {
   protected abstract staticElements: BaseElement[];
 
-  protected constructor(protected ef: ElementFinderInterface) {}
+  protected constructor(protected ef: ElementFinderHelper) {}
 
   rateLabel = new Label(this.ef.dataTestId("rateLabel"));
 

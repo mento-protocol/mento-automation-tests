@@ -10,49 +10,45 @@ export class ProposalViewPage extends BasePage {
 
   getParticipantAddressLabel(address: string) {
     const truncatedAddress = web3Helper.truncateAddress(address);
-    return new Label(this.ef.pw.role("button", { name: truncatedAddress }));
+    return new Label(this.ef.role("button", { name: truncatedAddress }));
   }
 
-  proposalTitleLabel = new Label(this.ef.pw.dataTestId("proposalTitleLabel"));
+  proposalTitleLabel = new Label(this.ef.dataTestId("proposalTitleLabel"));
   proposalDescriptionLabel = new Label(
-    this.ef.pw.dataTestId("proposalDescriptionLabel"),
+    this.ef.dataTestId("proposalDescriptionLabel"),
   );
-  proposalStateLabel = new Label(this.ef.pw.dataTestId("proposalStateLabel"));
-  votingInfoLoader = new Label(
-    this.ef.pw.text("Loading voting information..."),
-  );
+  proposalStateLabel = new Label(this.ef.dataTestId("proposalStateLabel"));
+  votingInfoLoader = new Label(this.ef.text("Loading voting information..."));
 
-  quorumReachedLabel = new Button(this.ef.pw.dataTestId("quorumReachedLabel"));
-  totalVotesLabel = new Label(this.ef.pw.dataTestId("totalVotesLabel"));
+  quorumReachedLabel = new Button(this.ef.dataTestId("quorumReachedLabel"));
+  totalVotesLabel = new Label(this.ef.dataTestId("totalVotesLabel"));
 
   voteButtons = {
-    yes: new Button(this.ef.pw.dataTestId("yesProposalButton")),
-    abstain: new Button(this.ef.pw.dataTestId("abstainProposalButton")),
-    no: new Button(this.ef.pw.dataTestId("noProposalButton")),
+    yes: new Button(this.ef.dataTestId("yesProposalButton")),
+    abstain: new Button(this.ef.dataTestId("abstainProposalButton")),
+    no: new Button(this.ef.dataTestId("noProposalButton")),
   };
 
-  usedVoteOptionButton = new Button(
-    this.ef.pw.dataTestId("usedVoteOptionButton"),
-  );
+  usedVoteOptionButton = new Button(this.ef.dataTestId("usedVoteOptionButton"));
 
   participantsTabs = {
-    approve: new Button(this.ef.pw.dataTestId("participantsTabButton_approve")),
-    abstain: new Button(this.ef.pw.dataTestId("participantsTabButton_abstain")),
-    reject: new Button(this.ef.pw.dataTestId("participantsTabButton_reject")),
+    approve: new Button(this.ef.dataTestId("participantsTabButton_approve")),
+    abstain: new Button(this.ef.dataTestId("participantsTabButton_abstain")),
+    reject: new Button(this.ef.dataTestId("participantsTabButton_reject")),
   };
 
   waitingForConfirmationLabel = new Label(
-    this.ef.pw.dataTestId("waitingForConfirmationLabel"),
+    this.ef.dataTestId("waitingForConfirmationLabel"),
   );
   waitingForConfirmationDescriptionLabel = new Label(
-    this.ef.pw.dataTestId("waitingForConfirmationDescriptionLabel"),
+    this.ef.dataTestId("waitingForConfirmationDescriptionLabel"),
   );
 
   voteCastSuccessfullyNotificationLabel = new Label(
-    this.ef.pw.text("Vote cast successfully!"),
+    this.ef.text("Vote cast successfully!"),
   );
   voteCastFailedNotificationLabel = new Label(
-    this.ef.pw.text("Failed to cast vote"),
+    this.ef.text("Failed to cast vote"),
   );
 
   staticElements = [this.proposalTitleLabel, this.proposalStateLabel];
