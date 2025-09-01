@@ -41,8 +41,8 @@ jobs:
       - name: Upload report to GCS
         id: set-url
         run: |
-          # Create a unique run folder
-          RUN_FOLDER="run-${{ github.run_id }}-${{ github.run_number }}"
+          # Create a unique run folder with report name to distinguish between matrix jobs
+          RUN_FOLDER="run-${{ github.run_id }}-${{ github.run_number }}-${{ inputs.NAME }}"
 
           # Upload the report to GCS
           gsutil -m cp -r artifacts/reports/${{ inputs.NAME }}/* gs://${{ env.GCS_BUCKET_NAME }}/$RUN_FOLDER/
