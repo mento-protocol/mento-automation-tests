@@ -51,7 +51,7 @@ export class MainGovernanceService extends BaseService {
   }
 
   async openCreateProposalPage(): Promise<void> {
-    await this.page.createProposalButton.click();
+    await this.page.createProposalButton.click({ timeout: timeouts.xxs });
     await this.createProposalPage.verifyIsOpen();
   }
 
