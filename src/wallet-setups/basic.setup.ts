@@ -13,5 +13,6 @@ const networkDetails = envHelper.isMainnet()
 export default defineWalletSetup(password, async (context, walletPage) => {
   const metamask = new MetaMask(context, walletPage, password);
   await metamask.importWallet(seed);
+  throw new Error("test");
   await metamask.addNetwork(networkDetails);
 });
