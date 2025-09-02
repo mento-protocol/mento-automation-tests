@@ -87,7 +87,7 @@ jobs:
           echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
 
       - name: Run Playwright tests
-        run: xvfb-run npx playwright test
+        run: xvfb-run npm run test
         env:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
