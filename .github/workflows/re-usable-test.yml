@@ -146,7 +146,7 @@ jobs:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
       - name: Upload Playwright report
-        if: ${{ steps.test-run.outcome != 'skipped' && ((inputs.HTML_REPORT_GENERATION == 'true') || (inputs.HTML_REPORT_GENERATION == 'onFailure')) }}
+        if: ${{ steps.test-run.outcome != 'skipped' && ((inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure')) }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.HTML_REPORT_NAME }}
