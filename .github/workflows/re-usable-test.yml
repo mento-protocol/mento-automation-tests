@@ -132,7 +132,7 @@ jobs:
         with:
           timeout_minutes: 3
           max_attempts: 3
-          command: xvfb-run npx synpress src/wallet-setups
+          command: xvfb-run build-synpress-cache
 
       - name: Set current datetime
         run: |
