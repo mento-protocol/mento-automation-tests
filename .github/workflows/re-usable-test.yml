@@ -127,7 +127,12 @@ jobs:
         run: npm run codeCheck
 
       - name: Build Synpress cache
-        run: xvfb-run npx synpress src/wallet-setups
+        id: synpress-cache
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 3
+          max_attempts: 3
+          command: xvfb-run npm run build-synpress-cache
 
       - name: Set current datetime
         run: |
@@ -135,12 +140,13 @@ jobs:
           echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
 
       - name: Run Playwright tests
-        run: xvfb-run npx playwright test
+        id: test-run
+        run: xvfb-run npm run test
         env:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
       - name: Upload Playwright report
-        if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+        if: ${{ steps.test-run.outcome != 'skipped' && ((inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure')) }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.HTML_REPORT_NAME }}
