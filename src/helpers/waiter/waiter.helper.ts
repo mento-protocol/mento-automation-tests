@@ -6,13 +6,13 @@ import {
 import { timeouts } from "@constants/timeouts.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 
-const logger = loggerHelper.get("WaiterHelper");
+const log = loggerHelper.get("WaiterHelper");
 
 export const waiterHelper = {
   sleep(timeout: number, options: ISleepOptions = {}): Promise<void> {
     const { sleepReason, ignoreReason = false } = options;
     ignoreReason ||
-      logger.warn(
+      log.warn(
         `Sleeping ${timeout / 1000} seconds${
           sleepReason ? ` due to: ${sleepReason}` : ""
         }`,
@@ -52,9 +52,7 @@ export const waiterHelper = {
       await this.logErrorAndSleep(errorMessage, caughtError, interval);
     } while (retryCount--);
     throwError && logRetryFailedAndThrow(errorMessage, caughtError);
-    logger.warn(
-      `${errorMessage}${caughtError ? `:${caughtError.message}` : ""}`,
-    );
+    log.warn(`${errorMessage}${caughtError ? `:${caughtError.message}` : ""}`);
   },
 
   async logErrorAndSleep(
@@ -63,9 +61,9 @@ export const waiterHelper = {
     interval: number,
   ): Promise<void> {
     if (err || errorMessage) {
-      logger.warn(`${errorMessage}${err ? `:${err.message}` : ""}`);
+      log.warn(`${errorMessage}${err ? `:${err.message}` : ""}`);
     }
-    logger.warn(`Retrying...`);
+    log.warn(`Retrying...`);
     await this.sleep(interval, { ignoreReason: true });
   },
 
@@ -81,23 +79,46 @@ export const waiterHelper = {
         if (result) {
           return result;
         }
-        errorMessage && logger.warn(errorMessage);
+        errorMessage && log.warn(errorMessage);
         await this.sleep(interval, { ignoreReason: true });
       } catch (error) {
         if (throwError) {
-          errorMessage && logger.error(errorMessage);
+          errorMessage && log.error(errorMessage);
           throw new Error(error);
         }
-        errorMessage && logger.warn(errorMessage);
+        errorMessage && log.warn(errorMessage);
         return false;
       }
     }
-    errorMessage && logger.error(errorMessage);
+    errorMessage && log.error(errorMessage);
     if (throwError) {
       throw new Error(
         `${errorMessage}\nWait timeout has reached with ${timeout} timeout.`,
       );
     }
+  },
+
+  async checkDuring({
+    checkCallback,
+    duringCallback,
+    duringTimeout = timeouts.xxs,
+    errorMessage = `Some check failed during some action`,
+    throwError = true,
+  }: ICheckDuringParams): Promise<boolean> {
+    const logType = throwError ? "error" : "warn";
+    const startTime = Date.now();
+    let result = false;
+
+    while ((await duringCallback()) && hasTime(startTime, duringTimeout)) {
+      try {
+        result = await checkCallback();
+      } catch (error) {
+        const message = `${errorMessage}${error ? `:${error.message}` : ""}`;
+        log[logType](`${message}`);
+        if (throwError) throw message;
+      }
+    }
+    return result;
   },
 };
 
@@ -111,6 +132,14 @@ function logRetryFailedAndThrow(
 ): never {
   const message = `Retry failed: ${errorMessage}
       ${caughtError?.message || ""}`;
-  logger.error(message);
+  log.error(message);
   throw new Error(message);
+}
+
+interface ICheckDuringParams {
+  checkCallback: () => Promise<boolean>;
+  duringCallback: () => Promise<boolean>;
+  duringTimeout?: number;
+  errorMessage?: string;
+  throwError?: boolean;
 }

@@ -1,6 +1,7 @@
 export interface IWaitUntilDisplayed {
   errorMessage?: string;
   throwError?: boolean;
+  shouldLog?: boolean;
 }
 
 export interface IBasePe {

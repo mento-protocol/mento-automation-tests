@@ -17,12 +17,15 @@ export abstract class BasePage {
 
   async isOpen(options: IIsOpenOpts = {}): Promise<boolean> {
     let { retry = 0 } = options;
-    const { timeout = timeouts.isOpenPage, shouldWaitForExist = false } =
-      options;
+    const {
+      timeout = timeouts.isOpenPage,
+      shouldWaitForExist = false,
+      shouldLog = true,
+    } = options;
     const isDisplayedPromises = this.staticElements.map(element =>
       shouldWaitForExist
-        ? element.waitUntilExist(timeout, { throwError: false })
-        : element.waitUntilDisplayed(timeout, { throwError: false }),
+        ? element.waitUntilExist(timeout, { throwError: false, shouldLog })
+        : element.waitUntilDisplayed(timeout, { throwError: false, shouldLog }),
     );
 
     do {
@@ -76,4 +79,5 @@ export interface IIsOpenOpts {
   retry?: number;
   timeout?: number;
   shouldWaitForExist?: boolean;
+  shouldLog?: boolean;
 }

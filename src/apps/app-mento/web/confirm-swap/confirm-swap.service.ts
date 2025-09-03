@@ -32,17 +32,7 @@ export class ConfirmSwapService extends BaseService {
   async confirmApprovalTx(): Promise<void> {
     await this.page.approveButton.click({ timeout: timeouts.s });
     await this.metamask.confirmTransaction();
-    expect
-      .soft(
-        await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
-          timeouts.xl,
-          {
-            errorMessage: "Approve tx notification is not displayed",
-            throwError: false,
-          },
-        ),
-      )
-      .toBeTruthy();
+    await this.expectSuccessApprovalNotification();
   }
 
   async confirmSwapTx({
@@ -51,18 +41,8 @@ export class ConfirmSwapService extends BaseService {
     await this.page.swapButton.click({ timeout: timeouts.s });
     await this.verifyTradingSuspendedCase();
     await this.metamask.confirmTransaction();
-    if (shouldExpectLoading) await this.expectLoading();
-    expect
-      .soft(
-        await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
-          timeouts.m,
-          {
-            errorMessage: "Swap tx notification is not displayed",
-            throwError: false,
-          },
-        ),
-      )
-      .toBeTruthy();
+    if (shouldExpectLoading) await this.expectLoadingDuringTxConfirmation();
+    await this.expectSuccessSwapNotification();
   }
 
   async verifyNoValidMedianCase(): Promise<void> {
@@ -139,26 +119,50 @@ export class ConfirmSwapService extends BaseService {
     await this.page.seeDetailsLinkButton.click();
   }
 
-  async expectLoading(): Promise<void> {
-    while (await this.waitForPageToOpen()) {
-      log.debug(
-        "Loading to be displayed until it's not redirected to main page",
-      );
-      expect
-        .soft(
-          await this.page.loadingLabel.waitUntilDisplayed(timeouts.xxxxs, {
-            errorMessage:
-              "Loading label is not displayed while 'Confirm Swap' page is still open",
+  async expectSuccessApprovalNotification(): Promise<void> {
+    expect
+      .soft(
+        await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
+          timeouts.xl,
+          {
+            errorMessage: "Approve tx notification is not displayed",
             throwError: false,
-          }),
-        )
-        .toBeTruthy();
-    }
+          },
+        ),
+      )
+      .toBeTruthy();
   }
 
-  private async waitForPageToOpen(): Promise<boolean> {
-    await waiterHelper.waitForAnimation();
-    return this.page.isOpen({ timeout: timeouts.xxxs });
+  async expectSuccessSwapNotification(): Promise<void> {
+    expect
+      .soft(
+        await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
+          timeouts.m,
+          {
+            errorMessage: "Swap tx notification is not displayed",
+            throwError: false,
+          },
+        ),
+      )
+      .toBeTruthy();
+  }
+
+  async expectLoadingDuringTxConfirmation(): Promise<void> {
+    const isLoadingDuringConfirmation = await waiterHelper.checkDuring({
+      checkCallback: async () => await this.page.loadingLabel.isDisplayed(),
+      duringCallback: async () => {
+        await waiterHelper.waitForAnimation();
+        return await this.page.isOpen({
+          timeout: timeouts.xxxs,
+          shouldLog: false,
+        });
+      },
+      duringTimeout: timeouts.m,
+      throwError: false,
+      errorMessage:
+        "Loading label is not displayed while 'Confirm Swap' page is still open",
+    });
+    expect.soft(isLoadingDuringConfirmation).toBeTruthy();
   }
 
   async isApproveCompleteNotificationThere(): Promise<boolean> {
