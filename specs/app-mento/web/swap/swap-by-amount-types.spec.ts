@@ -23,7 +23,7 @@ suite({
           tokens: { sell: tokens.from, buy: tokens.to },
           sellAmount: defaultSwapAmount,
         });
-        await app.swap.start();
+        await app.swap.start({ shouldExpectLoading: true });
         await app.main.expectIncreasedBalance({
           initialBalance,
           tokenName: tokens.to,
@@ -40,7 +40,7 @@ suite({
           tokens: { sell: tokens.from, buy: tokens.to },
           buyAmount: defaultSwapAmount,
         });
-        await app.swap.start();
+        await app.swap.start({ shouldExpectLoading: true });
         await app.main.expectIncreasedBalance({
           initialBalance: initialBalance,
           tokenName: tokens.to,

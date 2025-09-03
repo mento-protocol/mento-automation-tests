@@ -17,13 +17,17 @@ export abstract class BasePage {
 
   async isOpen(options: IIsOpenOpts = {}): Promise<boolean> {
     let { retry = 0 } = options;
-    const { timeout = timeouts.isOpenPage, shouldWaitForExist = false } =
-      options;
-    const isDisplayedPromises = this.staticElements.map(element => {
-      return shouldWaitForExist
-        ? element.waitUntilExist(timeout, { throwError: false })
-        : element.waitUntilDisplayed(timeout, { throwError: false });
-    });
+    const {
+      timeout = timeouts.isOpenPage,
+      shouldWaitForExist = false,
+      shouldLog = true,
+    } = options;
+    const isDisplayedPromises = this.staticElements.map(element =>
+      shouldWaitForExist
+        ? element.waitUntilExist(timeout, { throwError: false, shouldLog })
+        : element.waitUntilDisplayed(timeout, { throwError: false, shouldLog }),
+    );
+
     do {
       const result = promiseHelper.allTrue(isDisplayedPromises);
       if (result) {
@@ -33,7 +37,7 @@ export abstract class BasePage {
     return false;
   }
 
-  async isNotOpen(options: IIsOpenOpts = {}): Promise<boolean> {
+  async isClosed(options: IIsOpenOpts = {}): Promise<boolean> {
     let { retry = 0 } = options;
     const { timeout = timeouts.isOpenPage } = options;
     const isDisplayedPromises = this.staticElements.map(element => {
@@ -60,7 +64,7 @@ export abstract class BasePage {
   }
 
   async verifyIsClosed(opts: IIsOpenOpts = {}): Promise<void> {
-    if (!(await this.isNotOpen(opts))) {
+    if (!(await this.isClosed(opts))) {
       const errorMessage = `'${this.constructor.name.replace(
         "Po",
         "",
@@ -75,4 +79,5 @@ export interface IIsOpenOpts {
   retry?: number;
   timeout?: number;
   shouldWaitForExist?: boolean;
+  shouldLog?: boolean;
 }

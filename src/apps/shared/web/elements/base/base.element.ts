@@ -11,7 +11,7 @@ import {
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 
-const logger = loggerHelper.get("BaseElement");
+const log = loggerHelper.get("BaseElement");
 
 export abstract class BaseElement {
   protected constructor(protected element: Locator) {}
@@ -28,7 +28,7 @@ export abstract class BaseElement {
       return await this.element.isEnabled({ timeout });
     } catch (error) {
       const errorMessage = `Can't check for enabled on '${this.element}' element.\nDetails: ${error.message}`;
-      logger.error(errorMessage);
+      log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
   }
@@ -47,7 +47,7 @@ export abstract class BaseElement {
       if (await this.isEnabled()) {
         await this.element.click({ timeout, force, clickCount: times });
       } else {
-        logger.warn(
+        log.warn(
           `Element with '${this.element}' is disabled - force clicking...`,
         );
         await this.element.click({ force: true, timeout, clickCount: times });
@@ -55,7 +55,7 @@ export abstract class BaseElement {
     } catch (error) {
       const errorMessage = `Can't click on '${this.element}' element.\nDetails: ${error.message}`;
       if (throwError) throw new Error(errorMessage);
-      logger.error(errorMessage);
+      log.error(errorMessage);
     }
   }
 
@@ -67,7 +67,7 @@ export abstract class BaseElement {
       return await this.element.textContent({ timeout });
     } catch (error) {
       const errorMessage = `Can't get text on '${this.element}' element'.\nDetails: ${error.message}`;
-      logger.error(errorMessage);
+      log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
   }
@@ -80,7 +80,7 @@ export abstract class BaseElement {
       return await this.element.inputValue({ timeout });
     } catch (error) {
       const errorMessage = `Can't get value on '${this.element}' element'.\nDetails: ${error.message}`;
-      logger.error(errorMessage);
+      log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
   }
@@ -94,7 +94,7 @@ export abstract class BaseElement {
       return (await this.element).innerHTML({ timeout });
     } catch (error) {
       const errorMessage = `Can't get HTML on element with '${this.element}' locator.\nError details: ${error.message}`;
-      logger.error(errorMessage);
+      log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
   }
@@ -107,7 +107,7 @@ export abstract class BaseElement {
       return await this.element.hover({ timeout });
     } catch (error) {
       const errorMessage = `Can't hover on '${this.element}' element.\nDetails: ${error.message}`;
-      logger.error(errorMessage);
+      log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
   }
@@ -116,7 +116,8 @@ export abstract class BaseElement {
     timeout: number,
     {
       throwError = true,
-      errorMessage = "Failed to wait for element to display",
+      errorMessage = `Failed to wait for '${this.element}' element to display`,
+      shouldLog = true,
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
     try {
@@ -124,9 +125,10 @@ export abstract class BaseElement {
       return true;
     } catch (error) {
       const errorLogType = throwError ? "error" : "warn";
-      logger[errorLogType](`${errorMessage}: ${this.element}`);
+      const message = `${errorMessage}: ${error}`;
+      if (shouldLog) log[errorLogType](`${message}`);
       if (throwError) {
-        throw { ...error, message: `${errorMessage}: ${error.message}}` };
+        throw { ...error, message: `${message}` };
       }
       return false;
     }
@@ -136,16 +138,19 @@ export abstract class BaseElement {
     timeout: number,
     {
       throwError = true,
-      errorMessage = "Failed to wait for element to disappear",
+      shouldLog = true,
+      errorMessage = `Failed to wait for '${this.element}' element to disappear`,
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
+    const logType = throwError ? "error" : "warn";
     try {
       await this.element.waitFor({ timeout, state: "hidden" });
       return true;
     } catch (error) {
-      logger.error(`${errorMessage}: ${this.element}`);
+      const message = `${errorMessage}: ${error.message}`;
+      if (shouldLog) log[logType](`${message}`);
       if (throwError) {
-        throw { ...error, message: `${errorMessage}: ${error.message}}` };
+        throw { ...error, message };
       }
       return false;
     }
@@ -155,6 +160,7 @@ export abstract class BaseElement {
     timeout: number,
     {
       throwError = true,
+      shouldLog = true,
       errorMessage = "Failed to wait for element to exist",
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
@@ -162,7 +168,7 @@ export abstract class BaseElement {
       await this.element.waitFor({ timeout, state: "attached" });
       return true;
     } catch (error) {
-      logger.error(`${errorMessage}: ${this.element}`);
+      if (shouldLog) log.error(`${errorMessage}: ${this.element}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }
@@ -174,15 +180,19 @@ export abstract class BaseElement {
     timeout: number,
     {
       throwError = true,
-      errorMessage = "Failed to wait for element to be enabled",
+      shouldLog = true,
+      errorMessage = `Failed to wait for '${this.element}' element to be enabled`,
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
+    const logType = throwError ? "error" : "warn";
     try {
       return await waiterHelper.wait(async () => this.isEnabled(), timeout);
     } catch (error) {
-      logger.warn(`${errorMessage}: ${this.element}`);
+      const message = `${errorMessage}: ${error}`;
+
+      if (shouldLog) log[logType](`${message}`);
       if (throwError) {
-        throw { ...error, message: `${errorMessage}: ${error.message}}` };
+        throw { ...error, message };
       }
       return false;
     }

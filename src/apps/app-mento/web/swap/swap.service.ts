@@ -89,7 +89,9 @@ export class SwapService extends BaseService {
     throw new Error(`Invalid reject type: ${rejectType}`);
   }
 
-  async start(): Promise<void> {
+  async start({
+    shouldExpectLoading = false,
+  }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
     await this.confirm.verifyNoValidMedianCase();
     if (await this.page.approveButton.isDisplayed()) {
       log.debug(
@@ -102,7 +104,9 @@ export class SwapService extends BaseService {
       );
       await this.page.swapButton.click();
       await this.confirm.page.verifyIsOpen();
-      await this.confirm.confirmSwapTx();
+      await this.confirm.confirmSwapTx({ shouldExpectLoading });
+      await this.confirm.page.verifyIsClosed({ timeout: timeouts.s });
+      await this.page.verifyIsOpen({ timeout: timeouts.s });
     }
   }
 

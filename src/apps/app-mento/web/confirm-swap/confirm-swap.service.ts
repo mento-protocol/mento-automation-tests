@@ -8,7 +8,7 @@ import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { AmountType } from "../swap/swap.service.types";
 import { expect } from "@fixtures/test.fixture";
 
-const logger = loggerHelper.get("ConfirmSwapService");
+const log = loggerHelper.get("ConfirmSwapService");
 
 @ClassLog
 export class ConfirmSwapService extends BaseService {
@@ -32,34 +32,17 @@ export class ConfirmSwapService extends BaseService {
   async confirmApprovalTx(): Promise<void> {
     await this.page.approveButton.click({ timeout: timeouts.s });
     await this.metamask.confirmTransaction();
-    expect
-      .soft(
-        await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
-          timeouts.xl,
-          {
-            errorMessage: "Approve tx notification is not displayed",
-            throwError: false,
-          },
-        ),
-      )
-      .toBeTruthy();
+    await this.expectSuccessApprovalNotification();
   }
 
-  async confirmSwapTx(): Promise<void> {
+  async confirmSwapTx({
+    shouldExpectLoading = false,
+  }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
     await this.page.swapButton.click({ timeout: timeouts.s });
     await this.verifyTradingSuspendedCase();
     await this.metamask.confirmTransaction();
-    expect
-      .soft(
-        await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
-          timeouts.xl,
-          {
-            errorMessage: "Swap tx notification is not displayed",
-            throwError: false,
-          },
-        ),
-      )
-      .toBeTruthy();
+    if (shouldExpectLoading) await this.expectLoadingDuringTxConfirmation();
+    await this.expectSuccessSwapNotification();
   }
 
   async verifyNoValidMedianCase(): Promise<void> {
@@ -68,20 +51,20 @@ export class ConfirmSwapService extends BaseService {
           { reason: "No valid median to swap" },
           "'no valid median' case",
         )
-      : logger.info("'No valid median' case is not defined - keep swapping");
+      : log.info("'No valid median' case is not defined - keep swapping");
   }
 
   async verifyTradingSuspendedCase(): Promise<void> {
     if (await this.isTradingSuspended()) {
-      logger.error("Trading is suspended for this reference rate");
+      log.error("Trading is suspended for this reference rate");
       throw new Error("Trading is suspended for this reference rate");
     }
-    logger.info("'Trading suspended' case is not defined - keep swapping");
+    log.info("'Trading suspended' case is not defined - keep swapping");
   }
 
   async rejectByType(txType: "approval" | "swap"): Promise<void> {
     const isApprovalTx = txType === "approval";
-    logger.warn(
+    log.warn(
       `Rejection of ${isApprovalTx ? "approval and swap txs" : "swap tx"}`,
     );
     isApprovalTx ? await this.rejectApprovalTx() : await this.rejectSwapTx();
@@ -134,6 +117,52 @@ export class ConfirmSwapService extends BaseService {
 
   async navigateToCeloExplorer(): Promise<void> {
     await this.page.seeDetailsLinkButton.click();
+  }
+
+  async expectSuccessApprovalNotification(): Promise<void> {
+    expect
+      .soft(
+        await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
+          timeouts.xl,
+          {
+            errorMessage: "Approve tx notification is not displayed",
+            throwError: false,
+          },
+        ),
+      )
+      .toBeTruthy();
+  }
+
+  async expectSuccessSwapNotification(): Promise<void> {
+    expect
+      .soft(
+        await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
+          timeouts.m,
+          {
+            errorMessage: "Swap tx notification is not displayed",
+            throwError: false,
+          },
+        ),
+      )
+      .toBeTruthy();
+  }
+
+  async expectLoadingDuringTxConfirmation(): Promise<void> {
+    const isLoadingDuringConfirmation = await waiterHelper.checkDuring({
+      checkCallback: async () => await this.page.loadingLabel.isDisplayed(),
+      duringCallback: async () => {
+        await waiterHelper.waitForAnimation();
+        return await this.page.isOpen({
+          timeout: timeouts.xxxs,
+          shouldLog: false,
+        });
+      },
+      duringTimeout: timeouts.m,
+      throwError: false,
+      errorMessage:
+        "Loading label is not displayed while 'Confirm Swap' page is still open",
+    });
+    expect.soft(isLoadingDuringConfirmation).toBeTruthy();
   }
 
   async isApproveCompleteNotificationThere(): Promise<boolean> {
