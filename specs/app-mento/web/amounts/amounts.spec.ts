@@ -69,20 +69,39 @@ suite({
       },
     },
     {
-      name: `Trading limit error is shown when the 'Sell' amount exceeds limit`,
+      name: `Exceeds trading limit error is shown when token has a trading limit`,
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.swap.swapInputs({
           shouldReturnRates: false,
-          clicksOnButton: 2,
         });
         await app.swap.fillForm({
           sellAmount: exceedsTradingLimitAmount,
         });
+        expect
+          .soft(
+            await app.swap.waitForExceedsTradingLimitsNotification(timeouts.m),
+          )
+          .toBeTruthy();
         expect(
-          await app.swap.waitForExceedsTradingLimitsNotification(timeouts.m),
+          await app.swap.waitForExceedsTradingLimitsButton(timeouts.s),
         ).toBeTruthy();
+      },
+    },
+    {
+      name: `Missing trading limit error is shown when token doesn't have a trading limit`,
+      testCaseId: "",
+      test: async ({ web }) => {
+        const app = web.app.appMento;
+        await app.swap.fillForm({
+          sellAmount: exceedsTradingLimitAmount,
+        });
+        expect
+          .soft(
+            await app.swap.waitForMissingTradingLimitsNotification(timeouts.m),
+          )
+          .toBeTruthy();
         expect(
           await app.swap.waitForExceedsTradingLimitsButton(timeouts.s),
         ).toBeTruthy();

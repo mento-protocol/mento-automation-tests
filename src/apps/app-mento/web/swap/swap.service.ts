@@ -284,6 +284,19 @@ export class SwapService extends BaseService {
     );
   }
 
+  async waitForMissingTradingLimitsNotification(
+    timeout: number,
+  ): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => this.page.missingTradingLimitNotificationLabel.isDisplayed(),
+      timeout,
+      {
+        throwError: false,
+        errorMessage: "'Missing trading limits' notification is not displayed",
+      },
+    );
+  }
+
   async waitForExceedsTradingLimitsButton(timeout: number): Promise<boolean> {
     return waiterHelper.wait(
       async () => this.page.swapsExceedsLimitsButton.isDisplayed(),
