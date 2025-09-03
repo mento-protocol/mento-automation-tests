@@ -32,7 +32,7 @@ suite({
         await app.main.openConnectWalletModal();
         await app.main.connectWalletModal.close();
         expect
-          .soft(await app.main.connectWalletModal.page.isNotOpen())
+          .soft(await app.main.connectWalletModal.page.isClosed())
           .toBeTruthy();
         expect(await app.main.page.isOpen()).toBeTruthy();
       },

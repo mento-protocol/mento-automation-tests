@@ -7,6 +7,8 @@ export class ConfirmSwapPage extends BasePage {
     super(ef);
   }
 
+  loadingLabel = new Label(this.ef.dataTestId("loadingLabel"));
+
   sellAmountLabel = new Label(this.ef.dataTestId("sellAmountLabel"));
   buyAmountLabel = new Label(this.ef.dataTestId("buyAmountLabel"));
 

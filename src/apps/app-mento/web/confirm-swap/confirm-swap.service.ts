@@ -8,7 +8,7 @@ import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { AmountType } from "../swap/swap.service.types";
 import { expect } from "@fixtures/test.fixture";
 
-const logger = loggerHelper.get("ConfirmSwapService");
+const log = loggerHelper.get("ConfirmSwapService");
 
 @ClassLog
 export class ConfirmSwapService extends BaseService {
@@ -45,14 +45,17 @@ export class ConfirmSwapService extends BaseService {
       .toBeTruthy();
   }
 
-  async confirmSwapTx(): Promise<void> {
+  async confirmSwapTx({
+    shouldExpectLoading = false,
+  }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
     await this.page.swapButton.click({ timeout: timeouts.s });
     await this.verifyTradingSuspendedCase();
     await this.metamask.confirmTransaction();
+    if (shouldExpectLoading) await this.expectLoading();
     expect
       .soft(
         await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
-          timeouts.xl,
+          timeouts.m,
           {
             errorMessage: "Swap tx notification is not displayed",
             throwError: false,
@@ -68,20 +71,20 @@ export class ConfirmSwapService extends BaseService {
           { reason: "No valid median to swap" },
           "'no valid median' case",
         )
-      : logger.info("'No valid median' case is not defined - keep swapping");
+      : log.info("'No valid median' case is not defined - keep swapping");
   }
 
   async verifyTradingSuspendedCase(): Promise<void> {
     if (await this.isTradingSuspended()) {
-      logger.error("Trading is suspended for this reference rate");
+      log.error("Trading is suspended for this reference rate");
       throw new Error("Trading is suspended for this reference rate");
     }
-    logger.info("'Trading suspended' case is not defined - keep swapping");
+    log.info("'Trading suspended' case is not defined - keep swapping");
   }
 
   async rejectByType(txType: "approval" | "swap"): Promise<void> {
     const isApprovalTx = txType === "approval";
-    logger.warn(
+    log.warn(
       `Rejection of ${isApprovalTx ? "approval and swap txs" : "swap tx"}`,
     );
     isApprovalTx ? await this.rejectApprovalTx() : await this.rejectSwapTx();
@@ -134,6 +137,28 @@ export class ConfirmSwapService extends BaseService {
 
   async navigateToCeloExplorer(): Promise<void> {
     await this.page.seeDetailsLinkButton.click();
+  }
+
+  async expectLoading(): Promise<void> {
+    while (await this.waitForPageToOpen()) {
+      log.debug(
+        "Loading to be displayed until it's not redirected to main page",
+      );
+      expect
+        .soft(
+          await this.page.loadingLabel.waitUntilDisplayed(timeouts.xxxxs, {
+            errorMessage:
+              "Loading label is not displayed while 'Confirm Swap' page is still open",
+            throwError: false,
+          }),
+        )
+        .toBeTruthy();
+    }
+  }
+
+  private async waitForPageToOpen(): Promise<boolean> {
+    await waiterHelper.waitForAnimation();
+    return this.page.isOpen({ timeout: timeouts.xxxs });
   }
 
   async isApproveCompleteNotificationThere(): Promise<boolean> {

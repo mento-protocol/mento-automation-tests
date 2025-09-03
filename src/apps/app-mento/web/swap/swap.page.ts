@@ -25,7 +25,7 @@ export class SwapPage extends BasePage {
   selectTokenToBuyLabel = new Button(
     this.ef.role("button", { name: "Select token to buy" }),
   );
-  headerLabel = new Label(this.ef.text("Swap"));
+  headerLabel = new Label(this.ef.text("Swap", { exact: false }).first());
   slippageButton = new Button(this.ef.dataTestId("slippageButton"));
   swapInputsButton = new Button(this.ef.dataTestId("swapInputsButton"));
   loadingLabel = new Label(this.ef.dataTestId("loadingLabel"));
@@ -59,7 +59,12 @@ export class SwapPage extends BasePage {
     this.ef.text("amount exceeds the current trading limit"),
   );
 
-  staticElements = [this.headerLabel];
+  staticElements = [
+    this.headerLabel,
+    this.swapButton,
+    this.buyAmountInput,
+    this.sellAmountInput,
+  ];
 }
 
 export interface ITokenOptions extends Record<string, Button> {
