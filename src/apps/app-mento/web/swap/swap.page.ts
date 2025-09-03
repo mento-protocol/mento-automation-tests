@@ -58,6 +58,9 @@ export class SwapPage extends BasePage {
   exceedsTradingLimitNotificationLabel = new Label(
     this.ef.text("amount exceeds the current trading limit"),
   );
+  missingTradingLimitNotificationLabel = new Label(
+    this.ef.text("Cannot buy more than"),
+  );
 
   staticElements = [
     this.headerLabel,
