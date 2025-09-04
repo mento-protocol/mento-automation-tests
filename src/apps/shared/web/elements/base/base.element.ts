@@ -17,7 +17,7 @@ export abstract class BaseElement {
   protected constructor(protected element: Locator) {}
 
   async isDisplayed(): Promise<boolean> {
-    return await this.element.isVisible();
+    return this.element.isVisible();
   }
 
   async isEnabled({
@@ -34,7 +34,7 @@ export abstract class BaseElement {
   }
 
   async getAttribute(attribute: string): Promise<string> {
-    return (await this.element).getAttribute(attribute);
+    return this.element.getAttribute(attribute);
   }
 
   async click({
@@ -44,7 +44,7 @@ export abstract class BaseElement {
     times,
   }: IClickParams = {}): Promise<void> {
     try {
-      if (await this.isEnabled()) {
+      if (await this.isEnabled({ timeout })) {
         await this.element.click({ timeout, force, clickCount: times });
       } else {
         log.warn(
@@ -64,7 +64,7 @@ export abstract class BaseElement {
     throwError = true,
   }: IGetValueParams = {}): Promise<string> {
     try {
-      return await this.element.textContent({ timeout });
+      return this.element.textContent({ timeout });
     } catch (error) {
       const errorMessage = `Can't get text on '${this.element}' element'.\nDetails: ${error.message}`;
       log.error(errorMessage);
@@ -77,7 +77,7 @@ export abstract class BaseElement {
     throwError = true,
   }: IGetValueParams = {}): Promise<string> {
     try {
-      return await this.element.inputValue({ timeout });
+      return this.element.inputValue({ timeout });
     } catch (error) {
       const errorMessage = `Can't get value on '${this.element}' element'.\nDetails: ${error.message}`;
       log.error(errorMessage);
@@ -91,7 +91,7 @@ export abstract class BaseElement {
   }: IGetTextParams = {}): Promise<string> {
     try {
       await this.waitUntilDisplayed(timeout, { throwError });
-      return (await this.element).innerHTML({ timeout });
+      return this.element.innerHTML({ timeout });
     } catch (error) {
       const errorMessage = `Can't get HTML on element with '${this.element}' locator.\nError details: ${error.message}`;
       log.error(errorMessage);
@@ -104,7 +104,7 @@ export abstract class BaseElement {
     timeout,
   }: IHoverParams = {}): Promise<void> {
     try {
-      return await this.element.hover({ timeout });
+      return this.element.hover({ timeout });
     } catch (error) {
       const errorMessage = `Can't hover on '${this.element}' element.\nDetails: ${error.message}`;
       log.error(errorMessage);
@@ -186,7 +186,7 @@ export abstract class BaseElement {
   ): Promise<boolean> {
     const logType = throwError ? "error" : "warn";
     try {
-      return await waiterHelper.wait(async () => this.isEnabled(), timeout);
+      return waiterHelper.wait(async () => this.isEnabled(), timeout);
     } catch (error) {
       const message = `${errorMessage}: ${error}`;
 
