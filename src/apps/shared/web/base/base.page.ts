@@ -24,8 +24,8 @@ export abstract class BasePage {
     } = options;
     const isDisplayedPromises = this.staticElements.map(element =>
       shouldWaitForExist
-        ? element.waitUntilExist(timeout, { throwError: false, shouldLog })
-        : element.waitUntilDisplayed(timeout, { throwError: false, shouldLog }),
+        ? element.waitForExist(timeout, { throwError: false, shouldLog })
+        : element.waitForDisplayed(timeout, { throwError: false, shouldLog }),
     );
 
     do {
@@ -41,7 +41,7 @@ export abstract class BasePage {
     let { retry = 0 } = options;
     const { timeout = timeouts.isOpenPage } = options;
     const isDisplayedPromises = this.staticElements.map(element => {
-      return element.waitUntilDisappeared(timeout, { throwError: false });
+      return element.waitForDisappeared(timeout, { throwError: false });
     });
     do {
       const result = promiseHelper.allTrue(isDisplayedPromises);

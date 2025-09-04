@@ -90,7 +90,7 @@ export abstract class BaseElement {
     throwError = true,
   }: IGetTextParams = {}): Promise<string> {
     try {
-      await this.waitUntilDisplayed(timeout, { throwError });
+      await this.waitForDisplayed(timeout, { throwError });
       return this.element.innerHTML({ timeout });
     } catch (error) {
       const errorMessage = `Can't get HTML on element with '${this.element}' locator.\nError details: ${error.message}`;
@@ -112,7 +112,7 @@ export abstract class BaseElement {
     }
   }
 
-  async waitUntilDisplayed(
+  async waitForDisplayed(
     timeout: number,
     {
       throwError = true,
@@ -134,7 +134,7 @@ export abstract class BaseElement {
     }
   }
 
-  async waitUntilDisappeared(
+  async waitForDisappeared(
     timeout: number,
     {
       throwError = true,
@@ -156,7 +156,7 @@ export abstract class BaseElement {
     }
   }
 
-  async waitUntilExist(
+  async waitForExist(
     timeout: number,
     {
       throwError = true,
@@ -176,7 +176,7 @@ export abstract class BaseElement {
     }
   }
 
-  async waitUntilEnabled(
+  async waitForEnabled(
     timeout: number,
     {
       throwError = true,

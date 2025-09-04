@@ -214,7 +214,7 @@ export class SwapService extends BaseService {
   }
 
   async getInvalidPairTooltipText(): Promise<string> {
-    await this.page.invalidPairTooltip.waitUntilDisplayed(timeouts.s);
+    await this.page.invalidPairTooltip.waitForDisplayed(timeouts.s);
     return this.page.invalidPairTooltip.getText();
   }
 
@@ -224,7 +224,7 @@ export class SwapService extends BaseService {
       force: true,
       times: 2,
     });
-    await this.page.considerKeepNotificationLabel.waitUntilDisplayed(
+    await this.page.considerKeepNotificationLabel.waitForDisplayed(
       timeouts.xs,
       { throwError: false },
     );
@@ -254,19 +254,19 @@ export class SwapService extends BaseService {
   }
 
   async isAmountRequiredValidationThere(): Promise<boolean> {
-    return this.page.amountRequiredButton.waitUntilDisplayed(timeouts.s, {
+    return this.page.amountRequiredButton.waitForDisplayed(timeouts.s, {
       throwError: false,
     });
   }
 
   async isAmountExceedValidationThere(): Promise<boolean> {
-    return this.page.insufficientBalanceButton.waitUntilDisplayed(timeouts.s, {
+    return this.page.insufficientBalanceButton.waitForDisplayed(timeouts.s, {
       throwError: false,
     });
   }
 
   async isErrorValidationThere(): Promise<boolean> {
-    return this.page.errorButton.waitUntilDisplayed(timeouts.s, {
+    return this.page.errorButton.waitForDisplayed(timeouts.s, {
       throwError: false,
     });
   }
@@ -401,9 +401,7 @@ export class SwapService extends BaseService {
       timeout: timeouts.s,
     });
     await this.selectTokenModalPage.verifyIsClosed();
-    await this.page
-      .getSelectedTokenLabel(token)
-      .waitUntilDisplayed(timeouts.xxs);
+    await this.page.getSelectedTokenLabel(token).waitForDisplayed(timeouts.xxs);
   }
 
   private async selectTokens(args: ISelectTokensArgs): Promise<void> {
