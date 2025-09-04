@@ -38,7 +38,7 @@ jobs:
             specs_regex: "@regression,@sequential"
             exclude_specs_regex: "@parallel"
             is_parallel_run: "false"
-            is_mainnet: "false"
+            is_mainnet: "true"
             html_report_name: "app-mento-sequential-regression"
             testomatio_title: "[App-Mento] Sequential-Regression"
             notification_message: "[App-Mento] Sequential-Regression"
