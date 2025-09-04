@@ -73,26 +73,23 @@ export class MainGovernanceService extends BaseService {
 
   async openContractAddressesSection(): Promise<void> {
     await this.page.contractAddressesSection.click();
-    await this.page.contractAddresseLinkButtons.governor.waitUntilDisplayed(
+    await this.page.contractAddresseLinkButtons.governor.waitForDisplayed(
       timeouts.xxs,
       { errorMessage: "Contract addresses section is not opened" },
     );
   }
 
   async waitForWalletToBeConnected(): Promise<boolean> {
-    return this.page.headerConnectWalletButton.waitUntilDisappeared(
-      timeouts.s,
-      {
-        throwError: false,
-      },
-    );
+    return this.page.headerConnectWalletButton.waitForDisappeared(timeouts.s, {
+      throwError: false,
+    });
   }
 
   async waitForProposalByTitle(title: string): Promise<boolean> {
     return waiterHelper.retry(
       async () => {
         await this.browser.refresh();
-        return (await this.page.getProposalByTitle(title)).waitUntilDisplayed(
+        return (await this.page.getProposalByTitle(title)).waitForDisplayed(
           timeouts.m,
           { throwError: false },
         );

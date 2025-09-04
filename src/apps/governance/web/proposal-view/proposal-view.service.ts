@@ -24,10 +24,10 @@ export class ProposalViewService extends BaseService {
     { shouldConfirmTx = true }: { shouldConfirmTx?: boolean } = {},
   ): Promise<void> {
     await this.page.voteButtons[vote].click();
-    await this.page.waitingForConfirmationLabel.waitUntilDisplayed(timeouts.s, {
+    await this.page.waitingForConfirmationLabel.waitForDisplayed(timeouts.s, {
       errorMessage: "'Waiting for confirmation label' is not displayed!",
     });
-    await this.page.waitingForConfirmationDescriptionLabel.waitUntilDisplayed(
+    await this.page.waitingForConfirmationDescriptionLabel.waitForDisplayed(
       timeouts.s,
       {
         errorMessage:
@@ -43,7 +43,7 @@ export class ProposalViewService extends BaseService {
   }
 
   async getTotalVotes(): Promise<number> {
-    await this.page.totalVotesLabel.waitUntilDisplayed(timeouts.s, {
+    await this.page.totalVotesLabel.waitForDisplayed(timeouts.s, {
       errorMessage: "Total votes label is not displayed!",
     });
     const rawTotalVotesText = await this.page.totalVotesLabel.getText();
@@ -64,7 +64,7 @@ export class ProposalViewService extends BaseService {
   }
 
   async getUsedVoteOption(): Promise<Vote> {
-    await this.page.usedVoteOptionButton.waitUntilDisplayed(timeouts.s, {
+    await this.page.usedVoteOptionButton.waitForDisplayed(timeouts.s, {
       errorMessage: "Used vote option button is not displayed!",
     });
     const vote = await this.page.usedVoteOptionButton.getText();
@@ -87,7 +87,7 @@ export class ProposalViewService extends BaseService {
     state: ProposalState,
     timeout = timeouts.m,
   ): Promise<boolean> {
-    await this.page.proposalStateLabel.waitUntilDisplayed(timeouts.xs, {
+    await this.page.proposalStateLabel.waitForDisplayed(timeouts.xs, {
       errorMessage: "Proposal state is not displayed!",
     });
     return waiterHelper.wait(
@@ -101,7 +101,7 @@ export class ProposalViewService extends BaseService {
   }
 
   async waitForLoadedVotingInfo(): Promise<boolean> {
-    return this.page.votingInfoLoader.waitUntilDisappeared(timeouts.s, {
+    return this.page.votingInfoLoader.waitForDisappeared(timeouts.s, {
       errorMessage: "Voting info is not loaded!",
     });
   }
@@ -112,14 +112,14 @@ export class ProposalViewService extends BaseService {
   ): Promise<boolean> {
     return await this.page
       .getParticipantAddressLabel(address)
-      .waitUntilDisplayed(timeout, {
+      .waitForDisplayed(timeout, {
         errorMessage: "Participant address is not displayed!",
         throwError: false,
       });
   }
 
   async isVoteCastSuccessfully(timeout = timeouts.m): Promise<boolean> {
-    return this.page.voteCastSuccessfullyNotificationLabel.waitUntilDisplayed(
+    return this.page.voteCastSuccessfullyNotificationLabel.waitForDisplayed(
       timeout,
       {
         errorMessage: "Vote cast successfully notification is not displayed!",
@@ -129,12 +129,9 @@ export class ProposalViewService extends BaseService {
   }
 
   async isVoteCastFailed(timeout = timeouts.s): Promise<boolean> {
-    return this.page.voteCastFailedNotificationLabel.waitUntilDisplayed(
-      timeout,
-      {
-        errorMessage: "Vote cast failed notification is not displayed!",
-      },
-    );
+    return this.page.voteCastFailedNotificationLabel.waitForDisplayed(timeout, {
+      errorMessage: "Vote cast failed notification is not displayed!",
+    });
   }
 
   async expectProposalSuccessfully({

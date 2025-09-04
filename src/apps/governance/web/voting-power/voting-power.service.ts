@@ -44,7 +44,7 @@ export class VotingPowerService extends BaseService {
     }
     expect
       .soft(
-        await this.page.lockUpdatedSuccessfullyNotificationLabel.waitUntilDisplayed(
+        await this.page.lockUpdatedSuccessfullyNotificationLabel.waitForDisplayed(
           timeouts.s,
           {
             errorMessage: "Top-up success notification is not displayed!",
@@ -59,14 +59,14 @@ export class VotingPowerService extends BaseService {
     buttonName: "approveMentoButton" | "topUpLockButton",
     { throwError = false }: { throwError?: boolean } = {},
   ): Promise<boolean> {
-    return this.page[buttonName].waitUntilDisplayed(timeouts.xs, {
+    return this.page[buttonName].waitForDisplayed(timeouts.xs, {
       errorMessage: `${buttonName} is not there!`,
       throwError,
     });
   }
 
   async verifyConfirmationPopupIsClosed() {
-    await this.page.topUpLockPopupDescriptionLabel.waitUntilDisappeared(
+    await this.page.topUpLockPopupDescriptionLabel.waitForDisappeared(
       timeouts.s,
       {
         errorMessage: "Lock confirmation popup is not closed!",
@@ -75,7 +75,7 @@ export class VotingPowerService extends BaseService {
   }
 
   async verifyConfirmationPopupIsOpened() {
-    await this.page.topUpLockPopupDescriptionLabel.waitUntilDisplayed(
+    await this.page.topUpLockPopupDescriptionLabel.waitForDisplayed(
       timeouts.s,
       {
         errorMessage: "Lock confirmation popup is not displayed!",
@@ -123,7 +123,7 @@ export class VotingPowerService extends BaseService {
 
   async enterAmount(amount: string): Promise<void> {
     await this.page.lockAmountInput.enterText(amount);
-    await this.page.enterAmountButton.waitUntilDisappeared(timeouts.xs);
+    await this.page.enterAmountButton.waitForDisappeared(timeouts.xs);
   }
 
   async getCurrentLockValues(): Promise<{ veMento: number; mento: number }> {

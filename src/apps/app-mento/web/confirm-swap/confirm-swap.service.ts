@@ -88,7 +88,7 @@ export class ConfirmSwapService extends BaseService {
 
   private async rejectApprovalTx(): Promise<void> {
     if (
-      await this.page.approveButton.waitUntilDisplayed(timeouts.s, {
+      await this.page.approveButton.waitForDisplayed(timeouts.s, {
         throwError: false,
       })
     ) {
@@ -100,12 +100,12 @@ export class ConfirmSwapService extends BaseService {
 
   private async rejectSwapTx(): Promise<void> {
     if (
-      await this.page.approveButton.waitUntilDisplayed(timeouts.s, {
+      await this.page.approveButton.waitForDisplayed(timeouts.s, {
         throwError: false,
       })
     ) {
       await this.metamask.confirmTransaction();
-      await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
+      await this.page.approveCompleteNotificationLabel.waitForDisplayed(
         timeouts.xl,
         { errorMessage: "Approve tx notification is not displayed" },
       );
@@ -122,7 +122,7 @@ export class ConfirmSwapService extends BaseService {
   async expectSuccessApprovalNotification(): Promise<void> {
     expect
       .soft(
-        await this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
+        await this.page.approveCompleteNotificationLabel.waitForDisplayed(
           timeouts.xl,
           {
             errorMessage: "Approve tx notification is not displayed",
@@ -136,7 +136,7 @@ export class ConfirmSwapService extends BaseService {
   async expectSuccessSwapNotification(): Promise<void> {
     expect
       .soft(
-        await this.page.swapCompleteNotificationLabel.waitUntilDisplayed(
+        await this.page.swapCompleteNotificationLabel.waitForDisplayed(
           timeouts.m,
           {
             errorMessage: "Swap tx notification is not displayed",
@@ -166,21 +166,21 @@ export class ConfirmSwapService extends BaseService {
   }
 
   async isApproveCompleteNotificationThere(): Promise<boolean> {
-    return this.page.approveCompleteNotificationLabel.waitUntilDisplayed(
+    return this.page.approveCompleteNotificationLabel.waitForDisplayed(
       timeouts.xl,
       { throwError: false },
     );
   }
 
   async isRejectApprovalTxNotificationThere(): Promise<boolean> {
-    return this.page.rejectApprovalTransactionNotificationLabel.waitUntilDisplayed(
+    return this.page.rejectApprovalTransactionNotificationLabel.waitForDisplayed(
       timeouts.s,
       { throwError: false },
     );
   }
 
   async isRejectSwapTxNotificationThere(): Promise<boolean> {
-    return this.page.rejectSwapTransactionNotificationLabel.waitUntilDisplayed(
+    return this.page.rejectSwapTransactionNotificationLabel.waitForDisplayed(
       timeouts.s,
       { throwError: false },
     );

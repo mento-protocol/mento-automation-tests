@@ -77,7 +77,7 @@ export class CreateProposalService extends BaseService {
   async verifyProposalCreation(): Promise<void> {
     expect
       .soft(
-        await this.page.proposalSuccessToast.toast.waitUntilDisplayed(
+        await this.page.proposalSuccessToast.toast.waitForDisplayed(
           timeouts.xl,
           {
             throwError: false,
@@ -91,25 +91,25 @@ export class CreateProposalService extends BaseService {
   }
 
   async verifyCreationPopupAppeared(): Promise<boolean> {
-    return this.page.confirmProposalPopup.waitUntilDisplayed(timeouts.m, {
+    return this.page.confirmProposalPopup.waitForDisplayed(timeouts.m, {
       errorMessage: "'Confirm proposal' popup is not appeared!",
     });
   }
 
   async verifyCreationPopupDisappeared(): Promise<boolean> {
-    return this.page.confirmProposalPopup.waitUntilDisappeared(timeouts.m, {
+    return this.page.confirmProposalPopup.waitForDisappeared(timeouts.m, {
       errorMessage: "'Confirm proposal' popup is not disappeared!",
     });
   }
 
   async verifyReviewStageOpened(): Promise<boolean> {
-    return this.page.reviewStage.stageLabel.waitUntilDisplayed(timeouts.s, {
+    return this.page.reviewStage.stageLabel.waitForDisplayed(timeouts.s, {
       errorMessage: "'Review' stage is not opened!",
     });
   }
 
   async verifyExecutionCodeStageOpened(): Promise<boolean> {
-    return this.page.executionCodeStage.stageLabel.waitUntilDisplayed(
+    return this.page.executionCodeStage.stageLabel.waitForDisplayed(
       timeouts.s,
       {
         errorMessage: "'Execution code' stage is not opened!",
