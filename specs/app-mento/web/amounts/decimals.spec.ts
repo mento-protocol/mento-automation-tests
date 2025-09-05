@@ -21,7 +21,7 @@ suite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.swap.fillForm({
-          tokens: { sell: Token.cEUR, buy: Token.CELO },
+          tokens: { sell: Token.cCOP, buy: Token.CELO },
           sellAmount: fiveDecimalsAmount,
         });
 
@@ -61,7 +61,7 @@ suite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.swap.fillForm({
-          tokens: { sell: Token.cEUR, buy: Token.CELO },
+          tokens: { sell: Token.cCOP, buy: Token.CELO },
           buyAmount: fiveDecimalsAmount,
         });
 

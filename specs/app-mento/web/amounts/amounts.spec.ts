@@ -1,5 +1,5 @@
 import { expect } from "@fixtures/test.fixture";
-import { Token } from "@constants/token.constants";
+import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { TestTag } from "@constants/test.constants";
@@ -19,7 +19,7 @@ suite({
       testCaseId: "T2332ee03",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        await app.swap.fillForm({ sellAmount: "1" });
+        await app.swap.fillForm({ sellAmount: defaultSwapAmount });
         expect(await app.swap.isRateThere()).toBeTruthy();
         const { beforeSwapRate, afterSwapRate } = await app.swap.swapInputs();
         expect(beforeSwapRate).not.toEqual(afterSwapRate);
