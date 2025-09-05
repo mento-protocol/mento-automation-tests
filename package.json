@@ -15,7 +15,8 @@
     "verify-env-config": "tsx src/tools/verify-env-config.tool.ts",
     "install-playwright": "npx playwright install --with-deps",
     "prepare": "husky install",
-    "postinstall": "tsx src/tools/default-env-vars.tool.ts"
+    "postinstall": "tsx src/tools/default-env-vars.tool.ts",
+    "calculate-swap-tests-costs": "tsx src/tools/calculate-swap-tests-costs.tool.ts"
   },
   "engines": {
     "node": ">=20.11.1"
@@ -33,10 +34,12 @@
     "@playwright/test": "1.48.2",
     "@synthetixio/synpress": "4.0.10",
     "@testomatio/reporter": "1.5.3",
+    "@mento-protocol/mento-sdk": "^1.10.3",
     "@types/lodash": "4.14.202",
     "@types/node": "20.14.5",
     "@typescript-eslint/eslint-plugin": "6.0.0",
     "@typescript-eslint/parser": "6.0.0",
+    "@types/yargs-parser": "^21.0.3",
     "eslint": "8.39.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "4.0.0",
@@ -49,7 +52,8 @@
     "ts-node": "10.9.1",
     "tsconfig-paths": "4.2.0",
     "typescript": "5.3.3",
-    "viem": "2.19.1"
+    "viem": "2.19.1",
+    "yargs-parser": "^21.1.1"
   },
   "lint-staged": {
     "*.ts": [
