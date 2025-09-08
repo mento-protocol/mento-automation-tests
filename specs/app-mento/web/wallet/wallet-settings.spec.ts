@@ -9,7 +9,7 @@ suite({
   beforeEach: async ({ web }) => {
     const app = web.app.appMento;
     await app.main.connectWalletByName(WalletName.Metamask);
-    await app.main.openWalletSettings();
+    await app.main.openSettings();
   },
   tests: [
     {
@@ -17,7 +17,7 @@ suite({
       testCaseId: "T9b6d1b09",
       test: async ({ web, metamaskHelper }) => {
         const app = web.app.appMento;
-        await app.main.walletSettingsPopup.copyAddress();
+        await app.main.settings.copyAddress();
         expect
           .soft(
             await app.main.page.addressCopiedNotificationLabel.isDisplayed(),
@@ -33,9 +33,9 @@ suite({
       testCaseId: "T2f5ab8c4",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        await app.main.walletSettingsPopup.openNetworkDetails();
+        await app.main.settings.openNetworkDetails();
         expect(
-          await app.main.walletSettingsPopup.networkDetails.page.isOpen(),
+          await app.main.settings.switchNetworksPage.isOpen(),
         ).toBeTruthy();
       },
     },
@@ -44,7 +44,7 @@ suite({
       testCaseId: "Tf4dbe31c",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        await app.main.walletSettingsPopup.disconnect();
+        await app.main.settings.disconnect();
         expect(await app.main.isWalletConnected()).toBeFalsy();
       },
     },

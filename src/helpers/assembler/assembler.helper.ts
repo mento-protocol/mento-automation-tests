@@ -3,10 +3,8 @@ import { ConnectWalletModalService } from "@shared/web/connect-wallet-modal/conn
 import { ConnectWalletModalPage } from "@shared/web/connect-wallet-modal/connect-wallet-modal.page";
 import { MainAppMentoService } from "../../apps/app-mento/web/main/main.service";
 import { MainAppMentoPage } from "../../apps/app-mento/web/main/main.page";
-import { WalletSettingsPopupService } from "../../apps/app-mento/web/wallet-settings-popup/wallet-settings-popup.service";
-import { WalletSettingsPopupPage } from "../../apps/app-mento/web/wallet-settings-popup/wallet-settings-popup.page";
-import { NetworkModalService } from "../../apps/app-mento/web/network-modal/network-modal.service";
-import { NetworkModalPage } from "../../apps/app-mento/web/network-modal/network-modal.page";
+import { SettingsService } from "../../apps/app-mento/web/settings/settings.service";
+import { SettingsPage } from "../../apps/app-mento/web/settings/settings.page";
 import { SwapService } from "../../apps/app-mento/web/swap/swap.service";
 import { SwapPage } from "../../apps/app-mento/web/swap/swap.page";
 import { SelectTokenModalPage } from "../../apps/app-mento/web/select-token-modal/select-token-modal.page";
@@ -29,6 +27,7 @@ import { CreateProposalPage } from "../../apps/governance/web/create-proposal/cr
 import { ContractHelper } from "@helpers/contract/contract.helper";
 import { CeloScanService } from "@shared/web/celo-scan/celo-scan.service";
 import { CeloScanPage } from "@shared/web/celo-scan/celo-scan.page";
+import { SwitchNetworksPage } from "../../apps/app-mento/web/settings/switch-networks.page";
 
 /**
  * 🚀 Goal
@@ -118,13 +117,10 @@ export class AssemblerHelper {
                 page: new ConnectWalletModalPage(ef),
                 ...baseDependencies,
               }),
-              walletSettingsPopup: new WalletSettingsPopupService({
-                page: new WalletSettingsPopupPage(ef),
+              settings: new SettingsService({
+                page: new SettingsPage(ef),
                 ...baseDependencies,
-                networkDetails: new NetworkModalService({
-                  page: new NetworkModalPage(ef),
-                  ...baseDependencies,
-                }),
+                switchNetworksPage: new SwitchNetworksPage(ef),
               }),
             }),
             swap: new SwapService({

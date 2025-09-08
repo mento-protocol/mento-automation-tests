@@ -3,7 +3,7 @@ import { Token } from "@constants/token.constants";
 import { BasePage } from "@shared/web/base/base.page";
 import { Button, Label } from "@shared/web/elements/index";
 
-export class WalletSettingsPopupPage extends BasePage {
+export class SettingsPage extends BasePage {
   constructor(protected override ef: ElementFinderHelper) {
     super(ef);
   }
@@ -16,5 +16,9 @@ export class WalletSettingsPopupPage extends BasePage {
   changeNetworkButton = new Button(this.ef.text("Change Network"));
   disconnectButton = new Button(this.ef.text("Disconnect"));
 
-  staticElements = [this.copyAddressButton];
+  staticElements = [
+    this.copyAddressButton,
+    this.changeNetworkButton,
+    this.disconnectButton,
+  ];
 }
