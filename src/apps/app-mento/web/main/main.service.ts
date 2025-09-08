@@ -13,23 +13,22 @@ import {
   ConnectWalletModalService,
   WalletName,
 } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
-import { WalletSettingsPopupService } from "../wallet-settings-popup/wallet-settings-popup.service";
-import { Network } from "../network-modal/network-modal.service";
+import { SettingsService } from "../settings/settings.service";
 
-const logger = loggerHelper.get("MainService");
+const log = loggerHelper.get("MainAppMentoService");
 
 @ClassLog
 export class MainAppMentoService extends BaseService {
   public override page: MainAppMentoPage = null;
   public connectWalletModal: ConnectWalletModalService = null;
-  public walletSettingsPopup: WalletSettingsPopupService = null;
+  public settings: SettingsService = null;
 
   constructor(args: IMainServiceArgs) {
-    const { page, connectWalletModal, walletSettingsPopup } = args;
+    const { page, connectWalletModal, settings } = args;
     super(args);
     this.page = page;
     this.connectWalletModal = connectWalletModal;
-    this.walletSettingsPopup = walletSettingsPopup;
+    this.settings = settings;
   }
 
   async runSwapTestPreconditions() {
@@ -47,20 +46,20 @@ export class MainAppMentoService extends BaseService {
     await this.connectWalletModal.page.verifyIsOpen();
   }
 
-  async openWalletSettings(): Promise<void> {
+  async openSettings(): Promise<void> {
     await this.page.walletSettingsButton.click();
-    await this.walletSettingsPopup.page.verifyIsOpen();
+    await this.settings.page.verifyIsOpen();
   }
 
   async closeWalletSettings(): Promise<void> {
     await this.page.walletSettingsButton.click();
-    await this.walletSettingsPopup.page.verifyIsClosed();
+    await this.settings.page.verifyIsClosed();
   }
 
-  async openNetworkDetails(): Promise<void> {
-    await this.openWalletSettings();
-    await this.walletSettingsPopup.page.changeNetworkButton.click();
-    await this.walletSettingsPopup.networkDetails.page.verifyIsOpen();
+  async openSwitchNetwork(): Promise<void> {
+    await this.openSettings();
+    await this.settings.page.changeNetworkButton.click();
+    await this.settings.switchNetworksPage.verifyIsOpen();
   }
 
   async openAppWithConnectedWallet(
@@ -70,7 +69,7 @@ export class MainAppMentoService extends BaseService {
     if (!(await this.isWalletConnected())) {
       return await this.connectWalletByName(walletName);
     }
-    logger.debug(`'${walletName}' wallet is already connected`);
+    log.debug(`'${walletName}' wallet is already connected`);
   }
 
   async connectWalletByName(walletName: WalletName): Promise<void> {
@@ -91,8 +90,8 @@ export class MainAppMentoService extends BaseService {
       throwError = true,
     }: IGetTokenBalanceByNameOpts = {},
   ): Promise<number> {
-    shouldOpenSettings && (await this.openWalletSettings());
-    const balanceText = await this.walletSettingsPopup.page
+    shouldOpenSettings && (await this.openSettings());
+    const balanceText = await this.settings.page
       .getTokenBalanceLabelByName(tokenName)
       .getText({ throwError });
     const tokenBalance = primitiveHelper.number.toAmount(balanceText);
@@ -104,7 +103,7 @@ export class MainAppMentoService extends BaseService {
     initialBalance,
     tokenName,
   }: IWaitForBalanceToChangeArgs): Promise<boolean> {
-    await this.openWalletSettings();
+    await this.openSettings();
     return waiterHelper.wait(
       async () => {
         const currentBalance = await this.getTokenBalanceByName(tokenName);
@@ -126,16 +125,16 @@ export class MainAppMentoService extends BaseService {
     throwError = true,
     shouldVerifyBalanceLoadingError = true,
   }: IWaitForBalanceToLoadOptions = {}): Promise<boolean> {
-    shouldOpenSettings && (await this.openWalletSettings());
+    shouldOpenSettings && (await this.openSettings());
     const isBalanceLoaded = waiterHelper.wait(
       async () => {
-        const result = await this.walletSettingsPopup.page
+        const result = await this.settings.page
           .getTokenBalanceLabelByName(tokenToCheck)
           .isDisplayed();
         if (!result && shouldVerifyBalanceLoadingError) {
           await this.verifyErrorRetrievingBalances();
         }
-        result && logger.info("Balance is loaded successfully!");
+        result && log.info("Balance is loaded successfully!");
         return result;
       },
       timeouts.xxl,
@@ -157,7 +156,7 @@ export class MainAppMentoService extends BaseService {
           },
           "'Error retrieving account balances' case",
         )
-      : logger.debug("Error retrieving account balances is not defined");
+      : log.debug("Error retrieving account balances is not defined");
   }
 
   private async isErrorRetrievingBalances({
@@ -193,46 +192,6 @@ export class MainAppMentoService extends BaseService {
       }),
     ).toBeGreaterThan(initialBalance);
   }
-
-  async switchNetwork({
-    networkName,
-    shouldOpenSettings = false,
-    shouldCloseSettings = false,
-  }: ISwitchNetworkArgs): Promise<void> {
-    shouldOpenSettings && (await this.openWalletSettings());
-    await this.waitForBalanceToLoad();
-    const balanceBeforeChangeNetwork = await this.getTokenBalanceByName(
-      Token.CELO,
-    );
-    await this.walletSettingsPopup.openNetworkDetails();
-    await this.walletSettingsPopup.networkDetails.switchToNetworkByName(
-      networkName,
-      { shouldClosePopup: true },
-    );
-    // workaround until fix https://linear.app/mento-labs/issue/SUP-159/
-    await this.openWalletSettings();
-    await waiterHelper.wait(
-      async () => {
-        const currentBalance = await this.getTokenBalanceByName(Token.CELO, {
-          throwError: false,
-        });
-        return balanceBeforeChangeNetwork !== currentBalance;
-      },
-      timeouts.xl,
-      {
-        throwError: false,
-        interval: timeouts.xxxs,
-        errorMessage: `Balance is not equal to '${networkName}' network'`,
-      },
-    );
-    shouldCloseSettings && (await this.closeWalletSettings());
-  }
-}
-
-interface ISwitchNetworkArgs {
-  networkName: Network;
-  shouldOpenSettings?: boolean;
-  shouldCloseSettings?: boolean;
 }
 
 interface IWaitForBalanceToLoadOptions {
@@ -262,5 +221,5 @@ interface IsErrorRetrievingBalances {
 export interface IMainServiceArgs extends IBaseServiceArgs {
   page: MainAppMentoPage;
   connectWalletModal: ConnectWalletModalService;
-  walletSettingsPopup: WalletSettingsPopupService;
+  settings: SettingsService;
 }

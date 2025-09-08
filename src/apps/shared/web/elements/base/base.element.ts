@@ -33,6 +33,19 @@ export abstract class BaseElement {
     }
   }
 
+  async isDisabled({
+    timeout = timeouts.action,
+    throwError = true,
+  }: IGetTextParams = {}): Promise<boolean> {
+    try {
+      return await this.element.isDisabled({ timeout });
+    } catch (error) {
+      const errorMessage = `Can't check for disabled on '${this.element}' element.\nDetails: ${error.message}`;
+      log.error(errorMessage);
+      if (throwError) throw new Error(errorMessage);
+    }
+  }
+
   async getAttribute(attribute: string): Promise<string> {
     return this.element.getAttribute(attribute);
   }
