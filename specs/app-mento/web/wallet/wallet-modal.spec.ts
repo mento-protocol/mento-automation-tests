@@ -31,7 +31,7 @@ suite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.main.openConnectWalletModal();
-        await app.main.connectWalletModal.close();
+        await app.main.connectWalletModal.close({ throwError: false });
         expect(
           await app.main.connectWalletModal.page.isClosed({
             timeout: timeouts.xxs,

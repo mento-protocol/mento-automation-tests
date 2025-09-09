@@ -18,7 +18,9 @@ export class ConnectWalletModalService extends BaseService {
     return this.page.walletList[name].click({ timeout: timeouts.xxs });
   }
 
-  async close(): Promise<void> {
+  async close({
+    throwError = true,
+  }: { throwError?: boolean } = {}): Promise<void> {
     await waiterHelper.retry(
       async () => {
         await this.page.closeButton.click({
@@ -30,7 +32,7 @@ export class ConnectWalletModalService extends BaseService {
       3,
       {
         errorMessage: "Failed to close connect wallet modal",
-        throwError: false,
+        throwError,
       },
     );
   }
