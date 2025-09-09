@@ -1,4 +1,5 @@
 import { TestTag } from "@constants/test.constants";
+import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/test.fixture";
 import { suite } from "@helpers/suite/suite.helper";
 
@@ -30,11 +31,15 @@ suite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.main.openConnectWalletModal();
-        await app.main.connectWalletModal.close();
-        expect
-          .soft(await app.main.connectWalletModal.page.isClosed())
-          .toBeTruthy();
-        expect(await app.main.page.isOpen()).toBeTruthy();
+        await app.main.connectWalletModal.close({ throwError: false });
+        expect(
+          await app.main.connectWalletModal.page.isClosed({
+            timeout: timeouts.xxs,
+          }),
+        ).toBeTruthy();
+        expect(
+          await app.main.page.isOpen({ timeout: timeouts.xxs }),
+        ).toBeTruthy();
       },
     },
   ],

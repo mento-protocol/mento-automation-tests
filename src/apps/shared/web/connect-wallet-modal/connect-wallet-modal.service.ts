@@ -2,6 +2,7 @@ import { ClassLog } from "@decorators/logger.decorators";
 import { timeouts } from "@constants/timeouts.constants";
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { ConnectWalletModalPage } from "./connect-wallet-modal.page";
+import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 @ClassLog
 export class ConnectWalletModalService extends BaseService {
@@ -17,11 +18,23 @@ export class ConnectWalletModalService extends BaseService {
     return this.page.walletList[name].click({ timeout: timeouts.xxs });
   }
 
-  async close(): Promise<void> {
-    return this.page.closeButton.click({
-      force: true,
-      timeout: timeouts.xxs,
-    });
+  async close({
+    throwError = true,
+  }: { throwError?: boolean } = {}): Promise<void> {
+    await waiterHelper.retry(
+      async () => {
+        await this.page.closeButton.click({
+          force: true,
+          timeout: timeouts.xxs,
+        });
+        return this.page.isClosed({ timeout: timeouts.xxs });
+      },
+      3,
+      {
+        errorMessage: "Failed to close connect wallet modal",
+        throwError,
+      },
+    );
   }
 }
 
