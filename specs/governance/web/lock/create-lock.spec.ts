@@ -4,14 +4,14 @@ import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-moda
 import { expect } from "@fixtures/test.fixture";
 
 suite({
-  name: "Lock - Top-up",
+  name: "Lock - Create",
   tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
   beforeEach: async ({ web }) => {
     await web.app.governance.main.connectWalletByName(WalletName.Metamask);
   },
   tests: [
     {
-      name: "Top-up successfully",
+      name: "Create lock successfully",
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.governance;
@@ -22,7 +22,7 @@ suite({
         const { veMento: initialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
 
-        await app.votingPower.topUpLock("1");
+        await app.votingPower.createLock({ lockAmount: "1" });
         await app.votingPower.waitForLockValuesToChange({
           initialVeMento,
           initialMento,
@@ -33,7 +33,7 @@ suite({
 
         expect.soft(currentVeMento).toBeGreaterThan(initialVeMento);
         // TODO: Turn on once the bug is fixed https://vercel.live/link/governance.mento.org?page=%2Fvoting-power%3FvercelThreadId%3D3stKN&via=in-app-copy-link&p=1
-        // expect.soft(currentMento).toBeGreaterThan(initialMento);
+        // expect(currentMento).toBeGreaterThan(initialMento);
       },
     },
   ],
