@@ -9,8 +9,7 @@ export class VotingPowerPage extends BasePage {
 
   headerLabel = new Label(this.ef.dataTestId("yourVotingPowerTitleLabel"));
 
-  // TODO: Should be specified as "lockAmountInput"
-  lockAmountInput = new Input(this.ef.dataTestId("sellAmountInput"));
+  lockAmountInput = new Input(this.ef.dataTestId("lockAmountInput"));
   datepickerButton = new Button(this.ef.dataTestId("datepickerButton"));
 
   enterAmountButton = new Button(this.ef.dataTestId("enterAmountButton"));
@@ -18,32 +17,40 @@ export class VotingPowerPage extends BasePage {
     this.ef.dataTestId("insufficientBalanceButton"),
   );
   approveMentoButton = new Button(this.ef.dataTestId("approveMentoButton"));
-  topUpLockButton = new Button(this.ef.dataTestId("topUpLockButton"));
+  lockMentoButton = new Button(this.ef.dataTestId("lockMentoButton"));
   extendLockButton = new Button(this.ef.dataTestId("extendLockButton"));
   topUpAndExtendLockButton = new Button(
     this.ef.dataTestId("topUpAndExtendLockButton"),
   );
 
-  // actionButton = new Button(this.ef.pw.dataTestId("actionButton"));
-
   topUpLockPopupDescriptionLabel = new Label(
     this.ef.text("Continue in wallet"),
   );
-  lockUpdatedSuccessfullyNotificationLabel = new Label(
+  createLockSuccessfullyNotificationLabel = new Button(
+    this.ef.dataTestId("Lock created successfully"),
+  );
+  updateLockSuccessfullyNotificationLabel = new Label(
     this.ef.text("Lock updated successfully"),
   );
   veMentoReceiveLabel = new Label(this.ef.dataTestId("veMentoReceiveLabel"));
 
-  existingLock = {
-    veMentoLabel: new Label(this.ef.dataTestId("existingLockVeMentoLabel")),
-    mentoLabel: new Label(this.ef.dataTestId("existingLockMentoLabel")),
-    withdrawableMentoLabel: new Label(
-      this.ef.dataTestId("existingLockWithdrawableMentoLabel"),
+  locksSummary = {
+    totalLockedMentoLabel: new Label(
+      this.ef.dataTestId("totalLockedMentoLabel"),
     ),
-    expirationDateLabel: new Label(
-      this.ef.dataTestId("existingLockExpirationDateLabel"),
+    ownLocksVeMentoLabel: new Label(this.ef.dataTestId("ownLocksVeMentoLabel")),
+    delegatedVeMentoLabel: new Label(
+      this.ef.dataTestId("delegatedVeMentoLabel"),
+    ),
+    totalVeMentoLabel: new Label(this.ef.dataTestId("totalVeMentoLabel")),
+    withdrawableMentoLabel: new Label(
+      this.ef.dataTestId("withdrawableMentoLabel"),
     ),
   };
+
+  getExistingLockByIndex(index: number) {
+    return new Button(this.ef.dataTestId(`lock-card-${index}`));
+  }
 
   staticElements = [this.headerLabel];
 }
