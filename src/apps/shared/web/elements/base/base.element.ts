@@ -16,6 +16,10 @@ const log = loggerHelper.get("BaseElement");
 export abstract class BaseElement {
   protected constructor(protected element: Locator) {}
 
+  get name(): string {
+    return this.element.toString();
+  }
+
   async isDisplayed(): Promise<boolean> {
     return this.element.isVisible();
   }
