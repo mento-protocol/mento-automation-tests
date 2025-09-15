@@ -25,7 +25,7 @@ export class VotingPowerService extends BaseService {
   async createLock({ lockAmount }: { lockAmount: string }): Promise<void> {
     await waiterHelper.waitForAnimation();
     await this.enterAmount(lockAmount);
-    await this.handleAction("create");
+    await this.handleLockAction(LockAction.create);
   }
 
   async topUpLock({
@@ -37,7 +37,7 @@ export class VotingPowerService extends BaseService {
   }): Promise<void> {
     await this.openExistingLockByIndex(lockIndex);
     await this.updateLockModalPage.amountInput.enterText(lockAmount);
-    await this.handleAction("top-up");
+    await this.handleLockAction(LockAction.update);
   }
 
   async openExistingLockByIndex(lockIndex: number): Promise<void> {
@@ -55,22 +55,15 @@ export class VotingPowerService extends BaseService {
     });
   }
 
-  async verifyConfirmationPopupIsClosed() {
-    await this.page.topUpLockPopupDescriptionLabel.waitForDisappeared(
-      timeouts.s,
-      {
-        errorMessage: "Lock confirmation popup is not closed!",
-      },
-    );
-  }
-
-  async verifyConfirmationPopupIsOpened() {
-    await this.page.topUpLockPopupDescriptionLabel.waitForDisplayed(
-      timeouts.s,
-      {
-        errorMessage: "Lock confirmation popup is not displayed!",
-      },
-    );
+  async verifyConfirmationPopup(
+    toVerify: "opened" | "closed",
+    confirmationPopup: ReturnType<
+      typeof VotingPowerPage.prototype.getConfirmationPopup
+    >,
+  ) {
+    await confirmationPopup.headerLabel.waitForDisplayed(timeouts.s, {
+      errorMessage: `'${confirmationPopup.headerLabel.getText()}' confirmation popup is not ${toVerify}!`,
+    });
   }
 
   async waitForLockValues(): Promise<boolean> {
@@ -133,46 +126,81 @@ export class VotingPowerService extends BaseService {
     );
   }
 
-  private async handleAction(action: "top-up" | "create") {
-    const page = action === "top-up" ? this.updateLockModalPage : this.page;
-    const actionButton =
-      action === "top-up"
-        ? this.updateLockModalPage.topUpLockButton
-        : this.page.lockMentoButton;
-    const successNotificationLabel =
-      action === "top-up"
-        ? this.page.updateLockSuccessfullyNotificationLabel
-        : this.page.createLockSuccessfullyNotificationLabel;
+  private async handleLockAction(action: LockAction) {
+    const { page, actionButton, successNotificationLabel, confirmationPopup } =
+      this.getKeyElementsByAction(action);
+    const shouldApprove = await this.waitForActionButton(
+      page.approveMentoButton,
+    );
 
-    if (await this.waitForActionButton(page.approveMentoButton)) {
-      log.debug(`Approving mento first to be able to ${action} lock`);
-      await page.approveMentoButton.click();
-      await this.verifyConfirmationPopupIsOpened();
-      await this.metamask.rawModule.confirmTransaction();
-      await this.metamask.rawModule.approveTokenPermission();
-      await this.verifyConfirmationPopupIsClosed();
-    }
-
-    if (await this.waitForActionButton(actionButton, { throwError: true })) {
-      log.debug(`${action} lock directly`);
+    if (shouldApprove) {
+      log.debug(`Approving mento first to be able to '${action}' lock`);
+      await this.approveLock(confirmationPopup);
+      await this.verifyConfirmationPopup("opened", confirmationPopup);
+      log.debug(`Executing '${action}' lock after approving mento`);
+      await this.confirmLockAction(confirmationPopup);
+    } else {
+      log.debug(`Executing '${action}' lock directly - approval not required`);
       await actionButton.click();
-      await this.verifyConfirmationPopupIsOpened();
-      await this.metamask.confirmTransaction();
-      await this.verifyConfirmationPopupIsClosed();
+      await this.verifyConfirmationPopup("opened", confirmationPopup);
+      await this.confirmLockAction(confirmationPopup);
     }
 
     expect
       .soft(
-        await successNotificationLabel.waitForDisplayed(timeouts.s, {
+        await successNotificationLabel.waitForDisplayed(timeouts.xl, {
           errorMessage: `${action} success notification is not displayed!`,
           throwError: false,
         }),
       )
       .toBeTruthy();
   }
+
+  private async confirmLockAction(
+    confirmationPopup: ReturnType<
+      typeof VotingPowerPage.prototype.getConfirmationPopup
+    >,
+  ): Promise<void> {
+    await confirmationPopup.actionLabel.waitForDisplayed(timeouts.xs);
+    await confirmationPopup.todoActionLabel.waitForDisplayed(timeouts.xs);
+    await this.metamask.confirmTransaction();
+    await this.verifyConfirmationPopup("closed", confirmationPopup);
+  }
+
+  private async approveLock(
+    confirmationPopup: ReturnType<
+      typeof VotingPowerPage.prototype.getConfirmationPopup
+    >,
+  ): Promise<void> {
+    await this.page.approveMentoButton.click();
+    await this.verifyConfirmationPopup("opened", confirmationPopup);
+    await this.metamask.rawModule.confirmTransaction();
+    await waiterHelper.waitForAnimation();
+    await this.metamask.rawModule.confirmTransaction();
+  }
+
+  private getKeyElementsByAction(action: LockAction) {
+    return {
+      page: action === LockAction.update ? this.updateLockModalPage : this.page,
+      actionButton:
+        action === LockAction.update
+          ? this.updateLockModalPage.topUpLockButton
+          : this.page.lockMentoButton,
+      successNotificationLabel:
+        action === LockAction.update
+          ? this.page.updateLockSuccessfullyNotificationLabel
+          : this.page.createLockSuccessfullyNotificationLabel,
+      confirmationPopup: this.page.getConfirmationPopup(action),
+    };
+  }
 }
 
 interface IVotingPowerServiceArgs extends IBaseServiceArgs {
   page: VotingPowerPage;
   updateLockModalPage: UpdateLockModalPage;
+}
+
+export enum LockAction {
+  create = "create",
+  update = "update",
 }

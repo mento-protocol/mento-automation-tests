@@ -1,6 +1,7 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { Button, Input, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
+import { LockAction } from "./voting-power.service";
 
 export class VotingPowerPage extends BasePage {
   constructor(protected override ef: ElementFinderHelper) {
@@ -26,8 +27,11 @@ export class VotingPowerPage extends BasePage {
   topUpLockPopupDescriptionLabel = new Label(
     this.ef.text("Continue in wallet"),
   );
-  createLockSuccessfullyNotificationLabel = new Button(
-    this.ef.dataTestId("Lock created successfully"),
+  mentoApprovalConfirmedNotificationLabel = new Label(
+    this.ef.text("MENTO approval confirmed"),
+  );
+  createLockSuccessfullyNotificationLabel = new Label(
+    this.ef.text("MENTO locked successfully"),
   );
   updateLockSuccessfullyNotificationLabel = new Label(
     this.ef.text("Lock updated successfully"),
@@ -49,8 +53,31 @@ export class VotingPowerPage extends BasePage {
   };
 
   getExistingLockByIndex(index: number) {
-    return new Button(this.ef.dataTestId(`lock-card-${index}`));
+    return new Button(this.ef.dataTestId(`lockCard_${index}`));
   }
 
   staticElements = [this.headerLabel];
+
+  getConfirmationPopup(action: LockAction) {
+    const headerLabel = action === LockAction.create ? "Create" : "Update";
+    const headerLabelLocator = `${headerLabel} Lock`;
+    return {
+      headerLabel: new Label(
+        this.ef.role("dialog", { name: headerLabelLocator }),
+      ),
+      actionLabel: new Label(
+        this.ef.label(headerLabelLocator).getByText("Lock MENTO"),
+      ),
+      approveMentoLabel: new Label(this.ef.text("Approve MENTO")),
+      rejectedLabel: new Label(
+        this.ef.role("dialog", { name: "Transaction was rejected" }),
+      ),
+      todoActionLabel: new Label(
+        this.ef.label(headerLabelLocator).getByText("Continue in wallet"),
+      ),
+      confirmingLabel: new Label(
+        this.ef.role("dialog", { name: "Confirming..." }),
+      ),
+    };
+  }
 }
