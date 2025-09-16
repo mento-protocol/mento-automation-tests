@@ -13,8 +13,6 @@ const testCases = [
   { name: "timelock" },
   { name: "veMento" },
 ];
-const chainName =
-  envHelper.getChain() === Chain.Mainnet ? "Celo Mainnet" : "Alfajores Testnet";
 
 suite({
   name: "Verify contract links",
@@ -42,7 +40,9 @@ suite({
       },
     })),
     ...testCases.map(testCase => ({
-      name: `'${testCase.name}' link match to the ${chainName} when a wallet is connected and selected corresponding network in wallet`,
+      name: `'${
+        testCase.name
+      }' link match to the '${envHelper.getChain()}' when a wallet is connected and selected corresponding network in wallet`,
       testCaseId: "",
       test: async ({ web }: IExecution) => {
         const app = web.app.governance;
