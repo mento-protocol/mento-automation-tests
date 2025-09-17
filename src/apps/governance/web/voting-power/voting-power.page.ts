@@ -1,7 +1,6 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { Button, Input, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
-import { LockAction } from "./voting-power.service";
 
 export class VotingPowerPage extends BasePage {
   constructor(protected override ef: ElementFinderHelper) {
@@ -58,8 +57,8 @@ export class VotingPowerPage extends BasePage {
 
   staticElements = [this.headerLabel];
 
-  getConfirmationPopup(action: LockAction) {
-    const headerLabel = action === LockAction.create ? "Create" : "Update";
+  getConfirmationPopup(isCreate: boolean): IGetConfirmationPopup {
+    const headerLabel = isCreate ? "Create" : "Update";
     const headerLabelLocator = `${headerLabel} Lock`;
     return {
       headerLabel: new Label(
@@ -80,4 +79,13 @@ export class VotingPowerPage extends BasePage {
       ),
     };
   }
+}
+
+export interface IGetConfirmationPopup {
+  headerLabel: Label;
+  actionLabel: Label;
+  approveMentoLabel: Label;
+  rejectedLabel: Label;
+  todoActionLabel: Label;
+  confirmingLabel: Label;
 }

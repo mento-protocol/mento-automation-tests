@@ -4,14 +4,14 @@ import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-moda
 import { expect } from "@fixtures/test.fixture";
 
 suite({
-  name: "Lock - Top up",
+  name: "Lock - Update",
   tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
   beforeEach: async ({ web }) => {
     await web.app.governance.main.connectWalletByName(WalletName.Metamask);
   },
   tests: [
     {
-      name: "Top up lock successfully",
+      name: "Top-up lock successfully",
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.governance;
@@ -22,7 +22,7 @@ suite({
         const { veMento: initialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
 
-        await app.votingPower.topUpLock({ lockAmount: "1", lockIndex: 1 });
+        await app.votingPower.updateLock({ lockAmount: "1", lockIndex: 1 });
         await app.votingPower.waitForLockValuesToChange({
           initialVeMento,
           initialMento,
