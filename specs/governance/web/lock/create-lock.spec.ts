@@ -22,7 +22,7 @@ suite({
         const { veMento: initialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
 
-        await app.votingPower.createLock({ lockAmount: "1" });
+        await app.votingPower.createLock({ lockAmount: "2" });
         await app.votingPower.waitForLockValuesToChange({
           initialVeMento,
           initialMento,

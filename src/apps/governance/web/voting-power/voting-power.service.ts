@@ -1,12 +1,11 @@
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { ClassLog } from "@decorators/logger.decorators";
-import { VotingPowerPage } from "./voting-power.page";
+import { IGetConfirmationPopup, VotingPowerPage } from "./voting-power.page";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/index";
 import { expect } from "@fixtures/test.fixture";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { UpdateLockModalPage } from "./update-lock-modal.page";
-import { Button } from "@shared/web/elements";
 
 const log = loggerHelper.get("VotingPowerService");
 
@@ -22,37 +21,27 @@ export class VotingPowerService extends BaseService {
     this.updateLockModalPage = updateLockModalPage;
   }
 
-  async createLock({ lockAmount }: { lockAmount: string }): Promise<void> {
+  async createLock({
+    lockAmount,
+  }: Pick<IUpdateLockArgs, "lockAmount">): Promise<void> {
     await waiterHelper.waitForAnimation();
-    await this.enterAmount(lockAmount);
+    await this.page.lockAmountInput.enterText(lockAmount);
+    await this.page.enterAmountButton.waitForDisappeared(timeouts.xs);
     await this.handleLockAction(LockAction.create);
   }
 
-  async topUpLock({
-    lockAmount,
-    lockIndex,
-  }: {
-    lockAmount: string;
-    lockIndex: number;
-  }): Promise<void> {
+  async updateLock({ lockAmount, lockIndex }: IUpdateLockArgs): Promise<void> {
     await this.openExistingLockByIndex(lockIndex);
     await this.updateLockModalPage.amountInput.enterText(lockAmount);
+    await this.updateLockModalPage.enterAmountButton.waitForDisappeared(
+      timeouts.xs,
+    );
     await this.handleLockAction(LockAction.update);
   }
 
   async openExistingLockByIndex(lockIndex: number): Promise<void> {
     await this.page.getExistingLockByIndex(lockIndex).click();
     await this.updateLockModalPage.verifyIsOpen();
-  }
-
-  async waitForActionButton(
-    button: Button,
-    { throwError = false }: { throwError?: boolean } = {},
-  ): Promise<boolean> {
-    return button.waitForDisplayed(timeouts.xs, {
-      errorMessage: `${button.name} is not there!`,
-      throwError,
-    });
   }
 
   async verifyConfirmationPopup(
@@ -62,7 +51,7 @@ export class VotingPowerService extends BaseService {
     >,
   ) {
     await confirmationPopup.headerLabel.waitForDisplayed(timeouts.s, {
-      errorMessage: `'${confirmationPopup.headerLabel.getText()}' confirmation popup is not ${toVerify}!`,
+      errorMessage: `'${await confirmationPopup.headerLabel.getText()}' confirmation popup is not ${toVerify}!`,
     });
   }
 
@@ -104,11 +93,6 @@ export class VotingPowerService extends BaseService {
     );
   }
 
-  async enterAmount(amount: string): Promise<void> {
-    await this.page.lockAmountInput.enterText(amount);
-    await this.page.enterAmountButton.waitForDisappeared(timeouts.xs);
-  }
-
   async getCurrentLockValues(): Promise<{ veMento: number; mento: number }> {
     const veMentoValueText =
       await this.page.locksSummary.totalVeMentoLabel.getText();
@@ -127,23 +111,22 @@ export class VotingPowerService extends BaseService {
   }
 
   private async handleLockAction(action: LockAction) {
-    const { page, actionButton, successNotificationLabel, confirmationPopup } =
-      this.getKeyElementsByAction(action);
-    const shouldApprove = await this.waitForActionButton(
-      page.approveMentoButton,
-    );
+    const isCreate = action === LockAction.create;
+    const { actionButton, successNotificationLabel, confirmationPopup } =
+      this.getKeyElementsByAction(isCreate);
+    const shouldApprove = await this.shouldApprove(isCreate);
 
     if (shouldApprove) {
       log.debug(`Approving mento first to be able to '${action}' lock`);
       await this.approveLock(confirmationPopup);
       await this.verifyConfirmationPopup("opened", confirmationPopup);
       log.debug(`Executing '${action}' lock after approving mento`);
-      await this.confirmLockAction(confirmationPopup);
+      await this.confirmLockAction(confirmationPopup, isCreate);
     } else {
       log.debug(`Executing '${action}' lock directly - approval not required`);
       await actionButton.click();
       await this.verifyConfirmationPopup("opened", confirmationPopup);
-      await this.confirmLockAction(confirmationPopup);
+      await this.confirmLockAction(confirmationPopup, isCreate);
     }
 
     expect
@@ -156,41 +139,49 @@ export class VotingPowerService extends BaseService {
       .toBeTruthy();
   }
 
+  private async shouldApprove(isCreate: boolean): Promise<boolean> {
+    const { page } = this.getKeyElementsByAction(isCreate);
+    return await page.approveMentoButton.waitForDisplayed(timeouts.xs, {
+      errorMessage: `${page.approveMentoButton.name} is not there!`,
+      throwError: false,
+    });
+  }
+
   private async confirmLockAction(
-    confirmationPopup: ReturnType<
-      typeof VotingPowerPage.prototype.getConfirmationPopup
-    >,
+    confirmationPopup: IGetConfirmationPopup,
+    isCreate?: boolean,
   ): Promise<void> {
-    await confirmationPopup.actionLabel.waitForDisplayed(timeouts.xs);
+    // TODO: Temporal check until update lock confirmation popup doesn't have the action label text
+    isCreate &&
+      (await confirmationPopup.actionLabel.waitForDisplayed(timeouts.s));
     await confirmationPopup.todoActionLabel.waitForDisplayed(timeouts.xs);
-    await this.metamask.confirmTransaction();
+    await this.metamask.rawModule.confirmTransaction();
     await this.verifyConfirmationPopup("closed", confirmationPopup);
   }
 
   private async approveLock(
-    confirmationPopup: ReturnType<
-      typeof VotingPowerPage.prototype.getConfirmationPopup
-    >,
+    confirmationPopup: IGetConfirmationPopup,
   ): Promise<void> {
     await this.page.approveMentoButton.click();
     await this.verifyConfirmationPopup("opened", confirmationPopup);
     await this.metamask.rawModule.confirmTransaction();
     await waiterHelper.waitForAnimation();
+    // await waiterHelper.sleep(timeouts.xxxs, {
+    //   sleepReason: "Waiting for next TX to confirm",
+    // });
     await this.metamask.rawModule.confirmTransaction();
   }
 
-  private getKeyElementsByAction(action: LockAction) {
+  private getKeyElementsByAction(isCreate: boolean) {
     return {
-      page: action === LockAction.update ? this.updateLockModalPage : this.page,
-      actionButton:
-        action === LockAction.update
-          ? this.updateLockModalPage.topUpLockButton
-          : this.page.lockMentoButton,
-      successNotificationLabel:
-        action === LockAction.update
-          ? this.page.updateLockSuccessfullyNotificationLabel
-          : this.page.createLockSuccessfullyNotificationLabel,
-      confirmationPopup: this.page.getConfirmationPopup(action),
+      page: isCreate ? this.page : this.updateLockModalPage,
+      actionButton: isCreate
+        ? this.page.lockMentoButton
+        : this.updateLockModalPage.topUpLockButton,
+      successNotificationLabel: isCreate
+        ? this.page.createLockSuccessfullyNotificationLabel
+        : this.page.updateLockSuccessfullyNotificationLabel,
+      confirmationPopup: this.page.getConfirmationPopup(isCreate),
     };
   }
 }
@@ -203,4 +194,9 @@ interface IVotingPowerServiceArgs extends IBaseServiceArgs {
 export enum LockAction {
   create = "create",
   update = "update",
+}
+
+interface IUpdateLockArgs {
+  lockAmount: string;
+  lockIndex: number;
 }
