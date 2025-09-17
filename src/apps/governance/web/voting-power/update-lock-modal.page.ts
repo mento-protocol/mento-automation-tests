@@ -7,12 +7,15 @@ export class UpdateLockModalPage extends BasePage {
     super(ef);
   }
 
-  headerLabel = new Label(this.ef.text("Update Lock #"));
+  headerLabel = new Label(this.ef.label("Update Lock #"));
 
   amountInput = new Input(this.ef.dataTestId("updateLockAmountInput"));
 
   calcelButton = new Button(this.ef.text("Cancel"));
   topUpLockButton = new Button(this.ef.text("Top up lock"));
+  enterAmountButton = new Button(
+    this.headerLabel.locator(this.ef.dataTestId("enterAmountButton")),
+  );
   approveMentoButton = new Button(this.ef.dataTestId("approveMentoButton"));
 
   staticElements = [this.headerLabel];
