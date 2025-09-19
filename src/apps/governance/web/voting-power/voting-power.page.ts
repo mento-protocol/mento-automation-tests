@@ -1,5 +1,5 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import { Button, Input, Label } from "@shared/web/elements/index";
+import { Button, ElementsList, Input, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
 
 export class VotingPowerPage extends BasePage {
@@ -51,6 +51,11 @@ export class VotingPowerPage extends BasePage {
     ),
   };
 
+  allLocks = new ElementsList(
+    Button,
+    this.ef.dataTestId(`lockCard_`, { exact: false }),
+  );
+
   getExistingLockByIndex(index: number) {
     return new Button(this.ef.dataTestId(`lockCard_${index}`));
   }
@@ -59,13 +64,14 @@ export class VotingPowerPage extends BasePage {
 
   getConfirmationPopup(isCreate: boolean): IGetConfirmationPopup {
     const headerLabel = isCreate ? "Create" : "Update";
+    const actionLabel = isCreate ? "Lock MENTO" : "Top-up lock";
     const headerLabelLocator = `${headerLabel} Lock`;
     return {
       headerLabel: new Label(
         this.ef.role("dialog", { name: headerLabelLocator }),
       ),
       actionLabel: new Label(
-        this.ef.label(headerLabelLocator).getByText("Lock MENTO"),
+        this.ef.label(headerLabelLocator).getByText(actionLabel),
       ),
       approveMentoLabel: new Label(this.ef.text("Approve MENTO")),
       rejectedLabel: new Label(

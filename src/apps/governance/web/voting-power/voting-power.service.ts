@@ -30,7 +30,10 @@ export class VotingPowerService extends BaseService {
     await this.handleLockAction(LockAction.create);
   }
 
-  async updateLock({ lockAmount, lockIndex }: IUpdateLockArgs): Promise<void> {
+  async updateLock({
+    lockAmount,
+    lockIndex = 0,
+  }: IUpdateLockArgs): Promise<void> {
     await this.openExistingLockByIndex(lockIndex);
     await this.updateLockModalPage.amountInput.enterText(lockAmount);
     await this.updateLockModalPage.enterAmountButton.waitForDisappeared(
@@ -55,6 +58,14 @@ export class VotingPowerService extends BaseService {
     });
   }
 
+  getAllLocks() {
+    return this.page.allLocks.getAll();
+  }
+
+  getAllLocksCount() {
+    return this.page.allLocks.getLength();
+  }
+
   async waitForLockValues(): Promise<boolean> {
     return waiterHelper.wait(
       async () => {
@@ -65,6 +76,18 @@ export class VotingPowerService extends BaseService {
       timeouts.s,
       {
         errorMessage: "Lock values are not displayed!",
+      },
+    );
+  }
+
+  async waitForLocksToDisplay(): Promise<boolean> {
+    return waiterHelper.wait(
+      async () => {
+        return this.page.getExistingLockByIndex(0).isDisplayed();
+      },
+      timeouts.m,
+      {
+        errorMessage: "No locks displayed!",
       },
     );
   }
@@ -121,12 +144,12 @@ export class VotingPowerService extends BaseService {
       await this.approveLock(confirmationPopup);
       await this.verifyConfirmationPopup("opened", confirmationPopup);
       log.debug(`Executing '${action}' lock after approving mento`);
-      await this.confirmLockAction(confirmationPopup, isCreate);
+      await this.confirmLockAction(confirmationPopup);
     } else {
       log.debug(`Executing '${action}' lock directly - approval not required`);
       await actionButton.click();
       await this.verifyConfirmationPopup("opened", confirmationPopup);
-      await this.confirmLockAction(confirmationPopup, isCreate);
+      await this.confirmLockAction(confirmationPopup);
     }
 
     expect
@@ -149,11 +172,8 @@ export class VotingPowerService extends BaseService {
 
   private async confirmLockAction(
     confirmationPopup: IGetConfirmationPopup,
-    isCreate?: boolean,
   ): Promise<void> {
-    // TODO: Temporal check until update lock confirmation popup doesn't have the action label text
-    isCreate &&
-      (await confirmationPopup.actionLabel.waitForDisplayed(timeouts.s));
+    await confirmationPopup.actionLabel.waitForDisplayed(timeouts.s);
     await confirmationPopup.todoActionLabel.waitForDisplayed(timeouts.xs);
     await this.metamask.rawModule.confirmTransaction();
     await this.verifyConfirmationPopup("closed", confirmationPopup);
@@ -198,5 +218,5 @@ export enum LockAction {
 
 interface IUpdateLockArgs {
   lockAmount: string;
-  lockIndex: number;
+  lockIndex?: number;
 }
