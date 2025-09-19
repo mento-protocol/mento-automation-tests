@@ -1,5 +1,5 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import { Button, Input, Label } from "@shared/web/elements/index";
+import { Button, ElementsList, Input, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
 
 export class VotingPowerPage extends BasePage {
@@ -9,8 +9,7 @@ export class VotingPowerPage extends BasePage {
 
   headerLabel = new Label(this.ef.dataTestId("yourVotingPowerTitleLabel"));
 
-  // TODO: Should be specified as "lockAmountInput"
-  lockAmountInput = new Input(this.ef.dataTestId("sellAmountInput"));
+  lockAmountInput = new Input(this.ef.dataTestId("lockAmountInput"));
   datepickerButton = new Button(this.ef.dataTestId("datepickerButton"));
 
   enterAmountButton = new Button(this.ef.dataTestId("enterAmountButton"));
@@ -18,32 +17,81 @@ export class VotingPowerPage extends BasePage {
     this.ef.dataTestId("insufficientBalanceButton"),
   );
   approveMentoButton = new Button(this.ef.dataTestId("approveMentoButton"));
-  topUpLockButton = new Button(this.ef.dataTestId("topUpLockButton"));
+  lockMentoButton = new Button(this.ef.dataTestId("lockMentoButton"));
   extendLockButton = new Button(this.ef.dataTestId("extendLockButton"));
   topUpAndExtendLockButton = new Button(
     this.ef.dataTestId("topUpAndExtendLockButton"),
   );
 
-  // actionButton = new Button(this.ef.pw.dataTestId("actionButton"));
-
   topUpLockPopupDescriptionLabel = new Label(
     this.ef.text("Continue in wallet"),
   );
-  lockUpdatedSuccessfullyNotificationLabel = new Label(
+  mentoApprovalConfirmedNotificationLabel = new Label(
+    this.ef.text("MENTO approval confirmed"),
+  );
+  createLockSuccessfullyNotificationLabel = new Label(
+    this.ef.text("MENTO locked successfully"),
+  );
+  updateLockSuccessfullyNotificationLabel = new Label(
     this.ef.text("Lock updated successfully"),
   );
   veMentoReceiveLabel = new Label(this.ef.dataTestId("veMentoReceiveLabel"));
 
-  existingLock = {
-    veMentoLabel: new Label(this.ef.dataTestId("existingLockVeMentoLabel")),
-    mentoLabel: new Label(this.ef.dataTestId("existingLockMentoLabel")),
-    withdrawableMentoLabel: new Label(
-      this.ef.dataTestId("existingLockWithdrawableMentoLabel"),
+  locksSummary = {
+    totalLockedMentoLabel: new Label(
+      this.ef.dataTestId("totalLockedMentoLabel"),
     ),
-    expirationDateLabel: new Label(
-      this.ef.dataTestId("existingLockExpirationDateLabel"),
+    ownLocksVeMentoLabel: new Label(this.ef.dataTestId("ownLocksVeMentoLabel")),
+    delegatedVeMentoLabel: new Label(
+      this.ef.dataTestId("delegatedVeMentoLabel"),
+    ),
+    totalVeMentoLabel: new Label(this.ef.dataTestId("totalVeMentoLabel")),
+    withdrawableMentoLabel: new Label(
+      this.ef.dataTestId("withdrawableMentoLabel"),
     ),
   };
 
+  allLocks = new ElementsList(
+    Button,
+    this.ef.dataTestId(`lockCard_`, { exact: false }),
+  );
+
+  getExistingLockByIndex(index: number) {
+    return new Button(this.ef.dataTestId(`lockCard_${index}`));
+  }
+
   staticElements = [this.headerLabel];
+
+  getConfirmationPopup(isCreate: boolean): IGetConfirmationPopup {
+    const headerLabel = isCreate ? "Create" : "Update";
+    const actionLabel = isCreate ? "Lock MENTO" : "Top-up lock";
+    const headerLabelLocator = `${headerLabel} Lock`;
+    return {
+      headerLabel: new Label(
+        this.ef.role("dialog", { name: headerLabelLocator }),
+      ),
+      actionLabel: new Label(
+        this.ef.label(headerLabelLocator).getByText(actionLabel),
+      ),
+      approveMentoLabel: new Label(this.ef.text("Approve MENTO")),
+      rejectedLabel: new Label(
+        this.ef.role("dialog", { name: "Transaction was rejected" }),
+      ),
+      todoActionLabel: new Label(
+        this.ef.label(headerLabelLocator).getByText("Continue in wallet"),
+      ),
+      confirmingLabel: new Label(
+        this.ef.role("dialog", { name: "Confirming..." }),
+      ),
+    };
+  }
+}
+
+export interface IGetConfirmationPopup {
+  headerLabel: Label;
+  actionLabel: Label;
+  approveMentoLabel: Label;
+  rejectedLabel: Label;
+  todoActionLabel: Label;
+  confirmingLabel: Label;
 }

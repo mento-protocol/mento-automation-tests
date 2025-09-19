@@ -16,6 +16,17 @@ const log = loggerHelper.get("BaseElement");
 export abstract class BaseElement {
   protected constructor(protected element: Locator) {}
 
+  get name(): string {
+    return this.element.toString();
+  }
+
+  locator(
+    selectorOrLocator: string | Locator,
+    options?: ILocatorOptions,
+  ): Locator {
+    return this.element.locator(selectorOrLocator, options);
+  }
+
   async isDisplayed(): Promise<boolean> {
     return this.element.isVisible();
   }
@@ -210,4 +221,11 @@ export abstract class BaseElement {
       return false;
     }
   }
+}
+
+interface ILocatorOptions {
+  has?: Locator;
+  hasNot?: Locator;
+  hasNotText?: string | RegExp;
+  hasText?: string | RegExp;
 }

@@ -18,6 +18,7 @@ const {
 
 export class EnvHelper {
   getEnv(): string {
+    if (this.isCustomUrl()) return "custom";
     return ENV;
   }
 
