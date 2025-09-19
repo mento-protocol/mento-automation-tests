@@ -18,19 +18,24 @@ suite({
 
         await app.main.openVotingPowerPage();
         await app.votingPower.waitForLockValues();
+        await app.votingPower.waitForLocksToDisplay();
 
+        const initialLocksCount = await app.votingPower.getAllLocksCount();
         const { veMento: initialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
 
-        await app.votingPower.createLock({ lockAmount: "2" });
+        await app.votingPower.createLock({ lockAmount: "1" });
         await app.votingPower.waitForLockValuesToChange({
           initialVeMento,
           initialMento,
         });
+        await app.votingPower.waitForLocksToDisplay();
 
+        const currentLocksCount = await app.votingPower.getAllLocksCount();
         const { veMento: currentVeMento } =
           await app.votingPower.getCurrentLockValues();
 
+        expect.soft(currentLocksCount).toBeGreaterThan(initialLocksCount);
         expect.soft(currentVeMento).toBeGreaterThan(initialVeMento);
         // TODO: Turn on once the bug is fixed https://vercel.live/link/governance.mento.org?page=%2Fvoting-power%3FvercelThreadId%3D3stKN&via=in-app-copy-link&p=1
         // expect(currentMento).toBeGreaterThan(initialMento);
