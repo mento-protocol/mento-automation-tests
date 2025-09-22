@@ -1,6 +1,7 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { Button, ElementsList, Input, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
+import { LockAction } from "./voting-power.service";
 
 export class VotingPowerPage extends BasePage {
   constructor(protected override ef: ElementFinderHelper) {
@@ -9,6 +10,7 @@ export class VotingPowerPage extends BasePage {
 
   headerLabel = new Label(this.ef.dataTestId("yourVotingPowerTitleLabel"));
 
+  maxAmountButton = new Button(this.ef.role("button", { name: "MAX" }));
   lockAmountInput = new Input(this.ef.dataTestId("lockAmountInput"));
   datepickerButton = new Button(this.ef.dataTestId("datepickerButton"));
 
@@ -56,15 +58,17 @@ export class VotingPowerPage extends BasePage {
     this.ef.dataTestId(`lockCard_`, { exact: false }),
   );
 
+  lockPeriodSlider = new Button(this.ef.role("slider"));
+
+  staticElements = [this.headerLabel];
+
   getExistingLockByIndex(index: number) {
     return new Button(this.ef.dataTestId(`lockCard_${index}`));
   }
 
-  staticElements = [this.headerLabel];
-
-  getConfirmationPopup(isCreate: boolean): IGetConfirmationPopup {
-    const headerLabel = isCreate ? "Create" : "Update";
-    const actionLabel = isCreate ? "Lock MENTO" : "Top-up lock";
+  getConfirmationPopup(action: LockAction): IGetConfirmationPopup {
+    const headerLabel = action === LockAction.create ? "Create" : "Update";
+    const actionLabel = this.getActionLabel(action);
     const headerLabelLocator = `${headerLabel} Lock`;
     return {
       headerLabel: new Label(
@@ -84,6 +88,14 @@ export class VotingPowerPage extends BasePage {
         this.ef.role("dialog", { name: "Confirming..." }),
       ),
     };
+  }
+
+  private getActionLabel(action: LockAction): string {
+    return {
+      [LockAction.create]: "Lock MENTO",
+      [LockAction.topUp]: "Top-up lock",
+      [LockAction.topUpAndExtend]: "Top-up and extend lock",
+    }[action];
   }
 }
 
