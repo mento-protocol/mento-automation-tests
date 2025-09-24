@@ -1,6 +1,12 @@
+import { randomInt } from "crypto";
+
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { ClassLog } from "@decorators/logger.decorators";
-import { IGetConfirmationPopup, VotingPowerPage } from "./voting-power.page";
+import {
+  IGetConfirmationPopup,
+  LockType,
+  VotingPowerPage,
+} from "./voting-power.page";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/index";
 import { expect } from "@fixtures/test.fixture";
@@ -23,43 +29,75 @@ export class VotingPowerService extends BaseService {
 
   async createLock({
     lockAmount,
+    delegateAddress,
     shouldExtendPeriod = false,
   }: ICreateLockArgs): Promise<void> {
     await waiterHelper.waitForAnimation();
+
+    if (shouldExtendPeriod) {
+      log.debug("Extending lock period");
+      await this.page.lockPeriodSlider.dragTo(this.page.maxAmountButton);
+    }
+    if (delegateAddress?.length) {
+      log.debug(`Delegating lock to: ${delegateAddress}`);
+      await this.delegate(delegateAddress, { isCreate: true });
+    }
+
     await this.page.lockAmountInput.enterText(lockAmount);
     await this.page.enterAmountButton.waitForDisappeared(timeouts.xs);
-    if (shouldExtendPeriod) {
-      await this.page.lockPeriodSlider.dragTo({
-        target: this.page.maxAmountButton.element,
-      });
-    }
     await this.handleLockAction(LockAction.create);
   }
 
   async updateLock({
     lockAmount,
-    lockIndex = 0,
-    shouldExtendPeriod = false,
+    delegateAddress,
+    // TODO: Remove and set to 0 when a bug with turned into personal locks is fixed
+    lockIndex = randomInt(5, 15),
+    updateAction = LockAction.topUp,
+    lockType = LockType.Personal,
   }: IUpdateLockArgs): Promise<void> {
-    const action = shouldExtendPeriod
-      ? LockAction.topUpAndExtend
-      : LockAction.topUp;
+    const shouldExtendPeriod =
+      updateAction === LockAction.extend ||
+      updateAction === LockAction.topUpAndExtend;
 
-    await this.openExistingLockByIndex(lockIndex);
+    await this.openCurrentLock(lockIndex, lockType);
+
+    if (shouldExtendPeriod) {
+      log.debug("Extending lock period");
+      await this.updateLockModalPage.lockPeriodSlider.drag({
+        direction: "right",
+        pixelsDistance: 1,
+      });
+    }
+    if (delegateAddress?.length) {
+      log.debug(`Delegating lock to: ${delegateAddress}`);
+      await this.delegate(delegateAddress, { isCreate: false });
+    }
+
     await this.updateLockModalPage.amountInput.enterText(lockAmount);
     await this.updateLockModalPage.enterAmountButton.waitForDisappeared(
       timeouts.xs,
     );
-    if (shouldExtendPeriod) {
-      await this.updateLockModalPage.lockPeriodSlider.dragTo({
-        target: this.updateLockModalPage.receiveVeMentoLabel.element,
-      });
-    }
-    await this.handleLockAction(action);
+
+    await this.handleLockAction(updateAction);
   }
 
-  async openExistingLockByIndex(lockIndex: number): Promise<void> {
-    await this.page.getExistingLockByIndex(lockIndex).click();
+  async delegate(
+    delegateAddress: string,
+    { isCreate }: { isCreate: boolean },
+  ): Promise<void> {
+    const page = isCreate ? this.page : this.updateLockModalPage;
+    await page.delegateCheckbox.click();
+    await page.delegateAddressInput.waitForDisplayed(timeouts.xs);
+    await page.delegateAddressInput.enterText(delegateAddress);
+  }
+
+  async openCurrentLock(lockIndex: number, lockType: LockType): Promise<void> {
+    const lock = await this.page.getCurrentLock({
+      index: lockIndex,
+      type: lockType,
+    });
+    await lock.updateButton.click();
     await this.updateLockModalPage.verifyIsOpen();
   }
 
@@ -72,12 +110,8 @@ export class VotingPowerService extends BaseService {
     });
   }
 
-  getAllLocks() {
-    return this.page.allLocks.getAll();
-  }
-
   getAllLocksCount() {
-    return this.page.allLocks.getLength();
+    return this.page.allLockCards.getLength();
   }
 
   async waitForLockValues(): Promise<boolean> {
@@ -94,12 +128,13 @@ export class VotingPowerService extends BaseService {
     );
   }
 
-  async waitForLocksToDisplay(): Promise<boolean> {
+  async waitForLocks(): Promise<boolean> {
     return waiterHelper.wait(
       async () => {
-        return this.page.getExistingLockByIndex(0).isDisplayed();
+        const lock = await this.page.getCurrentLockByIndex(0);
+        return lock.updateButton.isDisplayed();
       },
-      timeouts.m,
+      timeouts.xxl,
       {
         errorMessage: "No locks displayed!",
       },
@@ -157,12 +192,12 @@ export class VotingPowerService extends BaseService {
       await this.approveLock(confirmationPopup);
       await this.verifyConfirmationPopup("opened", confirmationPopup);
       log.debug(`Executing '${action}' lock after approving mento`);
-      await this.confirmLockAction(confirmationPopup);
+      await this.confirmLockAction(confirmationPopup, action);
     } else {
       log.debug(`Executing '${action}' lock directly - approval not required`);
       await actionButton.click();
       await this.verifyConfirmationPopup("opened", confirmationPopup);
-      await this.confirmLockAction(confirmationPopup);
+      await this.confirmLockAction(confirmationPopup, action);
     }
 
     expect
@@ -185,11 +220,24 @@ export class VotingPowerService extends BaseService {
 
   private async confirmLockAction(
     confirmationPopup: IGetConfirmationPopup,
+    action: LockAction,
   ): Promise<void> {
     await confirmationPopup.actionLabel.waitForDisplayed(timeouts.s);
+    expect
+      .soft(await confirmationPopup.actionLabel.getText())
+      .toBe(this.getExpectedActionText(action));
     await confirmationPopup.todoActionLabel.waitForDisplayed(timeouts.xs);
     await this.metamask.rawModule.confirmTransaction();
     await this.verifyConfirmationPopup("closed", confirmationPopup);
+  }
+
+  private getExpectedActionText(action: LockAction): string {
+    return {
+      [LockAction.create]: "Lock MENTO",
+      [LockAction.topUp]: "Top up lock",
+      [LockAction.extend]: "Extend lock",
+      [LockAction.topUpAndExtend]: "Top-up and extend lock",
+    }[action];
   }
 
   private async approveLock(
@@ -199,9 +247,6 @@ export class VotingPowerService extends BaseService {
     await this.verifyConfirmationPopup("opened", confirmationPopup);
     await this.metamask.rawModule.confirmTransaction();
     await waiterHelper.waitForAnimation();
-    // await waiterHelper.sleep(timeouts.xxxs, {
-    //   sleepReason: "Waiting for next TX to confirm",
-    // });
     await this.metamask.rawModule.confirmTransaction();
   }
 
@@ -221,6 +266,7 @@ export class VotingPowerService extends BaseService {
     return {
       [LockAction.create]: this.page.lockMentoButton,
       [LockAction.topUp]: this.updateLockModalPage.topUpLockButton,
+      [LockAction.extend]: this.updateLockModalPage.extendLockButton,
       [LockAction.topUpAndExtend]:
         this.updateLockModalPage.topUpAndExtendLockButton,
     }[action];
@@ -234,18 +280,21 @@ interface IVotingPowerServiceArgs extends IBaseServiceArgs {
 
 export enum LockAction {
   create = "create",
-  // update = "update",
   topUp = "topUp",
+  extend = "extend",
   topUpAndExtend = "topUpAndExtend",
 }
 
 interface ICreateLockArgs {
   lockAmount: string;
+  delegateAddress?: string;
   shouldExtendPeriod?: boolean;
 }
 
 interface IUpdateLockArgs {
   lockAmount: string;
+  delegateAddress?: string;
   lockIndex?: number;
-  shouldExtendPeriod?: boolean;
+  lockType?: LockType;
+  updateAction?: LockAction;
 }

@@ -12,6 +12,8 @@ export class VotingPowerPage extends BasePage {
 
   maxAmountButton = new Button(this.ef.role("button", { name: "MAX" }));
   lockAmountInput = new Input(this.ef.dataTestId("lockAmountInput"));
+  delegateCheckbox = new Button(this.ef.text("Delegate", { exact: true }));
+  delegateAddressInput = new Input(this.ef.dataTestId("delegateAddressInput"));
   datepickerButton = new Button(this.ef.dataTestId("datepickerButton"));
 
   enterAmountButton = new Button(this.ef.dataTestId("enterAmountButton"));
@@ -53,8 +55,8 @@ export class VotingPowerPage extends BasePage {
     ),
   };
 
-  allLocks = new ElementsList(
-    Button,
+  allLockCards = new ElementsList(
+    Label,
     this.ef.dataTestId(`lockCard_`, { exact: false }),
   );
 
@@ -62,40 +64,95 @@ export class VotingPowerPage extends BasePage {
 
   staticElements = [this.headerLabel];
 
-  getExistingLockByIndex(index: number) {
-    return new Button(this.ef.dataTestId(`lockCard_${index}`));
+  async getAllLocks(): Promise<ILock[]> {
+    const allLockCards = await this.allLockCards.getAll();
+    return allLockCards.map(root => {
+      return {
+        root,
+        updateButton: new Button(
+          root.element.locator(this.ef.dataTestId("updateLockButton")),
+        ),
+        badgeLabel: new Label(
+          root.element.locator(this.ef.dataTestId("lockCardBadge")),
+        ),
+      };
+    });
+  }
+
+  async filterLocksByType(type: LockType, allLocks: ILock[]): Promise<ILock[]> {
+    const filteredLocks: ILock[] = [];
+    for (const lock of allLocks) {
+      const badgeLabel = await lock.badgeLabel.getText();
+      badgeLabel === type && filteredLocks.push(lock);
+    }
+    return filteredLocks;
+  }
+
+  async getCurrentLockByIndex(index: number): Promise<ILock> {
+    const root = new Label(this.ef.dataTestId(`lockCard_${index}`));
+    return {
+      root,
+      updateButton: new Button(
+        root.element.locator(this.ef.dataTestId("updateLockButton")),
+      ),
+      badgeLabel: new Label(
+        root.element.locator(this.ef.dataTestId("lockCardBadge")),
+      ),
+    };
+  }
+
+  async getCurrentLockByLockType(
+    lockType: "Delegated" | "Personal",
+  ): Promise<ILock> {
+    const allLocks = await this.getAllLocks();
+    const lock = allLocks.find(
+      async lock => (await lock.badgeLabel.getText()) === lockType,
+    );
+
+    return {
+      root: lock.root,
+      updateButton: lock.updateButton,
+      badgeLabel: lock.badgeLabel,
+    };
+  }
+
+  async getCurrentLock({ index, type }: IGetCurrentLockParams): Promise<ILock> {
+    const allLocks = await this.getAllLocks();
+    const filteredLocks = await this.filterLocksByType(type, allLocks);
+    const lock = filteredLocks[index];
+    return {
+      root: lock.root,
+      updateButton: lock.updateButton,
+      badgeLabel: lock.badgeLabel,
+    };
   }
 
   getConfirmationPopup(action: LockAction): IGetConfirmationPopup {
-    const headerLabel = action === LockAction.create ? "Create" : "Update";
-    const actionLabel = this.getActionLabel(action);
-    const headerLabelLocator = `${headerLabel} Lock`;
+    const isCreate = action === LockAction.create;
+    const headerLabelText = isCreate ? "Create" : "Update";
+    const headerLabel = new Label(
+      this.ef.role("dialog", { name: `${headerLabelText} Lock` }),
+    );
     return {
-      headerLabel: new Label(
-        this.ef.role("dialog", { name: headerLabelLocator }),
-      ),
+      headerLabel,
       actionLabel: new Label(
-        this.ef.label(headerLabelLocator).getByText(actionLabel),
+        headerLabel.locator(
+          isCreate
+            ? this.ef.text("Lock MENTO")
+            : this.ef.dataTestId("actionLabel", { exact: true }),
+        ),
       ),
       approveMentoLabel: new Label(this.ef.text("Approve MENTO")),
       rejectedLabel: new Label(
         this.ef.role("dialog", { name: "Transaction was rejected" }),
       ),
       todoActionLabel: new Label(
-        this.ef.label(headerLabelLocator).getByText("Continue in wallet"),
+        headerLabel.locator(this.ef.text("Continue in wallet")),
       ),
       confirmingLabel: new Label(
         this.ef.role("dialog", { name: "Confirming..." }),
       ),
     };
-  }
-
-  private getActionLabel(action: LockAction): string {
-    return {
-      [LockAction.create]: "Lock MENTO",
-      [LockAction.topUp]: "Top-up lock",
-      [LockAction.topUpAndExtend]: "Top-up and extend lock",
-    }[action];
   }
 }
 
@@ -106,4 +163,21 @@ export interface IGetConfirmationPopup {
   rejectedLabel: Label;
   todoActionLabel: Label;
   confirmingLabel: Label;
+}
+
+interface IGetCurrentLockParams {
+  index: number;
+  type: LockType;
+}
+
+export interface ILock {
+  root: Label;
+  updateButton: Button;
+  badgeLabel: Label;
+}
+
+export enum LockType {
+  Personal = "Personal",
+  Delegated = "Delegated",
+  Received = "Received",
 }
