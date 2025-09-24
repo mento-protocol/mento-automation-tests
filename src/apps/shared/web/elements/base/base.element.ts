@@ -140,15 +140,55 @@ export abstract class BaseElement {
     }
   }
 
-  async dragTo({
-    throwError = true,
-    timeout,
-    target,
-  }: IHoverParams & { target: Locator }): Promise<void> {
+  async dragTo(
+    target: BaseElement,
+    { throwError = true, timeout }: IHoverParams = {},
+  ): Promise<void> {
     try {
-      return this._element.dragTo(target, { timeout });
+      return this._element.dragTo(target.element, { timeout });
     } catch (error) {
       const errorMessage = `Can't drag to '${target}' element.\nDetails: ${error.message}`;
+      log.error(errorMessage);
+      if (throwError) throw new Error(errorMessage);
+    }
+  }
+
+  async drag({
+    direction = "right",
+    pixelsDistance = 10,
+    throwError = true,
+    timeout,
+  }: IDragParams = {}): Promise<void> {
+    try {
+      const sliderBox = await this._element.boundingBox();
+      const centerX = sliderBox.x + sliderBox.width / 2;
+      const centerY = sliderBox.y + sliderBox.height / 2;
+
+      let targetX = centerX;
+      let targetY = centerY;
+
+      // Calculate target position based on direction
+      switch (direction) {
+        case "right":
+          targetX = centerX + pixelsDistance;
+          break;
+        case "left":
+          targetX = centerX - pixelsDistance;
+          break;
+        case "up":
+          targetY = centerY - pixelsDistance;
+          break;
+        case "down":
+          targetY = centerY + pixelsDistance;
+          break;
+      }
+
+      await this._element.hover({ timeout });
+      await this._element.page().mouse.down();
+      await this._element.page().mouse.move(targetX, targetY);
+      await this._element.page().mouse.up();
+    } catch (error) {
+      const errorMessage = `Can't drag slider in direction '${direction}'.\nDetails: ${error.message}`;
       log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
@@ -246,4 +286,9 @@ interface ILocatorOptions {
   hasNot?: Locator;
   hasNotText?: string | RegExp;
   hasText?: string | RegExp;
+}
+
+interface IDragParams extends IHoverParams {
+  direction?: "right" | "left" | "up" | "down";
+  pixelsDistance?: number;
 }
