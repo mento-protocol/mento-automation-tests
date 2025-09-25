@@ -17,7 +17,8 @@ import { AppName } from "@constants/apps.constants";
 import { MainGovernanceService } from "../../apps/governance/web/main/main.service";
 import { MainGovernancePage } from "../../apps/governance/web/main/main.page";
 import { envHelper } from "@helpers/env/env.helper";
-import { HttpClient } from "@shared/api/http/http-client";
+import { HttpClient } from "@helpers/api/http/http-client";
+import { GraphQLClient } from "@helpers/api/graphql/graphql.client";
 import { VotingPowerService } from "../../apps/governance/web/voting-power/voting-power.service";
 import { CreateProposalService } from "../../apps/governance/web/create-proposal/create-proposal.service";
 import { ProposalViewPage } from "../../apps/governance/web/proposal-view/proposal-view.page";
@@ -28,6 +29,7 @@ import { ContractHelper } from "@helpers/contract/contract.helper";
 import { CeloScanService } from "@shared/web/celo-scan/celo-scan.service";
 import { CeloScanPage } from "@shared/web/celo-scan/celo-scan.page";
 import { SwitchNetworksPage } from "../../apps/app-mento/web/settings/switch-networks.page";
+import { GovernanceApi } from "../../apps/governance/api/governance.api";
 
 /**
  * 🚀 Goal
@@ -60,6 +62,7 @@ export class AssemblerHelper {
   private readonly metamaskHelper: MetamaskHelper = null;
   private readonly contractHelper: ContractHelper = null;
   private readonly httpClient: HttpClient = null;
+  private readonly graphqlClient: GraphQLClient = null;
 
   constructor({
     elementFinder,
@@ -67,17 +70,19 @@ export class AssemblerHelper {
     metamaskHelper,
     contractHelper,
     httpClient,
+    graphqlClient,
   }: AssemblerDependacies) {
     this.elementFinder = elementFinder;
     this.browserHelper = browserHelper;
     this.metamaskHelper = metamaskHelper;
     this.contractHelper = contractHelper;
     this.httpClient = httpClient;
+    this.graphqlClient = graphqlClient;
   }
 
   //❗️ Assembling WEB only for a specified app by 'APP_NAME' variable in .env
   async web(): Promise<IWeb> {
-    const baseDependencies: IBaseDependencies = {
+    const baseDependencies: IBaseWebDependencies = {
       browser: this.browserHelper,
       metamask: this.metamaskHelper,
       contract: this.contractHelper,
@@ -95,10 +100,13 @@ export class AssemblerHelper {
 
   //❗️ Assembling API only for a specified app by 'APP_NAME' variable in .env
   async api(): Promise<IApi> {
-    return {
+    const baseDependencies: IBaseApiDependencies = {
       httpClient: this.httpClient,
-      // TODO: enable app assembling when there're use cases
-      // app: this.apps.api[this.appName](this.httpClient),
+      graphqlClient: this.graphqlClient,
+    };
+    return {
+      ...baseDependencies,
+      app: this.apps.api[this.appName](baseDependencies),
     };
   }
 
@@ -106,7 +114,7 @@ export class AssemblerHelper {
     web: {
       [AppName.AppMento]: (
         ef: ElementFinderHelper,
-        baseDependencies: IBaseDependencies,
+        baseDependencies: IBaseWebDependencies,
       ) => {
         return {
           appMento: {
@@ -138,7 +146,7 @@ export class AssemblerHelper {
       },
       [AppName.Governance]: (
         ef: ElementFinderHelper,
-        baseDependencies: IBaseDependencies,
+        baseDependencies: IBaseWebDependencies,
       ) => {
         return {
           governance: {
@@ -170,9 +178,24 @@ export class AssemblerHelper {
         };
       },
     },
-    // TODO: add api apps when there're use cases
-    // api: {},
+    api: {
+      [AppName.Governance]: ({
+        graphqlClient,
+        httpClient,
+      }: IBaseApiDependencies) => {
+        return {
+          governance: {
+            common: new GovernanceApi(graphqlClient),
+          },
+        };
+      },
+    },
   };
+}
+
+interface IBaseApiDependencies {
+  httpClient: HttpClient;
+  graphqlClient: GraphQLClient;
 }
 
 export interface IWebAssemblerDependacies {
@@ -182,10 +205,12 @@ export interface IWebAssemblerDependacies {
   contractHelper: ContractHelper;
 
   httpClient?: never;
+  graphqlClient?: never;
 }
 
 export interface IApiAssemblerDependacies {
   httpClient: HttpClient;
+  graphqlClient: GraphQLClient;
 
   elementFinder?: never;
   browserHelper?: never;
@@ -197,7 +222,7 @@ export type AssemblerDependacies =
   | IWebAssemblerDependacies
   | IApiAssemblerDependacies;
 
-interface IBaseDependencies {
+interface IBaseWebDependencies {
   browser: BrowserHelper;
   metamask: MetamaskHelper;
   contract: ContractHelper;
@@ -214,12 +239,19 @@ export interface IWeb {
 
 export interface IApi {
   httpClient: HttpClient;
-  // app: ApiApps;
+  graphqlClient: GraphQLClient;
+  app: ApiApps;
 }
 
 export type WebApps = IAppMentoWebApp | IGovernanceWebApp;
 
-export type ApiApps = Record<string, never>;
+export interface IGovernanceApi {
+  common: GovernanceApi;
+}
+
+export type ApiApps = {
+  governance: IGovernanceApi;
+};
 
 export interface IAppMentoWebApp {
   appMento: IAppMentoApp;

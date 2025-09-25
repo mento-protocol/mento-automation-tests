@@ -10,8 +10,9 @@ import {
   IWeb,
 } from "@helpers/assembler/assembler.helper";
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
-import { HttpClient } from "@shared/api/http/http-client";
+import { HttpClient } from "@helpers/api/http/http-client";
 import { ContractHelper } from "@helpers/contract/contract.helper";
+import { GraphQLClient } from "@helpers/api/graphql/graphql.client";
 
 const synpressFixture = testWithSynpress(metaMaskFixtures(basicSetup));
 
@@ -43,6 +44,7 @@ export const testFixture = synpressFixture.extend<IApplicationFixtures>({
   api: async ({ request }, use) => {
     const assembler = new AssemblerHelper({
       httpClient: new HttpClient(request),
+      graphqlClient: new GraphQLClient(request),
     });
     const api = await assembler.api();
     await use(api);

@@ -1,4 +1,4 @@
 export enum Env {
-  local = "local",
   qa = "qa",
+  prod = "prod",
 }

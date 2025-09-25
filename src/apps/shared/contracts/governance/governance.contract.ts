@@ -11,6 +11,7 @@ import {
 } from "./governance.contact.types";
 import { BaseContract } from "../base/base.contract";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
+import { ProposalState } from "../../../governance/web/proposal-view/proposal-view.service";
 
 const log = loggerHelper.get("GovernanceHelper");
 
@@ -22,7 +23,7 @@ export class GovernanceContract extends BaseContract {
   constructor() {
     super({
       contractAddress: envHelper.getGovernorAddress(),
-      contractAbi: magicStrings.governance.abi,
+      contractAbi: magicStrings.governance.abi as unknown[],
     });
   }
 
@@ -41,7 +42,7 @@ export class GovernanceContract extends BaseContract {
 
       const proposalData = this.prepareProposalData(proposal);
       const { txHash, receipt } = await this.callContract({
-        functionName: "propose",
+        functionName: "propose(address[],uint256[],bytes[],string)",
         functionParams: Object.values(proposalData),
       });
 
@@ -52,6 +53,36 @@ export class GovernanceContract extends BaseContract {
       if (throwError) throw new Error(errorMessage);
     }
   }
+
+  async getProposalState(proposalId: string): Promise<ProposalState> {
+    const { result: stateAsNumber } = await this.callContract({
+      functionName: "state(uint256)",
+      functionParams: [proposalId],
+      shouldReturnResultFirst: true,
+    });
+    return this.numberToStateMap[stateAsNumber];
+  }
+
+  async findProposalByState(
+    proposals: IProposal[],
+    expectedState: ProposalState,
+  ): Promise<IProposal> {
+    const states = await Promise.all(
+      proposals.map(proposal => this.getProposalState(proposal.proposalId)),
+    );
+    return proposals.find((_, index) => states[index] === expectedState);
+  }
+
+  private numberToStateMap = {
+    0: ProposalState.Pending,
+    1: ProposalState.Active,
+    2: ProposalState.Canceled,
+    3: ProposalState.Defeated,
+    4: ProposalState.Succeeded,
+    5: ProposalState.Queued,
+    6: ProposalState.Expired,
+    7: ProposalState.Executed,
+  };
 
   private prepareProposalData(proposal: ICreateProposalParams): IProposalData {
     return {
@@ -70,4 +101,23 @@ export class GovernanceContract extends BaseContract {
       }),
     };
   }
+}
+
+interface IProposal {
+  __typename: string;
+  canceled: boolean;
+  description: string;
+  endBlock: string;
+  executed: boolean;
+  proposalCreated: unknown[];
+  proposalExecuted: unknown[];
+  proposalId: string;
+  proposalQueued: unknown[];
+  proposer: {
+    __typename: string;
+    id: string;
+  };
+  queued: boolean;
+  startBlock: string;
+  votecast: unknown[];
 }
