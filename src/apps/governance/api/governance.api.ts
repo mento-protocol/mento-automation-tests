@@ -1,6 +1,7 @@
 import { BaseGraphqlApi } from "@shared/api/base/base-graphql.api";
 import { GraphQLClient } from "@helpers/api/graphql/graphql.client";
 import { envHelper } from "@helpers/env/env.helper";
+import { IProposal } from "@shared/contracts/governance/governance.contract";
 
 export class GovernanceApi extends BaseGraphqlApi {
   constructor(graphqlClient: GraphQLClient) {
@@ -14,8 +15,8 @@ export class GovernanceApi extends BaseGraphqlApi {
     };
   }
 
-  async getAllProposals() {
-    return this.query({
+  async getAllProposals(): Promise<IProposal[]> {
+    const response = await this.query<{ proposals: IProposal[] }>({
       operationName: "getProposals",
       query: `query getProposals {
   proposals(first: 1000, orderBy: startBlock, orderDirection: desc) {
@@ -77,5 +78,6 @@ fragment ProposalFields on Proposal {
   __typename
 }`,
     });
+    return response.data.proposals;
   }
 }

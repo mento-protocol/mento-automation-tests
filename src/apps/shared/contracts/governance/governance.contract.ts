@@ -103,7 +103,7 @@ export class GovernanceContract extends BaseContract {
   }
 }
 
-interface IProposal {
+export interface IProposal {
   __typename: string;
   canceled: boolean;
   description: string;

@@ -19,6 +19,28 @@ export class ProposalViewService extends BaseService {
     this.celoScan = celoScan;
   }
 
+  async queueForExecution(): Promise<void> {
+    await this.page.queueForExecutionButton.click();
+    await this.page.waitingForConfirmationLabel.waitForDisplayed(timeouts.s, {
+      errorMessage: "'Waiting for confirmation label' is not displayed!",
+    });
+    await this.metamask.confirmTransaction();
+    await this.page.inVetoPeriodLabel.waitForDisplayed(timeouts.m, {
+      errorMessage: "'In veto period label' is not displayed!",
+    });
+
+    expect.soft(await this.getProposalState()).toBe(ProposalState.Queued);
+    expect.soft(await this.getVoteStatus()).toBe("Proposal Queued");
+  }
+
+  async execute() {
+    await this.page.executeButton.click();
+    await this.page.waitingForConfirmationLabel.waitForDisplayed(timeouts.s, {
+      errorMessage: "'Waiting for confirmation label' is not displayed!",
+    });
+    await this.metamask.confirmTransaction();
+  }
+
   async vote(
     vote: Vote,
     { shouldConfirmTx = true }: { shouldConfirmTx?: boolean } = {},
@@ -81,6 +103,10 @@ export class ProposalViewService extends BaseService {
 
   async getProposalState(): Promise<string> {
     return await this.page.proposalStateLabel.getText();
+  }
+
+  async getVoteStatus(): Promise<string> {
+    return await this.page.voteStatusLabel.getText();
   }
 
   async waitForProposalState(

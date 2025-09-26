@@ -42,6 +42,14 @@ export class BaseService {
     await this.browser.pressButton(buttonName);
   }
 
+  async verifyIsOpen(): Promise<void> {
+    return this.page.verifyIsOpen();
+  }
+
+  async verifyIsClosed(): Promise<void> {
+    return this.page.verifyIsClosed();
+  }
+
   // TODO: Move to another service
   protected async isRateLoaded(): Promise<boolean> {
     if (!(await this.page.rateLabel.isDisplayed())) return false;
