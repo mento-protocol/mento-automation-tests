@@ -12,7 +12,7 @@ import { LockAction } from "../../../../src/apps/governance/web/voting-power/vot
 
 suite({
   name: "Lock - Update",
-  tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
+  tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {
     await web.app.governance.main.connectWalletByName(WalletName.Metamask);
   },
@@ -20,10 +20,6 @@ suite({
     {
       name: "Top-up for personal lock",
       testCaseId: "",
-      disable: {
-        reason: "Flaky TXs failures and gets stuck on loading",
-        link: "https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3Dx7PQw&via=in-app-copy-link&p=1",
-      },
       test: async ({ web }) => {
         const app = web.app.governance;
         await app.main.openVotingPowerPage();
@@ -54,10 +50,7 @@ suite({
     {
       name: "Top-up and extend period for personal lock",
       testCaseId: "",
-      disable: {
-        reason: "Flaky TXs failures and gets stuck on loading",
-        link: "https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3Dx7PQw&via=in-app-copy-link&p=1",
-      },
+      tags: [TestTag.Smoke],
       test: async ({ web }) => {
         const app = web.app.governance;
         await app.main.openVotingPowerPage();
@@ -85,11 +78,8 @@ suite({
     },
     {
       name: "Top-up and delegate for personal lock",
+      tags: [TestTag.Smoke],
       testCaseId: "",
-      disable: {
-        reason: "Flaky TXs failures and gets stuck on loading",
-        link: "https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3Dx7PQw&via=in-app-copy-link&p=1",
-      },
       test: async ({ web }) => {
         const app = web.app.governance;
         const delegateAddress = testWalletAddresses.reserve;
@@ -135,15 +125,6 @@ suite({
     {
       name: "Top-up for delegated lock",
       testCaseId: "",
-      disable: {
-        reason: "It turns into a personal lock",
-        link: "https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3D6aEHm&via=in-app-copy-link&p=1",
-      },
-      // #2
-      // disable: {
-      //   reason: "Flaky TXs failures and gets stuck on loading",
-      //   link: "https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3Dx7PQw&via=in-app-copy-link&p=1",
-      // },
       test: async ({ web }) => {
         const app = web.app.governance;
         const delegateAddress = testWalletAddresses.reserve;
@@ -183,15 +164,7 @@ suite({
     {
       name: "Top-up and extend period for delegated lock",
       testCaseId: "",
-      disable: {
-        reason: "It turns into a personal lock",
-        link: "https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3D6aEHm&via=in-app-copy-link&p=1",
-      },
-      // #2
-      // disable: {
-      //   reason: "Flaky TXs failures and gets stuck on loading",
-      //   link: "https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3Dx7PQw&via=in-app-copy-link&p=1",
-      // },
+      tags: [TestTag.Smoke],
       test: async ({ web }) => {
         const app = web.app.governance;
         const delegateAddress = testWalletAddresses.reserve;
@@ -231,10 +204,6 @@ suite({
     {
       name: "Extend period for personal lock",
       testCaseId: "",
-      disable: {
-        reason: "Flaky TXs failures and gets stuck on loading",
-        link: "https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3Dx7PQw&via=in-app-copy-link&p=1",
-      },
       test: async ({ web }) => {
         const app = web.app.governance;
         await app.main.openVotingPowerPage();
@@ -259,12 +228,15 @@ suite({
     {
       name: "Extend period for delegated lock",
       testCaseId: "",
-      disable: {
-        reason: "Flaky TXs failures and gets stuck on loading",
-        link: "https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3Dx7PQw&via=in-app-copy-link&p=1",
-      },
       test: async ({ web }) => {
         const app = web.app.governance;
+        const delegateAddress = testWalletAddresses.reserve;
+        const tokenToCheck = tokenAddresses[envHelper.getChain()].veMento;
+        const delegateInitialVeMento = await web.contract.getBalance({
+          walletAddress: delegateAddress,
+          tokenAddress: tokenToCheck,
+        });
+
         await app.main.openVotingPowerPage();
         await app.votingPower.waitForLockValues();
         const { veMento: initialVeMento, mento: initialMento } =
@@ -281,7 +253,13 @@ suite({
         });
         const { veMento: currentVeMento } =
           await app.votingPower.getCurrentLockValues();
-        expect(currentVeMento).toBeGreaterThan(initialVeMento);
+        const delegateCurrentVeMento = await web.contract.getBalance({
+          walletAddress: delegateAddress,
+          tokenAddress: tokenToCheck,
+        });
+
+        expect.soft(currentVeMento).toBe(initialVeMento);
+        expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
       },
     },
   ],

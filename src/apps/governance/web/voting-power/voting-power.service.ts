@@ -1,5 +1,3 @@
-import { randomInt } from "crypto";
-
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { ClassLog } from "@decorators/logger.decorators";
 import {
@@ -12,6 +10,7 @@ import { timeouts } from "@constants/index";
 import { expect } from "@fixtures/test.fixture";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { UpdateLockModalPage } from "./update-lock-modal.page";
+import { Label } from "@shared/web/elements/label/label";
 
 const log = loggerHelper.get("VotingPowerService");
 
@@ -51,8 +50,7 @@ export class VotingPowerService extends BaseService {
   async updateLock({
     lockAmount,
     delegateAddress,
-    // TODO: Remove and set to 0 when a bug with turned into personal locks is fixed
-    lockIndex = randomInt(5, 15),
+    lockIndex = 0,
     updateAction = LockAction.topUp,
     lockType = LockType.Personal,
   }: IUpdateLockArgs): Promise<void> {
@@ -78,7 +76,6 @@ export class VotingPowerService extends BaseService {
     await this.updateLockModalPage.enterAmountButton.waitForDisappeared(
       timeouts.xs,
     );
-
     await this.handleLockAction(updateAction);
   }
 
@@ -222,13 +219,39 @@ export class VotingPowerService extends BaseService {
     confirmationPopup: IGetConfirmationPopup,
     action: LockAction,
   ): Promise<void> {
-    await confirmationPopup.actionLabel.waitForDisplayed(timeouts.s);
-    expect
-      .soft(await confirmationPopup.actionLabel.getText())
-      .toBe(this.getExpectedActionText(action));
+    const actionText = await this.getActionText({
+      actionLabel: confirmationPopup.actionLabel,
+      action,
+      shouldWait: true,
+    });
+    expect.soft(actionText).toBe(this.getExpectedActionText(action));
     await confirmationPopup.todoActionLabel.waitForDisplayed(timeouts.xs);
     await this.metamask.rawModule.confirmTransaction();
     await this.verifyConfirmationPopup("closed", confirmationPopup);
+  }
+
+  private async getActionText({
+    actionLabel,
+    action,
+    shouldWait = false,
+  }: {
+    actionLabel: Label;
+    action: LockAction;
+    shouldWait: boolean;
+  }): Promise<string> {
+    const expectedActionText = this.getExpectedActionText(action);
+    shouldWait &&
+      (await waiterHelper.wait(
+        async () => {
+          return (await actionLabel.getText()) === expectedActionText;
+        },
+        timeouts.m,
+        {
+          errorMessage: `action label is not ${expectedActionText}!`,
+          throwError: false,
+        },
+      ));
+    return actionLabel.getText();
   }
 
   private getExpectedActionText(action: LockAction): string {
@@ -236,7 +259,7 @@ export class VotingPowerService extends BaseService {
       [LockAction.create]: "Lock MENTO",
       [LockAction.topUp]: "Top up lock",
       [LockAction.extend]: "Extend lock",
-      [LockAction.topUpAndExtend]: "Top-up and extend lock",
+      [LockAction.topUpAndExtend]: "Top up and extend lock",
     }[action];
   }
 
