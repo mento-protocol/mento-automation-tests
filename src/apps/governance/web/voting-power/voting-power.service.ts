@@ -250,10 +250,9 @@ export class VotingPowerService extends BaseService {
     actionLabel: Label,
     expectedActionText: string,
   ): Promise<boolean> {
-    let currentActionText = "";
     return waiterHelper.wait(
       async () => {
-        currentActionText = await actionLabel.getText({
+        const currentActionText = await actionLabel.getText({
           timeout: timeouts.l,
           throwError: false,
         });
@@ -261,7 +260,7 @@ export class VotingPowerService extends BaseService {
       },
       timeouts.m,
       {
-        errorMessage: `action label is '${currentActionText}' instead of '${expectedActionText}'`,
+        errorMessage: `action label is not '${expectedActionText}'`,
         throwError: false,
       },
     );
