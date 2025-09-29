@@ -219,12 +219,13 @@ export class VotingPowerService extends BaseService {
     confirmationPopup: IGetConfirmationPopup,
     action: LockAction,
   ): Promise<void> {
-    const actionText = await this.getActionText({
+    const expectedActionText = this.getExpectedActionText(action);
+    const currentActionText = await this.getActionText({
+      expectedActionText,
       actionLabel: confirmationPopup.actionLabel,
-      action,
       shouldWait: true,
     });
-    expect.soft(actionText).toBe(this.getExpectedActionText(action));
+    expect.soft(currentActionText).toBe(expectedActionText);
     await confirmationPopup.todoActionLabel.waitForDisplayed(timeouts.xs);
     await this.metamask.rawModule.confirmTransaction();
     await this.verifyConfirmationPopup("closed", confirmationPopup);
@@ -232,26 +233,38 @@ export class VotingPowerService extends BaseService {
 
   private async getActionText({
     actionLabel,
-    action,
+    expectedActionText,
     shouldWait = false,
   }: {
     actionLabel: Label;
-    action: LockAction;
+    expectedActionText: string;
     shouldWait: boolean;
   }): Promise<string> {
-    const expectedActionText = this.getExpectedActionText(action);
-    shouldWait &&
-      (await waiterHelper.wait(
-        async () => {
-          return (await actionLabel.getText()) === expectedActionText;
-        },
-        timeouts.m,
-        {
-          errorMessage: `action label is not ${expectedActionText}!`,
+    if (shouldWait) {
+      await this.waitForActionText(actionLabel, expectedActionText);
+    }
+    return await actionLabel.getText();
+  }
+
+  private async waitForActionText(
+    actionLabel: Label,
+    expectedActionText: string,
+  ): Promise<boolean> {
+    let currentActionText = "";
+    return waiterHelper.wait(
+      async () => {
+        currentActionText = await actionLabel.getText({
+          timeout: timeouts.l,
           throwError: false,
-        },
-      ));
-    return actionLabel.getText();
+        });
+        return currentActionText === expectedActionText;
+      },
+      timeouts.m,
+      {
+        errorMessage: `action label is '${currentActionText}' instead of '${expectedActionText}'`,
+        throwError: false,
+      },
+    );
   }
 
   private getExpectedActionText(action: LockAction): string {

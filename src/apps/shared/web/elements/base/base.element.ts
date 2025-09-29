@@ -95,13 +95,16 @@ export abstract class BaseElement {
     timeout = timeouts.action,
     throwError = true,
   }: IGetValueParams = {}): Promise<string> {
+    let text = "";
     try {
-      return this._element.textContent({ timeout });
+      text = await this._element.textContent({ timeout });
     } catch (error) {
       const errorMessage = `Can't get text on '${this._element}' element'.\nDetails: ${error.message}`;
       log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
+      text = "";
     }
+    return text;
   }
 
   async getValue({
