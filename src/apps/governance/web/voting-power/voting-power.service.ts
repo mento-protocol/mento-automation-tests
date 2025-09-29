@@ -64,7 +64,7 @@ export class VotingPowerService extends BaseService {
       log.debug("Extending lock period");
       await this.updateLockModalPage.lockPeriodSlider.drag({
         direction: "right",
-        pixelsDistance: 1,
+        pixelsDistance: 3,
       });
     }
     if (delegateAddress?.length) {
