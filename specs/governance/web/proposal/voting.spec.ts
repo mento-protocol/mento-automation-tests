@@ -6,6 +6,7 @@ import {
   Vote,
 } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
 import { expect } from "@fixtures/test.fixture";
+import { IGovernanceApp } from "@helpers/assembler/assembler.helper";
 
 const testCases = [
   {
@@ -31,12 +32,7 @@ suite({
   tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {
     const app = web.app.governance;
-    const proposalData = magicStrings.governance.generateProposalData();
-
     await app.main.connectWalletByName(WalletName.Metamask);
-    await web.contract.governance.createProposal(proposalData);
-    // TODO: Use the navigateToAppPage method once there's a correct proposalId gotten
-    await app.main.openProposalByTitle(proposalData.title);
   },
   tests: testCases.map(({ name, vote, timeout, tags }) => ({
     name,
@@ -45,19 +41,31 @@ suite({
     tags,
     test: async ({ web }) => {
       const app = web.app.governance;
+      const isYesVote = vote === Vote.Yes;
+      const proposalData = magicStrings.governance.generateProposalData({
+        shouldMarkToExecute: isYesVote,
+      });
+
+      await web.contract.governance.createProposal(proposalData);
+      await app.main.openProposalByTitle(proposalData.title);
 
       await app.proposalView.vote(vote);
       await app.proposalView.expectVote(vote);
 
-      if (name === testCases[0].name) {
-        await app.proposalView.waitForProposalState(
-          ProposalState.Succeeded,
-          timeout,
-        );
-        expect(await app.proposalView.getProposalState()).toBe(
-          ProposalState.Succeeded,
-        );
-      }
+      if (isYesVote) await expectYesVote(app, timeout);
     },
   })),
 });
+
+async function expectYesVote(
+  app: IGovernanceApp,
+  timeout: number,
+): Promise<void> {
+  await app.proposalView.waitForProposalState(ProposalState.Succeeded, {
+    timeout,
+    interval: timeouts.xl,
+  });
+  expect(await app.proposalView.getProposalState()).toBe(
+    ProposalState.Succeeded,
+  );
+}

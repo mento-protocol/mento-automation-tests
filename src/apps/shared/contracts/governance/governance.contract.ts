@@ -60,17 +60,25 @@ export class GovernanceContract extends BaseContract {
       functionParams: [proposalId],
       shouldReturnResultFirst: true,
     });
-    return this.numberToStateMap[stateAsNumber];
+    return this.numberToStateMap[
+      stateAsNumber as keyof typeof this.numberToStateMap
+    ];
   }
 
   async findProposalByState(
     proposals: IProposal[],
     expectedState: ProposalState,
+    toContainText?: string,
   ): Promise<IProposal> {
     const states = await Promise.all(
       proposals.map(proposal => this.getProposalState(proposal.proposalId)),
     );
-    return proposals.find((_, index) => states[index] === expectedState);
+    return proposals.find((proposal, index) =>
+      toContainText
+        ? states[index] === expectedState
+        : states[index] === expectedState &&
+          proposal.description.includes(toContainText),
+    );
   }
 
   private numberToStateMap = {

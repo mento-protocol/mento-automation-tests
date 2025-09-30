@@ -1,14 +1,6 @@
 import { GraphQLClient } from "@helpers/api/graphql/graphql.client";
-import { HttpClient } from "../../../../helpers/api/http/http-client";
-import {
-  IBaseApiRequestArgs,
-  IHttpResponse,
-} from "../../../../helpers/api/http/http.types";
 import { envHelper } from "@helpers/env/env.helper";
-import {
-  IGraphQLRequestArgs,
-  IGraphQLResponse,
-} from "@helpers/api/graphql/graphql.types";
+import { IGraphQLResponse } from "@helpers/api/graphql/graphql.types";
 
 export abstract class BaseGraphqlApi {
   private readonly graphqlClient: GraphQLClient = null;

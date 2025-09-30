@@ -1,4 +1,4 @@
-import { APIRequestContext, APIResponse } from "@playwright/test";
+import { APIResponse } from "@playwright/test";
 
 import {
   IGraphQLRequestArgs,

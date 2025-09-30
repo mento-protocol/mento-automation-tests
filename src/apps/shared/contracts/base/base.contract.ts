@@ -30,7 +30,7 @@ export class BaseContract {
   }: ICallContractParams): Promise<{
     txHash?: string;
     receipt?: TransactionReceipt;
-    result?: any;
+    result?: unknown;
   }> {
     let txOrResult = null;
     try {

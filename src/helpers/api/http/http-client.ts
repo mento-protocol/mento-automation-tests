@@ -1,4 +1,4 @@
-import { APIRequestContext, APIResponse } from "@playwright/test";
+import { APIResponse } from "@playwright/test";
 
 import { IHttpRequestArgs, IHttpResponse, Method } from "./http.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";

@@ -4,6 +4,8 @@ import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { governanceAbi } from "./abi.constants";
 
+export const executeTitleSuffix = "(To Execute)";
+
 export const magicStrings = {
   url: {
     [AppName.AppMento]: {
@@ -43,15 +45,18 @@ export const magicStrings = {
     mainnet: {
       governorAddress: "0x47036d78bB3169b4F5560dD77BF93f4412A59852" as Address,
     },
-    generateProposalData() {
+    generateProposalData({
+      shouldMarkToExecute: shouldMarkToExecute = false,
+    }: { shouldMarkToExecute?: boolean } = {}) {
+      const titleSuffix = shouldMarkToExecute ? executeTitleSuffix : "";
       return {
-        title: `[${primitiveHelper.string.generateId()}] AQA Proposal`,
+        title: `[${primitiveHelper.string.generateId()}] AQA Proposal ${titleSuffix}`,
         description: `AQA Proposal Description - ${primitiveHelper.string.generateRandom(
           73,
         )}`,
         executionCode: [
           {
-            // Ping contract address
+            // 'Ping' contract and its function to call
             address: "0xcee517fc3e11b41df43baa7bab9542625187e259" as Address,
             value: 0,
             data: "0x5c36b186",

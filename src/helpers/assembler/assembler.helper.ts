@@ -179,10 +179,8 @@ export class AssemblerHelper {
       },
     },
     api: {
-      [AppName.Governance]: ({
-        graphqlClient,
-        httpClient,
-      }: IBaseApiDependencies) => {
+      [AppName.Governance]: (params: IBaseApiDependencies) => {
+        const { graphqlClient } = params;
         return {
           governance: {
             common: new GovernanceApi(graphqlClient),
@@ -268,7 +266,7 @@ interface IAppMentoApp {
   swap: SwapService;
 }
 
-interface IGovernanceApp {
+export interface IGovernanceApp {
   main: MainGovernanceService;
   createProposal: CreateProposalService;
   votingPower: VotingPowerService;
