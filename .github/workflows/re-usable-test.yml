@@ -84,6 +84,12 @@ on:
       E2E_TEST_GCP_SA_KEY:
         description: "Google Cloud Service Account key JSON"
         required: true
+      GOVERNANCE_QA_API_KEY:
+        description: "Governance QA API key"
+        required: false
+      GOVERNANCE_QA_API_URL:
+        description: "Governance QA API URL"
+        required: false
 
 jobs:
   test:
@@ -104,6 +110,8 @@ jobs:
       SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
       WALLET_PASSWORD: ${{ secrets.E2E_TEST_WALLET_PASSWORD }}
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+      GOVERNANCE_QA_API_KEY: ${{ secrets.GOVERNANCE_QA_API_KEY }}
+      GOVERNANCE_QA_API_URL: ${{ secrets.GOVERNANCE_QA_API_URL }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy
