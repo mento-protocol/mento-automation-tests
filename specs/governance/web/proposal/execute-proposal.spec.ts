@@ -26,10 +26,7 @@ suite({
 
         await app.main.openProposalById(foundProposal.proposalId);
         await app.proposalView.page.verifyIsOpen();
-
-        expect(await app.proposalView.getProposalState()).toBe(
-          ProposalState.Succeeded,
-        );
+        await app.proposalView.waitForProposalState(ProposalState.Succeeded);
 
         await app.proposalView.queueForExecution();
         await app.proposalView.waitForVetoPeriodEnd();
