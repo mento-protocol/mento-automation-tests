@@ -1,5 +1,7 @@
 import { ethers, providers, Signer } from "ethers";
 import { Address, TransactionReceipt } from "viem";
+import { newKit } from "@celo/contractkit";
+import { AbiItem } from "web3-utils";
 
 import { envHelper } from "@helpers/env/env.helper";
 import { loggerHelper } from "@helpers/logger/logger.helper";
@@ -20,6 +22,23 @@ export class BaseContract {
     this.signer = new ethers.Wallet(this.privateKey, this.provider);
     this.contractAddress = contractAddress;
     this.contractAbi = contractAbi;
+  }
+
+  async getBalance({
+    walletAddress,
+    tokenAddress,
+  }: IGetBalanceParams): Promise<number> {
+    const kit = newKit(this.rpcUrl);
+    const contract = new kit.web3.eth.Contract(
+      this.getErc20Abi(),
+      tokenAddress,
+    );
+    const [rawBalance, decimals] = await Promise.all([
+      contract.methods.balanceOf(walletAddress).call(),
+      contract.methods.decimals().call(),
+    ]);
+    const balance = rawBalance / 10 ** decimals;
+    return balance;
   }
 
   protected async callContract({
@@ -73,6 +92,37 @@ export class BaseContract {
     });
     return estimatedGas.toString();
   }
+
+  private getErc20Abi(): AbiItem[] {
+    return [
+      {
+        constant: true,
+        inputs: [{ name: "_owner", type: "address" }],
+        name: "balanceOf",
+        outputs: [{ name: "balance", type: "uint256" }],
+        type: "function",
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: "decimals",
+        outputs: [{ name: "", type: "uint8" }],
+        type: "function",
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: "symbol",
+        outputs: [{ name: "", type: "string" }],
+        type: "function",
+      },
+    ];
+  }
+}
+
+export interface IGetBalanceParams {
+  walletAddress: Address;
+  tokenAddress: Address;
 }
 
 interface IEstimateGasParams {
