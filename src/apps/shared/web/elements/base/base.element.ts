@@ -14,25 +14,10 @@ import { timeouts } from "@constants/timeouts.constants";
 const log = loggerHelper.get("BaseElement");
 
 export abstract class BaseElement {
-  protected constructor(protected _element: Locator) {}
-
-  get element(): Locator {
-    return this._element;
-  }
-
-  get name(): string {
-    return this._element.toString();
-  }
-
-  locator(
-    selectorOrLocator: string | Locator,
-    options?: ILocatorOptions,
-  ): Locator {
-    return this._element.locator(selectorOrLocator, options);
-  }
+  protected constructor(protected element: Locator) {}
 
   async isDisplayed(): Promise<boolean> {
-    return this._element.isVisible();
+    return this.element.isVisible();
   }
 
   async isEnabled({
@@ -40,9 +25,9 @@ export abstract class BaseElement {
     throwError = true,
   }: IGetTextParams = {}): Promise<boolean> {
     try {
-      return await this._element.isEnabled({ timeout });
+      return await this.element.isEnabled({ timeout });
     } catch (error) {
-      const errorMessage = `Can't check for enabled on '${this._element}' element.\nDetails: ${error.message}`;
+      const errorMessage = `Can't check for enabled on '${this.element}' element.\nDetails: ${error.message}`;
       log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
@@ -53,16 +38,16 @@ export abstract class BaseElement {
     throwError = true,
   }: IGetTextParams = {}): Promise<boolean> {
     try {
-      return await this._element.isDisabled({ timeout });
+      return await this.element.isDisabled({ timeout });
     } catch (error) {
-      const errorMessage = `Can't check for disabled on '${this._element}' element.\nDetails: ${error.message}`;
+      const errorMessage = `Can't check for disabled on '${this.element}' element.\nDetails: ${error.message}`;
       log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
   }
 
   async getAttribute(attribute: string): Promise<string> {
-    return this._element.getAttribute(attribute);
+    return this.element.getAttribute(attribute);
   }
 
   async click({
@@ -73,15 +58,15 @@ export abstract class BaseElement {
   }: IClickParams = {}): Promise<void> {
     try {
       if (await this.isEnabled({ timeout })) {
-        await this._element.click({ timeout, force, clickCount: times });
+        await this.element.click({ timeout, force, clickCount: times });
       } else {
         log.warn(
-          `Element with '${this._element}' is disabled - force clicking...`,
+          `Element with '${this.element}' is disabled - force clicking...`,
         );
-        await this._element.click({ force: true, timeout, clickCount: times });
+        await this.element.click({ force: true, timeout, clickCount: times });
       }
     } catch (error) {
-      const errorMessage = `Can't click on '${this._element}' element.\nDetails: ${error.message}`;
+      const errorMessage = `Can't click on '${this.element}' element.\nDetails: ${error.message}`;
       if (throwError) throw new Error(errorMessage);
       log.error(errorMessage);
     }
@@ -91,16 +76,13 @@ export abstract class BaseElement {
     timeout = timeouts.action,
     throwError = true,
   }: IGetValueParams = {}): Promise<string> {
-    let text = "";
     try {
-      text = await this._element.textContent({ timeout });
+      return this.element.textContent({ timeout });
     } catch (error) {
-      const errorMessage = `Can't get text on '${this._element}' element'.\nDetails: ${error.message}`;
+      const errorMessage = `Can't get text on '${this.element}' element'.\nDetails: ${error.message}`;
       log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
-      text = "";
     }
-    return text;
   }
 
   async getValue({
@@ -108,9 +90,9 @@ export abstract class BaseElement {
     throwError = true,
   }: IGetValueParams = {}): Promise<string> {
     try {
-      return this._element.inputValue({ timeout });
+      return this.element.inputValue({ timeout });
     } catch (error) {
-      const errorMessage = `Can't get value on '${this._element}' element'.\nDetails: ${error.message}`;
+      const errorMessage = `Can't get value on '${this.element}' element'.\nDetails: ${error.message}`;
       log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
@@ -122,9 +104,9 @@ export abstract class BaseElement {
   }: IGetTextParams = {}): Promise<string> {
     try {
       await this.waitForDisplayed(timeout, { throwError });
-      return this._element.innerHTML({ timeout });
+      return this.element.innerHTML({ timeout });
     } catch (error) {
-      const errorMessage = `Can't get HTML on element with '${this._element}' locator.\nError details: ${error.message}`;
+      const errorMessage = `Can't get HTML on element with '${this.element}' locator.\nError details: ${error.message}`;
       log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
@@ -135,63 +117,9 @@ export abstract class BaseElement {
     timeout,
   }: IHoverParams = {}): Promise<void> {
     try {
-      return this._element.hover({ timeout });
+      return this.element.hover({ timeout });
     } catch (error) {
-      const errorMessage = `Can't hover on '${this._element}' element.\nDetails: ${error.message}`;
-      log.error(errorMessage);
-      if (throwError) throw new Error(errorMessage);
-    }
-  }
-
-  async dragTo(
-    target: BaseElement,
-    { throwError = true, timeout }: IHoverParams = {},
-  ): Promise<void> {
-    try {
-      return this._element.dragTo(target.element, { timeout });
-    } catch (error) {
-      const errorMessage = `Can't drag to '${target}' element.\nDetails: ${error.message}`;
-      log.error(errorMessage);
-      if (throwError) throw new Error(errorMessage);
-    }
-  }
-
-  async drag({
-    direction = "right",
-    pixelsDistance = 10,
-    throwError = true,
-    timeout,
-  }: IDragParams = {}): Promise<void> {
-    try {
-      const sliderBox = await this._element.boundingBox();
-      const centerX = sliderBox.x + sliderBox.width / 2;
-      const centerY = sliderBox.y + sliderBox.height / 2;
-
-      let targetX = centerX;
-      let targetY = centerY;
-
-      // Calculate target position based on direction
-      switch (direction) {
-        case "right":
-          targetX = centerX + pixelsDistance;
-          break;
-        case "left":
-          targetX = centerX - pixelsDistance;
-          break;
-        case "up":
-          targetY = centerY - pixelsDistance;
-          break;
-        case "down":
-          targetY = centerY + pixelsDistance;
-          break;
-      }
-
-      await this._element.hover({ timeout });
-      await this._element.page().mouse.down();
-      await this._element.page().mouse.move(targetX, targetY);
-      await this._element.page().mouse.up();
-    } catch (error) {
-      const errorMessage = `Can't drag slider in direction '${direction}'.\nDetails: ${error.message}`;
+      const errorMessage = `Can't hover on '${this.element}' element.\nDetails: ${error.message}`;
       log.error(errorMessage);
       if (throwError) throw new Error(errorMessage);
     }
@@ -201,12 +129,12 @@ export abstract class BaseElement {
     timeout: number,
     {
       throwError = true,
-      errorMessage = `Failed to wait for '${this._element}' element to display`,
+      errorMessage = `Failed to wait for '${this.element}' element to display`,
       shouldLog = true,
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
     try {
-      await this._element.waitFor({ timeout, state: "visible" });
+      await this.element.waitFor({ timeout, state: "visible" });
       return true;
     } catch (error) {
       const errorLogType = throwError ? "error" : "warn";
@@ -224,12 +152,12 @@ export abstract class BaseElement {
     {
       throwError = true,
       shouldLog = true,
-      errorMessage = `Failed to wait for '${this._element}' element to disappear`,
+      errorMessage = `Failed to wait for '${this.element}' element to disappear`,
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
     const logType = throwError ? "error" : "warn";
     try {
-      await this._element.waitFor({ timeout, state: "hidden" });
+      await this.element.waitFor({ timeout, state: "hidden" });
       return true;
     } catch (error) {
       const message = `${errorMessage}: ${error.message}`;
@@ -250,10 +178,10 @@ export abstract class BaseElement {
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
     try {
-      await this._element.waitFor({ timeout, state: "attached" });
+      await this.element.waitFor({ timeout, state: "attached" });
       return true;
     } catch (error) {
-      if (shouldLog) log.error(`${errorMessage}: ${this._element}`);
+      if (shouldLog) log.error(`${errorMessage}: ${this.element}`);
       if (throwError) {
         throw { ...error, message: `${errorMessage}: ${error.message}}` };
       }
@@ -266,7 +194,7 @@ export abstract class BaseElement {
     {
       throwError = true,
       shouldLog = true,
-      errorMessage = `Failed to wait for '${this._element}' element to be enabled`,
+      errorMessage = `Failed to wait for '${this.element}' element to be enabled`,
     }: IWaitUntilDisplayed = {},
   ): Promise<boolean> {
     const logType = throwError ? "error" : "warn";
@@ -282,16 +210,4 @@ export abstract class BaseElement {
       return false;
     }
   }
-}
-
-interface ILocatorOptions {
-  has?: Locator;
-  hasNot?: Locator;
-  hasNotText?: string | RegExp;
-  hasText?: string | RegExp;
-}
-
-interface IDragParams extends IHoverParams {
-  direction?: "right" | "left" | "up" | "down";
-  pixelsDistance?: number;
 }

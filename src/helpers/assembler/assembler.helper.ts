@@ -28,7 +28,6 @@ import { ContractHelper } from "@helpers/contract/contract.helper";
 import { CeloScanService } from "@shared/web/celo-scan/celo-scan.service";
 import { CeloScanPage } from "@shared/web/celo-scan/celo-scan.page";
 import { SwitchNetworksPage } from "../../apps/app-mento/web/settings/switch-networks.page";
-import { UpdateLockModalPage } from "../../apps/governance/web/voting-power/update-lock-modal.page";
 
 /**
  * 🚀 Goal
@@ -161,7 +160,6 @@ export class AssemblerHelper {
             }),
             votingPower: new VotingPowerService({
               page: new VotingPowerPage(ef),
-              updateLockModalPage: new UpdateLockModalPage(ef),
               ...baseDependencies,
             }),
             proposalView: new ProposalViewService({

@@ -7,9 +7,8 @@ export class ElementsList<T extends BaseElement> {
     public element: Locator,
   ) {}
 
-  async getAll(): Promise<T[]> {
-    const allElements = await this.element.all();
-    return allElements.map(element => new this.DesiredElement(element));
+  async getElements(): Promise<Locator[]> {
+    return this.element.all();
   }
 
   getElementByIndex(index: number): T {
@@ -17,8 +16,14 @@ export class ElementsList<T extends BaseElement> {
   }
 
   async getLength(): Promise<number> {
-    return (await this.getAll()).length;
+    return (await this.getElements()).length;
   }
+
+  // async getAllElements(): Promise<T[]> {
+  //   return _.times(await this.getLength()).map(index =>
+  //     this.getElementByIndex(index),
+  //   );
+  // }
 }
 
 // eslint-disable-next-line
