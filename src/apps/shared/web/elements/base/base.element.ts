@@ -20,6 +20,10 @@ export abstract class BaseElement {
     return this.element.isVisible();
   }
 
+  async isDisappeared(): Promise<boolean> {
+    return this.element.isHidden();
+  }
+
   async isEnabled({
     timeout = timeouts.action,
     throwError = true,

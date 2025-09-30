@@ -1,15 +1,14 @@
-import { APIRequestContext, APIResponse } from "@playwright/test";
+import { APIResponse } from "@playwright/test";
 
 import { IHttpRequestArgs, IHttpResponse, Method } from "./http.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
+import { RequestModule } from "../api.helper";
 
 const logger = loggerHelper.get("Http-Client");
 
 export class HttpClient {
-  constructor(
-    private readonly apiModule: APIRequestContext | Promise<APIRequestContext>,
-  ) {}
+  constructor(private readonly requestModule: RequestModule) {}
 
   async get<T>(args: IHttpRequestArgs): Promise<IHttpResponse<T>> {
     return this.sendRequest<T>(Method.GET, args);
@@ -67,8 +66,8 @@ export class HttpClient {
   }
 
   private async fetch(url: string, request): Promise<APIResponse> {
-    return this.apiModule instanceof Promise
-      ? await (await this.apiModule).fetch(url, request)
-      : await this.apiModule.fetch(url, request);
+    return this.requestModule instanceof Promise
+      ? await (await this.requestModule).fetch(url, request)
+      : await this.requestModule.fetch(url, request);
   }
 }

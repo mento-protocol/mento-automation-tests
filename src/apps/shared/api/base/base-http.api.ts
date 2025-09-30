@@ -1,11 +1,14 @@
-import { HttpClient } from "../http/http-client";
-import { IBaseApiRequestArgs, IHttpResponse } from "../http/http.types";
+import { envHelper } from "@helpers/env/env.helper";
+import { HttpClient } from "../../../../helpers/api/http/http-client";
+import {
+  IBaseApiRequestArgs,
+  IHttpResponse,
+} from "../../../../helpers/api/http/http.types";
 
-export abstract class BaseApi {
-  protected constructor(
-    protected readonly httpClient: HttpClient,
-    protected readonly baseUrl: string,
-  ) {}
+export abstract class BaseHttpApi {
+  private readonly baseUrl = envHelper.getBaseApiUrl();
+
+  protected constructor(protected readonly httpClient: HttpClient) {}
 
   protected abstract get defaultHeaders(): Record<string, string>;
 

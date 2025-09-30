@@ -10,7 +10,7 @@ export class BaseContract {
   private readonly provider: providers.Provider = null;
   private readonly signer: Signer = null;
   private readonly contractAddress: Address = null;
-  private readonly contractAbi: string[] = null;
+  private readonly contractAbi: unknown[] = null;
 
   private readonly rpcUrl = envHelper.getRpcUrl();
   private readonly privateKey = envHelper.getPrivateKey();
@@ -26,10 +26,13 @@ export class BaseContract {
     functionName,
     functionParams,
     throwError = true,
+    shouldReturnResultFirst = false,
   }: ICallContractParams): Promise<{
-    txHash: string;
-    receipt: TransactionReceipt;
+    txHash?: string;
+    receipt?: TransactionReceipt;
+    result?: unknown;
   }> {
+    let txOrResult = null;
     try {
       const contract = new ethers.Contract(
         this.contractAddress,
@@ -42,11 +45,16 @@ export class BaseContract {
       //   functionParams,
       //   contract,
       // });
-      const tx = await contract[functionName](...functionParams, {
+
+      txOrResult = await contract[functionName](...functionParams, {
         gasLimit: 400000,
       });
 
-      const receipt: TransactionReceipt = await tx.wait();
+      if (shouldReturnResultFirst) {
+        return { result: txOrResult };
+      }
+
+      const receipt: TransactionReceipt = await txOrResult.wait();
 
       if (!receipt.status || !receipt.transactionHash) {
         const errorMessage = `Contract call failed.\nTX Hash: ${receipt?.transactionHash}\nStatus: ${receipt?.status}\n`;
@@ -54,7 +62,7 @@ export class BaseContract {
         if (throwError) throw new Error(errorMessage);
       }
 
-      return { txHash: tx.hash, receipt };
+      return { txHash: txOrResult.hash, receipt };
     } catch (error) {
       const errorMessage = `Error in 'callContract' method: ${error}\nError stack: ${error.stack}`;
       log.error(errorMessage);
@@ -85,9 +93,10 @@ interface ICallContractParams {
   functionName: string;
   functionParams: unknown[];
   throwError?: boolean;
+  shouldReturnResultFirst?: boolean;
 }
 
 interface IBaseContractContructorParams {
   contractAddress: Address;
-  contractAbi: string[];
+  contractAbi: unknown[];
 }

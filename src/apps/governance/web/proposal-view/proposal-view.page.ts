@@ -13,6 +13,11 @@ export class ProposalViewPage extends BasePage {
     return new Label(this.ef.role("button", { name: truncatedAddress }));
   }
 
+  queueForExecutionButton = new Button(
+    this.ef.dataTestId("queueProposalButton"),
+  );
+  executeButton = new Button(this.ef.dataTestId("executeProposalButton"));
+
   proposalTitleLabel = new Label(this.ef.dataTestId("proposalTitleLabel"));
   proposalDescriptionLabel = new Label(
     this.ef.dataTestId("proposalDescriptionLabel"),
@@ -50,6 +55,8 @@ export class ProposalViewPage extends BasePage {
   voteCastFailedNotificationLabel = new Label(
     this.ef.text("Failed to cast vote"),
   );
+  voteStatusLabel = new Label(this.ef.dataTestId("voteStatus"));
+  inVetoPeriodLabel = new Label(this.ef.text("In Veto Period"));
 
   staticElements = [this.proposalTitleLabel, this.proposalStateLabel];
 }

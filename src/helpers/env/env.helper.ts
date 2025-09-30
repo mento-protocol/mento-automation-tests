@@ -5,6 +5,7 @@ import { magicStrings } from "@constants/magic-strings.constants";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { AppName } from "@constants/apps.constants";
 import { web3Helper } from "@helpers/web3/web3.helper";
+import { Env } from "./env.types";
 
 const {
   ENV,
@@ -61,6 +62,12 @@ export class EnvHelper {
     return magicStrings.chain[this.getChain()].rpcUrl;
   }
 
+  getGovernanceApiKey(): string {
+    return this.isProd()
+      ? processEnv.GOVERNANCE_PROD_API_KEY
+      : processEnv.GOVERNANCE_QA_API_KEY;
+  }
+
   isCI(): boolean {
     return primitiveHelper.string.toBoolean(CI);
   }
@@ -71,6 +78,10 @@ export class EnvHelper {
 
   isCustomUrl(): boolean {
     return Boolean(CUSTOM_URL?.length);
+  }
+
+  isProd(): boolean {
+    return this.getEnv() === Env.prod;
   }
 }
 

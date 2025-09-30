@@ -1,6 +1,10 @@
 import { Address } from "viem";
 import { AppName } from "./apps.constants";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
+import { processEnv } from "@helpers/processEnv/processEnv.helper";
+import { governanceAbi } from "./abi.constants";
+
+export const executeTitleSuffix = "(To Execute)";
 
 export const magicStrings = {
   url: {
@@ -10,17 +14,12 @@ export const magicStrings = {
     },
     [AppName.Governance]: {
       web: {
-        prod: {
-          base: "https://governance.mento.org",
-        },
-        qa: {
-          base: "https://governancementoorg-qa.vercel.app",
-        },
+        prod: { base: "https://governance.mento.org" },
+        qa: { base: "https://governancementoorg-qa.vercel.app" },
       },
       api: {
-        prod: {
-          base: "",
-        },
+        prod: { base: processEnv.GOVERNANCE_PROD_API_URL },
+        qa: { base: processEnv.GOVERNANCE_QA_API_URL },
       },
     },
   },
@@ -39,28 +38,28 @@ export const magicStrings = {
     },
   },
   governance: {
-    abi: [
-      "function propose(address[] targets, uint256[] values, bytes[] calldatas, string description) external returns (uint256)",
-      "function proposalCount() external view returns (uint256)",
-      "function proposals(uint256) external view returns (address proposer, uint256 id, address[] targets, uint256[] values, string[] signatures, bytes[] calldatas, uint256 startBlock, uint256 endBlock, uint256 forVotes, uint256 againstVotes, uint256 abstainVotes, bool canceled, bool executed)",
-    ],
+    abi: governanceAbi,
     testnet: {
       governorAddress: "0x558e92236f85Bb4e8A63ec0D5Bf9d34087Eab744" as Address,
     },
     mainnet: {
       governorAddress: "0x47036d78bB3169b4F5560dD77BF93f4412A59852" as Address,
     },
-    generateProposalData() {
+    generateProposalData({
+      shouldMarkToExecute: shouldMarkToExecute = false,
+    }: { shouldMarkToExecute?: boolean } = {}) {
+      const titleSuffix = shouldMarkToExecute ? executeTitleSuffix : "";
       return {
-        title: `[${primitiveHelper.string.generateId()}] AQA Proposal`,
+        title: `[${primitiveHelper.string.generateId()}] AQA Proposal ${titleSuffix}`,
         description: `AQA Proposal Description - ${primitiveHelper.string.generateRandom(
           73,
         )}`,
         executionCode: [
           {
-            address: "0x1230000000000000000000000000000000000000" as Address,
-            value: 1,
-            data: "0x1234",
+            // 'Ping' contract and its function to call
+            address: "0xcee517fc3e11b41df43baa7bab9542625187e259" as Address,
+            value: 0,
+            data: "0x5c36b186",
           },
         ],
       };
