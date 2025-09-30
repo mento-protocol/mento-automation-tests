@@ -31,6 +31,7 @@ suite({
         await app.proposalView.queueForExecution();
         await app.proposalView.waitForVetoPeriodEnd();
         await app.proposalView.execute();
+        await app.proposalView.waitForProposalState(ProposalState.Executed);
 
         expect(await app.proposalView.getProposalState()).toBe(
           ProposalState.Executed,
