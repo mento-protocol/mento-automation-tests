@@ -173,6 +173,10 @@ export class VotingPowerService extends BaseService {
     };
   }
 
+  async getDelegatedVeMento(): Promise<number> {
+    return Number(await this.page.locksSummary.delegatedVeMentoLabel.getText());
+  }
+
   async getReceiveVeMento(): Promise<number> {
     return Number(
       (await this.page.veMentoReceiveLabel.getText()).replace(/ veMENTO/g, ""),

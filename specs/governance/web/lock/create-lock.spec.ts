@@ -106,6 +106,8 @@ suite({
         // const initialLocksCount = await app.votingPower.getAllLocksCount();
         const { veMento: myInitialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
+        const initialDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
 
         await app.votingPower.createLock({
           lockAmount: "1",
@@ -125,10 +127,15 @@ suite({
           walletAddress: delegateAddress,
           tokenAddress: tokenToCheck,
         });
+        const currentDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
 
         // TODO: Enable once the bug is fixed: https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3DS-etp&via=in-app-copy-link&p=1
         // expect.soft(currentLocksCount).toBeGreaterThan(initialLocksCount);
         expect.soft(myCurrentVeMento).toBe(myInitialVeMento);
+        expect
+          .soft(currentDelegatedVeMento)
+          .toBeGreaterThan(initialDelegatedVeMento);
         expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
       },
     },
@@ -152,6 +159,8 @@ suite({
         // const initialLocksCount = await app.votingPower.getAllLocksCount();
         const { veMento: myInitialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
+        const initialDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
 
         await app.votingPower.createLock({
           lockAmount: "1",
@@ -172,10 +181,15 @@ suite({
           walletAddress: delegateAddress,
           tokenAddress: tokenToCheck,
         });
+        const currentDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
 
         // TODO: Enable once the bug is fixed: https://vercel.live/link/governancementoorg-git-feature-multiple-locks-support-mentolabs.vercel.app?page=%2Fvoting-power%3FvercelThreadId%3DS-etp&via=in-app-copy-link&p=1
         // expect.soft(currentLocksCount).toBeGreaterThan(initialLocksCount);
         expect.soft(myCurrentVeMento).toBe(myInitialVeMento);
+        expect
+          .soft(currentDelegatedVeMento)
+          .toBeGreaterThan(initialDelegatedVeMento);
         expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
       },
     },
