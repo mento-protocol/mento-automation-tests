@@ -1,10 +1,11 @@
+import { TestDetails } from "playwright/types/test";
+
 import { IDisable, ISuiteArgs } from "@helpers/suite/suite.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { envHelper } from "@helpers/env/env.helper";
 import { testFixture } from "@fixtures/test.fixture";
-import { TestDetails } from "playwright/types/test";
 
-const logger = loggerHelper.get("SuiteHelper");
+const log = loggerHelper.get("SuiteHelper");
 
 export function suite({
   name: suiteName,
@@ -72,9 +73,7 @@ export function suite({
 export const testUtils = {
   disableInRuntime(disable: IDisable, beforeSkipLogMessage?: string): void {
     beforeSkipLogMessage &&
-      logger.warn(
-        `❗️ Disabled in runtime because of: ${beforeSkipLogMessage}`,
-      );
+      log.warn(`❗️ Disabled in runtime because of: ${beforeSkipLogMessage}`);
     this.addDisableDetailsInRuntime(disable);
     testFixture.skip(true, `Please check the disable details above ⬆️`);
   },
@@ -118,14 +117,11 @@ export const testUtils = {
 };
 
 function logRunDetails(suiteName: string): void {
-  const env = envHelper.isCustomUrl()
-    ? `Custom with '${envHelper.getBaseWebUrl()}' URL`
-    : `Regular '${envHelper.getEnv()}' with '${envHelper.getBaseWebUrl()}' URL`;
-  const chain = envHelper.isMainnet()
-    ? `'Celo' mainnet`
-    : `'Alfajores' testnet`;
-  const config = `\n        ENV: ${env}\n        CHAIN: ${chain}\n        PID: ${process.pid}`;
-  logger.info(`Running '${suiteName}' suite with configuration: ${config}`);
+  const url = envHelper.getBaseWebUrl();
+  const env = envHelper.getEnv();
+  const chain = envHelper.getChain();
+  const config = `\n        ENV: ${env}\n        URL: ${url}\n        CHAIN: ${chain}`;
+  log.info(`Running '${suiteName}' suite with configuration: ${config}`);
 }
 
 function composeTags(tags: string[]): string[] {
