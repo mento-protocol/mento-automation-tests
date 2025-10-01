@@ -71,6 +71,7 @@ suite({
 
         const { veMento: currentVeMento } =
           await app.votingPower.getCurrentLockValues();
+
         expect.soft(currentVeMento).toBeGreaterThan(initialVeMento);
         // TODO: Turn on once the bug is fixed https://vercel.live/link/governance.mento.org?page=%2Fvoting-power%3FvercelThreadId%3D3stKN&via=in-app-copy-link&p=1
         // expect(currentMento).toBeGreaterThan(initialMento);
@@ -96,6 +97,8 @@ suite({
         const initialLocksCount = await app.votingPower.getAllLocksCount();
         const { veMento: myInitialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
+        const initialDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
 
         await app.votingPower.updateLock({
           lockAmount: "1",
@@ -116,9 +119,14 @@ suite({
           walletAddress: delegateAddress,
           tokenAddress: tokenToCheck,
         });
+        const currentDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
 
         expect.soft(currentLocksCount).toBe(initialLocksCount);
         expect.soft(myCurrentVeMento).toBeLessThan(myInitialVeMento);
+        expect
+          .soft(currentDelegatedVeMento)
+          .toBeGreaterThan(initialDelegatedVeMento);
         expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
       },
     },
@@ -133,12 +141,17 @@ suite({
           walletAddress: delegateAddress,
           tokenAddress: tokenToCheck,
         });
+
         await app.main.openVotingPowerPage();
         await app.votingPower.waitForLockValues();
         await app.votingPower.waitForLocks();
+
         const initialLocksCount = await app.votingPower.getAllLocksCount();
         const { veMento: myInitialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
+        const initialDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
+
         await app.votingPower.updateLock({
           lockAmount: "1",
           lockType: LockType.Delegated,
@@ -149,6 +162,7 @@ suite({
           initialMento,
         });
         await app.votingPower.waitForLocks();
+
         const currentLocksCount = await app.votingPower.getAllLocksCount();
         const { veMento: myCurrentVeMento } =
           await app.votingPower.getCurrentLockValues();
@@ -156,8 +170,14 @@ suite({
           walletAddress: delegateAddress,
           tokenAddress: tokenToCheck,
         });
+        const currentDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
+
         expect.soft(currentLocksCount).toBe(initialLocksCount);
         expect.soft(myCurrentVeMento).toBe(myInitialVeMento);
+        expect
+          .soft(currentDelegatedVeMento)
+          .toBeGreaterThan(initialDelegatedVeMento);
         expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
       },
     },
@@ -173,12 +193,17 @@ suite({
           walletAddress: delegateAddress,
           tokenAddress: tokenToCheck,
         });
+
         await app.main.openVotingPowerPage();
         await app.votingPower.waitForLockValues();
         await app.votingPower.waitForLocks();
+
         const initialLocksCount = await app.votingPower.getAllLocksCount();
         const { veMento: myInitialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
+        const initialDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
+
         await app.votingPower.updateLock({
           lockAmount: "1",
           lockType: LockType.Delegated,
@@ -189,6 +214,7 @@ suite({
           initialMento,
         });
         await app.votingPower.waitForLocks();
+
         const currentLocksCount = await app.votingPower.getAllLocksCount();
         const { veMento: myCurrentVeMento } =
           await app.votingPower.getCurrentLockValues();
@@ -196,8 +222,14 @@ suite({
           walletAddress: delegateAddress,
           tokenAddress: tokenToCheck,
         });
+        const currentDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
+
         expect.soft(currentLocksCount).toBe(initialLocksCount);
         expect.soft(myCurrentVeMento).toBe(myInitialVeMento);
+        expect
+          .soft(currentDelegatedVeMento)
+          .toBeGreaterThan(initialDelegatedVeMento);
         expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
       },
     },
@@ -206,10 +238,13 @@ suite({
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.governance;
+
         await app.main.openVotingPowerPage();
         await app.votingPower.waitForLockValues();
+
         const { veMento: initialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
+
         await app.votingPower.waitForLocks();
         await app.votingPower.updateLock({
           lockAmount: "0",
@@ -220,8 +255,10 @@ suite({
           initialVeMento,
           initialMento,
         });
+
         const { veMento: currentVeMento } =
           await app.votingPower.getCurrentLockValues();
+
         expect(currentVeMento).toBeGreaterThan(initialVeMento);
       },
     },
@@ -239,8 +276,12 @@ suite({
 
         await app.main.openVotingPowerPage();
         await app.votingPower.waitForLockValues();
+
         const { veMento: initialVeMento, mento: initialMento } =
           await app.votingPower.getCurrentLockValues();
+        const initialDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
+
         await app.votingPower.waitForLocks();
         await app.votingPower.updateLock({
           lockAmount: "0",
@@ -251,14 +292,20 @@ suite({
           initialVeMento,
           initialMento,
         });
+
         const { veMento: currentVeMento } =
           await app.votingPower.getCurrentLockValues();
         const delegateCurrentVeMento = await web.contract.getBalance({
           walletAddress: delegateAddress,
           tokenAddress: tokenToCheck,
         });
+        const currentDelegatedVeMento =
+          await app.votingPower.getDelegatedVeMento();
 
         expect.soft(currentVeMento).toBe(initialVeMento);
+        expect
+          .soft(currentDelegatedVeMento)
+          .toBeGreaterThan(initialDelegatedVeMento);
         expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
       },
     },
