@@ -107,7 +107,7 @@ export class AssemblerHelper {
     return {
       ...baseDependencies,
       app: this.apps.api[this.appName](baseDependencies),
-    };
+    } as IApi;
   }
 
   private readonly apps = {
@@ -179,6 +179,9 @@ export class AssemblerHelper {
       },
     },
     api: {
+      [AppName.AppMento]: () => {
+        return { appMento: {} };
+      },
       [AppName.Governance]: (params: IBaseApiDependencies) => {
         const { graphqlClient } = params;
         return {
@@ -232,24 +235,32 @@ export interface IWeb {
   metamask: MetamaskHelper;
   contract: ContractHelper;
   celoScan: CeloScanService;
-  app: WebApps;
+  app: WebApp;
 }
+
+export interface IAppMentoApi {
+  appMento: Record<string, unknown>;
+  governance: never;
+}
+
+export interface IGovernanceApi {
+  appMento: never;
+  governance: {
+    common: GovernanceApi;
+  };
+}
+
+export type WebApp = IAppMentoWebApp | IGovernanceWebApp;
+
+export type ApiApp = IAppMentoApi | IGovernanceApi;
 
 export interface IApi {
   httpClient: HttpClient;
   graphqlClient: GraphQLClient;
-  app: ApiApps;
+  app: ApiApp;
 }
 
-export type WebApps = IAppMentoWebApp | IGovernanceWebApp;
-
-export interface IGovernanceApi {
-  common: GovernanceApi;
-}
-
-export type ApiApps = {
-  governance: IGovernanceApi;
-};
+export interface IGovernanceApi {}
 
 export interface IAppMentoWebApp {
   appMento: IAppMentoApp;
