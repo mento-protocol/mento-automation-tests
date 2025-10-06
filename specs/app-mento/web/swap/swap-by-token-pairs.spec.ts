@@ -86,7 +86,6 @@ const testCases = [
   {
     fromToken: Token.cGHS,
     toToken: retryDataHelper.getRandomToken(Token.cGHS, [
-      Token.CELO,
       Token.cUSD,
       Token.USDC,
       Token.USDT,
@@ -97,10 +96,7 @@ const testCases = [
   // cGBP
   {
     fromToken: Token.cGBP,
-    toToken: retryDataHelper.getRandomToken(Token.cGBP, [
-      Token.CELO,
-      Token.cUSD,
-    ]),
+    toToken: Token.cUSD,
     id: "T22f94bbb",
   },
   // cZAR
@@ -113,19 +109,13 @@ const testCases = [
   // cCAD
   {
     fromToken: Token.cCAD,
-    toToken: retryDataHelper.getRandomToken(Token.cCAD, [
-      Token.CELO,
-      Token.cUSD,
-    ]),
+    toToken: Token.cUSD,
     id: "T0869d367",
   },
   // cAUD
   {
     fromToken: Token.cAUD,
-    toToken: retryDataHelper.getRandomToken(Token.cAUD, [
-      Token.CELO,
-      Token.cUSD,
-    ]),
+    toToken: Token.cUSD,
     id: "T1d46dc17",
   },
   // cCHF
