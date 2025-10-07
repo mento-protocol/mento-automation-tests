@@ -25,9 +25,9 @@ export const magicStrings = {
   },
   chain: {
     testnet: {
-      name: "Celo Alfajores",
-      rpcUrl: "https://alfajores-forno.celo-testnet.org",
-      chainId: 44787,
+      name: "Celo Sepolia",
+      rpcUrl: "https://forno.celo-sepolia.celo-testnet.org",
+      chainId: 11142220,
       symbol: "CELO",
     },
     mainnet: {
@@ -40,7 +40,7 @@ export const magicStrings = {
   governance: {
     abi: governanceAbi,
     testnet: {
-      governorAddress: "0x558e92236f85Bb4e8A63ec0D5Bf9d34087Eab744" as Address,
+      governorAddress: "0x23173Ac37b8E4e5a60d787aC543B3F51e8f398b4" as Address,
     },
     mainnet: {
       governorAddress: "0x47036d78bB3169b4F5560dD77BF93f4412A59852" as Address,
@@ -56,8 +56,8 @@ export const magicStrings = {
         )}`,
         executionCode: [
           {
-            // 'Ping' contract and its function to call
-            address: "0xcee517fc3e11b41df43baa7bab9542625187e259" as Address,
+            // 'Ping' contract and its function to call (Celo Sepolia)
+            address: "0x76B0E353669A2C699c813A9352ab09a17e529A45" as Address,
             value: 0,
             data: "0x5c36b186",
           },
