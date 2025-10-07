@@ -1,7 +1,6 @@
 import { ethers, providers, Signer } from "ethers";
 import { Address, TransactionReceipt } from "viem";
 import { newKit } from "@celo/contractkit";
-import { AbiItem } from "web3-utils";
 
 import { envHelper } from "@helpers/env/env.helper";
 import { loggerHelper } from "@helpers/logger/logger.helper";
@@ -29,7 +28,10 @@ export class BaseContract {
     tokenAddress,
   }: IGetBalanceParams): Promise<number> {
     const kit = newKit(this.rpcUrl);
+
     const contract = new kit.web3.eth.Contract(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       this.getErc20Abi(),
       tokenAddress,
     );
@@ -101,7 +103,7 @@ export class BaseContract {
     return estimatedGas.toString();
   }
 
-  private getErc20Abi(): AbiItem[] {
+  private getErc20Abi() {
     return [
       {
         constant: true,
