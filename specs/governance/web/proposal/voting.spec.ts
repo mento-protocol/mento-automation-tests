@@ -12,7 +12,7 @@ const testCases = [
   {
     name: "'Yes' successfully",
     vote: Vote.Yes,
-    timeout: timeouts.minute * 6,
+    timeout: timeouts.minute * 12,
     tags: [],
   },
   {
@@ -59,7 +59,7 @@ suite({
 
 async function expectYesVote(
   app: IGovernanceApp,
-  timeout: number,
+  timeout: number = timeouts.minute * 10,
 ): Promise<void> {
   await app.proposalView.waitForProposalState(ProposalState.Succeeded, {
     timeout,

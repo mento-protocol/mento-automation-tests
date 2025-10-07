@@ -25,6 +25,8 @@ suite({
       testCaseId: "",
       test: async ({ web }: IExecution) => {
         const app = web.app.governance;
+        const mainnetContractAddress =
+          governanceContractAddresses[Chain.Mainnet][testCase.name];
 
         await app.main.openContractAddressesSection();
         const newTabPage = await app.main.browser.getNewTabPage({
@@ -36,9 +38,7 @@ suite({
           waitTimeout: timeouts.xxxs,
         });
 
-        expect(newTabPage.url()).toBe(
-          governanceContractAddresses[Chain.Mainnet][testCase.name],
-        );
+        expect(newTabPage.url()).toBe(mainnetContractAddress);
       },
     })),
     ...testCases.map(testCase => ({
@@ -46,6 +46,8 @@ suite({
       testCaseId: "",
       test: async ({ web }: IExecution) => {
         const app = web.app.governance;
+        const chainContractAddress =
+          governanceContractAddresses[envHelper.getChain()][testCase.name];
 
         await app.main.connectWalletByName(WalletName.Metamask);
         await app.main.openContractAddressesSection();
@@ -58,9 +60,7 @@ suite({
           waitTimeout: timeouts.xxxs,
         });
 
-        expect(newTabPage.url()).toBe(
-          governanceContractAddresses[envHelper.getChain()][testCase.name],
-        );
+        expect(newTabPage.url()).toBe(chainContractAddress);
       },
     })),
   ],
