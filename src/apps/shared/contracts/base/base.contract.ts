@@ -35,12 +35,31 @@ export class BaseContract {
       this.getErc20Abi(),
       tokenAddress,
     );
-    const [rawBalance, decimals] = await Promise.all([
-      contract.methods.balanceOf(walletAddress).call(),
-      contract.methods.decimals().call(),
-    ]);
-    const balance = rawBalance / 10 ** decimals;
-    return balance;
+
+    try {
+      const [rawBalance, decimals] = await Promise.all([
+        contract.methods.balanceOf(walletAddress).call(),
+        contract.methods.decimals().call(),
+      ]);
+      const balance = rawBalance / 10 ** decimals;
+      return balance;
+    } catch (error) {
+      log.warn(
+        `Failed to get balance with decimals for ${tokenAddress}: ${error.message}`,
+      );
+      try {
+        const defaultDecimals = 18;
+        const rawBalance = await contract.methods
+          .balanceOf(walletAddress)
+          .call();
+        const balance = rawBalance / 10 ** defaultDecimals;
+        return balance;
+      } catch (fallbackError) {
+        const errorMessage = `Error in 'getBalance' method: ${fallbackError}\nError stack: ${fallbackError.stack}`;
+        log.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+    }
   }
 
   protected async callContract({
