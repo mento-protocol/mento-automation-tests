@@ -11,13 +11,13 @@ export const governanceContractAddresses = {
   },
   testnet: {
     governor:
-      "https://celo-sepolia.blockscout.com/address/0x23173Ac37b8E4e5a60d787aC543B3F51e8f398b4",
+      "https://sepolia.celoscan.io/address/0x23173Ac37b8E4e5a60d787aC543B3F51e8f398b4",
     mento:
-      "https://celo-sepolia.blockscout.com/address/0x07867fd40EB56b4380bE39c88D0a7EA59Aa99A20",
+      "https://sepolia.celoscan.io/address/0x07867fd40EB56b4380bE39c88D0a7EA59Aa99A20",
     timelock:
-      "https://celo-sepolia.blockscout.com/address/0x74c44Be99937815173A3C56274331e0A05611e0D",
+      "https://sepolia.celoscan.io/address/0x74c44Be99937815173A3C56274331e0A05611e0D",
     veMento:
-      "https://celo-sepolia.blockscout.com/address/0xB72320fC501cb30E55bAF0DA48c20b11fAc9f79D",
+      "https://sepolia.celoscan.io/address/0xB72320fC501cb30E55bAF0DA48c20b11fAc9f79D",
   },
 };
 
