@@ -27,15 +27,12 @@ export class VotingPowerService extends BaseService {
   async handleTopUp() {
     if (await this.waitForActionButton("approveMentoButton")) {
       log.debug("Approving mento first to be able to top up lock");
-      await this.page.approveMentoButton.click();
-      await this.verifyConfirmationPopupIsOpened();
-      await this.metamask.rawModule.confirmTransaction();
-      await this.metamask.rawModule.approveTokenPermission();
+      await this.approveLock();
+      await this.verifyConfirming();
+      await this.metamask.confirmTransaction();
+      await this.verifyNotConfirming();
       await this.verifyConfirmationPopupIsClosed();
-    }
-    if (
-      await this.waitForActionButton("topUpLockButton", { throwError: true })
-    ) {
+    } else {
       log.debug("Topping up lock directly");
       await this.page.topUpLockButton.click();
       await this.verifyConfirmationPopupIsOpened();
@@ -55,6 +52,15 @@ export class VotingPowerService extends BaseService {
       .toBeTruthy();
   }
 
+  private async approveLock(): Promise<void> {
+    await this.page.approveMentoButton.click();
+    await this.verifyConfirmationPopupIsOpened();
+    await this.metamask.rawModule.confirmTransaction();
+    await waiterHelper.waitForAnimation();
+    await this.metamask.rawModule.confirmSignature();
+    await this.verifyConfirmationPopupIsOpened();
+  }
+
   async waitForActionButton(
     buttonName: "approveMentoButton" | "topUpLockButton",
     { throwError = false }: { throwError?: boolean } = {},
@@ -66,8 +72,8 @@ export class VotingPowerService extends BaseService {
   }
 
   async verifyConfirmationPopupIsClosed() {
-    await this.page.topUpLockPopupDescriptionLabel.waitForDisappeared(
-      timeouts.s,
+    await this.page.actionPopup.continueInWalletLabel.waitForDisappeared(
+      timeouts.l,
       {
         errorMessage: "Lock confirmation popup is not closed!",
       },
@@ -75,12 +81,24 @@ export class VotingPowerService extends BaseService {
   }
 
   async verifyConfirmationPopupIsOpened() {
-    await this.page.topUpLockPopupDescriptionLabel.waitForDisplayed(
+    await this.page.actionPopup.continueInWalletLabel.waitForDisplayed(
       timeouts.s,
       {
         errorMessage: "Lock confirmation popup is not displayed!",
       },
     );
+  }
+
+  async verifyConfirming() {
+    await this.page.actionPopup.confirmingLabel.waitForDisplayed(timeouts.l, {
+      errorMessage: "Not confirming right now",
+    });
+  }
+
+  async verifyNotConfirming() {
+    await this.page.actionPopup.confirmingLabel.waitForDisappeared(timeouts.l, {
+      errorMessage: "Confirming right now",
+    });
   }
 
   async waitForLockValues(): Promise<boolean> {

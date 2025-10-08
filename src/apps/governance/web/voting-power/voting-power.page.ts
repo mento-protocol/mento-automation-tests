@@ -26,9 +26,6 @@ export class VotingPowerPage extends BasePage {
 
   // actionButton = new Button(this.ef.pw.dataTestId("actionButton"));
 
-  topUpLockPopupDescriptionLabel = new Label(
-    this.ef.text("Continue in wallet"),
-  );
   lockUpdatedSuccessfullyNotificationLabel = new Label(
     this.ef.text("Lock updated successfully"),
   );
@@ -43,6 +40,11 @@ export class VotingPowerPage extends BasePage {
     expirationDateLabel: new Label(
       this.ef.dataTestId("existingLockExpirationDateLabel"),
     ),
+  };
+
+  actionPopup = {
+    continueInWalletLabel: new Label(this.ef.text("Continue in wallet")),
+    confirmingLabel: new Label(this.ef.text("Confirming...")),
   };
 
   staticElements = [this.headerLabel];
