@@ -51,7 +51,9 @@ export class EnvHelper {
   }
 
   getChain(): string {
-    return this.isMainnet() ? "mainnet" : "testnet";
+    return this.isMainnet()
+      ? magicStrings.chain.mainnet.name
+      : magicStrings.chain.testnet.name;
   }
 
   getGovernorAddress(): Address {

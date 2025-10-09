@@ -1,8 +1,9 @@
+import { TestDetails } from "playwright/types/test";
+
 import { IDisable, ISuiteArgs } from "@helpers/suite/suite.types";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { envHelper } from "@helpers/env/env.helper";
 import { testFixture } from "@fixtures/test.fixture";
-import { TestDetails } from "playwright/types/test";
 
 const logger = loggerHelper.get("SuiteHelper");
 
@@ -80,12 +81,11 @@ export const testUtils = {
   },
 
   isDisabled(disable: IDisable): boolean {
-    if (!disable) {
-      return false;
+    if (!disable) return false;
+    if (disable.chain) {
+      return disable.chain === envHelper.getChain() ? true : false;
     }
-    if (!disable.env) {
-      return true;
-    }
+    if (!disable.env) return true;
     return disable.env === envHelper.getEnv();
   },
 
@@ -98,6 +98,16 @@ export const testUtils = {
       testFixture.info().annotations.push({
         type: "🔗 Link",
         description: disable?.link,
+      });
+    disable?.env &&
+      testFixture.info().annotations.push({
+        type: "🌐 Environment",
+        description: disable?.env,
+      });
+    disable?.chain &&
+      testFixture.info().annotations.push({
+        type: "⛓️‍💥 Chain",
+        description: disable?.chain,
       });
   },
 

@@ -7,6 +7,11 @@ import { governanceAbi } from "./abi.constants";
 export const executeTitleSuffix = "(To Execute)";
 
 export const magicStrings = {
+  env: {
+    qa: "qa",
+    prod: "prod",
+    custom: "custom",
+  },
   url: {
     [AppName.AppMento]: {
       web: { prod: { base: "https://app.mento.org" } },
