@@ -8,14 +8,24 @@ export class SelectTokenModalPage extends BasePage {
     super(ef);
   }
 
-  async getAllValidTokenNames(): Promise<string[]> {
+  async getAllValidTokenNames({
+    shouldSort = false,
+  }: { shouldSort?: boolean } = {}): Promise<string[]> {
     const allTokens = await this.ef.dataTestId("validToken").all();
-    return Promise.all(allTokens.map(token => token.textContent()));
+    const tokenNames = await Promise.all(
+      allTokens.map(token => token.textContent()),
+    );
+    return shouldSort ? tokenNames.sort() : tokenNames;
   }
 
-  async getAllInvalidTokenNames(): Promise<string[]> {
+  async getAllInvalidTokenNames({
+    shouldSort = false,
+  }: { shouldSort?: boolean } = {}): Promise<string[]> {
     const allTokens = await this.ef.dataTestId("invalidToken").all();
-    return Promise.all(allTokens.map(token => token.textContent()));
+    const tokenNames = await Promise.all(
+      allTokens.map(token => token.textContent()),
+    );
+    return shouldSort ? tokenNames.sort() : tokenNames;
   }
 
   anyToken = new Button(

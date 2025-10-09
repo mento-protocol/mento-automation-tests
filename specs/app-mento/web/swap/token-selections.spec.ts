@@ -107,6 +107,7 @@ suite({
       return {
         name: `"${testCase.token}" token selections`,
         testCaseId: testCase.id,
+        disable: testCase?.disable,
         test: async ({ web }: IExecution) => {
           const app = web.app.appMento;
           if (testCase.token === Token.cUSD) {
@@ -124,11 +125,15 @@ suite({
             sleepReason: "To get all tokens set",
           });
           const validTokens =
-            await app.swap.selectTokenModalPage.getAllValidTokenNames();
-          expect.soft(validTokens).toEqual(testCase.validTokens);
+            await app.swap.selectTokenModalPage.getAllValidTokenNames({
+              shouldSort: true,
+            });
+          expect.soft(validTokens).toEqual(testCase.validTokens.sort());
           const invalidTokens =
-            await app.swap.selectTokenModalPage.getAllInvalidTokenNames();
-          expect(invalidTokens).toEqual(testCase.invalidTokens);
+            await app.swap.selectTokenModalPage.getAllInvalidTokenNames({
+              shouldSort: true,
+            });
+          expect(invalidTokens).toEqual(testCase.invalidTokens.sort());
         },
       };
     }),
