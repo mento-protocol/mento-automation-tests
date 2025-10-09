@@ -30,7 +30,7 @@ export class SelectTokenModalPage extends BasePage {
       [Token.cREAL]: new Button(this.ef.dataTestId("tokenOption_cREAL")),
       [Token.cCOP]: new Button(this.ef.dataTestId("tokenOption_cCOP")),
       [Token.USDC]: new Button(this.ef.dataTestId("tokenOption_USDC")),
-      [Token.USDT]: new Button(this.ef.dataTestId("tokenOption_USDT")),
+      [Token.USDT]: new Button(this.ef.dataTestId("tokenOption_USD₮")),
       [Token.axlUSDC]: new Button(this.ef.dataTestId("tokenOption_axlUSDC")),
       [Token.axlEUROC]: new Button(this.ef.dataTestId("tokenOption_axlEUROC")),
       [Token.eXOF]: new Button(this.ef.dataTestId("tokenOption_eXOF")),

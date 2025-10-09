@@ -27,7 +27,7 @@ const testCases = [
     toToken: Token.eXOF,
     id: "T13fb8467",
   },
-  // USDT
+  // USD₮
   {
     fromToken: Token.USDT,
     toToken: Token.cUSD,
@@ -88,7 +88,7 @@ const testCases = [
     toToken: retryDataHelper.getRandomToken(Token.cGHS, [
       Token.cUSD,
       Token.USDC,
-      Token.USDT,
+      Token["USD₮"],
     ]),
     id: "T8da32b9f",
     fromAmount: "0.1",
