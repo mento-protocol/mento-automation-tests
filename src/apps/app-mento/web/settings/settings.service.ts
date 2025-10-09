@@ -52,7 +52,7 @@ export class SettingsService extends BaseService {
       Network.Celo
     ].isDisabled())
       ? Network.Celo
-      : Network.Alfajores;
+      : Network.Sepolia;
   }
 }
 

@@ -1,6 +1,7 @@
 export enum Token {
   "USDC" = "USDC",
   "USDT" = "USDT",
+  "USD₮" = "USD₮",
   "CELO" = "CELO",
   "cEUR" = "cEUR",
   "cUSD" = "cUSD",

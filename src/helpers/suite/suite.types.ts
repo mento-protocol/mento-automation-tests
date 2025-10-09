@@ -34,25 +34,5 @@ export interface IDisable {
   reason: string;
   link?: string;
   env?: string;
-}
-
-export type ConditionFunction = (executionArgs: IExecution) => Promise<void>;
-
-export interface IRunTestsArgs {
-  beforeEach: ConditionFunction;
-  afterEach: ConditionFunction;
-  tests: ITest[];
-}
-
-export interface IRunTestArgs {
-  test: ConditionFunction;
-  beforeEach: ConditionFunction;
-  afterEach: ConditionFunction;
-}
-
-export interface IRunTestWithWebArgs extends IRunTestArgs {
-  name: string;
-  isNewWebContext: boolean;
-  testCaseId: string;
-  disable?: IDisable;
+  chain?: string;
 }

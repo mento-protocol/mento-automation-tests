@@ -7,7 +7,7 @@ import { Network } from "../../../../src/apps/app-mento/web/settings/switch-netw
 import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
 const networkNameToSwitch = envHelper.isMainnet()
-  ? Network.Alfajores
+  ? Network.Sepolia
   : Network.Celo;
 
 suite({

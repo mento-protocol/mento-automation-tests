@@ -1,3 +1,4 @@
+import { magicStrings } from "@constants/magic-strings.constants";
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { BasePage } from "@shared/web/base/base.page";
 import { Button, Label } from "@shared/web/elements/index";
@@ -15,9 +16,15 @@ export class SwitchNetworksPage extends BasePage {
   );
 
   networkButtons = {
-    [Network.Celo]: new Button(this.ef.dataTestId("rk-chain-option-42220")),
-    [Network.Alfajores]: new Button(
-      this.ef.dataTestId("rk-chain-option-44787"),
+    [Network.Celo]: new Button(
+      this.ef.dataTestId(
+        `rk-chain-option-${magicStrings.chain.mainnet.chainId}`,
+      ),
+    ),
+    [Network.Sepolia]: new Button(
+      this.ef.dataTestId(
+        `rk-chain-option-${magicStrings.chain.testnet.chainId}`,
+      ),
     ),
   };
 
@@ -26,5 +33,5 @@ export class SwitchNetworksPage extends BasePage {
 
 export enum Network {
   Celo = "Celo",
-  Alfajores = "Alfajores",
+  Sepolia = "Sepolia",
 }

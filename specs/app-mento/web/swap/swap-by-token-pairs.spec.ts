@@ -3,7 +3,11 @@ import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
 import { TestTag } from "@constants/test.constants";
+import { envHelper } from "@helpers/env/env.helper";
+import { magicStrings } from "@constants/magic-strings.constants";
 
+// USD₮ on mainnet and USDT on testnet
+const usdtToken = Token[envHelper.isMainnet ? "USD₮" : "USDT"];
 const testCases = [
   // CELO
   {
@@ -32,6 +36,20 @@ const testCases = [
     fromToken: Token.USDT,
     toToken: Token.cUSD,
     id: "T2511996c",
+    disable: {
+      reason: "Unsupported token",
+      chain: magicStrings.chain.mainnet.name,
+    },
+  },
+  // USD₮
+  {
+    fromToken: Token["USD₮"],
+    toToken: Token.cUSD,
+    id: "T2511996c",
+    disable: {
+      reason: "Unsupported token",
+      chain: magicStrings.chain.testnet.name,
+    },
   },
   // cKES
   {
@@ -88,7 +106,7 @@ const testCases = [
     toToken: retryDataHelper.getRandomToken(Token.cGHS, [
       Token.cUSD,
       Token.USDC,
-      Token.USDT,
+      usdtToken,
     ]),
     id: "T8da32b9f",
     fromAmount: "0.1",

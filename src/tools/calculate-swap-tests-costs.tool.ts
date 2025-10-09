@@ -15,6 +15,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import yargsParser from "yargs-parser";
 import { Mento } from "@mento-protocol/mento-sdk";
+import { magicStrings } from "@constants/magic-strings.constants";
 
 // Type definitions
 interface TokenPair {
@@ -36,14 +37,14 @@ const DAILY_CONFIG = {
   highFrequencyTests: 5,
 };
 const CHAIN_NAMES: Record<number, string> = {
-  42220: "Celo",
-  44787: "Alfajores",
+  [magicStrings.chain.mainnet.chainId]: magicStrings.chain.mainnet.name,
+  [magicStrings.chain.testnet.chainId]: magicStrings.chain.testnet.name,
 };
 const CHAIN_NAME_TO_ID: Record<string, number> = {
-  celo: 42220,
-  alfajores: 44787,
+  celo: magicStrings.chain.mainnet.chainId,
+  sepolia: magicStrings.chain.testnet.chainId,
 };
-const DEFAULT_CHAIN_ID = 42220;
+const DEFAULT_CHAIN_ID = magicStrings.chain.mainnet.chainId;
 const DEFAULT_TEST_AMOUNT = "0.01";
 const DEFAULT_USD_TO_EUR_RATE = 0.85;
 const TOKEN_MAP: Record<string, string> = {
@@ -53,6 +54,7 @@ const TOKEN_MAP: Record<string, string> = {
   "Token.cREAL": "cREAL",
   "Token.eXOF": "eXOF",
   "Token.USDT": "USDT",
+  "Token.USD₮": "USD₮",
   "Token.cKES": "cKES",
   "Token.PUSO": "PUSO",
   "Token.cCOP": "cCOP",
