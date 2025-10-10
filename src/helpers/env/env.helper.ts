@@ -50,18 +50,22 @@ export class EnvHelper {
     return APP_NAME as AppName;
   }
 
-  getChain(): string {
+  getChainName(): string {
     return this.isMainnet()
       ? magicStrings.chain.mainnet.name
       : magicStrings.chain.testnet.name;
   }
 
+  getChainType(): string {
+    return this.isMainnet() ? "mainnet" : "testnet";
+  }
+
   getGovernorAddress(): Address {
-    return magicStrings.governance[this.getChain()].governorAddress;
+    return magicStrings.governance[this.getChainType()].governorAddress;
   }
 
   getRpcUrl(): string {
-    return magicStrings.chain[this.getChain()].rpcUrl;
+    return magicStrings.chain[this.getChainType()].rpcUrl;
   }
 
   getGovernanceApiKey(): string {

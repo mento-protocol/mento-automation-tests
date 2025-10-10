@@ -83,7 +83,7 @@ export const testUtils = {
   isDisabled(disable: IDisable): boolean {
     if (!disable) return false;
     if (disable.chain) {
-      return disable.chain === envHelper.getChain() ? true : false;
+      return disable.chain === envHelper.getChainName() ? true : false;
     }
     if (!disable.env) return true;
     return disable.env === envHelper.getEnv();

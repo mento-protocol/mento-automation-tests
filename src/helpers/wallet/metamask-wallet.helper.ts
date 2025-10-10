@@ -32,7 +32,7 @@ export class MetamaskHelper {
 
   async confirmTransaction(): Promise<void> {
     try {
-      await this.metamask.confirmTransaction();
+      return await this.metamask.confirmTransaction();
     } catch (error) {
       throw new Error(
         `Cannot confirm transaction because of error: ${error.message}`,
