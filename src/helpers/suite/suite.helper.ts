@@ -131,9 +131,7 @@ function logRunDetails(suiteName: string): void {
   const env = envHelper.isCustomUrl()
     ? `Custom with '${envHelper.getBaseWebUrl()}' URL`
     : `Regular '${envHelper.getEnv()}' with '${envHelper.getBaseWebUrl()}' URL`;
-  const chain = envHelper.isMainnet()
-    ? `'Celo' mainnet`
-    : `'Alfajores' testnet`;
+  const chain = `${envHelper.getChainName()} (${envHelper.getChainType()})`;
   const config = `\n        ENV: ${env}\n        CHAIN: ${chain}\n        PID: ${process.pid}`;
   logger.info(`Running '${suiteName}' suite with configuration: ${config}`);
 }
