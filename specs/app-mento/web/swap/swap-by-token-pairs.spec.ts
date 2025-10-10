@@ -19,6 +19,8 @@ const testCases = [
   {
     fromToken: Token.CELO,
     toToken: Token.cEUR,
+    // TODO: Remove after testing on CI
+    fromAmount: "0.04",
     id: "T3af02715",
   },
   {
