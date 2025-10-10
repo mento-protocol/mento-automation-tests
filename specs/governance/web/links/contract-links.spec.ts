@@ -14,7 +14,9 @@ const testCases = [
   { name: "veMento" },
 ];
 const chainName =
-  envHelper.getChain() === Chain.Mainnet ? "Celo Mainnet" : "Alfajores Testnet";
+  envHelper.getChainName() === Chain.Mainnet
+    ? "Celo Mainnet"
+    : "Alfajores Testnet";
 
 suite({
   name: "Verify contract links",
@@ -47,7 +49,7 @@ suite({
       test: async ({ web }: IExecution) => {
         const app = web.app.governance;
         const chainContractAddress =
-          governanceContractAddresses[envHelper.getChain()][testCase.name];
+          governanceContractAddresses[envHelper.getChainType()][testCase.name];
 
         await app.main.connectWalletByName(WalletName.Metamask);
         await app.main.openContractAddressesSection();
