@@ -88,6 +88,10 @@ suite({
     {
       name: "Hover over invalid pair tooltip",
       testCaseId: "Td88a4d31",
+      disable: {
+        reason: "An incorrect tooltip text",
+        link: "https://mentolabsworkspace.slack.com/archives/C08RLR4F27K/p1760351081927469",
+      },
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.swap.selectToken({
