@@ -19,7 +19,11 @@ class ConfigHelper {
   }
 
   getWorkers(): number {
-    return this.isParallelRun() ? undefined : 1;
+    if (this.isParallelRun()) {
+      if (processEnv.WORKERS_COUNT) return Number(processEnv.WORKERS_COUNT);
+      return undefined;
+    }
+    return 1;
   }
 
   getReportersList(): ReporterDescription[] {
