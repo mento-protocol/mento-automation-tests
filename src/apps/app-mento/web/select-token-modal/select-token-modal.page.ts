@@ -34,27 +34,69 @@ export class SelectTokenModalPage extends BasePage {
 
   get tokens(): ITokenDropdownOptions {
     return {
-      [Token.CELO]: new Button(this.ef.dataTestId("tokenOption_CELO")),
-      [Token.cEUR]: new Button(this.ef.dataTestId("tokenOption_cEUR")),
-      [Token.cUSD]: new Button(this.ef.dataTestId("tokenOption_cUSD")),
-      [Token.cREAL]: new Button(this.ef.dataTestId("tokenOption_cREAL")),
-      [Token.cCOP]: new Button(this.ef.dataTestId("tokenOption_cCOP")),
-      [Token.USDC]: new Button(this.ef.dataTestId("tokenOption_USDC")),
-      [Token.USDT]: new Button(this.ef.dataTestId("tokenOption_USDT")),
-      [Token["USD₮"]]: new Button(this.ef.dataTestId("tokenOption_USD₮")),
-      [Token.axlUSDC]: new Button(this.ef.dataTestId("tokenOption_axlUSDC")),
-      [Token.axlEUROC]: new Button(this.ef.dataTestId("tokenOption_axlEUROC")),
-      [Token.eXOF]: new Button(this.ef.dataTestId("tokenOption_eXOF")),
-      [Token.cKES]: new Button(this.ef.dataTestId("tokenOption_cKES")),
-      [Token.PUSO]: new Button(this.ef.dataTestId("tokenOption_PUSO")),
-      [Token.cGHS]: new Button(this.ef.dataTestId("tokenOption_cGHS")),
-      [Token.cGBP]: new Button(this.ef.dataTestId("tokenOption_cGBP")),
-      [Token.cZAR]: new Button(this.ef.dataTestId("tokenOption_cZAR")),
-      [Token.cCAD]: new Button(this.ef.dataTestId("tokenOption_cCAD")),
-      [Token.cAUD]: new Button(this.ef.dataTestId("tokenOption_cAUD")),
-      [Token.cCHF]: new Button(this.ef.dataTestId("tokenOption_cCHF")),
-      [Token.cNGN]: new Button(this.ef.dataTestId("tokenOption_cNGN")),
-      [Token.cJPY]: new Button(this.ef.dataTestId("tokenOption_cJPY")),
+      [Token.CELO]: new Button(
+        this.ef.dataTestId("tokenOption_CELO", { exact: false }),
+      ),
+      [Token.cEUR]: new Button(
+        this.ef.dataTestId("tokenOption_cEUR", { exact: false }),
+      ),
+      [Token.cUSD]: new Button(
+        this.ef.dataTestId("tokenOption_cUSD", { exact: false }),
+      ),
+      [Token.cREAL]: new Button(
+        this.ef.dataTestId("tokenOption_cREAL", { exact: false }),
+      ),
+      [Token.cCOP]: new Button(
+        this.ef.dataTestId("tokenOption_cCOP", { exact: false }),
+      ),
+      [Token.USDC]: new Button(
+        this.ef.dataTestId("tokenOption_USDC", { exact: false }),
+      ),
+      [Token.USDT]: new Button(
+        this.ef.dataTestId("tokenOption_USDT", { exact: false }),
+      ),
+      [Token["USD₮"]]: new Button(
+        this.ef.dataTestId("tokenOption_USD₮", { exact: false }),
+      ),
+      [Token.axlUSDC]: new Button(
+        this.ef.dataTestId("tokenOption_axlUSDC", { exact: false }),
+      ),
+      [Token.axlEUROC]: new Button(
+        this.ef.dataTestId("tokenOption_axlEUROC", { exact: false }),
+      ),
+      [Token.eXOF]: new Button(
+        this.ef.dataTestId("tokenOption_eXOF", { exact: false }),
+      ),
+      [Token.cKES]: new Button(
+        this.ef.dataTestId("tokenOption_cKES", { exact: false }),
+      ),
+      [Token.PUSO]: new Button(
+        this.ef.dataTestId("tokenOption_PUSO", { exact: false }),
+      ),
+      [Token.cGHS]: new Button(
+        this.ef.dataTestId("tokenOption_cGHS", { exact: false }),
+      ),
+      [Token.cGBP]: new Button(
+        this.ef.dataTestId("tokenOption_cGBP", { exact: false }),
+      ),
+      [Token.cZAR]: new Button(
+        this.ef.dataTestId("tokenOption_cZAR", { exact: false }),
+      ),
+      [Token.cCAD]: new Button(
+        this.ef.dataTestId("tokenOption_cCAD", { exact: false }),
+      ),
+      [Token.cAUD]: new Button(
+        this.ef.dataTestId("tokenOption_cAUD", { exact: false }),
+      ),
+      [Token.cCHF]: new Button(
+        this.ef.dataTestId("tokenOption_cCHF", { exact: false }),
+      ),
+      [Token.cNGN]: new Button(
+        this.ef.dataTestId("tokenOption_cNGN", { exact: false }),
+      ),
+      [Token.cJPY]: new Button(
+        this.ef.dataTestId("tokenOption_cJPY", { exact: false }),
+      ),
     };
   }
 

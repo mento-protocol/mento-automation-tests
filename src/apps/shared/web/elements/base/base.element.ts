@@ -62,12 +62,16 @@ export abstract class BaseElement {
   }: IClickParams = {}): Promise<void> {
     try {
       if (await this.isEnabled({ timeout })) {
-        await this.element.click({ timeout, force, clickCount: times });
+        return await this.element.click({ timeout, force, clickCount: times });
       } else {
         log.warn(
           `Element with '${this.element}' is disabled - force clicking...`,
         );
-        await this.element.click({ force: true, timeout, clickCount: times });
+        return await this.element.click({
+          force: true,
+          timeout,
+          clickCount: times,
+        });
       }
     } catch (error) {
       const errorMessage = `Can't click on '${this.element}' element.\nDetails: ${error.message}`;
@@ -108,7 +112,7 @@ export abstract class BaseElement {
   }: IGetTextParams = {}): Promise<string> {
     try {
       await this.waitForDisplayed(timeout, { throwError });
-      return this.element.innerHTML({ timeout });
+      return await this.element.innerHTML({ timeout });
     } catch (error) {
       const errorMessage = `Can't get HTML on element with '${this.element}' locator.\nError details: ${error.message}`;
       log.error(errorMessage);
@@ -117,11 +121,11 @@ export abstract class BaseElement {
   }
 
   async hover({
+    timeout = timeouts.action,
     throwError = true,
-    timeout,
   }: IHoverParams = {}): Promise<void> {
     try {
-      return this.element.hover({ timeout });
+      return await this.element.hover({ timeout });
     } catch (error) {
       const errorMessage = `Can't hover on '${this.element}' element.\nDetails: ${error.message}`;
       log.error(errorMessage);
@@ -203,7 +207,7 @@ export abstract class BaseElement {
   ): Promise<boolean> {
     const logType = throwError ? "error" : "warn";
     try {
-      return waiterHelper.wait(async () => this.isEnabled(), timeout);
+      return await waiterHelper.wait(async () => this.isEnabled(), timeout);
     } catch (error) {
       const message = `${errorMessage}: ${error}`;
 

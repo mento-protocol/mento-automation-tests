@@ -378,6 +378,12 @@ export class SwapService extends BaseService {
     await this.selectTokenModalPage.verifyIsOpen();
   }
 
+  async hoverOverToken(token: Token): Promise<void> {
+    await this.selectTokenModalPage.tokens[token].hover({
+      timeout: timeouts.s,
+    });
+  }
+
   async selectToken({
     token,
     shouldOpenModal = true,

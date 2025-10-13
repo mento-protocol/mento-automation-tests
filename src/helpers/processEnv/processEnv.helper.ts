@@ -29,6 +29,7 @@ interface IProcessEnvHelper {
   IS_PARALLEL_RUN: string;
   CUSTOM_URL: string;
   IS_MAINNET: string;
+  WORKERS_COUNT: string;
 }
 
 export const processEnv = process.env as unknown as IProcessEnvHelper;

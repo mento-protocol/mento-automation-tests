@@ -97,7 +97,7 @@ suite({
         await app.swap.openSelectTokenModal({
           tokenType: "buy",
         });
-        await app.swap.selectTokenModalPage.tokens.axlEUROC.hover();
+        await app.swap.hoverOverToken(Token.axlEUROC);
         expect(await app.swap.getInvalidPairTooltipText()).toEqual(
           "Invalid pair",
         );
