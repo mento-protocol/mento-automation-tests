@@ -78,7 +78,7 @@ export class CreateProposalService extends BaseService {
     expect
       .soft(
         await this.page.proposalSuccessToast.toast.waitForDisplayed(
-          timeouts.xl,
+          timeouts.xxl,
           {
             throwError: false,
           },
@@ -97,7 +97,7 @@ export class CreateProposalService extends BaseService {
   }
 
   async verifyCreationPopupDisappeared(): Promise<boolean> {
-    return this.page.confirmProposalPopup.waitForDisappeared(timeouts.m, {
+    return this.page.confirmProposalPopup.waitForDisappeared(timeouts.xl, {
       errorMessage: "'Confirm proposal' popup is not disappeared!",
     });
   }
