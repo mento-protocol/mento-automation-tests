@@ -34,7 +34,10 @@ export class VotingPowerService extends BaseService {
       await this.verifyConfirmationPopupIsClosed();
     } else {
       log.debug("Topping up lock directly");
-      await this.page.topUpLockButton.click();
+      // Lock period should be extended for early locks, so we need to use topUpAndExtendLockButton
+      (await this.page.topUpAndExtendLockButton.isDisplayed())
+        ? await this.page.topUpAndExtendLockButton.click()
+        : await this.page.topUpLockButton.click();
       await this.verifyConfirmationPopupIsOpened();
       await this.metamask.confirmTransaction();
       await this.verifyConfirmationPopupIsClosed();
