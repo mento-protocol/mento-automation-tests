@@ -3,6 +3,13 @@ name: Specific Test Run
 on:
   workflow_dispatch:
     inputs:
+      ENV:
+        description: "Environment name"
+        required: true
+        type: choice
+        options:
+          - "prod"
+          - "qa"
       APP_NAME:
         description: "App name"
         required: true
@@ -62,6 +69,7 @@ jobs:
     name: "Specific Test Run"
     uses: ./.github/workflows/re-usable-test.yml
     with:
+      ENV: ${{ inputs.ENV }}
       APP_NAME: ${{ inputs.APP_NAME }}
       SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
       SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
