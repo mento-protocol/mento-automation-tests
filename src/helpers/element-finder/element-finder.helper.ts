@@ -32,6 +32,10 @@ export class ElementFinderHelper {
     return this.pwPage.getByRole(role, options);
   }
 
+  placeholder(placeholder: string, options: IPwFinderParams = {}): Locator {
+    return this.pwPage.getByPlaceholder(placeholder, options);
+  }
+
   custom(params: IBuildLocatorParams): Locator {
     return this.pwPage.locator(this.buildLocator(params));
   }

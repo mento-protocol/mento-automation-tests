@@ -27,6 +27,10 @@ export const magicStrings = {
         qa: { base: processEnv.GOVERNANCE_QA_API_URL },
       },
     },
+    [AppName.SquidRouter]: {
+      web: { prod: { base: "https://app.squidrouter.com" } },
+      api: { prod: { base: "" } },
+    },
   },
   chain: {
     testnet: {
@@ -91,6 +95,12 @@ export const magicStrings = {
       return {
         webSpecs: `${this.root}/specs/governance/web`,
         apiSpecs: `${this.root}/specs/governance/api`,
+      };
+    },
+    get squidRouter() {
+      return {
+        webSpecs: `${this.root}/specs/squid-router/web`,
+        apiSpecs: `${this.root}/specs/squid-router/api`,
       };
     },
   },

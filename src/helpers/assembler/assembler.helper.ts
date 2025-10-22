@@ -30,6 +30,12 @@ import { CeloScanService } from "@shared/web/celo-scan/celo-scan.service";
 import { CeloScanPage } from "@shared/web/celo-scan/celo-scan.page";
 import { SwitchNetworksPage } from "../../apps/app-mento/web/settings/switch-networks.page";
 import { GovernanceApi } from "../../apps/governance/api/governance.api";
+import { MainSquidRouterService } from "../../apps/squid-router/web/main/main.service";
+import { SquidConnectWalletModalService } from "../../apps/squid-router/web/squid-connect-wallet-modal/squid-connect-wallet-modal.service";
+import { MainSquidRouterPage } from "../../apps/squid-router/web/main/main.page";
+import { SquidConnectWalletModalPage } from "../../apps/squid-router/web/squid-connect-wallet-modal/squid-connect-wallet-modal.page";
+import { SwapService as SquidRouterSwapService } from "../../apps/squid-router/web/swap/swap.service";
+import { SwapPage as SquidRouterSwapPage } from "../../apps/squid-router/web/swap/swap.page";
 
 /**
  * 🚀 Goal
@@ -177,6 +183,27 @@ export class AssemblerHelper {
           },
         };
       },
+      [AppName.SquidRouter]: (
+        ef: ElementFinderHelper,
+        baseDependencies: IBaseWebDependencies,
+      ) => {
+        return {
+          squidRouter: {
+            main: new MainSquidRouterService({
+              page: new MainSquidRouterPage(ef),
+              ...baseDependencies,
+              connectWalletModal: new SquidConnectWalletModalService({
+                page: new SquidConnectWalletModalPage(ef),
+                ...baseDependencies,
+              }),
+            }),
+            swap: new SquidRouterSwapService({
+              page: new SquidRouterSwapPage(ef),
+              ...baseDependencies,
+            }),
+          },
+        };
+      },
     },
     api: {
       [AppName.AppMento]: () => {
@@ -189,6 +216,9 @@ export class AssemblerHelper {
             common: new GovernanceApi(graphqlClient),
           },
         };
+      },
+      [AppName.SquidRouter]: () => {
+        return { squidRouter: {} };
       },
     },
   };
@@ -241,18 +271,24 @@ export interface IWeb {
 export interface IAppMentoApi {
   appMento: Record<string, unknown>;
   governance: never;
+  squidRouter: never;
 }
 
 export interface IGovernanceApi {
+  governance: { common: GovernanceApi };
   appMento: never;
-  governance: {
-    common: GovernanceApi;
-  };
+  squidRouter: never;
 }
 
-export type WebApp = IAppMentoWebApp | IGovernanceWebApp;
+export interface ISquidRouterApi {
+  squidRouter: Record<string, unknown>;
+  governance: never;
+  appMento: never;
+}
 
-export type ApiApp = IAppMentoApi | IGovernanceApi;
+export type WebApp = IAppMentoWebApp | IGovernanceWebApp | ISquidRouterWebApp;
+
+export type ApiApp = IAppMentoApi | IGovernanceApi | ISquidRouterApi;
 
 export interface IApi {
   httpClient: HttpClient;
@@ -260,16 +296,27 @@ export interface IApi {
   app: ApiApp;
 }
 
-export interface IGovernanceApi {}
-
 export interface IAppMentoWebApp {
   appMento: IAppMentoApp;
   governance?: never;
+  squidRouter?: never;
 }
 
 export interface IGovernanceWebApp {
   governance: IGovernanceApp;
   appMento?: never;
+  squidRouter?: never;
+}
+
+export interface ISquidRouterWebApp {
+  squidRouter: ISquidRouterApp;
+  appMento?: never;
+  governance?: never;
+}
+
+export interface ISquidRouterApp {
+  main: MainSquidRouterService;
+  swap: SquidRouterSwapService;
 }
 
 interface IAppMentoApp {
