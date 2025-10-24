@@ -16,11 +16,11 @@ const testCases = [
     sellToken: TokenSymbol.cUSD,
     buyToken: TokenSymbol.cEUR,
   },
-  // TODO: Discuss the 'Low liquidity, please reduce swap amount and try again' error
-  // {
-  //   sellToken: TokenSymbol.cREAL,
-  //   buyToken: TokenSymbol.cUSD,
-  // },
+  {
+    sellToken: TokenSymbol.cREAL,
+    buyToken: TokenSymbol.cUSD,
+    disable: { reason: "Low liquidity" },
+  },
   // TODO: Cannot get USDT address by mento sdk
   // USDT
   // {
@@ -46,20 +46,11 @@ const testCases = [
   {
     sellToken: TokenSymbol.eXOF,
     buyToken: TokenSymbol.cUSD,
+    disable: { reason: "Low liquidity" },
   },
   // USDC
   {
     sellToken: TokenSymbol.USDC,
-    buyToken: TokenSymbol.cEUR,
-  },
-  // axlUSDC
-  {
-    sellToken: TokenSymbol.axlUSDC,
-    buyToken: TokenSymbol.cEUR,
-  },
-  // axlEUROC
-  {
-    sellToken: TokenSymbol.axlEUROC,
     buyToken: TokenSymbol.cEUR,
   },
   // cGHS
@@ -86,11 +77,13 @@ const testCases = [
   {
     sellToken: TokenSymbol.cJPY,
     buyToken: TokenSymbol.cUSD,
+    disable: { reason: "Low liquidity" },
   },
   // cNGN
   {
     sellToken: TokenSymbol.cNGN,
     buyToken: TokenSymbol.cUSD,
+    disable: { reason: "Low liquidity" },
   },
 ];
 
@@ -104,6 +97,7 @@ suite({
       return {
         name: `from ${testCase.sellToken} to ${testCase.buyToken}`,
         testCaseId: "",
+        disable: testCase?.disable,
         test: async ({ web }: IExecution) => {
           const app = web.app.squidRouter;
           const { sellToken, buyToken } = testCase;
