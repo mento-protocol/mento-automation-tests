@@ -89,7 +89,7 @@ const testCases = [
 
 suite({
   name: "Swap - By token pairs",
-  tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
+  tags: [TestTag.Regression],
   beforeEach: async ({ web }) =>
     await web.app.squidRouter.main.connectWalletByName(WalletName.Metamask),
   tests: [

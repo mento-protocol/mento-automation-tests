@@ -5,7 +5,7 @@ import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-moda
 
 suite({
   name: "Connect Wallet",
-  tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
+  tags: [TestTag.Regression],
   tests: [
     {
       name: "Connect Metamask wallet",
