@@ -117,8 +117,8 @@ export class SwapService extends BaseService {
 
   async selectToken({ token, isSellToken }: ISelectTokenArgs): Promise<void> {
     await this.openTokenPicker({ isSellToken });
-    await this.browser.pause();
     await this.enterTokenName(token as string);
+    await this.page.yourTokensLabel.waitForDisplayed(timeouts.m);
     const tokenButton = this.page.getTokenButtonByName(token as string);
     await tokenButton.waitForDisplayed(timeouts.xl);
     await tokenButton.click({ force: true });

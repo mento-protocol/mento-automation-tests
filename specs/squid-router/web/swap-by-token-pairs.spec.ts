@@ -6,13 +6,91 @@ import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-moda
 import { IExecution } from "@helpers/suite/suite.types";
 
 const testCases = [
-  {
-    sellToken: TokenSymbol.cUSD,
-    buyToken: TokenSymbol.USDC,
-  },
+  // CELO
   {
     sellToken: TokenSymbol.CELO,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // cUSD
+  {
+    sellToken: TokenSymbol.cUSD,
     buyToken: TokenSymbol.cEUR,
+  },
+  // TODO: Discuss the 'Low liquidity, please reduce swap amount and try again' error
+  // {
+  //   sellToken: TokenSymbol.cREAL,
+  //   buyToken: TokenSymbol.cUSD,
+  // },
+  // TODO: Cannot get USDT address by mento sdk
+  // USDT
+  // {
+  //   sellToken: TokenSymbol.USDT,
+  //   buyToken: TokenSymbol.cUSD,
+  // },
+  // cKES
+  {
+    sellToken: TokenSymbol.cKES,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // PUSO
+  {
+    sellToken: TokenSymbol.PUSO,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // cCOP
+  {
+    sellToken: TokenSymbol.cCOP,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // eXOF
+  {
+    sellToken: TokenSymbol.eXOF,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // USDC
+  {
+    sellToken: TokenSymbol.USDC,
+    buyToken: TokenSymbol.cEUR,
+  },
+  // axlUSDC
+  {
+    sellToken: TokenSymbol.axlUSDC,
+    buyToken: TokenSymbol.cEUR,
+  },
+  // axlEUROC
+  {
+    sellToken: TokenSymbol.axlEUROC,
+    buyToken: TokenSymbol.cEUR,
+  },
+  // cGHS
+  {
+    sellToken: TokenSymbol.cGHS,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // cGBP
+  {
+    sellToken: TokenSymbol.cGBP,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // cAUD
+  {
+    sellToken: TokenSymbol.cAUD,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // cCHF
+  {
+    sellToken: TokenSymbol.cCHF,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // cJPY
+  {
+    sellToken: TokenSymbol.cJPY,
+    buyToken: TokenSymbol.cUSD,
+  },
+  // cNGN
+  {
+    sellToken: TokenSymbol.cNGN,
+    buyToken: TokenSymbol.cUSD,
   },
 ];
 

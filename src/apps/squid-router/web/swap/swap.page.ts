@@ -40,6 +40,8 @@ export class SwapPage extends BasePage {
 
   tokenNameInput = new Input(this.ef.placeholder("Token"));
 
+  yourTokensLabel = new Label(this.ef.text("Your tokens"));
+
   getTokenButtonByName(name: string, { exact = false } = {}): Button {
     const isCelo = name === TokenSymbol.CELO;
     // There are two CELO buttons
