@@ -60,6 +60,12 @@ export class EnvHelper {
     return this.isMainnet() ? "mainnet" : "testnet";
   }
 
+  getChainId(): number {
+    return this.isMainnet()
+      ? magicStrings.chain.mainnet.chainId
+      : magicStrings.chain.testnet.chainId;
+  }
+
   getGovernorAddress(): Address {
     return magicStrings.governance[this.getChainType()].governorAddress;
   }

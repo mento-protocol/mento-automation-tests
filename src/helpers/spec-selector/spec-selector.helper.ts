@@ -50,6 +50,8 @@ class SpecSelectorHelper {
         return magicStrings.path.appMento;
       case AppName.Governance:
         return magicStrings.path.governance;
+      case AppName.SquidRouter:
+        return magicStrings.path.squidRouter;
       default:
         throw new Error(
           `Please specify APP using app-mento or governance options`,

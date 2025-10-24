@@ -7,6 +7,7 @@ import { BasePage } from "./base.page";
 import { timeouts } from "@constants/timeouts.constants";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { CeloScanService } from "../celo-scan/celo-scan.service";
+import { ContractHelper } from "@helpers/contract/contract.helper";
 
 export class BaseService {
   private readonly baseWebUrl = envHelper.getBaseWebUrl();
@@ -15,11 +16,13 @@ export class BaseService {
   public browser: BrowserHelper = null;
   protected page: BasePage = null;
   protected metamask: MetamaskHelper = null;
+  protected contract: ContractHelper = null;
 
   constructor(args: IBaseServiceArgs) {
-    const { browser, metamask: metamaskHelper } = args;
+    const { browser, metamask: metamaskHelper, contract } = args;
     this.browser = browser;
     this.metamask = metamaskHelper;
+    this.contract = contract;
   }
 
   async navigateToApp(): Promise<void> {
@@ -84,4 +87,5 @@ export interface IBaseServiceArgs {
   page: BasePage;
   metamask?: MetamaskHelper;
   celoScan?: CeloScanService;
+  contract?: ContractHelper;
 }

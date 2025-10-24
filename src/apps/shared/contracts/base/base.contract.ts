@@ -1,5 +1,6 @@
 import { ethers, providers, Signer } from "ethers";
 import { Address, TransactionReceipt } from "viem";
+import { getTokenAddress, TokenSymbol } from "@mento-protocol/mento-sdk";
 
 import { envHelper } from "@helpers/env/env.helper";
 import { loggerHelper } from "@helpers/logger/logger.helper";
@@ -20,6 +21,63 @@ export class BaseContract {
     this.signer = new ethers.Wallet(this.privateKey, this.provider);
     this.contractAddress = contractAddress;
     this.contractAbi = contractAbi;
+  }
+
+  async getTokenAddress(tokenSymbol: TokenSymbol): Promise<Address> {
+    try {
+      const chainId = envHelper.getChainId();
+
+      const tokenAddress = getTokenAddress(tokenSymbol, chainId);
+
+      if (!tokenAddress) {
+        const errorMessage = `Token address not found for ${tokenSymbol} on chain ${chainId}. The token might not be supported on this network.`;
+        log.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      return tokenAddress as Address;
+    } catch (error) {
+      log.error(`Failed to get token address from mento sdk: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async getBalance({
+    walletAddress,
+    tokenSymbol,
+  }: IGetBalanceParams): Promise<number> {
+    const tokenAddress = await this.getTokenAddress(tokenSymbol);
+    const contract = new ethers.Contract(
+      tokenAddress,
+      this.getErc20Abi(),
+      this.provider,
+    );
+
+    try {
+      const [rawBalance, decimals] = await Promise.all([
+        contract.balanceOf(walletAddress),
+        contract.decimals(),
+      ]);
+      const balance = Number(rawBalance) / 10 ** decimals;
+      return balance;
+    } catch (error) {
+      log.warn(
+        `Failed to get balance with decimals for ${tokenAddress}: ${error.message}`,
+      );
+      try {
+        const defaultDecimals = 18;
+        const rawBalance = await contract.balanceOf(walletAddress);
+        const balance = Number(rawBalance) / 10 ** defaultDecimals;
+        log.info(
+          `Balance retrieved with default decimals: ${balance} ${tokenSymbol}`,
+        );
+        return balance;
+      } catch (fallbackError) {
+        const errorMessage = `Error in 'getBalance' method: ${fallbackError}\nError stack: ${fallbackError.stack}`;
+        log.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+    }
   }
 
   protected async callContract({
@@ -81,6 +139,37 @@ export class BaseContract {
     });
     return estimatedGas.toString();
   }
+
+  private getErc20Abi() {
+    return [
+      {
+        constant: true,
+        inputs: [{ name: "_owner", type: "address" }],
+        name: "balanceOf",
+        outputs: [{ name: "balance", type: "uint256" }],
+        type: "function",
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: "decimals",
+        outputs: [{ name: "", type: "uint8" }],
+        type: "function",
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: "symbol",
+        outputs: [{ name: "", type: "string" }],
+        type: "function",
+      },
+    ];
+  }
+}
+
+export interface IGetBalanceParams {
+  walletAddress: Address;
+  tokenSymbol: TokenSymbol;
 }
 
 interface IEstimateGasParams {
