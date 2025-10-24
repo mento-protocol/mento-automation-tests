@@ -14,10 +14,12 @@ export function suite({
   beforeEach,
   afterEach,
   afterAll,
+  retries,
   tags: rawTags = [],
 }: ISuiteArgs): void {
   const tags = composeTags(rawTags);
 
+  retries && testFixture.describe.configure({ retries });
   testFixture.describe(suiteName, { tag: tags }, () => {
     testFixture.beforeAll(async ({ api }) => {
       logRunDetails(suiteName);
