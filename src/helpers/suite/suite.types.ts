@@ -19,6 +19,7 @@ export interface ISuiteArgs {
   // Only API is available because web inits in beforeEach per each test
   afterAll?: (params: Pick<IExecution, "api">) => Promise<void>;
   tags?: string[];
+  retries?: number;
 }
 
 export interface ITest {

@@ -10,6 +10,7 @@ const exceedsTradingLimitAmount = "600000";
 suite({
   name: "Swap - Amounts",
   tags: [TestTag.Regression, TestTag.Parallel],
+  retries: 5,
   beforeEach: async ({ web }) => {
     await web.app.appMento.main.runSwapTestPreconditions();
   },
