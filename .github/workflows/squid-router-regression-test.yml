@@ -2,7 +2,7 @@ name: "[Squid-Router] Sequential Regression Test Run"
 
 on:
   schedule:
-    - cron: "0 4 * * 3" # Wednesday at 4:00 AM UTC
+    - cron: "0 6 * * 3" # Wednesday at 6:00 AM UTC
   workflow_dispatch:
     inputs:
       HTML_REPORT_GENERATION:
