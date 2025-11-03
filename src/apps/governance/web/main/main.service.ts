@@ -60,8 +60,11 @@ export class MainGovernanceService extends BaseService {
     await this.votingPowerPage.verifyIsOpen();
   }
 
-  async openProposalByTitle(title: string): Promise<void> {
-    await this.waitForProposalByTitle(title);
+  async openProposalByTitle(
+    title: string,
+    timeout: number = timeouts.m,
+  ): Promise<void> {
+    await this.waitForProposalByTitle(title, timeout);
     await (await this.page.getProposalByTitle(title)).click();
     await this.proposalView.verifyIsOpen();
   }
@@ -85,18 +88,20 @@ export class MainGovernanceService extends BaseService {
     });
   }
 
-  async waitForProposalByTitle(title: string): Promise<boolean> {
-    return waiterHelper.retry(
+  async waitForProposalByTitle(
+    title: string,
+    timeout: number,
+  ): Promise<boolean> {
+    return waiterHelper.wait(
       async () => {
         await this.browser.refresh();
-        return (await this.page.getProposalByTitle(title)).waitForDisplayed(
-          timeouts.m,
-          { throwError: false },
-        );
+        const proposal = await this.page.getProposalByTitle(title);
+        return proposal.isDisplayed();
       },
-      5,
+      timeout,
       {
         errorMessage: `'${title}' proposal hasn't displayed`,
+        throwError: false,
         interval: timeouts.xs,
       },
     );
