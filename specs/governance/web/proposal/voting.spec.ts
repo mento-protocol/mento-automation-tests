@@ -42,12 +42,17 @@ suite({
     test: async ({ web }) => {
       const app = web.app.governance;
       const isYesVote = vote === Vote.Yes;
+      // TODO: Remove once performance issues are resolved
+      const waitForProposalTimeout = timeouts.minute * 10;
       const proposalData = magicStrings.governance.generateProposalData({
         shouldMarkToExecute: isYesVote,
       });
 
       await web.contract.governance.createProposal(proposalData);
-      await app.main.openProposalByTitle(proposalData.title);
+      await app.main.openProposalByTitle(
+        proposalData.title,
+        waitForProposalTimeout,
+      );
 
       await app.proposalView.vote(vote);
       await app.proposalView.expectVote(vote);

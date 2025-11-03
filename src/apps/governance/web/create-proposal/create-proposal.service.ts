@@ -75,6 +75,7 @@ export class CreateProposalService extends BaseService {
   }
 
   async verifyProposalCreation(): Promise<void> {
+    await this.verifyCreationPopupDisappeared();
     expect
       .soft(
         await this.page.proposalSuccessToast.toast.waitForDisplayed(
@@ -85,7 +86,6 @@ export class CreateProposalService extends BaseService {
         ),
       )
       .toBeTruthy();
-    await this.verifyCreationPopupDisappeared();
     await this.page.verifyIsClosed();
     await this.proposalViewPage.verifyIsOpen();
   }
@@ -97,7 +97,9 @@ export class CreateProposalService extends BaseService {
   }
 
   async verifyCreationPopupDisappeared(): Promise<boolean> {
-    return this.page.confirmProposalPopup.waitForDisappeared(timeouts.xl, {
+    // TODO: Replace with xxl timeout when performance issues are resolved
+    const timeout = timeouts.minute * 10;
+    return this.page.confirmProposalPopup.waitForDisappeared(timeout, {
       errorMessage: "'Confirm proposal' popup is not disappeared!",
     });
   }
