@@ -19,14 +19,14 @@ const testCases = [
   {
     sellToken: TokenSymbol.cREAL,
     buyToken: TokenSymbol.cUSD,
-    disable: { reason: "Low liquidity" },
   },
-  // TODO: Cannot get USDT address by mento sdk
+
   // USDT
-  // {
-  //   sellToken: TokenSymbol.USDT,
-  //   buyToken: TokenSymbol.cUSD,
-  // },
+  {
+    sellToken: TokenSymbol.USDT,
+    buyToken: TokenSymbol.cUSD,
+    disable: { reason: "Cannot get USDT address by mento sdk" },
+  },
   // cKES
   {
     sellToken: TokenSymbol.cKES,
@@ -46,7 +46,7 @@ const testCases = [
   {
     sellToken: TokenSymbol.eXOF,
     buyToken: TokenSymbol.cUSD,
-    disable: { reason: "Low liquidity" },
+    disable: { reason: "No eXOF token" },
   },
   // USDC
   {
@@ -77,13 +77,11 @@ const testCases = [
   {
     sellToken: TokenSymbol.cJPY,
     buyToken: TokenSymbol.cUSD,
-    disable: { reason: "Low liquidity" },
   },
   // cNGN
   {
     sellToken: TokenSymbol.cNGN,
     buyToken: TokenSymbol.cUSD,
-    disable: { reason: "Low liquidity" },
   },
 ];
 
