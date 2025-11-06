@@ -18,12 +18,12 @@ const testCases = [
   {
     name: "'No' successfully",
     vote: Vote.No,
-    tags: [TestTag.Smoke],
+    tags: [],
   },
   {
     name: "'Abstain' successfully",
     vote: Vote.Abstain,
-    tags: [TestTag.Smoke],
+    tags: [],
   },
 ];
 
