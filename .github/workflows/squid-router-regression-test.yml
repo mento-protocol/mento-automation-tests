@@ -31,6 +31,7 @@ jobs:
       SPECS_REGEX: "@regression"
       IS_PARALLEL_RUN: "false"
       IS_MAINNET: "true"
+      IS_FORK: "false"
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: "squid-router-sequential-regression"
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}

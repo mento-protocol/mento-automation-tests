@@ -44,6 +44,11 @@ on:
         required: false
         default: "false"
         type: string
+      IS_FORK:
+        description: "Fork mode test run flag"
+        required: false
+        default: "false"
+        type: string
       HTML_REPORT_NAME:
         description: "HTML report name"
         required: false
@@ -104,6 +109,7 @@ jobs:
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
+      IS_FORK: ${{ inputs.IS_FORK }}
       HTML_REPORT_NAME: ${{ inputs.HTML_REPORT_NAME }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
@@ -134,6 +140,15 @@ jobs:
       - name: Code-Check
         run: npm run codeCheck
 
+      - name: Setup fork
+        if: ${{ inputs.IS_FORK == 'true' }}
+        run: |
+          if [ "${{ inputs.IS_MAINNET }}" == "true" ]; then
+            make mainnet-fork-setup
+          else
+            make testnet-fork-setup
+          fi
+
       - name: Build Synpress cache
         id: synpress-cache
         uses: nick-fields/retry@v2
@@ -147,13 +162,13 @@ jobs:
           CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
           echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
 
-      - name: Run Playwright tests
+      - name: Run tests
         id: test-run
         run: xvfb-run npm run test
         env:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
-      - name: Upload Playwright report
+      - name: Upload HTML report
         if: ${{ steps.test-run.outcome != 'skipped' && ((inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure')) }}
         uses: actions/upload-artifact@v4
         with:
