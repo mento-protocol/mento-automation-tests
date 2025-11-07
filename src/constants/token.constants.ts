@@ -40,6 +40,12 @@ export const otherTokens = [Token.USDC];
 export const allTokens = [...cTokens, ...otherTokens, Token.CELO];
 
 export const defaultSwapAmount = "0.01";
+export const forkSwapAmount = "50";
+export const getSwapAmount = ({
+  isFork = false,
+}: {
+  isFork?: boolean;
+} = {}): string => (isFork ? forkSwapAmount : defaultSwapAmount);
 
 export const testWalletAddresses = {
   main: "0x98CAAa8F2B4436df0229B1cA18582d4023220e51",

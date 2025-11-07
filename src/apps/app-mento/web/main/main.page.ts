@@ -33,5 +33,11 @@ export class MainAppMentoPage extends BasePage {
     this.ef.text("Could not switch"),
   );
 
+  debugPopup = {
+    button: new Button(this.ef.dataTestId("debug-popup-button")),
+    container: new Label(this.ef.dataTestId("debug-popup-container")),
+    useForkedChainsButton: new Button(this.ef.text("Use Forked Chains")),
+  };
+
   staticElements = [this.headerConnectWalletButton];
 }
