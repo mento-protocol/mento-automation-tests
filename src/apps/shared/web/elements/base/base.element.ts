@@ -61,22 +61,23 @@ export abstract class BaseElement {
     times,
   }: IClickParams = {}): Promise<void> {
     try {
-      if (await this.isEnabled({ timeout })) {
-        return await this.element.click({ timeout, force, clickCount: times });
+      if (await this.waitForEnabled(timeout, { throwError: false })) {
+        return await this.element.click({ timeout, clickCount: times });
       } else {
-        log.warn(
-          `Element with '${this.element}' is disabled - force clicking...`,
-        );
-        return await this.element.click({
-          force: true,
-          timeout,
-          clickCount: times,
-        });
+        if (force) {
+          log.warn("Force clicking...");
+          return await this.element.click({
+            timeout,
+            force,
+            clickCount: times,
+          });
+        }
       }
+      throw new Error("Element is not clickable");
     } catch (error) {
       const errorMessage = `Can't click on '${this.element}' element.\nDetails: ${error.message}`;
-      if (throwError) throw new Error(errorMessage);
       log.error(errorMessage);
+      if (throwError) throw new Error(errorMessage);
     }
   }
 
@@ -218,4 +219,47 @@ export abstract class BaseElement {
       return false;
     }
   }
+
+  // async click2({
+  //   timeout = timeouts.xs,
+  //   force = false,
+  //   times,
+  //   retry = 1,
+  // }: IClickParams = {}): Promise<void> {
+  //   return retry
+  //     ? await waiterHelper.retry(async () => {
+  //         return await this.baseClick({ timeout, force, times });
+  //       }, retry)
+  //     : await this.baseClick({ timeout, force, times });
+  // }
+
+  // private async baseClick({
+  //   timeout = timeouts.xs,
+  //   throwError = true,
+  //   force = false,
+  //   times,
+  //   retry = 1,
+  // }: IClickParams = {}): Promise<void> {
+  //   try {
+  //     console.log("start");
+  //     if (await this.isEnabled({ timeout })) {
+  //       console.log("enabled");
+  //       return await this.element.click({ timeout, clickCount: times });
+  //     } else {
+  //       console.log("disabled");
+  //       if (force) {
+  //         console.log("force", force);
+  //         return await this.element.click({
+  //           timeout,
+  //           force,
+  //           clickCount: times,
+  //         });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     const errorMessage = `Can't click on '${this.element}' element.\nDetails: ${error.message}`;
+  //     if (throwError) throw new Error(errorMessage);
+  //     log.error(errorMessage);
+  //   }
+  // }
 }
