@@ -13,6 +13,7 @@ import {
   relayerAddresses,
   sortedOraclesAbi,
   sortedOraclesAddresses,
+  timeouts,
   Token,
   TokenSymbol,
 } from "@constants/index";
@@ -257,18 +258,12 @@ export class ForkHelper {
       console.info(`   Relayer: ${relayerAddress}`);
 
       const rateFeedId = await this.getRateFeedId(relayerAddress);
-
-      console.info(`   Rate Feed ID: ${rateFeedId}`);
-
-      const [currentRate, numReports] = await this.getMedianRate(
+      const [currentRate] = await this.getMedianRate(
         sortedOraclesAddress,
         rateFeedId,
       );
-
-      console.info(`   Current Rate: ${currentRate}`);
-      console.info(`   Number of Reports: ${numReports}`);
-
       const isNoExistingRate = currentRate === BigInt(0);
+
       if (isNoExistingRate) {
         console.info(
           `   ⏭️  Skipping ${pairName} (no existing rate to report)\n`,
@@ -368,7 +363,10 @@ export class ForkHelper {
       chain: null,
     });
 
-    await publicClient.waitForTransactionReceipt({ hash });
+    await publicClient.waitForTransactionReceipt({
+      hash,
+      timeout: timeouts.xl,
+    });
     await this.stopImpersonatingAccount(relayerAddress);
   }
 
