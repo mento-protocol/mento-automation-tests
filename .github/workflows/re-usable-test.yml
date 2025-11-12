@@ -121,6 +121,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy
+      options: --user root
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -131,14 +134,13 @@ jobs:
           cache: npm
           node-version: 20.11.1
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install make
-        if: ${{ inputs.IS_FORK == 'true' }}
+      - name: Install Docker CLI and make
         run: |
           apt-get update
-          apt-get install -y make
+          apt-get install -y docker.io make
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Verify env config
         run: npm run verify-env-config
