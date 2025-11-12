@@ -134,10 +134,18 @@ jobs:
           cache: npm
           node-version: 20.11.1
 
-      - name: Install Docker CLI and make
+      - name: Install Docker CLI, and make
         run: |
           apt-get update
           apt-get install -y docker.io make
+
+      - name: Install Foundry
+        if: ${{ inputs.IS_FORK == 'true' }}
+        run: |
+          curl -L https://foundry.paradigm.xyz | bash
+          export PATH="$HOME/.foundry/bin:$PATH"
+          foundryup
+          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
         run: npm ci
