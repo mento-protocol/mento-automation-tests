@@ -134,6 +134,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install make
+        if: ${{ inputs.IS_FORK == 'true' }}
+        run: |
+          apt-get update
+          apt-get install -y make
+
       - name: Verify env config
         run: npm run verify-env-config
 
@@ -142,8 +148,9 @@ jobs:
 
       - name: Setup fork
         if: ${{ inputs.IS_FORK == 'true' }}
+        shell: bash
         run: |
-          if [ "${{ inputs.IS_MAINNET }}" == "true" ]; then
+          if [ "${{ inputs.IS_MAINNET }}" = "true" ]; then
             make mainnet-fork-setup
           else
             make testnet-fork-setup
