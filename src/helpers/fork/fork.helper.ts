@@ -9,6 +9,11 @@ import {
 import { envHelper } from "@helpers/env/env.helper";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { web3Helper } from "@helpers/web3/web3.helper";
+import {
+  relayerAddresses,
+  sortedOraclesAbi,
+  sortedOraclesAddresses,
+} from "@constants/index";
 
 /**
  * Helper class for interacting with Anvil fork
@@ -100,6 +105,221 @@ export class ForkHelper {
    */
   async mine(): Promise<void> {
     await this.rpcCall("evm_mine", []);
+  }
+
+  /**
+   * Call a view function on a contract
+   * @param contractAddress - Address of the contract
+   * @param abi - Contract ABI
+   * @param functionName - Name of the function to call
+   * @param args - Arguments to pass to the function
+   * @returns Result of the function call
+   */
+  async callViewFunction(
+    contractAddress: Address,
+    abi: unknown[],
+    functionName: string,
+    args: unknown[] = [],
+  ): Promise<unknown> {
+    const publicClient = createPublicClient({
+      transport: http(this.rpcUrl),
+    });
+
+    const result = await publicClient.readContract({
+      address: contractAddress,
+      abi: parseAbi(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        abi.map((item: any) => {
+          if (item.type === "function") {
+            const inputs = item.inputs
+              .map(
+                (input: { type: string; name: string }) =>
+                  `${input.type} ${input.name}`,
+              )
+              .join(", ");
+            const outputs = item.outputs
+              .map((output: { type: string }) => output.type)
+              .join(", ");
+            return `function ${item.name}(${inputs}) ${item.stateMutability} returns (${outputs})`;
+          }
+          return "";
+        }),
+      ),
+      functionName,
+      args,
+    });
+
+    return result;
+  }
+
+  /**
+   * Report prices for all oracle pairs
+   */
+  async reportPrices(): Promise<void> {
+    console.info("📊 Starting price reporting...\n");
+
+    const network = envHelper.getChainType();
+    const sortedOraclesAddress = envHelper.isMainnet()
+      ? sortedOraclesAddresses.mainnet
+      : sortedOraclesAddresses.testnet;
+
+    console.info(`🌐 Network: ${network}`);
+    console.info(`📍 Sorted Oracles: ${sortedOraclesAddress}\n`);
+
+    const relayers = relayerAddresses[network];
+    const pairNames = Object.keys(relayers);
+
+    console.info(`Found ${pairNames.length} pairs to report\n`);
+
+    await Promise.all(
+      pairNames.map(async pairName =>
+        this.reportPrice(pairName, relayers, sortedOraclesAddress),
+      ),
+    );
+
+    console.info(`\n📈 Price reporting completed`);
+  }
+
+  /**
+   * Report price for a given pair
+   * @param pairName - Name of the pair
+   * @param relayers - Relayer addresses
+   * @param sortedOraclesAddress - Address of the Sorted Oracles contract
+   */
+  private async reportPrice(
+    pairName: string,
+    relayers: Record<string, Address>,
+    sortedOraclesAddress: Address,
+  ): Promise<void> {
+    try {
+      const relayerAddress = relayers[pairName as keyof typeof relayers];
+      const isRelayerAddressSet =
+        relayerAddress &&
+        relayerAddress.toLowerCase() !==
+          "0x0000000000000000000000000000000000000000";
+
+      if (!isRelayerAddressSet) {
+        console.info(`⏭️  Skipping ${pairName} (no relayer address set)\n`);
+        return;
+      }
+
+      console.info(`🔄 Processing ${pairName}...`);
+      console.info(`   Relayer: ${relayerAddress}`);
+
+      const rateFeedId = await this.getRateFeedId(relayerAddress);
+
+      console.info(`   Rate Feed ID: ${rateFeedId}`);
+
+      const [currentRate, numReports] = await this.getMedianRate(
+        sortedOraclesAddress,
+        rateFeedId,
+      );
+
+      console.info(`   Current Rate: ${currentRate}`);
+      console.info(`   Number of Reports: ${numReports}`);
+
+      const isNoExistingRate = currentRate === BigInt(0);
+      if (isNoExistingRate) {
+        console.info(
+          `   ⏭️  Skipping ${pairName} (no existing rate to report)\n`,
+        );
+        return;
+      }
+
+      await this.handleReportPrice(
+        relayerAddress,
+        sortedOraclesAddress,
+        rateFeedId,
+        currentRate,
+      );
+
+      console.info(`   ✅ Successfully reported price for ${pairName}\n`);
+    } catch (error) {
+      console.error(`   ❌ Failed to report price for ${pairName}: ${error}\n`);
+    }
+  }
+
+  /**
+   * Get the median rate from the Sorted Oracles contract
+   * @param sortedOraclesAddress - Address of the Sorted Oracles contract
+   * @param rateFeedId - Rate feed ID
+   * @returns [currentRate, numReports]
+   */
+  private async getMedianRate(
+    sortedOraclesAddress: Address,
+    rateFeedId: Address,
+  ): Promise<[bigint, bigint]> {
+    return (await forkHelper.callViewFunction(
+      sortedOraclesAddress,
+      sortedOraclesAbi as unknown as unknown[],
+      "medianRate",
+      [rateFeedId],
+    )) as [bigint, bigint];
+  }
+
+  /**
+   * Get the rate feed ID from the relayer contract by calling the view function
+   * @param relayerAddress - Address of the relayer contract
+   * @returns Rate feed ID
+   */
+  private async getRateFeedId(relayerAddress: Address): Promise<Address> {
+    return (await this.callViewFunction(
+      relayerAddress,
+      [
+        {
+          type: "function",
+          name: "rateFeedId",
+          inputs: [],
+          outputs: [{ type: "address", name: "" }],
+          stateMutability: "view",
+        },
+      ],
+      "rateFeedId",
+      [],
+    )) as Address;
+  }
+
+  /**
+   * Handle reporting price to Sorted Oracles by impersonating a relayer
+   * @param relayerAddress - Address of the relayer to impersonate
+   * @param sortedOraclesAddress - Address of the Sorted Oracles contract
+   * @param rateFeedId - Rate feed ID to report for
+   * @param price - Price to report
+   */
+  private async handleReportPrice(
+    relayerAddress: Address,
+    sortedOraclesAddress: Address,
+    rateFeedId: Address,
+    price: bigint,
+  ): Promise<void> {
+    const publicClient = createPublicClient({
+      transport: http(this.rpcUrl),
+    });
+    const walletClient = createWalletClient({
+      account: relayerAddress,
+      chain: null,
+      transport: http(this.rpcUrl),
+    });
+
+    await this.setCeloBalance(relayerAddress, 100);
+    await this.impersonateAccount(relayerAddress);
+
+    // Use address(0) for lesserKey and greaterKey to let the contract find the correct position
+    const zeroAddress = "0x0000000000000000000000000000000000000000" as Address;
+
+    const hash = await walletClient.writeContract({
+      address: sortedOraclesAddress,
+      abi: parseAbi([
+        "function report(address rateFeedId, uint256 value, address lesserKey, address greaterKey)",
+      ]),
+      functionName: "report",
+      args: [rateFeedId, price, zeroAddress, zeroAddress],
+      account: relayerAddress,
+      chain: null,
+    });
+
+    await publicClient.waitForTransactionReceipt({ hash });
+    await this.stopImpersonatingAccount(relayerAddress);
   }
 
   /**
