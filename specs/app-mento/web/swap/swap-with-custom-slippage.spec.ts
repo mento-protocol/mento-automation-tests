@@ -1,10 +1,13 @@
 import { expect } from "@fixtures/test.fixture";
-import { defaultSwapAmount, Token } from "@constants/token.constants";
+import { getSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { TestTag } from "@constants/test.constants";
 import { Slippage } from "../../../../src/apps/app-mento/web/swap/swap.service.types";
+import { envHelper } from "@helpers/env/env.helper";
 
+const isFork = envHelper.isFork();
+const defaultSwapAmount = getSwapAmount({ isFork });
 const tokens = {
   from: Token.cEUR,
   to: Token.CELO,
@@ -35,7 +38,7 @@ suite({
   name: "Swap - With custom slippage",
   tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) =>
-    await web.app.appMento.main.runSwapTestPreconditions(),
+    await web.app.appMento.main.runSwapTestPreconditions({ isFork }),
   tests: [
     ...testCases.map(testCase => {
       return {

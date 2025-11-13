@@ -156,6 +156,23 @@ jobs:
       - name: Code-Check
         run: npm run codeCheck
 
+      - name: Cache Otterscan image
+        if: ${{ inputs.IS_FORK == 'true' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/otterscan.tar
+          key: otterscan-latest
+
+      - name: Prepare Otterscan
+        if: ${{ inputs.IS_FORK == 'true' }}
+        run: |
+          if [ -f ~/otterscan.tar ]; then
+            docker load -i ~/otterscan.tar
+          else
+            docker pull otterscan/otterscan:latest
+            docker save otterscan/otterscan:latest -o ~/otterscan.tar
+          fi
+
       - name: Setup fork
         if: ${{ inputs.IS_FORK == 'true' }}
         shell: bash
