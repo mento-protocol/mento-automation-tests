@@ -7,6 +7,7 @@ import { ConfirmSwapPage } from "./confirm-swap.page";
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { AmountType } from "../swap/swap.service.types";
 import { expect } from "@fixtures/test.fixture";
+import { envHelper } from "@helpers/env/env.helper";
 
 const log = loggerHelper.get("ConfirmSwapService");
 
@@ -40,7 +41,14 @@ export class ConfirmSwapService extends BaseService {
     shouldExpectLoading = false,
   }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
     await this.page.swapButton.waitForDisplayed(timeouts.s);
-    await this.verifyTradingSuspendedCase();
+    await waiterHelper.skipActionIf(
+      "verifyTradingSuspendedCase",
+      {
+        conditionName: envHelper.isFork.name,
+        condition: envHelper.isFork(),
+      },
+      async () => await this.verifyTradingSuspendedCase(),
+    );
     await this.page.swapButton.click({ timeout: timeouts.xxs });
     await this.metamask.confirmTransaction();
     if (shouldExpectLoading) await this.expectLoadingDuringTxConfirmation();

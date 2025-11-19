@@ -19,6 +19,7 @@ import {
   IWaitForLoadedRateParams,
   Slippage,
 } from "./swap.service.types";
+import { envHelper } from "@helpers/env/env.helper";
 
 const log = loggerHelper.get("SwapService");
 
@@ -92,7 +93,14 @@ export class SwapService extends BaseService {
   async start({
     shouldExpectLoading = false,
   }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
-    await this.confirm.verifyNoValidMedianCase();
+    await waiterHelper.skipActionIf(
+      "verifyNoValidMedianCase",
+      {
+        conditionName: envHelper.isFork.name,
+        condition: envHelper.isFork(),
+      },
+      async () => await this.confirm.verifyNoValidMedianCase(),
+    );
     if (await this.page.approveButton.isDisplayed()) {
       log.debug(
         "Confirms both approval and swap TXs because sufficient allowance is not exist yet",

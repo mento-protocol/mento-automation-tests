@@ -5,6 +5,18 @@ import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { governanceAbi } from "./abi.constants";
 
 export const executeTitleSuffix = "(To Execute)";
+const mainnetDetails = {
+  name: "Celo",
+  rpcUrl: "https://forno.celo.org",
+  chainId: 42220,
+  symbol: "CELO",
+};
+const testnetDetails = {
+  name: "Celo Sepolia",
+  rpcUrl: "https://forno.celo-sepolia.celo-testnet.org",
+  chainId: 11142220,
+  symbol: "CELO",
+};
 
 export const magicStrings = {
   env: {
@@ -33,18 +45,10 @@ export const magicStrings = {
     },
   },
   chain: {
-    testnet: {
-      name: "Celo Sepolia",
-      rpcUrl: "https://forno.celo-sepolia.celo-testnet.org",
-      chainId: 11142220,
-      symbol: "CELO",
-    },
-    mainnet: {
-      name: "Celo",
-      rpcUrl: "https://forno.celo.org",
-      chainId: 42220,
-      symbol: "CELO",
-    },
+    testnet: { ...testnetDetails },
+    mainnet: { ...mainnetDetails },
+    mainnetFork: { ...mainnetDetails, rpcUrl: "http://localhost:8545" },
+    testnetFork: { ...testnetDetails, rpcUrl: "http://localhost:8545" },
   },
   governance: {
     abi: governanceAbi,
@@ -105,3 +109,10 @@ export const magicStrings = {
     },
   },
 };
+
+export interface IChainDetails {
+  name: string;
+  rpcUrl: string;
+  chainId: number;
+  symbol: string;
+}

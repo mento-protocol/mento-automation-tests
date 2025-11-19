@@ -1,14 +1,11 @@
 import { defineWalletSetup } from "@synthetixio/synpress";
 import { MetaMask } from "@synthetixio/synpress/playwright";
 
-import { magicStrings } from "@constants/magic-strings.constants";
 import { envHelper } from "@helpers/env/env.helper";
 
 const password = envHelper.getWalletPassword();
 const seed = envHelper.getSeedPhrase();
-const networkDetails = envHelper.isMainnet()
-  ? magicStrings.chain.mainnet
-  : magicStrings.chain.testnet;
+const networkDetails = envHelper.getChainDetails();
 
 export default defineWalletSetup(password, async (context, walletPage) => {
   const metamask = new MetaMask(context, walletPage, password);
