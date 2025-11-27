@@ -107,7 +107,7 @@ export class MainGovernanceService extends BaseService {
       async () => {
         await this.browser.refresh();
         const proposal = await this.page.getProposalByTitle(title);
-        return proposal.isDisplayed();
+        return proposal.waitForDisplayed(timeouts.xs, { throwError: false });
       },
       timeout,
       {
