@@ -66,7 +66,7 @@ export class ProposalViewService extends BaseService {
     vote: Vote,
     { shouldConfirmTx = true }: { shouldConfirmTx?: boolean } = {},
   ): Promise<void> {
-    await this.page.voteButtons[vote].click();
+    await this.page.voteButtons[vote].click({ timeout: timeouts.s });
     await this.page.waitingForConfirmationLabel.waitForDisplayed(timeouts.s, {
       errorMessage: "'Waiting for confirmation label' is not displayed!",
     });
