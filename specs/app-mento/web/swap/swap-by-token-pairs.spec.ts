@@ -1,4 +1,4 @@
-import { defaultSwapAmount, Token } from "@constants/token.constants";
+import { getSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
@@ -6,6 +6,8 @@ import { TestTag } from "@constants/test.constants";
 import { envHelper } from "@helpers/env/env.helper";
 import { magicStrings } from "@constants/magic-strings.constants";
 
+const isFork = envHelper.isFork();
+const defaultSwapAmount = getSwapAmount({ isFork });
 // USD₮ on mainnet and USDT on testnet
 const usdtToken = Token[envHelper.isMainnet ? "USD₮" : "USDT"];
 const testCases = [
@@ -162,7 +164,7 @@ suite({
   name: "Swap - By token pairs",
   tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) =>
-    await web.app.appMento.main.runSwapTestPreconditions(),
+    await web.app.appMento.main.runSwapTestPreconditions({ isFork }),
   tests: [
     ...testCases.map(testCase => {
       return {

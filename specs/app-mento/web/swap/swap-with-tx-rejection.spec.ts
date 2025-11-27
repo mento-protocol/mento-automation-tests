@@ -1,8 +1,11 @@
 import { expect } from "@fixtures/test.fixture";
-import { defaultSwapAmount, Token } from "@constants/token.constants";
+import { getSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { TestTag } from "@constants/test.constants";
+import { envHelper } from "@helpers/env/env.helper";
 
+const isFork = envHelper.isFork();
+const defaultSwapAmount = getSwapAmount({ isFork });
 const pairs = {
   rejectApproval: {
     from: Token.cEUR,
@@ -18,7 +21,7 @@ suite({
   name: "Swap - Transaction rejection",
   tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) =>
-    await web.app.appMento.main.runSwapTestPreconditions(),
+    await web.app.appMento.main.runSwapTestPreconditions({ isFork }),
   tests: [
     {
       name: `Reject approval tx (${pairs.rejectApproval.from}/${pairs.rejectApproval.to})`,

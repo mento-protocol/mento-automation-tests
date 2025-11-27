@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { Address } from "viem";
 
 class Web3Helper {
   private readonly ethDerivationPath = "m/44'/60'/0'/0/0";
@@ -19,6 +20,30 @@ class Web3Helper {
     } catch {
       throw new Error("Failed to extract private key");
     }
+  }
+
+  extractAddress(mnemonicSeedPhrase: string): Address {
+    if (!mnemonicSeedPhrase) throw new Error("Seed phrase is empty");
+
+    try {
+      const hdNode = ethers.utils.HDNode.fromMnemonic(mnemonicSeedPhrase);
+      const derivedPath = hdNode.derivePath(this.ethDerivationPath);
+      const address = derivedPath?.address;
+
+      if (!address) throw new Error("Failed to get address from seed");
+
+      return address as Address;
+    } catch {
+      throw new Error("Failed to extract address");
+    }
+  }
+
+  toWei(amount: string | number, decimals = 18): bigint {
+    return BigInt(amount) * BigInt(10 ** decimals);
+  }
+
+  toHex(amount: bigint): string {
+    return `0x${amount.toString(16)}`;
   }
 
   truncateAddress(address: string): string {

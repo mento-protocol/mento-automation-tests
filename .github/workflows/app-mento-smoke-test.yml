@@ -12,6 +12,11 @@ on:
         description: "Mainnet test run flag"
         required: false
         default: "false"
+      IS_FORK:
+        type: string
+        description: "Fork mode test run flag"
+        required: false
+        default: "false"
       TESTOMATIO_TITLE:
         type: string
         description: "Test run title"
@@ -47,6 +52,7 @@ jobs:
       IS_PARALLEL_RUN: "false"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
+      IS_FORK: ${{ inputs.IS_FORK }}
       HTML_REPORT_NAME: ${{ inputs.HTML_REPORT_NAME }}
       HTML_REPORT_GENERATION: "onFailure"
       TESTOMAT_REPORT_GENERATION: "true"
@@ -78,6 +84,15 @@ jobs:
       - name: Code-Check
         run: npm run codeCheck
 
+      - name: Setup fork
+        if: ${{ inputs.IS_FORK == 'true' }}
+        run: |
+          if [ "${{ inputs.IS_MAINNET }}" == "true" ]; then
+            make mainnet-fork-setup
+          else
+            make testnet-fork-setup
+          fi
+
       - name: Build Synpress cache
         run: xvfb-run npx synpress src/wallet-setups
 
@@ -86,12 +101,12 @@ jobs:
           CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
           echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
 
-      - name: Run Playwright tests
+      - name: Run tests
         run: xvfb-run npm run test
         env:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
-      - name: Upload Playwright report
+      - name: Upload HTML report
         if: failure()
         uses: actions/upload-artifact@v4
         with:

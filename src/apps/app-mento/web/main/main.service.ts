@@ -31,7 +31,19 @@ export class MainAppMentoService extends BaseService {
     this.settings = settings;
   }
 
-  async runSwapTestPreconditions() {
+  async enableForkMode(): Promise<void> {
+    await this.browser.pressButton("Control+M+D");
+    await this.page.debugPopup.button.waitForDisplayed(timeouts.xs);
+    await this.page.debugPopup.button.click();
+    await this.page.debugPopup.container.waitForDisplayed(timeouts.xs);
+    await this.page.debugPopup.useForkedChainsButton.click();
+    await this.page.verifyIsOpen();
+  }
+
+  async runSwapTestPreconditions({
+    isFork = false,
+  }: { isFork?: boolean } = {}) {
+    isFork && (await this.enableForkMode());
     await this.connectWalletByName(WalletName.Metamask);
     await this.waitForBalanceToLoad({ shouldOpenSettings: true });
   }
