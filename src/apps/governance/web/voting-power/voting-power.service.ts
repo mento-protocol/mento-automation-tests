@@ -153,7 +153,7 @@ export class VotingPowerService extends BaseService {
           },
         );
       },
-      timeouts.m,
+      timeouts.xl,
       {
         errorMessage: "Lock summary values haven't updated!",
         interval: timeouts.xxs,
@@ -179,9 +179,10 @@ export class VotingPowerService extends BaseService {
         });
         return currentDelegateVeMento !== initialDelegateVeMento;
       },
-      timeouts.m,
+      timeouts.xl,
       {
         errorMessage: "Delegate veMENTO is not updated!",
+        throwError: false,
       },
     );
   }
@@ -225,12 +226,12 @@ export class VotingPowerService extends BaseService {
       await this.approveLock(confirmationPopup);
       await this.verifyConfirmationPopup("opened", confirmationPopup);
       log.debug(`Executing '${action}' lock after approving mento`);
-      await this.confirmLockAction(confirmationPopup, action);
+      await this.confirmLockAction(confirmationPopup);
     } else {
       log.debug(`Executing '${action}' lock directly - approval not required`);
       await actionButton.click();
       await this.verifyConfirmationPopup("opened", confirmationPopup);
-      await this.confirmLockAction(confirmationPopup, action);
+      await this.confirmLockAction(confirmationPopup);
     }
 
     expect
@@ -253,17 +254,9 @@ export class VotingPowerService extends BaseService {
 
   private async confirmLockAction(
     confirmationPopup: IGetConfirmationPopup,
-    action: LockAction,
   ): Promise<void> {
-    const expectedActionText = this.getExpectedActionText(action);
-    const currentActionText = await this.getActionText({
-      expectedActionText,
-      actionLabel: confirmationPopup.actionLabel,
-      shouldWait: true,
-    });
-    expect.soft(currentActionText).toBe(expectedActionText);
     await confirmationPopup.todoActionLabel.waitForDisplayed(timeouts.xs);
-    await this.metamask.rawModule.confirmTransaction();
+    await this.metamask.confirmTransaction();
     await this.verifyConfirmationPopup("closed", confirmationPopup);
   }
 

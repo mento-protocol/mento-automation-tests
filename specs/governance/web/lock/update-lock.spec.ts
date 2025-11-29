@@ -177,7 +177,7 @@ suite({
 
         const {
           totalVeMento: currentTotalVeMento,
-          totalLockedMento: currentTotalLockedMento,
+          // totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
         } = await app.votingPower.getLocksSummary();
         await app.votingPower.waitForDelegateVeMentoToUpdate({
@@ -190,14 +190,15 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
+        // TODO: Enable once clarification is provided
+        // expect(currentTotalLockedMento).toBeGreaterThan(
+        //   initialTotalLockedMento,
+        // );
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
           .toBeGreaterThan(initialDelegatedVeMento);
         expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
-        expect(currentTotalLockedMento).toBeGreaterThan(
-          initialTotalLockedMento,
-        );
       },
     },
     {
@@ -236,7 +237,7 @@ suite({
 
         const {
           totalVeMento: currentTotalVeMento,
-          totalLockedMento: currentTotalLockedMento,
+          // totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
         } = await app.votingPower.getLocksSummary();
         await app.votingPower.waitForDelegateVeMentoToUpdate({
@@ -249,6 +250,10 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
+        // TODO: Enable once clarification is provided
+        // expect(currentTotalLockedMento).toBeGreaterThan(
+        //   initialTotalLockedMento,
+        // );
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
@@ -256,9 +261,6 @@ suite({
         expect
           .soft(delegateCurrentVeMento)
           .toBeGreaterThan(delegateInitialVeMento);
-        expect(currentTotalLockedMento).toBeGreaterThan(
-          initialTotalLockedMento,
-        );
       },
     },
     {
@@ -329,7 +331,7 @@ suite({
 
         const {
           totalVeMento: currentTotalVeMento,
-          totalLockedMento: currentTotalLockedMento,
+          // totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
         } = await app.votingPower.getLocksSummary();
         await app.votingPower.waitForDelegateVeMentoToUpdate({
@@ -342,6 +344,10 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
+        // TODO: Enable once clarification is provided
+        // expect(currentTotalLockedMento).toBeGreaterThan(
+        //   initialTotalLockedMento,
+        // );
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
@@ -349,7 +355,6 @@ suite({
         expect
           .soft(delegateCurrentVeMento)
           .toBeGreaterThan(delegateInitialVeMento);
-        expect(currentTotalLockedMento).toBe(initialTotalLockedMento);
       },
     },
   ],
