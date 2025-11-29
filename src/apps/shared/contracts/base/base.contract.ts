@@ -1,6 +1,7 @@
 import { ethers, providers, Signer } from "ethers";
 import { Address, TransactionReceipt } from "viem";
 import { getTokenAddress, TokenSymbol } from "@mento-protocol/mento-sdk";
+import { newKit } from "@celo/contractkit";
 
 import { envHelper } from "@helpers/env/env.helper";
 import { loggerHelper } from "@helpers/logger/logger.helper";
@@ -42,10 +43,10 @@ export class BaseContract {
     }
   }
 
-  async getBalance({
+  async getBalanceByTokenSymbol({
     walletAddress,
     tokenSymbol,
-  }: IGetBalanceParams): Promise<number> {
+  }: IGetBalanceByTokenSymbolParams): Promise<number> {
     const tokenAddress = await this.getTokenAddress(tokenSymbol);
     const contract = new ethers.Contract(
       tokenAddress,
@@ -71,6 +72,45 @@ export class BaseContract {
         log.info(
           `Balance retrieved with default decimals: ${balance} ${tokenSymbol}`,
         );
+        return balance;
+      } catch (fallbackError) {
+        const errorMessage = `Error in 'getBalanceByTokenSymbol' method: ${fallbackError}\nError stack: ${fallbackError.stack}`;
+        log.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+    }
+  }
+
+  async getBalance({
+    walletAddress,
+    tokenAddress,
+  }: IGetBalanceParams): Promise<number> {
+    const kit = newKit(this.rpcUrl);
+
+    const contract = new kit.web3.eth.Contract(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.getErc20Abi(),
+      tokenAddress,
+    );
+
+    try {
+      const [rawBalance, decimals] = await Promise.all([
+        contract.methods.balanceOf(walletAddress).call(),
+        contract.methods.decimals().call(),
+      ]);
+      const balance = rawBalance / 10 ** decimals;
+      return balance;
+    } catch (error) {
+      log.warn(
+        `Failed to get balance with decimals for ${tokenAddress}: ${error.message}`,
+      );
+      try {
+        const defaultDecimals = 18;
+        const rawBalance = await contract.methods
+          .balanceOf(walletAddress)
+          .call();
+        const balance = rawBalance / 10 ** defaultDecimals;
         return balance;
       } catch (fallbackError) {
         const errorMessage = `Error in 'getBalance' method: ${fallbackError}\nError stack: ${fallbackError.stack}`;
@@ -167,9 +207,14 @@ export class BaseContract {
   }
 }
 
-export interface IGetBalanceParams {
+export interface IGetBalanceByTokenSymbolParams {
   walletAddress: Address;
   tokenSymbol: TokenSymbol;
+}
+
+export interface IGetBalanceParams {
+  walletAddress: Address;
+  tokenAddress: Address;
 }
 
 interface IEstimateGasParams {

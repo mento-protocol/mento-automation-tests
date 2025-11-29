@@ -85,6 +85,7 @@ export class BaseService {
 export interface IBaseServiceArgs {
   browser: BrowserHelper;
   page: BasePage;
+  contract?: ContractHelper;
   metamask?: MetamaskHelper;
   celoScan?: CeloScanService;
   contract?: ContractHelper;

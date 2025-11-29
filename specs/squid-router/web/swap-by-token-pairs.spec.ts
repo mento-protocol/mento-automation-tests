@@ -100,14 +100,16 @@ suite({
           const app = web.app.squidRouter;
           const { sellToken, buyToken } = testCase;
 
-          const initialSellBalance = await web.contract.governance.getBalance({
-            walletAddress: testWalletAddresses.main,
-            tokenSymbol: sellToken,
-          });
-          const initialBuyBalance = await web.contract.governance.getBalance({
-            walletAddress: testWalletAddresses.main,
-            tokenSymbol: buyToken,
-          });
+          const initialSellBalance =
+            await web.contract.governance.getBalanceByTokenSymbol({
+              walletAddress: testWalletAddresses.main,
+              tokenSymbol: sellToken,
+            });
+          const initialBuyBalance =
+            await web.contract.governance.getBalanceByTokenSymbol({
+              walletAddress: testWalletAddresses.main,
+              tokenSymbol: buyToken,
+            });
 
           await app.swap.process({
             sellToken,

@@ -36,6 +36,7 @@ import { MainSquidRouterPage } from "../../apps/squid-router/web/main/main.page"
 import { SquidConnectWalletModalPage } from "../../apps/squid-router/web/squid-connect-wallet-modal/squid-connect-wallet-modal.page";
 import { SwapService as SquidRouterSwapService } from "../../apps/squid-router/web/swap/swap.service";
 import { SwapPage as SquidRouterSwapPage } from "../../apps/squid-router/web/swap/swap.page";
+import { UpdateLockModalPage } from "../../apps/governance/web/voting-power/update-lock-modal.page";
 
 /**
  * 🚀 Goal
@@ -174,6 +175,7 @@ export class AssemblerHelper {
             }),
             votingPower: new VotingPowerService({
               page: new VotingPowerPage(ef),
+              updateLockModalPage: new UpdateLockModalPage(ef),
               ...baseDependencies,
             }),
             proposalView: new ProposalViewService({
