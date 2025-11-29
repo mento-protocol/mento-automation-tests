@@ -4,6 +4,7 @@ import { suite } from "@helpers/suite/suite.helper";
 import { TokenSymbol } from "@constants/token.constants";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { IExecution } from "@helpers/suite/suite.types";
+import { envHelper } from "@helpers/env/env.helper";
 
 const testCases = [
   // CELO
@@ -23,7 +24,7 @@ const testCases = [
 
   // USDT
   {
-    sellToken: TokenSymbol.USDT,
+    sellToken: TokenSymbol[envHelper.isMainnet ? "USD₮" : "USDT"],
     buyToken: TokenSymbol.cUSD,
     disable: { reason: "Cannot get USDT address by mento sdk" },
   },
