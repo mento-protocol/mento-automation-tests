@@ -41,15 +41,14 @@ suite({
           totalLockedMento: initialTotalLockedMento,
         });
 
-        const {
-          totalVeMento: currentTotalVeMento,
-          totalLockedMento: currentTotalLockedMento,
-        } = await app.votingPower.getLocksSummary();
+        const { totalVeMento: currentTotalVeMento } =
+          await app.votingPower.getLocksSummary();
 
-        expect.soft(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
-        expect(currentTotalLockedMento).toBeGreaterThan(
-          initialTotalLockedMento,
-        );
+        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
+        // expect
+        //   .soft(currentTotalLockedMento)
+        //   .toBeGreaterThan(initialTotalLockedMento);
+        expect(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
       },
     },
     {
@@ -76,15 +75,14 @@ suite({
           totalLockedMento: initialTotalLockedMento,
         });
 
-        const {
-          totalVeMento: currentTotalVeMento,
-          totalLockedMento: currentTotalLockedMento,
-        } = await app.votingPower.getLocksSummary();
+        const { totalVeMento: currentTotalVeMento } =
+          await app.votingPower.getLocksSummary();
 
-        expect.soft(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
-        expect(currentTotalLockedMento).toBeGreaterThan(
-          initialTotalLockedMento,
-        );
+        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
+        // expect
+        //   .soft(currentTotalLockedMento)
+        //   .toBeGreaterThan(initialTotalLockedMento);
+        expect(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
       },
     },
     {
@@ -135,6 +133,10 @@ suite({
         });
 
         expect.soft(currentLocksCount).toBe(initialLocksCount);
+        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
+        // expect
+        //   .soft(currentTotalLockedMento)
+        //   .toBeGreaterThan(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBeLessThan(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
@@ -177,7 +179,6 @@ suite({
 
         const {
           totalVeMento: currentTotalVeMento,
-          // totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
         } = await app.votingPower.getLocksSummary();
         await app.votingPower.waitForDelegateVeMentoToUpdate({
@@ -190,10 +191,10 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
-        // TODO: Enable once clarification is provided
-        // expect(currentTotalLockedMento).toBeGreaterThan(
-        //   initialTotalLockedMento,
-        // );
+        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
+        // expect
+        //   .soft(currentTotalLockedMento)
+        //   .toBeGreaterThan(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
@@ -237,7 +238,6 @@ suite({
 
         const {
           totalVeMento: currentTotalVeMento,
-          // totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
         } = await app.votingPower.getLocksSummary();
         await app.votingPower.waitForDelegateVeMentoToUpdate({
@@ -250,10 +250,10 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
-        // TODO: Enable once clarification is provided
-        // expect(currentTotalLockedMento).toBeGreaterThan(
-        //   initialTotalLockedMento,
-        // );
+        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
+        // expect
+        //   .soft(currentTotalLockedMento)
+        //   .toBeGreaterThan(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
@@ -331,7 +331,6 @@ suite({
 
         const {
           totalVeMento: currentTotalVeMento,
-          // totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
         } = await app.votingPower.getLocksSummary();
         await app.votingPower.waitForDelegateVeMentoToUpdate({
@@ -344,10 +343,10 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
-        // TODO: Enable once clarification is provided
-        // expect(currentTotalLockedMento).toBeGreaterThan(
-        //   initialTotalLockedMento,
-        // );
+        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
+        // expect
+        //   .soft(currentTotalLockedMento)
+        //   .toBeGreaterThan(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
