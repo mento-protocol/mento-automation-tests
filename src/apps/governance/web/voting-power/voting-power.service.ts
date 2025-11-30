@@ -255,7 +255,10 @@ export class VotingPowerService extends BaseService {
   private async confirmLockAction(
     confirmationPopup: IGetConfirmationPopup,
   ): Promise<void> {
-    await confirmationPopup.todoActionLabel.waitForDisplayed(timeouts.xs);
+    await confirmationPopup.todoActionLabel.waitForDisplayed(timeouts.m, {
+      errorMessage: `${confirmationPopup.todoActionLabel.name} is not displayed!`,
+      throwError: false,
+    });
     await this.metamask.confirmTransaction();
     await this.verifyConfirmationPopup("closed", confirmationPopup);
   }
