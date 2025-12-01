@@ -419,7 +419,7 @@ export class SwapService extends BaseService {
   }
 
   private async selectTokens(args: ISelectTokensArgs): Promise<void> {
-    const { clicksOnSellTokenButton = 2, isSellTokenFirst = true } = args;
+    const { clicksOnSellTokenButton = 1, isSellTokenFirst = true } = args;
 
     if (isSellTokenFirst) {
       if (args?.sell) {

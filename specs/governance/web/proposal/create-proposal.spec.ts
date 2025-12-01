@@ -19,7 +19,7 @@ suite({
         const proposalData = magicStrings.governance.generateProposalData();
 
         await app.main.openCreateProposalPage();
-        await app.createProposal.create({
+        const txUrl = await app.createProposal.create({
           title: proposalData.title,
           descriptionDetails: {
             text: proposalData.description,
@@ -33,8 +33,7 @@ suite({
           description: proposalData.description,
           state: ProposalState.Active,
         });
-        // TODO: Enable when logs are visible
-        // await app.proposalView.expectDescriptionSubmittedInMarkdown(txUrl);
+        await app.proposalView.expectDescriptionSubmittedInMarkdown(txUrl);
       },
     },
   ],

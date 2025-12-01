@@ -4,6 +4,7 @@ import { suite } from "@helpers/suite/suite.helper";
 import { TokenSymbol } from "@constants/token.constants";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { IExecution } from "@helpers/suite/suite.types";
+import { envHelper } from "@helpers/env/env.helper";
 
 const testCases = [
   // CELO
@@ -19,14 +20,14 @@ const testCases = [
   {
     sellToken: TokenSymbol.cREAL,
     buyToken: TokenSymbol.cUSD,
-    disable: { reason: "Low liquidity" },
   },
-  // TODO: Cannot get USDT address by mento sdk
+
   // USDT
-  // {
-  //   sellToken: TokenSymbol.USDT,
-  //   buyToken: TokenSymbol.cUSD,
-  // },
+  {
+    sellToken: TokenSymbol[envHelper.isMainnet ? "USD₮" : "USDT"],
+    buyToken: TokenSymbol.cUSD,
+    disable: { reason: "Cannot get USDT address by mento sdk" },
+  },
   // cKES
   {
     sellToken: TokenSymbol.cKES,
@@ -46,7 +47,7 @@ const testCases = [
   {
     sellToken: TokenSymbol.eXOF,
     buyToken: TokenSymbol.cUSD,
-    disable: { reason: "Low liquidity" },
+    disable: { reason: "No eXOF token" },
   },
   // USDC
   {
@@ -77,13 +78,11 @@ const testCases = [
   {
     sellToken: TokenSymbol.cJPY,
     buyToken: TokenSymbol.cUSD,
-    disable: { reason: "Low liquidity" },
   },
   // cNGN
   {
     sellToken: TokenSymbol.cNGN,
     buyToken: TokenSymbol.cUSD,
-    disable: { reason: "Low liquidity" },
   },
 ];
 
@@ -102,14 +101,16 @@ suite({
           const app = web.app.squidRouter;
           const { sellToken, buyToken } = testCase;
 
-          const initialSellBalance = await web.contract.governance.getBalance({
-            walletAddress: testWalletAddresses.main,
-            tokenSymbol: sellToken,
-          });
-          const initialBuyBalance = await web.contract.governance.getBalance({
-            walletAddress: testWalletAddresses.main,
-            tokenSymbol: buyToken,
-          });
+          const initialSellBalance =
+            await web.contract.governance.getBalanceByTokenSymbol({
+              walletAddress: testWalletAddresses.main,
+              tokenSymbol: sellToken,
+            });
+          const initialBuyBalance =
+            await web.contract.governance.getBalanceByTokenSymbol({
+              walletAddress: testWalletAddresses.main,
+              tokenSymbol: buyToken,
+            });
 
           await app.swap.process({
             sellToken,

@@ -20,17 +20,20 @@ const {
 
 export class EnvHelper {
   getEnv(): string {
+    if (this.isCustomUrl()) return "custom";
     return ENV;
   }
 
   getBaseWebUrl(): string {
-    if (this.isCustomUrl()) {
-      return CUSTOM_URL;
-    }
     return magicStrings.url[this.getApp()].web[this.getEnv()].base;
   }
 
   getBaseApiUrl(): string {
+    if (this.isCustomUrl()) {
+      return this.getApp() === AppName.AppMento
+        ? magicStrings.url["app-mento"].api.prod.base
+        : magicStrings.url["governance"].api.qa.base;
+    }
     return magicStrings.url[this.getApp()].api[this.getEnv()].base;
   }
 

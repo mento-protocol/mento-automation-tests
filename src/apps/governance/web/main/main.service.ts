@@ -51,8 +51,19 @@ export class MainGovernanceService extends BaseService {
   }
 
   async openCreateProposalPage(): Promise<void> {
-    await this.page.createProposalButton.click({ timeout: timeouts.xs });
-    await this.createProposalPage.verifyIsOpen();
+    await waiterHelper.retry(
+      async () => {
+        await this.page.createProposalButton.click({ timeout: timeouts.xs });
+        await this.createProposalPage.verifyIsOpen();
+        return true;
+      },
+      3,
+      {
+        errorMessage: "Failed to open create proposal page",
+        throwError: true,
+        continueWithException: true,
+      },
+    );
   }
 
   async openVotingPowerPage(): Promise<void> {
@@ -96,7 +107,7 @@ export class MainGovernanceService extends BaseService {
       async () => {
         await this.browser.refresh();
         const proposal = await this.page.getProposalByTitle(title);
-        return proposal.isDisplayed();
+        return proposal.waitForDisplayed(timeouts.xs, { throwError: false });
       },
       timeout,
       {

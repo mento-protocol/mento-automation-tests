@@ -131,10 +131,11 @@ export class SwapService extends BaseService {
     initialBalance,
     shouldIncrease,
   }: IExpectUpdatedBalanceArgs): Promise<void> {
-    const currentBalance = await this.contract.governance.getBalance({
-      walletAddress,
-      tokenSymbol,
-    });
+    const currentBalance =
+      await this.contract.governance.getBalanceByTokenSymbol({
+        walletAddress,
+        tokenSymbol,
+      });
     shouldIncrease
       ? expect(currentBalance).toBeGreaterThan(initialBalance)
       : expect(currentBalance).toBeLessThan(initialBalance);

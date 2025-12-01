@@ -5,7 +5,7 @@ import { loggerHelper } from "@helpers/logger/logger.helper";
 import { envHelper } from "@helpers/env/env.helper";
 import { testFixture } from "@fixtures/test.fixture";
 
-const logger = loggerHelper.get("SuiteHelper");
+const log = loggerHelper.get("SuiteHelper");
 
 export function suite({
   name: suiteName,
@@ -75,9 +75,7 @@ export function suite({
 export const testUtils = {
   disableInRuntime(disable: IDisable, beforeSkipLogMessage?: string): void {
     beforeSkipLogMessage &&
-      logger.warn(
-        `❗️ Disabled in runtime because of: ${beforeSkipLogMessage}`,
-      );
+      log.warn(`❗️ Disabled in runtime because of: ${beforeSkipLogMessage}`);
     this.addDisableDetailsInRuntime(disable);
     testFixture.skip(true, `Please check the disable details above ⬆️`);
   },
@@ -130,13 +128,12 @@ export const testUtils = {
 };
 
 function logRunDetails(suiteName: string): void {
+  const url = envHelper.getBaseWebUrl();
+  const env = envHelper.getEnv();
   const isFork = envHelper.isFork();
   const chain = `${envHelper.getChainName()} (${envHelper.getChainType()})`;
-  const env = envHelper.isCustomUrl()
-    ? `Custom with '${envHelper.getBaseWebUrl()}' URL`
-    : `Regular '${envHelper.getEnv()}' with '${envHelper.getBaseWebUrl()}' URL`;
-  const config = `\n        ENV: ${env}\n        CHAIN: ${chain}\n        PID: ${process.pid}\n        IS_FORK: ${isFork}`;
-  logger.info(`Running '${suiteName}' suite with configuration: ${config}`);
+  const config = `\n        ENV: ${env}\n        URL: ${url}\n        CHAIN: ${chain}        IS_FORK: ${isFork}`;
+  log.info(`Running '${suiteName}' suite with configuration: ${config}`);
 }
 
 function composeTags(tags: string[]): string[] {

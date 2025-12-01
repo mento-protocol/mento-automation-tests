@@ -6,7 +6,7 @@ import { TestTag } from "@constants/test.constants";
 import { AmountType } from "../../../../src/apps/app-mento/web/swap/swap.service.types";
 
 const exceedsTradingLimitAmount = "600000";
-
+const missingExceedsTradingLimitAmount = "6000000";
 suite({
   name: "Swap - Amounts",
   tags: [TestTag.Regression, TestTag.Parallel],
@@ -96,7 +96,7 @@ suite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.swap.fillForm({
-          sellAmount: exceedsTradingLimitAmount,
+          sellAmount: missingExceedsTradingLimitAmount,
         });
         expect
           .soft(

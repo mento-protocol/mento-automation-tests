@@ -26,13 +26,21 @@ export const magicStrings = {
   },
   url: {
     [AppName.AppMento]: {
-      web: { prod: { base: "https://app.mento.org" } },
-      api: { prod: { base: "" } },
+      web: {
+        prod: { base: "https://app.mento.org" },
+        qa: { base: "" },
+        custom: { base: processEnv.CUSTOM_URL },
+      },
+      api: {
+        prod: { base: "" },
+        qa: { base: "" },
+      },
     },
     [AppName.Governance]: {
       web: {
         prod: { base: "https://governance.mento.org" },
         qa: { base: "https://governancementoorg-qa.vercel.app" },
+        custom: { base: processEnv.CUSTOM_URL },
       },
       api: {
         prod: { base: processEnv.GOVERNANCE_PROD_API_URL },

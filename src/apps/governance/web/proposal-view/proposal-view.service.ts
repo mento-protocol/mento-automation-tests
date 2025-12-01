@@ -66,7 +66,7 @@ export class ProposalViewService extends BaseService {
     vote: Vote,
     { shouldConfirmTx = true }: { shouldConfirmTx?: boolean } = {},
   ): Promise<void> {
-    await this.page.voteButtons[vote].click();
+    await this.page.voteButtons[vote].click({ timeout: timeouts.s });
     await this.page.waitingForConfirmationLabel.waitForDisplayed(timeouts.s, {
       errorMessage: "'Waiting for confirmation label' is not displayed!",
     });
@@ -201,6 +201,10 @@ export class ProposalViewService extends BaseService {
     expect.soft(await this.getProposalDescription()).toContain(description);
     await this.waitForLoadedVotingInfo();
     expect.soft(await this.getProposalState()).toBe(state);
+    // TODO: Remove this when MENTO label bug is fixed
+    await waiterHelper.sleep(timeouts.xxxs, {
+      sleepReason: "Lock MENTO label instead of buttons",
+    });
     for (const voteButton of Object.values(this.page.voteButtons)) {
       expect.soft(await voteButton.isDisplayed()).toBeTruthy();
     }
