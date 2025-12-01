@@ -121,9 +121,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy
-      options: --user root
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -134,10 +131,10 @@ jobs:
           cache: npm
           node-version: 20.11.1
 
-      - name: Install Docker CLI, and make
+      - name: Install Make
         run: |
           apt-get update
-          apt-get install -y docker.io make
+          apt-get install -y make
 
       - name: Install Foundry
         if: ${{ inputs.IS_FORK == 'true' }}
@@ -155,23 +152,6 @@ jobs:
 
       - name: Code-Check
         run: npm run codeCheck
-
-      - name: Cache Otterscan image
-        if: ${{ inputs.IS_FORK == 'true' }}
-        uses: actions/cache@v4
-        with:
-          path: ~/otterscan.tar
-          key: otterscan-latest
-
-      - name: Prepare Otterscan
-        if: ${{ inputs.IS_FORK == 'true' }}
-        run: |
-          if [ -f ~/otterscan.tar ]; then
-            docker load -i ~/otterscan.tar
-          else
-            docker pull otterscan/otterscan:latest
-            docker save otterscan/otterscan:latest -o ~/otterscan.tar
-          fi
 
       - name: Setup fork
         if: ${{ inputs.IS_FORK == 'true' }}

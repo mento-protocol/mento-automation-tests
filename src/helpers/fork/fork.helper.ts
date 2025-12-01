@@ -198,11 +198,9 @@ export class ForkHelper {
 
     console.info(`Found ${pairNames.length} pairs to report\n`);
 
-    await Promise.all(
-      pairNames.map(async pairName =>
-        this.reportPrice(pairName, relayers, sortedOraclesAddress),
-      ),
-    );
+    for (const pairName of pairNames) {
+      await this.reportPrice(pairName, relayers, sortedOraclesAddress);
+    }
 
     console.info(`\n📈 Price reporting completed`);
   }

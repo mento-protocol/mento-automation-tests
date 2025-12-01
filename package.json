@@ -17,8 +17,8 @@
     "prepare": "husky install",
     "postinstall": "tsx src/tools/default-env-vars.tool.ts",
     "calculate-swap-tests-costs": "tsx src/tools/calculate-swap-tests-costs.tool.ts",
-    "fork:mainnet": "anvil --fork-url https://forno.celo.org --chain-id 42220 --port 8545",
-    "fork:testnet": "anvil --fork-url https://forno.celo-sepolia.celo-testnet.org --chain-id 11142220 --port 8545",
+    "fork:mainnet": "anvil --fork-url https://forno.celo.org --port 8545",
+    "fork:testnet": "anvil --fork-url https://forno.celo-sepolia.celo-testnet.org --port 8545",
     "blockexplorer:start": "docker run -d --name otterscan -p 5100:80 -e ERIGON_URL=http://localhost:8545 otterscan/otterscan:latest",
     "blockexplorer:stop": "docker stop otterscan && docker rm otterscan",
     "fork:prepare-data": "tsx src/tools/prepare-fork-data.tool.ts"

@@ -1,5 +1,8 @@
 .PHONY: help mainnet-fork-with-block-explorer testnet-fork-with-block-explorer mainnet-fork-only testnet-fork-only stop-all-services
 
+# Read CI variable from .env file
+CI_VALUE := $(shell grep -E '^CI=' .env 2>/dev/null | cut -d '=' -f2 | tr -d ' "' || echo "")
+
 # Default target - show help
 help:
 	@echo "Available targets:"
@@ -16,19 +19,23 @@ mainnet-fork-setup:
 	@npm run fork:mainnet > /dev/null 2>&1 &
 	@echo "🔄 Waiting for fork to initialize..."
 	@sleep 3
-	@echo "🔄 Starting block explorer..."
-	@if docker ps -a --format '{{.Names}}' | grep -q '^otterscan$$'; then \
-		echo "Block explorer container exists, starting it..."; \
-		docker start otterscan; \
-	else \
-		echo "Creating new block explorer container..."; \
-		npm run blockexplorer:start; \
+	@if [ -z "$(CI_VALUE)" ]; then \
+		echo "🔄 Starting block explorer..."; \
+		if docker ps -a --format '{{.Names}}' | grep -q '^otterscan$$'; then \
+			echo "Block explorer container exists, starting it..."; \
+			docker start otterscan; \
+		else \
+			echo "Creating new block explorer container..."; \
+			npm run blockexplorer:start; \
+		fi \
 	fi
 	@echo "🔄 Setting up fork data..."
 	@npm run fork:prepare-data
 	@echo "✅ Fork data setup complete"
 	@echo "✅ Mainnet fork running on http://localhost:8545"
-	@echo "✅ Block explorer running on http://localhost:5100"
+	@if [ -z "$(CI_VALUE)" ]; then \
+		echo "✅ Block explorer running on http://localhost:5100"; \
+	fi
 
 # Start testnet fork with block explorer
 testnet-fork-setup:
@@ -36,19 +43,23 @@ testnet-fork-setup:
 	@npm run fork:testnet > /dev/null 2>&1 &
 	@echo "🔄 Waiting for fork to initialize..."
 	@sleep 3
-	@echo "🔄 Starting block explorer..."
-	@if docker ps -a --format '{{.Names}}' | grep -q '^otterscan$$'; then \
-		echo "Block explorer container exists, starting it..."; \
-		docker start otterscan; \
-	else \
-		echo "Creating new block explorer container..."; \
-		npm run blockexplorer:start; \
+	@if [ -z "$(CI_VALUE)" ]; then \
+		echo "🔄 Starting block explorer..."; \
+		if docker ps -a --format '{{.Names}}' | grep -q '^otterscan$$'; then \
+			echo "Block explorer container exists, starting it..."; \
+			docker start otterscan; \
+		else \
+			echo "Creating new block explorer container..."; \
+			npm run blockexplorer:start; \
+		fi \
 	fi
 	@echo "Setting up fork data..."
 	@npm run fork:prepare-data
 	@echo "✅ Fork data setup complete"
 	@echo "✅ Testnet fork running on http://localhost:8545"
-	@echo "✅ Block explorer running on http://localhost:5100"
+	@if [ -z "$(CI_VALUE)" ]; then \
+		echo "✅ Block explorer running on http://localhost:5100"; \
+	fi
 
 # Start mainnet fork only
 mainnet-fork-only:
