@@ -1,7 +1,7 @@
 .PHONY: help mainnet-fork-with-block-explorer testnet-fork-with-block-explorer mainnet-fork-only testnet-fork-only stop-all-services
 
-# Read CI variable from .env file
-CI_VALUE := $(shell grep -E '^CI=' .env 2>/dev/null | cut -d '=' -f2 | tr -d ' "' || echo "")
+# Read CI variable from .env file, fallback to environment variable
+IS_CI := $(shell CI_FROM_ENV=$$(grep -E '^CI=' .env 2>/dev/null | cut -d '=' -f2 | tr -d ' "'); if [ -n "$$CI_FROM_ENV" ]; then echo "$$CI_FROM_ENV"; else echo "$$CI"; fi)
 
 # Default target - show help
 help:
@@ -19,7 +19,7 @@ mainnet-fork-setup:
 	@npm run fork:mainnet > /dev/null 2>&1 &
 	@echo "🔄 Waiting for fork to initialize..."
 	@sleep 3
-	@if [ -z "$(CI_VALUE)" ]; then \
+	@if [ "$(IS_CI)" != "true" ]; then \
 		echo "🔄 Starting block explorer..."; \
 		if docker ps -a --format '{{.Names}}' | grep -q '^otterscan$$'; then \
 			echo "Block explorer container exists, starting it..."; \
@@ -33,7 +33,7 @@ mainnet-fork-setup:
 	@npm run fork:prepare-data
 	@echo "✅ Fork data setup complete"
 	@echo "✅ Mainnet fork running on http://localhost:8545"
-	@if [ -z "$(CI_VALUE)" ]; then \
+	@if [ "$(IS_CI)" != "true" ]; then \
 		echo "✅ Block explorer running on http://localhost:5100"; \
 	fi
 
@@ -43,7 +43,7 @@ testnet-fork-setup:
 	@npm run fork:testnet > /dev/null 2>&1 &
 	@echo "🔄 Waiting for fork to initialize..."
 	@sleep 3
-	@if [ -z "$(CI_VALUE)" ]; then \
+	@if [ "$(IS_CI)" != "true" ]; then \
 		echo "🔄 Starting block explorer..."; \
 		if docker ps -a --format '{{.Names}}' | grep -q '^otterscan$$'; then \
 			echo "Block explorer container exists, starting it..."; \
@@ -57,7 +57,7 @@ testnet-fork-setup:
 	@npm run fork:prepare-data
 	@echo "✅ Fork data setup complete"
 	@echo "✅ Testnet fork running on http://localhost:8545"
-	@if [ -z "$(CI_VALUE)" ]; then \
+	@if [ "$(IS_CI)" != "true" ]; then \
 		echo "✅ Block explorer running on http://localhost:5100"; \
 	fi
 
