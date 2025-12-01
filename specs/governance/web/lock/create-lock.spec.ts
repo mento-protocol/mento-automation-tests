@@ -10,7 +10,7 @@ import { envHelper } from "@helpers/env/env.helper";
 
 suite({
   name: "Lock - Create",
-  tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
+  tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {
     await web.app.governance.main.connectWalletByName(WalletName.Metamask);
   },
@@ -18,6 +18,7 @@ suite({
     {
       name: "Create personal lock",
       testCaseId: "",
+      tags: [TestTag.Smoke],
       test: async ({ web }) => {
         const app = web.app.governance;
 
@@ -87,6 +88,7 @@ suite({
     {
       name: "Create delegated lock",
       testCaseId: "",
+      tags: [TestTag.Smoke],
       test: async ({ web }) => {
         const app = web.app.governance;
         const delegateAddress = testWalletAddresses.reserve;
