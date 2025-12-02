@@ -188,25 +188,19 @@ export class VotingPowerService extends BaseService {
   }
 
   async getLocksSummary(): Promise<IGetLocksSummary> {
-    const veMentoValueText =
-      await this.page.locksSummary.totalVeMentoLabel.getText();
-    const mentoValueText =
-      await this.page.locksSummary.totalLockedMentoLabel.getText();
-    const delegatedVeMentoValueText =
-      await this.page.locksSummary.delegatedVeMentoLabel.getText();
-    const receivedVeMentoValueText =
-      await this.page.locksSummary.receivedVeMentoLabel.getText();
-    const totalVeMentoValueText =
-      await this.page.locksSummary.totalVeMentoLabel.getText();
-    const withdrawableMentoValueText =
-      await this.page.locksSummary.withdrawableMentoLabel.getText();
+    const locksSummary: Record<string, number> = {};
+    for (const locksSummaryKey of Object.keys(this.page.locksSummary)) {
+      const text = await this.page.locksSummary[locksSummaryKey].getText();
+      const locksSummaryValueNumber = Number(text.replace(/,/g, ""));
+      locksSummary[locksSummaryKey] = locksSummaryValueNumber;
+    }
     return {
-      totalLockedMento: Number(mentoValueText.replace(/,/g, "")),
-      ownLocksVeMento: Number(veMentoValueText.replace(/,/g, "")),
-      delegatedVeMento: Number(delegatedVeMentoValueText.replace(/,/g, "")),
-      receiveVeMento: Number(receivedVeMentoValueText.replace(/,/g, "")),
-      totalVeMento: Number(totalVeMentoValueText.replace(/,/g, "")),
-      withdrawableMento: Number(withdrawableMentoValueText.replace(/,/g, "")),
+      totalLockedMento: locksSummary.totalLockedMentoLabel,
+      ownLocksVeMento: locksSummary.ownLocksVeMentoLabel,
+      delegatedVeMento: locksSummary.delegatedVeMentoLabel,
+      receiveVeMento: locksSummary.receivedVeMentoLabel,
+      totalVeMento: locksSummary.totalVeMentoLabel,
+      withdrawableMento: locksSummary.withdrawableMentoLabel,
     };
   }
 
@@ -214,6 +208,42 @@ export class VotingPowerService extends BaseService {
     return Number(
       (await this.page.veMentoReceiveLabel.getText()).replace(/ veMENTO/g, ""),
     );
+  }
+
+  async isThereWithdrawableMento(): Promise<boolean> {
+    const locksSummary = await this.getLocksSummary();
+    return locksSummary.withdrawableMento > 0;
+  }
+
+  expectLockedMento({
+    isThereWithdrawableMento,
+    currentTotalLockedMento,
+    initialTotalLockedMento,
+    currentWithdrawableMento,
+    initialWithdrawableMento,
+    lockAmount,
+  }: IExpectLockedMentoArgs): void {
+    // If there's withdrawable MENTO it uses that to update lock and and withdrawable MENTO should decrease.
+    // Otherwise, it uses new MENTO and locked MENTO should increase.
+    if (isThereWithdrawableMento) {
+      log.debug(
+        "Uses withdrawable MENTO to update lock - no new MENTO is used",
+      );
+      expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
+      expect
+        .soft(currentWithdrawableMento)
+        .toBe(initialWithdrawableMento - lockAmount);
+    } else {
+      log.debug(
+        "Uses new MENTO to update lock - withdrawable MENTO is not used",
+      );
+      expect
+        .soft(currentTotalLockedMento)
+        .toBeGreaterThan(initialTotalLockedMento);
+      expect
+        .soft(currentWithdrawableMento)
+        .toBeGreaterThanOrEqual(initialWithdrawableMento);
+    }
   }
 
   private async handleLockAction(action: LockAction) {
@@ -373,4 +403,13 @@ interface IGetLocksSummary {
   receiveVeMento: number;
   totalVeMento: number;
   withdrawableMento: number;
+}
+
+interface IExpectLockedMentoArgs {
+  isThereWithdrawableMento: boolean;
+  currentTotalLockedMento: number;
+  initialTotalLockedMento: number;
+  currentWithdrawableMento: number;
+  initialWithdrawableMento: number;
+  lockAmount: number;
 }

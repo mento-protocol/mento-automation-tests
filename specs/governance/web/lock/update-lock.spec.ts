@@ -26,6 +26,8 @@ suite({
         const app = web.app.governance;
         await app.main.openVotingPowerPage();
         await app.votingPower.waitForLocksSummary();
+        const isThereWithdrawableMento =
+          await app.votingPower.isThereWithdrawableMento();
 
         const {
           totalVeMento: initialTotalVeMento,
@@ -50,11 +52,15 @@ suite({
           withdrawableMento: currentWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
 
-        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
-        expect(currentWithdrawableMento).toBeLessThan(
-          initialWithdrawableMento - lockAmount,
-        );
+        app.votingPower.expectLockedMento({
+          isThereWithdrawableMento,
+          currentTotalLockedMento,
+          initialTotalLockedMento,
+          currentWithdrawableMento,
+          initialWithdrawableMento,
+          lockAmount,
+        });
       },
     },
     {
@@ -65,6 +71,8 @@ suite({
         const app = web.app.governance;
         await app.main.openVotingPowerPage();
         await app.votingPower.waitForLocksSummary();
+        const isThereWithdrawableMento =
+          await app.votingPower.isThereWithdrawableMento();
 
         const {
           totalVeMento: initialTotalVeMento,
@@ -88,11 +96,15 @@ suite({
           withdrawableMento: currentWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
 
-        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
-        expect(currentWithdrawableMento).toBeLessThan(
-          initialWithdrawableMento - lockAmount,
-        );
+        app.votingPower.expectLockedMento({
+          isThereWithdrawableMento,
+          currentTotalLockedMento,
+          initialTotalLockedMento,
+          currentWithdrawableMento,
+          initialWithdrawableMento,
+          lockAmount,
+        });
       },
     },
     {
@@ -112,6 +124,8 @@ suite({
         await app.votingPower.waitForLocksSummary();
         await app.votingPower.waitForLocks();
 
+        const isThereWithdrawableMento =
+          await app.votingPower.isThereWithdrawableMento();
         const initialLocksCount = await app.votingPower.getAllLocksCount();
         const {
           totalVeMento: initialTotalVeMento,
@@ -146,15 +160,19 @@ suite({
         });
 
         expect.soft(currentLocksCount).toBe(initialLocksCount);
-        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBeLessThan(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
           .toBeGreaterThan(initialDelegatedVeMento);
         expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
-        expect(currentWithdrawableMento).toBeLessThan(
-          initialWithdrawableMento - lockAmount,
-        );
+        app.votingPower.expectLockedMento({
+          isThereWithdrawableMento,
+          currentTotalLockedMento,
+          initialTotalLockedMento,
+          currentWithdrawableMento,
+          initialWithdrawableMento,
+          lockAmount,
+        });
       },
     },
     {
@@ -173,6 +191,8 @@ suite({
         await app.votingPower.waitForLocksSummary();
         await app.votingPower.waitForLocks();
 
+        const isThereWithdrawableMento =
+          await app.votingPower.isThereWithdrawableMento();
         const {
           totalVeMento: initialTotalVeMento,
           totalLockedMento: initialTotalLockedMento,
@@ -208,7 +228,6 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
-        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
@@ -216,9 +235,14 @@ suite({
         expect
           .soft(delegateCurrentVeMento)
           .toBeGreaterThan(delegateInitialVeMento);
-        expect(currentWithdrawableMento).toBeLessThan(
-          initialWithdrawableMento - lockAmount,
-        );
+        app.votingPower.expectLockedMento({
+          isThereWithdrawableMento,
+          currentTotalLockedMento,
+          initialTotalLockedMento,
+          currentWithdrawableMento,
+          initialWithdrawableMento,
+          lockAmount,
+        });
       },
     },
     {
@@ -238,6 +262,8 @@ suite({
         await app.votingPower.waitForLocksSummary();
         await app.votingPower.waitForLocks();
 
+        const isThereWithdrawableMento =
+          await app.votingPower.isThereWithdrawableMento();
         const {
           totalVeMento: initialTotalVeMento,
           totalLockedMento: initialTotalLockedMento,
@@ -272,7 +298,6 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
-        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
@@ -280,9 +305,14 @@ suite({
         expect
           .soft(delegateCurrentVeMento)
           .toBeGreaterThan(delegateInitialVeMento);
-        expect(currentWithdrawableMento).toBeLessThan(
-          initialWithdrawableMento - lockAmount,
-        );
+        app.votingPower.expectLockedMento({
+          isThereWithdrawableMento,
+          currentTotalLockedMento,
+          initialTotalLockedMento,
+          currentWithdrawableMento,
+          initialWithdrawableMento,
+          lockAmount,
+        });
       },
     },
     {
