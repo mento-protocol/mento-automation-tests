@@ -155,7 +155,7 @@ export class VotingPowerService extends BaseService {
       },
       timeouts.xl,
       {
-        errorMessage: "Lock summary values haven't updated!",
+        errorMessage: "Some lock summary value/s haven't updated!",
         interval: timeouts.xxs,
         throwError: false,
       },
@@ -359,7 +359,7 @@ interface ICreateLockArgs {
 }
 
 interface IUpdateLockArgs {
-  lockAmount: string;
+  lockAmount: number | string;
   delegateAddress?: string;
   lockIndex?: number;
   lockType?: LockType;

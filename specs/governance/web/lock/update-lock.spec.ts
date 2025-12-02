@@ -10,6 +10,8 @@ import { envHelper } from "@helpers/env/env.helper";
 import { LockType } from "../../../../src/apps/governance/web/voting-power/voting-power.page";
 import { LockAction } from "../../../../src/apps/governance/web/voting-power/voting-power.service";
 
+const lockAmount = 1;
+
 suite({
   name: "Lock - Update",
   tags: [TestTag.Regression, TestTag.Sequential],
@@ -28,27 +30,31 @@ suite({
         const {
           totalVeMento: initialTotalVeMento,
           totalLockedMento: initialTotalLockedMento,
+          withdrawableMento: initialWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
 
         await app.votingPower.waitForLocks();
         await app.votingPower.updateLock({
-          lockAmount: "1",
+          lockAmount,
           updateAction: LockAction.topUp,
           lockType: LockType.Personal,
         });
         await app.votingPower.waitForLocksSummaryToUpdate({
           totalVeMento: initialTotalVeMento,
-          totalLockedMento: initialTotalLockedMento,
+          withdrawableMento: initialWithdrawableMento,
         });
 
-        const { totalVeMento: currentTotalVeMento } =
-          await app.votingPower.getLocksSummary();
+        const {
+          totalVeMento: currentTotalVeMento,
+          totalLockedMento: currentTotalLockedMento,
+          withdrawableMento: currentWithdrawableMento,
+        } = await app.votingPower.getLocksSummary();
 
-        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
-        // expect
-        //   .soft(currentTotalLockedMento)
-        //   .toBeGreaterThan(initialTotalLockedMento);
-        expect(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
+        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
+        expect.soft(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
+        expect(currentWithdrawableMento).toBeLessThan(
+          initialWithdrawableMento - lockAmount,
+        );
       },
     },
     {
@@ -63,26 +69,30 @@ suite({
         const {
           totalVeMento: initialTotalVeMento,
           totalLockedMento: initialTotalLockedMento,
+          withdrawableMento: initialWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
 
         await app.votingPower.waitForLocks();
         await app.votingPower.updateLock({
-          lockAmount: "1",
+          lockAmount,
           updateAction: LockAction.topUpAndExtend,
         });
         await app.votingPower.waitForLocksSummaryToUpdate({
           totalVeMento: initialTotalVeMento,
-          totalLockedMento: initialTotalLockedMento,
+          withdrawableMento: initialWithdrawableMento,
         });
 
-        const { totalVeMento: currentTotalVeMento } =
-          await app.votingPower.getLocksSummary();
+        const {
+          totalVeMento: currentTotalVeMento,
+          totalLockedMento: currentTotalLockedMento,
+          withdrawableMento: currentWithdrawableMento,
+        } = await app.votingPower.getLocksSummary();
 
-        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
-        // expect
-        //   .soft(currentTotalLockedMento)
-        //   .toBeGreaterThan(initialTotalLockedMento);
-        expect(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
+        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
+        expect.soft(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
+        expect(currentWithdrawableMento).toBeLessThan(
+          initialWithdrawableMento - lockAmount,
+        );
       },
     },
     {
@@ -107,25 +117,28 @@ suite({
           totalVeMento: initialTotalVeMento,
           totalLockedMento: initialTotalLockedMento,
           delegatedVeMento: initialDelegatedVeMento,
+          withdrawableMento: initialWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
 
         await app.votingPower.updateLock({
-          lockAmount: "1",
+          lockAmount,
           lockType: LockType.Personal,
           delegateAddress,
           updateAction: LockAction.topUp,
         });
         await app.votingPower.waitForLocksSummaryToUpdate({
           totalVeMento: initialTotalVeMento,
-          totalLockedMento: initialTotalLockedMento,
           delegatedVeMento: initialDelegatedVeMento,
+          withdrawableMento: initialWithdrawableMento,
         });
         await app.votingPower.waitForLocks();
 
         const currentLocksCount = await app.votingPower.getAllLocksCount();
         const {
           totalVeMento: currentTotalVeMento,
+          totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
+          withdrawableMento: currentWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
         const delegateCurrentVeMento = await web.contract.getBalance({
           walletAddress: delegateAddress,
@@ -133,15 +146,15 @@ suite({
         });
 
         expect.soft(currentLocksCount).toBe(initialLocksCount);
-        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
-        // expect
-        //   .soft(currentTotalLockedMento)
-        //   .toBeGreaterThan(initialTotalLockedMento);
+        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBeLessThan(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
           .toBeGreaterThan(initialDelegatedVeMento);
         expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
+        expect(currentWithdrawableMento).toBeLessThan(
+          initialWithdrawableMento - lockAmount,
+        );
       },
     },
     {
@@ -164,6 +177,7 @@ suite({
           totalVeMento: initialTotalVeMento,
           totalLockedMento: initialTotalLockedMento,
           delegatedVeMento: initialDelegatedVeMento,
+          withdrawableMento: initialWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
 
         await app.votingPower.updateLock({
@@ -172,15 +186,18 @@ suite({
           updateAction: LockAction.topUp,
         });
         await app.votingPower.waitForLocksSummaryToUpdate({
-          totalLockedMento: initialTotalLockedMento,
           delegatedVeMento: initialDelegatedVeMento,
+          withdrawableMento: initialWithdrawableMento,
         });
         await app.votingPower.waitForLocks();
 
         const {
           totalVeMento: currentTotalVeMento,
+          totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
+          withdrawableMento: currentWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
+
         await app.votingPower.waitForDelegateVeMentoToUpdate({
           initialDelegateVeMento: delegateInitialVeMento,
           delegateAddress,
@@ -191,15 +208,17 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
-        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
-        // expect
-        //   .soft(currentTotalLockedMento)
-        //   .toBeGreaterThan(initialTotalLockedMento);
+        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
           .toBeGreaterThan(initialDelegatedVeMento);
-        expect(delegateCurrentVeMento).toBeGreaterThan(delegateInitialVeMento);
+        expect
+          .soft(delegateCurrentVeMento)
+          .toBeGreaterThan(delegateInitialVeMento);
+        expect(currentWithdrawableMento).toBeLessThan(
+          initialWithdrawableMento - lockAmount,
+        );
       },
     },
     {
@@ -223,22 +242,25 @@ suite({
           totalVeMento: initialTotalVeMento,
           totalLockedMento: initialTotalLockedMento,
           delegatedVeMento: initialDelegatedVeMento,
+          withdrawableMento: initialWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
 
         await app.votingPower.updateLock({
-          lockAmount: "1",
+          lockAmount,
           lockType: LockType.Delegated,
           updateAction: LockAction.topUpAndExtend,
         });
         await app.votingPower.waitForLocksSummaryToUpdate({
-          totalLockedMento: initialTotalLockedMento,
           delegatedVeMento: initialDelegatedVeMento,
+          withdrawableMento: initialWithdrawableMento,
         });
         await app.votingPower.waitForLocks();
 
         const {
           totalVeMento: currentTotalVeMento,
+          totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
+          withdrawableMento: currentWithdrawableMento,
         } = await app.votingPower.getLocksSummary();
         await app.votingPower.waitForDelegateVeMentoToUpdate({
           initialDelegateVeMento: delegateInitialVeMento,
@@ -250,10 +272,7 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
-        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
-        // expect
-        //   .soft(currentTotalLockedMento)
-        //   .toBeGreaterThan(initialTotalLockedMento);
+        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
@@ -261,6 +280,9 @@ suite({
         expect
           .soft(delegateCurrentVeMento)
           .toBeGreaterThan(delegateInitialVeMento);
+        expect(currentWithdrawableMento).toBeLessThan(
+          initialWithdrawableMento - lockAmount,
+        );
       },
     },
     {
@@ -279,7 +301,7 @@ suite({
 
         await app.votingPower.waitForLocks();
         await app.votingPower.updateLock({
-          lockAmount: "0",
+          lockAmount: 0,
           lockType: LockType.Personal,
           updateAction: LockAction.extend,
         });
@@ -293,8 +315,8 @@ suite({
           totalLockedMento: currentTotalLockedMento,
         } = await app.votingPower.getLocksSummary();
 
-        expect.soft(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
-        expect(currentTotalLockedMento).toBe(initialTotalLockedMento);
+        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
+        expect(currentTotalVeMento).toBeGreaterThan(initialTotalVeMento);
       },
     },
     {
@@ -320,7 +342,7 @@ suite({
 
         await app.votingPower.waitForLocks();
         await app.votingPower.updateLock({
-          lockAmount: "0",
+          lockAmount: 0,
           lockType: LockType.Delegated,
           updateAction: LockAction.extend,
         });
@@ -331,6 +353,7 @@ suite({
 
         const {
           totalVeMento: currentTotalVeMento,
+          totalLockedMento: currentTotalLockedMento,
           delegatedVeMento: currentDelegatedVeMento,
         } = await app.votingPower.getLocksSummary();
         await app.votingPower.waitForDelegateVeMentoToUpdate({
@@ -343,10 +366,7 @@ suite({
           tokenAddress: tokenToCheck,
         });
 
-        // TODO: Enable once fixed: https://governancementoorg-qa.vercel.app/voting-power?vercelThreadId=tuI5t
-        // expect
-        //   .soft(currentTotalLockedMento)
-        //   .toBeGreaterThan(initialTotalLockedMento);
+        expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
         expect.soft(currentTotalVeMento).toBe(initialTotalVeMento);
         expect
           .soft(currentDelegatedVeMento)
