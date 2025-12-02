@@ -25,6 +25,14 @@ on:
         description: "Custom base url to run tests against different URLs"
         required: false
         type: string
+      IS_FORK:
+        type: choice
+        description: "Fork mode test run flag"
+        required: false
+        default: "false"
+        options:
+          - "true"
+          - "false"
 
 jobs:
   app_governance_regression_test:
@@ -57,6 +65,7 @@ jobs:
       EXCLUDE_SPECS_REGEX: ${{ matrix.exclude_specs_regex }}
       IS_PARALLEL_RUN: ${{ matrix.is_parallel_run }}
       IS_MAINNET: ${{ matrix.is_mainnet }}
+      IS_FORK: ${{ inputs.IS_FORK }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: ${{ matrix.html_report_name }}
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}

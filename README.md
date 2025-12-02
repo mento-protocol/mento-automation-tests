@@ -10,6 +10,7 @@
 
 - [node.js](https://nodejs.org/en) >= 20.11.1
 - [npm](https://nodejs.org/en) >= 10.5.0
+- [Foundry](https://book.getfoundry.sh/getting-started/installation) (optional, for fork testing with Anvil)
 
 ## Pre-conditions
 
@@ -18,6 +19,19 @@
 3. Fill the `SEED_PHRASE`, and `WALLET_PASSWORD` variables.
 4. Specify the `IS_MAINNET` variable (ensure you re-built synpress cache when changing a chain by this flag!).
 5. Execute `npm run build-synpress-cache`.
+
+### Installation
+
+Install Foundry (includes Anvil):
+
+```bash
+# Using the official installer
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+
+# OR using Homebrew (macOS)
+brew install foundry
+```
 
 ## Environment Variables
 
@@ -32,6 +46,7 @@
 | \*SEED_PHRASE              | `'seed phrase'`               | required seed phrase for connection of metamask wallet                                                                               |
 | \*WALLET_PASSWORD          | `'password'`                  | required password for connection of metamask wallet                                                                                  |
 | \*IS_MAINNET               | `'true'`                      | required flag to specify chain for test running                                                                                      |
+| IS_FORK                    | `'true'`                      | enable fork mode for local testing with Anvil, disabled by default                                                                   |
 | TEST_RUN_TIMEOUT           | `120_000`                     | custom test run timeout, disabled by default                                                                                         |
 | TEST_TIMEOUT               | `120_000`                     | custom test timeout, disabled by default                                                                                             |
 | LOG_LEVEL                  | `DEBUG`                       | desired log level, disabled by default. Can be: ALL, TRACE, INFO, DEBUG                                                              |
@@ -63,3 +78,28 @@
 2. Select the "Specific Test Run" workflow
 3. Click on the "Run workflow" drop-down
 4. Select a branch, write a spec name/s, and select specs type
+
+## Fork Testing with Anvil
+
+You can run tests against a local fork of Celo mainnet or testnet for faster, deterministic testing without real gas costs (it also runs a blockexplorer to be able to work with our dApps).
+
+1. Specify IS_FORK=true and SEED_PHRASE to use a fork value.
+
+2. Start a fork with a blockexplorer via makefile:
+
+```bash
+# Fork Celo mainnet with a block explorer
+make mainnet-fork-setup
+```
+
+3. Build synpress cache on a fork:
+
+```bash
+npm run build-synpress-cache
+```
+
+4. Run tests:
+
+```bash
+npm test
+```

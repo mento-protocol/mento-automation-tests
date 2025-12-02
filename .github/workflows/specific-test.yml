@@ -24,13 +24,6 @@ on:
         description: "Specs dir"
         required: false
         default: ""
-      SPECS_TYPE:
-        type: choice
-        description: "Specs type (supports: web or api)"
-        default: web
-        options:
-          - web
-          - api
       HTML_REPORT_GENERATION:
         type: choice
         description: "HTML report generation"
@@ -64,6 +57,13 @@ on:
         options:
           - "true"
           - "false"
+      IS_FORK:
+        type: choice
+        description: "Fork mode test run flag"
+        default: "false"
+        options:
+          - "true"
+          - "false"
 jobs:
   test:
     name: "Specific Test Run"
@@ -72,7 +72,7 @@ jobs:
       ENV: ${{ inputs.ENV }}
       APP_NAME: ${{ inputs.APP_NAME }}
       SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
-      SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
+      SPECS_TYPE: "web"
       SPECS_DIR: ${{ inputs.SPECS_DIR }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
       HTML_REPORT_NAME: "specific"
@@ -81,5 +81,6 @@ jobs:
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
+      IS_FORK: ${{ inputs.IS_FORK }}
       NOTIFICATION_MESSAGE: "[${{ inputs.APP_NAME }}] Specific Test"
     secrets: inherit

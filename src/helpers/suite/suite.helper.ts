@@ -130,8 +130,9 @@ export const testUtils = {
 function logRunDetails(suiteName: string): void {
   const url = envHelper.getBaseWebUrl();
   const env = envHelper.getEnv();
+  const isFork = envHelper.isFork();
   const chain = `${envHelper.getChainName()} (${envHelper.getChainType()})`;
-  const config = `\n        ENV: ${env}\n        URL: ${url}\n        CHAIN: ${chain}`;
+  const config = `\n        ENV: ${env}\n        URL: ${url}\n        CHAIN: ${chain}        IS_FORK: ${isFork}`;
   log.info(`Running '${suiteName}' suite with configuration: ${config}`);
 }
 

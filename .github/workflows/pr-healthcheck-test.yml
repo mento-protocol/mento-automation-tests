@@ -63,6 +63,7 @@ jobs:
       APP_NAME: ${{ needs.define-app.outputs.app-name }}
       ENV: "qa"
       IS_MAINNET: "false"
+      IS_FORK: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"
       NOTIFICATION_MESSAGE: "[AQA] PR Healthcheck"
@@ -78,6 +79,7 @@ jobs:
       APP_NAME: ${{ needs.define-app.outputs.app-name }}
       ENV: "prod"
       IS_MAINNET: "false"
+      IS_FORK: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"
       NOTIFICATION_MESSAGE: "[AQA] PR Healthcheck"
@@ -93,6 +95,7 @@ jobs:
       APP_NAME: ${{ needs.define-app.outputs.app-name }}
       ENV: "prod"
       IS_MAINNET: "true"
+      IS_FORK: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"
       NOTIFICATION_MESSAGE: "[AQA] PR Healthcheck"

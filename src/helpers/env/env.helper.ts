@@ -15,6 +15,7 @@ const {
   SEED_PHRASE,
   WALLET_PASSWORD,
   APP_NAME,
+  IS_FORK,
 } = processEnv;
 
 export class EnvHelper {
@@ -73,14 +74,30 @@ export class EnvHelper {
     return magicStrings.governance[this.getChainType()].governorAddress;
   }
 
-  getRpcUrl(): string {
-    return magicStrings.chain[this.getChainType()].rpcUrl;
-  }
-
   getGovernanceApiKey(): string {
     return this.isProd()
       ? processEnv.GOVERNANCE_PROD_API_KEY
       : processEnv.GOVERNANCE_QA_API_KEY;
+  }
+
+  getChainDetails() {
+    if (this.isFork()) {
+      return this.isMainnet()
+        ? magicStrings.chain.mainnetFork
+        : magicStrings.chain.testnetFork;
+    }
+    return this.isMainnet()
+      ? magicStrings.chain.mainnet
+      : magicStrings.chain.testnet;
+  }
+
+  getRpcUrl(): string {
+    if (this.isFork()) {
+      return this.isMainnet()
+        ? magicStrings.chain.mainnetFork.rpcUrl
+        : magicStrings.chain.testnetFork.rpcUrl;
+    }
+    return magicStrings.chain[this.getChainType()].rpcUrl;
   }
 
   isCI(): boolean {
@@ -97,6 +114,10 @@ export class EnvHelper {
 
   isProd(): boolean {
     return this.getEnv() === Env.prod;
+  }
+
+  isFork(): boolean {
+    return primitiveHelper.string.toBoolean(IS_FORK);
   }
 }
 

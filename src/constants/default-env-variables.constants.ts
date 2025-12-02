@@ -1,15 +1,22 @@
 export const defaultEnvVariables = `APP=app-mento
 #APP=governance
+#APP=squid-router
 ENV=prod
+#ENV=qa
+
 SEED_PHRASE=""
 WALLET_PASSWORD=""
 IS_MAINNET=
+#IS_FORK=true
 
 SPECS_TYPE=web
-#SPECS_FOLDER_NAME=amount-validations
-SPEC_NAMES=
-#swapping-by-amount-types
-#connect-wallet
+SPECS_REGEX=connect-wallet
+#SPECS_DIR=amount-validations
+
+#GOVERNANCE_QA_API_KEY=
+#GOVERNANCE_QA_API_URL=
+#GOVERNANCE_PROD_API_KEY=
+#GOVERNANCE_PROD_API_URL=
 
 LOG_LEVEL=ALL
 #TEST_RETRY=1

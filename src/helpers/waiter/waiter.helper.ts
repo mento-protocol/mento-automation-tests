@@ -120,6 +120,20 @@ export const waiterHelper = {
     }
     return result;
   },
+
+  async skipActionIf(
+    actionName: string,
+    { conditionName, condition }: { conditionName: string; condition: boolean },
+    actionCallback: () => Promise<void>,
+  ): Promise<void> {
+    if (condition) {
+      log.warn(
+        `❔ Skipping '${actionName}' action because '${conditionName}' is '${condition}'`,
+      );
+      return;
+    }
+    return actionCallback();
+  },
 };
 
 function hasTime(startTime: number, timeout: number): boolean {
