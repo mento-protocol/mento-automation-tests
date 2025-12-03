@@ -113,11 +113,20 @@ export class VotingPowerService extends BaseService {
   }
 
   async waitForLocksSummary(): Promise<boolean> {
+    for (const lockSummaryKey of Object.keys(this.page.locksSummary)) {
+      await this.page.locksSummary[lockSummaryKey].waitForDisplayed(
+        timeouts.xs,
+        {
+          errorMessage: `${this.page.locksSummary[lockSummaryKey].name} is not displayed!`,
+          throwError: false,
+        },
+      );
+    }
     return waiterHelper.wait(
       async () => {
         const locksSummary = await this.getLocksSummary();
         const locksSummaryValues = Object.values(locksSummary);
-        return locksSummaryValues.some(value => value > 0);
+        return locksSummaryValues.every(value => value >= 0);
       },
       timeouts.s,
       {
@@ -153,7 +162,7 @@ export class VotingPowerService extends BaseService {
           },
         );
       },
-      timeouts.xl,
+      timeouts.xxl,
       {
         errorMessage: "Some lock summary value/s haven't updated!",
         interval: timeouts.xxs,

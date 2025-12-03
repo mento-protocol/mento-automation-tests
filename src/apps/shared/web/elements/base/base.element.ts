@@ -102,6 +102,9 @@ export abstract class BaseElement {
   }: IGetValueParams = {}): Promise<string> {
     let text = "";
     try {
+      await this.waitForDisplayed(timeout, {
+        throwError: false,
+      });
       text = await this._element.textContent({ timeout });
     } catch (error) {
       const errorMessage = `Can't get text on '${this._element}' element'.\nDetails: ${error.message}`;
