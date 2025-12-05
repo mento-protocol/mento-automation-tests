@@ -147,7 +147,7 @@ const testCases = [
   // cNGN
   {
     fromToken: Token.cNGN,
-    fromAmount: "10",
+    fromAmount: "0.50",
     toToken: Token.cUSD,
     id: "T280cb27f",
   },
