@@ -12,6 +12,10 @@ import {
 export class ElementFinderHelper {
   constructor(protected readonly pwPage: Page) {}
 
+  raw(selector: string): Locator {
+    return this.pwPage.locator(selector);
+  }
+
   text(text: string | RegExp, options: IPwFinderParams = {}): Locator {
     return this.pwPage.getByText(text, options);
   }

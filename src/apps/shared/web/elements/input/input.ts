@@ -21,4 +21,13 @@ export class Input extends BaseElement implements IInput {
     }
     return this.element.fill(text.toString(), options);
   }
+
+  async clear({
+    shouldUseBackspace = false,
+  }: { shouldUseBackspace?: boolean } = {}): Promise<void> {
+    if (shouldUseBackspace) {
+      return this.element.press("Backspace");
+    }
+    return this.element.clear();
+  }
 }
