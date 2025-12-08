@@ -4,6 +4,7 @@ import { configHelper } from "@helpers/config/config.helper";
 import { magicStrings, timeouts } from "@constants/index";
 import { specSelectorHelper } from "@helpers/spec-selector/spec-selector.helper";
 import { envHelper } from "@helpers/env/env.helper";
+import { processEnv } from "@helpers/processEnv/processEnv.helper";
 
 export default defineConfig({
   globalTimeout: timeouts.testRun,
@@ -25,6 +26,10 @@ export default defineConfig({
     {
       name: "chromium",
       use: {
+        extraHTTPHeaders: {
+          "x-vercel-protection-bypass":
+            processEnv.VERCEL_AUTOMATION_BYPASS_SECRET,
+        },
         ...devices["Desktop Chrome"],
       },
     },

@@ -95,6 +95,8 @@ on:
       GOVERNANCE_QA_API_URL:
         description: "Governance QA API URL"
         required: false
+      VERCEL_AUTOMATION_BYPASS_SECRET:
+        required: true
 
 jobs:
   test:
@@ -118,6 +120,7 @@ jobs:
       TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
       GOVERNANCE_QA_API_KEY: ${{ secrets.GOVERNANCE_QA_API_KEY }}
       GOVERNANCE_QA_API_URL: ${{ secrets.GOVERNANCE_QA_API_URL }}
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy

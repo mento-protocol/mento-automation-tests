@@ -41,6 +41,8 @@ on:
       E2E_TEST_GCP_SA_KEY:
         description: "Google Cloud Service Account key JSON"
         required: true
+      VERCEL_AUTOMATION_BYPASS_SECRET:
+        required: true
 
 jobs:
   smoke-test:
