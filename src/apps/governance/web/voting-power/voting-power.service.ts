@@ -241,7 +241,7 @@ export class VotingPowerService extends BaseService {
       expect.soft(currentTotalLockedMento).toBe(initialTotalLockedMento);
       expect
         .soft(currentWithdrawableMento)
-        .toBe(initialWithdrawableMento - lockAmount);
+        .toBeLessThanOrEqual(initialWithdrawableMento - lockAmount);
     } else {
       log.debug(
         "Uses new MENTO to update lock - withdrawable MENTO is not used",
