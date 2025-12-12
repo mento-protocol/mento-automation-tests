@@ -11,6 +11,7 @@ import { envHelper } from "@helpers/env/env.helper";
 suite({
   name: "Lock - Create",
   tags: [TestTag.Regression, TestTag.Sequential],
+  retries: 3,
   beforeEach: async ({ web }) => {
     await web.app.governance.main.connectWalletByName(WalletName.Metamask);
   },

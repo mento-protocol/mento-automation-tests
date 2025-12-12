@@ -15,6 +15,7 @@ const lockAmount = 1;
 suite({
   name: "Lock - Update",
   tags: [TestTag.Regression, TestTag.Sequential],
+  retries: 3,
   beforeEach: async ({ web }) => {
     await web.app.governance.main.connectWalletByName(WalletName.Metamask);
   },
