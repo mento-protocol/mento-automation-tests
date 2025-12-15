@@ -28,7 +28,7 @@ export const magicStrings = {
     [AppName.AppMento]: {
       web: {
         prod: { base: "https://app.mento.org" },
-        qa: { base: "" },
+        qa: { base: "https://appqamentoorg.vercel.app" },
         custom: { base: processEnv.CUSTOM_URL },
       },
       api: {

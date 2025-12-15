@@ -61,7 +61,7 @@ jobs:
     with:
       SPECS_REGEX: ${{ needs.define-specs.outputs.specs-regex }}
       APP_NAME: ${{ needs.define-app.outputs.app-name }}
-      ENV: "qa"
+      ENV: "prod"
       IS_MAINNET: "false"
       IS_FORK: "false"
       HTML_REPORT_NAME: "pr-healthcheck"

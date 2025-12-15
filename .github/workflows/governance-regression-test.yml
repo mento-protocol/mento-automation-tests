@@ -60,7 +60,7 @@ jobs:
             notification_message: "[Governance] Parallel-Regression"
     with:
       APP_NAME: "governance"
-      ENV: "qa"
+      ENV: "prod"
       SPECS_REGEX: ${{ matrix.specs_regex }}
       EXCLUDE_SPECS_REGEX: ${{ matrix.exclude_specs_regex }}
       IS_PARALLEL_RUN: ${{ matrix.is_parallel_run }}
