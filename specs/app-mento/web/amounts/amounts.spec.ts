@@ -46,7 +46,7 @@ suite({
           await app.main.getTokenBalanceByName(Token.CELO)
         ).toString();
         await app.swap.fillForm({
-          tokens: { sell: Token.CELO, buy: Token.cUSD },
+          tokens: { sell: Token.CELO, buy: Token.USDm },
         });
         await app.swap.useFullBalance();
         expect.soft(await app.swap.getSellTokenAmount()).toEqual(maxBalance);
@@ -59,10 +59,10 @@ suite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         const maxBalance = (
-          await app.main.getTokenBalanceByName(Token.cCHF)
+          await app.main.getTokenBalanceByName(Token.CHFm)
         ).toString();
         await app.swap.fillForm({
-          tokens: { sell: Token.cCHF, buy: Token.cUSD },
+          tokens: { sell: Token.CHFm, buy: Token.USDm },
         });
         await app.swap.useFullBalance();
         expect(await app.swap.getSellTokenAmount()).toEqual(maxBalance);

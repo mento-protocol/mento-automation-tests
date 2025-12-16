@@ -72,20 +72,22 @@ export class SwapPage extends BasePage {
 
 export interface ITokenOptions extends Record<string, Button> {
   [Token.CELO]: Button;
-  [Token.cEUR]: Button;
-  [Token.cUSD]: Button;
-  [Token.cREAL]: Button;
-  [Token.cKES]: Button;
-  [Token.cCOP]: Button;
+  [Token.EURm]: Button;
+  [Token.USDm]: Button;
+  [Token.BRLm]: Button;
+  [Token.KESm]: Button;
+  [Token.COPm]: Button;
   [Token.axlUSDC]: Button;
   [Token.axlEUROC]: Button;
-  [Token.eXOF]: Button;
-  [Token.USDT]: Button;
+  [Token.XOFm]: Button;
   [Token.USDC]: Button;
-  [Token.PUSO]: Button;
-  [Token.cGHS]: Button;
-  [Token.cGBP]: Button;
-  [Token.cZAR]: Button;
-  [Token.cCAD]: Button;
-  [Token.cAUD]: Button;
+  [Token.PHPm]: Button;
+  [Token.GHSm]: Button;
+  [Token.GBPm]: Button;
+  [Token.ZARm]: Button;
+  [Token.CADm]: Button;
+  [Token.AUDm]: Button;
+  [Token.CHFm]: Button;
+  [Token.NGNm]: Button;
+  [Token.JPYm]: Button;
 }
