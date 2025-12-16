@@ -9,7 +9,7 @@ import { envHelper } from "@helpers/env/env.helper";
 const isFork = envHelper.isFork();
 const defaultSwapAmount = getSwapAmount({ isFork });
 const tokens = {
-  from: Token.cEUR,
+  from: Token.EURm,
   to: Token.CELO,
 };
 

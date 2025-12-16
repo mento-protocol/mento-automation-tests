@@ -49,26 +49,26 @@ const DEFAULT_TEST_AMOUNT = "0.01";
 const DEFAULT_USD_TO_EUR_RATE = 0.85;
 const TOKEN_MAP: Record<string, string> = {
   "Token.CELO": "CELO",
-  "Token.cUSD": "cUSD",
-  "Token.cEUR": "cEUR",
-  "Token.cREAL": "cREAL",
-  "Token.eXOF": "eXOF",
+  "Token.USDm": "USDm",
+  "Token.EURm": "EURm",
+  "Token.BRLm": "BRLm",
+  "Token.XOFm": "XOFm",
   "Token.USDT": "USDT",
   "Token.USD₮": "USD₮",
-  "Token.cKES": "cKES",
-  "Token.PUSO": "PUSO",
-  "Token.cCOP": "cCOP",
+  "Token.KESm": "KESm",
+  "Token.PHPm": "PHPm",
+  "Token.COPm": "COPm",
   "Token.USDC": "USDC",
   "Token.axlUSDC": "axlUSDC",
   "Token.axlEUROC": "axlEUROC",
-  "Token.cGHS": "cGHS",
-  "Token.cGBP": "cGBP",
-  "Token.cZAR": "cZAR",
-  "Token.cCAD": "cCAD",
-  "Token.cAUD": "cAUD",
-  "Token.cCHF": "cCHF",
-  "Token.cNGN": "cNGN",
-  "Token.cJPY": "cJPY",
+  "Token.GHSm": "GHSm",
+  "Token.GBPm": "GBPm",
+  "Token.ZARm": "ZARm",
+  "Token.CADm": "CADm",
+  "Token.AUDm": "AUDm",
+  "Token.CHFm": "CHFm",
+  "Token.NGNm": "NGNm",
+  "Token.JPYm": "JPYm",
 };
 
 /**
@@ -266,11 +266,11 @@ function parseTestCase(obj: string): TestCase | null {
 
   if (!fromMatch) return null;
 
-  let toToken = "cUSD";
+  let toToken = "USDm";
   if (toMatch) {
     if (toMatch[0].includes("retryDataHelper")) {
       const tokens = toMatch[1]?.match(/Token\.(\w+)/g);
-      toToken = tokens ? resolveToken(tokens[0]) : "cUSD";
+      toToken = tokens ? resolveToken(tokens[0]) : "USDm";
     } else {
       toToken = resolveToken(toMatch[1]);
     }
@@ -302,18 +302,18 @@ function resolveToken(token: string): string {
 function getOtherTestCases(): TestCase[] {
   return [
     {
-      fromToken: "cEUR",
+      fromToken: "EURm",
       toToken: "CELO",
       executionType: "swap-with-custom-slippage",
     },
     {
       fromToken: "CELO",
-      toToken: "cUSD",
+      toToken: "USDm",
       executionType: "swap-by-amount-types",
     },
     {
       fromToken: "CELO",
-      toToken: "cUSD",
+      toToken: "USDm",
       executionType: "swap-by-amount-types",
     },
   ];
@@ -321,11 +321,11 @@ function getOtherTestCases(): TestCase[] {
 
 function getFallbackTests(): TestCase[] {
   return [
-    { fromToken: "CELO", toToken: "cUSD", disable: { reason: "Default pair" } },
-    { fromToken: "CELO", toToken: "cEUR" },
-    { fromToken: "USDT", toToken: "cUSD" },
-    { fromToken: "USDC", toToken: "cEUR" },
-    { fromToken: "cGBP", toToken: "CELO" },
+    { fromToken: "CELO", toToken: "USDm", disable: { reason: "Default pair" } },
+    { fromToken: "CELO", toToken: "EURm" },
+    { fromToken: "USDT", toToken: "USDm" },
+    { fromToken: "USDC", toToken: "EURm" },
+    { fromToken: "GBPm", toToken: "CELO" },
   ];
 }
 
@@ -358,13 +358,13 @@ async function convertToUSD(
   mento: Mento,
   _provider: providers.JsonRpcProvider,
 ): Promise<number> {
-  if (testCase.fromToken === "cUSD") return parseFloat(amount);
+  if (testCase.fromToken === "USDm") return parseFloat(amount);
 
   try {
     const { fromAddress, toAddress } = validateTokens(
       allPairs,
       testCase.fromToken,
-      "cUSD",
+      "USDm",
     );
 
     // Use Mento SDK to get quote

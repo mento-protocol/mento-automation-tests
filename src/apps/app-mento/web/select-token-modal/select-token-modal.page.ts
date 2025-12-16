@@ -37,17 +37,17 @@ export class SelectTokenModalPage extends BasePage {
       [Token.CELO]: new Button(
         this.ef.dataTestId("tokenOption_CELO", { exact: false }),
       ),
-      [Token.cEUR]: new Button(
-        this.ef.dataTestId("tokenOption_cEUR", { exact: false }),
+      [Token.EURm]: new Button(
+        this.ef.dataTestId("tokenOption_EURm", { exact: false }),
       ),
-      [Token.cUSD]: new Button(
-        this.ef.dataTestId("tokenOption_cUSD", { exact: false }),
+      [Token.USDm]: new Button(
+        this.ef.dataTestId("tokenOption_USDm", { exact: false }),
       ),
-      [Token.cREAL]: new Button(
-        this.ef.dataTestId("tokenOption_cREAL", { exact: false }),
+      [Token.BRLm]: new Button(
+        this.ef.dataTestId("tokenOption_BRLm", { exact: false }),
       ),
-      [Token.cCOP]: new Button(
-        this.ef.dataTestId("tokenOption_cCOP", { exact: false }),
+      [Token.COPm]: new Button(
+        this.ef.dataTestId("tokenOption_COPm", { exact: false }),
       ),
       [Token.USDC]: new Button(
         this.ef.dataTestId("tokenOption_USDC", { exact: false }),
@@ -64,38 +64,38 @@ export class SelectTokenModalPage extends BasePage {
       [Token.axlEUROC]: new Button(
         this.ef.dataTestId("tokenOption_axlEUROC", { exact: false }),
       ),
-      [Token.eXOF]: new Button(
-        this.ef.dataTestId("tokenOption_eXOF", { exact: false }),
+      [Token.XOFm]: new Button(
+        this.ef.dataTestId("tokenOption_XOFm", { exact: false }),
       ),
-      [Token.cKES]: new Button(
-        this.ef.dataTestId("tokenOption_cKES", { exact: false }),
+      [Token.KESm]: new Button(
+        this.ef.dataTestId("tokenOption_KESm", { exact: false }),
       ),
-      [Token.PUSO]: new Button(
-        this.ef.dataTestId("tokenOption_PUSO", { exact: false }),
+      [Token.PHPm]: new Button(
+        this.ef.dataTestId("tokenOption_PHPm", { exact: false }),
       ),
-      [Token.cGHS]: new Button(
-        this.ef.dataTestId("tokenOption_cGHS", { exact: false }),
+      [Token.GHSm]: new Button(
+        this.ef.dataTestId("tokenOption_GHSm", { exact: false }),
       ),
-      [Token.cGBP]: new Button(
-        this.ef.dataTestId("tokenOption_cGBP", { exact: false }),
+      [Token.GBPm]: new Button(
+        this.ef.dataTestId("tokenOption_GBPm", { exact: false }),
       ),
-      [Token.cZAR]: new Button(
-        this.ef.dataTestId("tokenOption_cZAR", { exact: false }),
+      [Token.ZARm]: new Button(
+        this.ef.dataTestId("tokenOption_ZARm", { exact: false }),
       ),
-      [Token.cCAD]: new Button(
-        this.ef.dataTestId("tokenOption_cCAD", { exact: false }),
+      [Token.CADm]: new Button(
+        this.ef.dataTestId("tokenOption_CADm", { exact: false }),
       ),
-      [Token.cAUD]: new Button(
-        this.ef.dataTestId("tokenOption_cAUD", { exact: false }),
+      [Token.AUDm]: new Button(
+        this.ef.dataTestId("tokenOption_AUDm", { exact: false }),
       ),
-      [Token.cCHF]: new Button(
-        this.ef.dataTestId("tokenOption_cCHF", { exact: false }),
+      [Token.CHFm]: new Button(
+        this.ef.dataTestId("tokenOption_CHFm", { exact: false }),
       ),
-      [Token.cNGN]: new Button(
-        this.ef.dataTestId("tokenOption_cNGN", { exact: false }),
+      [Token.NGNm]: new Button(
+        this.ef.dataTestId("tokenOption_NGNm", { exact: false }),
       ),
-      [Token.cJPY]: new Button(
-        this.ef.dataTestId("tokenOption_cJPY", { exact: false }),
+      [Token.JPYm]: new Button(
+        this.ef.dataTestId("tokenOption_JPYm", { exact: false }),
       ),
     };
   }
@@ -107,20 +107,23 @@ export class SelectTokenModalPage extends BasePage {
 
 export interface ITokenDropdownOptions extends Record<string, Button> {
   [Token.CELO]: Button;
-  [Token.cEUR]: Button;
-  [Token.cUSD]: Button;
-  [Token.cREAL]: Button;
-  [Token.cKES]: Button;
-  [Token.cCOP]: Button;
+  [Token.EURm]: Button;
+  [Token.USDm]: Button;
+  [Token.BRLm]: Button;
+  [Token.KESm]: Button;
+  [Token.COPm]: Button;
   [Token.axlUSDC]: Button;
   [Token.axlEUROC]: Button;
-  [Token.eXOF]: Button;
+  [Token.XOFm]: Button;
   [Token.USDT]: Button;
   [Token.USDC]: Button;
-  [Token.PUSO]: Button;
-  [Token.cGHS]: Button;
-  [Token.cGBP]: Button;
-  [Token.cZAR]: Button;
-  [Token.cCAD]: Button;
-  [Token.cAUD]: Button;
+  [Token.PHPm]: Button;
+  [Token.GHSm]: Button;
+  [Token.GBPm]: Button;
+  [Token.ZARm]: Button;
+  [Token.CADm]: Button;
+  [Token.AUDm]: Button;
+  [Token.CHFm]: Button;
+  [Token.NGNm]: Button;
+  [Token.JPYm]: Button;
 }

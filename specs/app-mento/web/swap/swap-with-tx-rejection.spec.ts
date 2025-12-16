@@ -8,12 +8,12 @@ const isFork = envHelper.isFork();
 const defaultSwapAmount = getSwapAmount({ isFork });
 const pairs = {
   rejectApproval: {
-    from: Token.cEUR,
-    to: Token.cREAL,
+    from: Token.EURm,
+    to: Token.BRLm,
   },
   rejectSwap: {
     from: Token.CELO,
-    to: Token.cREAL,
+    to: Token.BRLm,
   },
 };
 

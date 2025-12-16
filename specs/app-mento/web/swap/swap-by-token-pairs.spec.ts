@@ -14,29 +14,29 @@ const testCases = [
   // CELO
   {
     fromToken: Token.CELO,
-    toToken: Token.cUSD,
+    toToken: Token.USDm,
     id: "Tb3ad24f0",
     disable: { reason: "It's default pair for other tests" },
   },
   {
     fromToken: Token.CELO,
-    toToken: Token.cEUR,
+    toToken: Token.EURm,
     id: "T3af02715",
   },
   {
     fromToken: Token.CELO,
-    toToken: Token.cREAL,
+    toToken: Token.BRLm,
     id: "T2a476441",
   },
   {
     fromToken: Token.CELO,
-    toToken: Token.eXOF,
+    toToken: Token.XOFm,
     id: "T13fb8467",
   },
   // USDT
   {
     fromToken: Token.USDT,
-    toToken: Token.cUSD,
+    toToken: Token.USDm,
     id: "T2511996c",
     disable: {
       reason: "Unsupported token",
@@ -46,7 +46,7 @@ const testCases = [
   // USD₮
   {
     fromToken: Token["USD₮"],
-    toToken: Token.cUSD,
+    toToken: Token.USDm,
     id: "T2511996c",
     disable: {
       reason: "Unsupported token",
@@ -55,21 +55,21 @@ const testCases = [
   },
   // cKES
   {
-    fromToken: Token.cKES,
-    toToken: Token.cUSD,
+    fromToken: Token.KESm,
+    toToken: Token.USDm,
     id: "Tbe02fb8d",
     fromAmount: "0.1",
   },
   // PUSO
   {
-    fromToken: Token.PUSO,
-    toToken: Token.cUSD,
+    fromToken: Token.PHPm,
+    toToken: Token.USDm,
     id: "T7d8911a6",
   },
   // cCOP
   {
-    fromToken: Token.cCOP,
-    toToken: Token.cUSD,
+    fromToken: Token.COPm,
+    toToken: Token.USDm,
     fromAmount: "45",
     id: "Ta2aa287f",
   },
@@ -77,9 +77,9 @@ const testCases = [
   {
     fromToken: Token.USDC,
     toToken: retryDataHelper.getRandomToken(Token.USDC, [
-      Token.cEUR,
-      Token.cUSD,
-      Token.cREAL,
+      Token.EURm,
+      Token.USDm,
+      Token.BRLm,
     ]),
     id: "Ta9f2be1e",
   },
@@ -87,9 +87,9 @@ const testCases = [
   {
     fromToken: Token.axlUSDC,
     toToken: retryDataHelper.getRandomToken(Token.axlUSDC, [
-      Token.cEUR,
-      Token.cUSD,
-      Token.cREAL,
+      Token.EURm,
+      Token.USDm,
+      Token.BRLm,
     ]),
     id: "T635a15c9",
   },
@@ -97,16 +97,16 @@ const testCases = [
   {
     fromToken: Token.axlEUROC,
     toToken: retryDataHelper.getRandomToken(Token.axlEUROC, [
-      Token.cEUR,
-      Token.cUSD,
+      Token.EURm,
+      Token.USDm,
     ]),
     id: "T92258405",
   },
   // cGHS
   {
-    fromToken: Token.cGHS,
-    toToken: retryDataHelper.getRandomToken(Token.cGHS, [
-      Token.cUSD,
+    fromToken: Token.GHSm,
+    toToken: retryDataHelper.getRandomToken(Token.GHSm, [
+      Token.USDm,
       Token.USDC,
       usdtToken,
     ]),
@@ -115,46 +115,46 @@ const testCases = [
   },
   // cGBP
   {
-    fromToken: Token.cGBP,
-    toToken: Token.cUSD,
+    fromToken: Token.GBPm,
+    toToken: Token.USDm,
     id: "T22f94bbb",
   },
   // cZAR
   {
-    fromToken: Token.cZAR,
-    toToken: Token.cUSD,
+    fromToken: Token.ZARm,
+    toToken: Token.USDm,
     id: "T4b1b444b",
     fromAmount: "0.1",
   },
   // cCAD
   {
-    fromToken: Token.cCAD,
-    toToken: Token.cUSD,
+    fromToken: Token.CADm,
+    toToken: Token.USDm,
     id: "T0869d367",
   },
   // cAUD
   {
-    fromToken: Token.cAUD,
-    toToken: Token.cUSD,
+    fromToken: Token.AUDm,
+    toToken: Token.USDm,
     id: "T1d46dc17",
   },
   // cCHF
   {
-    fromToken: Token.cCHF,
-    toToken: Token.cUSD,
+    fromToken: Token.CHFm,
+    toToken: Token.USDm,
     id: "Tc750f6e5",
   },
   // cNGN
   {
-    fromToken: Token.cNGN,
+    fromToken: Token.NGNm,
     fromAmount: "0.50",
-    toToken: Token.cUSD,
+    toToken: Token.USDm,
     id: "T280cb27f",
   },
   // cJPY
   {
-    fromToken: Token.cJPY,
-    toToken: Token.cUSD,
+    fromToken: Token.JPYm,
+    toToken: Token.USDm,
     id: "T36d94360",
     fromAmount: "0.1",
   },

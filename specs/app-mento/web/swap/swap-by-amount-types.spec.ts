@@ -5,7 +5,7 @@ import { suite } from "@helpers/suite/suite.helper";
 
 const isFork = envHelper.isFork();
 const swapAmount = getSwapAmount({ isFork });
-const tokens = { from: Token.CELO, to: Token.cUSD };
+const tokens = { from: Token.CELO, to: Token.USDm };
 // Skip that assertion because loading is so fast on forks
 const shouldExpectLoading = isFork ? false : true;
 

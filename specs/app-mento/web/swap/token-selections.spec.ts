@@ -22,14 +22,14 @@ suite({
           sellAmount: defaultSwapAmount,
           waitForLoadedRate: false,
           tokens: {
-            sell: Token.cREAL,
+            sell: Token.BRLm,
             buy: Token.CELO,
             clicksOnSellTokenButton: 1,
           },
         });
         await app.swap.swapInputs({ shouldReturnRates: false });
         expect(await app.swap.getCurrentSellTokenName()).toEqual(Token.CELO);
-        expect(await app.swap.getCurrentBuyTokenName()).toEqual(Token.cREAL);
+        expect(await app.swap.getCurrentBuyTokenName()).toEqual(Token.BRLm);
       },
     },
     {
@@ -41,7 +41,7 @@ suite({
         await app.swap.fillForm({
           waitForLoadedRate: false,
           tokens: {
-            sell: Token.cREAL,
+            sell: Token.BRLm,
             buy: Token.axlEUROC,
             clicksOnSellTokenButton: 1,
           },
@@ -68,7 +68,7 @@ suite({
           waitForLoadedRate: false,
           isSellTokenFirst: false,
           tokens: {
-            sell: Token.cREAL,
+            sell: Token.BRLm,
             buy: Token.axlEUROC,
             clicksOnSellTokenButton: 1,
           },
@@ -78,7 +78,7 @@ suite({
           .toEqual(true);
         expect
           .soft(await app.swap.getCurrentSellTokenName())
-          .toEqual(Token.cREAL);
+          .toEqual(Token.BRLm);
         // TODO: Investigate why this assertion is failing when it's displayed
         // expect(
         //   await web.swap.page.selectTokenToSellLabel.isDisplayed(),
@@ -91,7 +91,7 @@ suite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.swap.selectToken({
-          token: Token.cREAL,
+          token: Token.BRLm,
           tokenDropdown: "sell",
         });
         await app.swap.openSelectTokenModal({
@@ -110,7 +110,7 @@ suite({
         disable: testCase?.disable,
         test: async ({ web }: IExecution) => {
           const app = web.app.appMento;
-          if (testCase.token === Token.cUSD) {
+          if (testCase.token === Token.USDm) {
             await app.swap.swapInputs({ shouldReturnRates: false });
           }
           await app.swap.fillForm({
