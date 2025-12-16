@@ -33,6 +33,14 @@ on:
         options:
           - "true"
           - "false"
+      IS_MAINNET:
+        type: choice
+        description: "Mainnet test run flag"
+        required: false
+        default: "false"
+        options:
+          - "true"
+          - "false"
 
 jobs:
   app_mento_regression_test:
@@ -46,7 +54,6 @@ jobs:
             specs_regex: "@regression,@sequential"
             exclude_specs_regex: "@parallel"
             is_parallel_run: "false"
-            is_mainnet: "true"
             html_report_name: "app-mento-sequential-regression"
             testomatio_title: "[App-Mento] Sequential-Regression"
             notification_message: "[App-Mento] Sequential-Regression"
@@ -54,7 +61,6 @@ jobs:
             specs_regex: "@regression,@parallel"
             exclude_specs_regex: "@sequential"
             is_parallel_run: "true"
-            is_mainnet: "true"
             html_report_name: "app-mento-parallel-regression"
             testomatio_title: "[App-Mento] Parallel-Regression"
             notification_message: "[App-Mento] Parallel-Regression"
@@ -63,7 +69,7 @@ jobs:
       SPECS_REGEX: ${{ matrix.specs_regex }}
       EXCLUDE_SPECS_REGEX: ${{ matrix.exclude_specs_regex }}
       IS_PARALLEL_RUN: ${{ matrix.is_parallel_run }}
-      IS_MAINNET: ${{ matrix.is_mainnet }}
+      IS_MAINNET: ${{ inputs.IS_MAINNET || 'true' }}
       IS_FORK: ${{ inputs.IS_FORK }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: ${{ matrix.html_report_name }}
