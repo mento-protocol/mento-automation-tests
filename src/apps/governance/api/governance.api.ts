@@ -78,6 +78,9 @@ fragment ProposalFields on Proposal {
   __typename
 }`,
     });
+    if (!response?.data?.proposals) {
+      throw new Error("No proposals to execute!");
+    }
     return response.data.proposals;
   }
 }
