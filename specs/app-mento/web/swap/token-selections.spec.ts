@@ -107,7 +107,6 @@ suite({
       return {
         name: `"${testCase.token}" token selections`,
         testCaseId: testCase.id,
-        disable: testCase?.disable,
         test: async ({ web }: IExecution) => {
           const app = web.app.appMento;
           if (testCase.token === Token.USDm) {

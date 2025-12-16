@@ -80,7 +80,6 @@ export interface ITokenOptions extends Record<string, Button> {
   [Token.axlUSDC]: Button;
   [Token.axlEUROC]: Button;
   [Token.XOFm]: Button;
-  [Token.USDT]: Button;
   [Token.USDC]: Button;
   [Token.PHPm]: Button;
   [Token.GHSm]: Button;

@@ -52,9 +52,6 @@ export class SelectTokenModalPage extends BasePage {
       [Token.USDC]: new Button(
         this.ef.dataTestId("tokenOption_USDC", { exact: false }),
       ),
-      [Token.USDT]: new Button(
-        this.ef.dataTestId("tokenOption_USDT", { exact: false }),
-      ),
       [Token["USD₮"]]: new Button(
         this.ef.dataTestId("tokenOption_USD₮", { exact: false }),
       ),
@@ -115,7 +112,6 @@ export interface ITokenDropdownOptions extends Record<string, Button> {
   [Token.axlUSDC]: Button;
   [Token.axlEUROC]: Button;
   [Token.XOFm]: Button;
-  [Token.USDT]: Button;
   [Token.USDC]: Button;
   [Token.PHPm]: Button;
   [Token.GHSm]: Button;

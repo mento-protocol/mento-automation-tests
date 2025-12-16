@@ -53,7 +53,6 @@ const TOKEN_MAP: Record<string, string> = {
   "Token.EURm": "EURm",
   "Token.BRLm": "BRLm",
   "Token.XOFm": "XOFm",
-  "Token.USDT": "USDT",
   "Token.USD₮": "USD₮",
   "Token.KESm": "KESm",
   "Token.PHPm": "PHPm",

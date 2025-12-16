@@ -4,12 +4,9 @@ import { IExecution } from "@helpers/suite/suite.types";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
 import { TestTag } from "@constants/test.constants";
 import { envHelper } from "@helpers/env/env.helper";
-import { magicStrings } from "@constants/magic-strings.constants";
 
 const isFork = envHelper.isFork();
 const defaultSwapAmount = getSwapAmount({ isFork });
-// USD₮ on mainnet and USDT on testnet
-const usdtToken = Token[envHelper.isMainnet ? "USD₮" : "USDT"];
 const testCases = [
   // CELO
   {
@@ -33,25 +30,11 @@ const testCases = [
     toToken: Token.XOFm,
     id: "T13fb8467",
   },
-  // USDT
-  {
-    fromToken: Token.USDT,
-    toToken: Token.USDm,
-    id: "T2511996c",
-    disable: {
-      reason: "Unsupported token",
-      chain: magicStrings.chain.mainnet.name,
-    },
-  },
   // USD₮
   {
     fromToken: Token["USD₮"],
     toToken: Token.USDm,
     id: "T2511996c",
-    disable: {
-      reason: "Unsupported token",
-      chain: magicStrings.chain.testnet.name,
-    },
   },
   // cKES
   {
@@ -108,7 +91,7 @@ const testCases = [
     toToken: retryDataHelper.getRandomToken(Token.GHSm, [
       Token.USDm,
       Token.USDC,
-      usdtToken,
+      Token["USD₮"],
     ]),
     id: "T8da32b9f",
     fromAmount: "0.1",
