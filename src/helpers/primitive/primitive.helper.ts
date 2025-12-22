@@ -145,14 +145,41 @@ class PrimitiveHelper {
   }
 
   jsonStringify(value: unknown, options: IJsonStringifyOptions = {}): string {
-    const { replacer = null, spaces = 2 } = options;
+    const { replacer = sensitiveContentReplacer, spaces = 2 } = options;
     return JSON.stringify(value, replacer, spaces);
   }
 }
 
 export const primitiveHelper = new PrimitiveHelper();
 
+function sensitiveContentReplacer(key: string, value: unknown) {
+  const SENSITIVE_KEYS = [
+    "password",
+    "pass",
+    "token",
+    "accessToken",
+    "refreshToken",
+    "secret",
+    "authorization",
+    "auth",
+    "apiKey",
+    "api-key",
+    "x-api-key",
+    "authToken",
+    "jwt",
+  ];
+  if (
+    key &&
+    SENSITIVE_KEYS.some(
+      sensitiveKey => sensitiveKey.toLowerCase() === key.toLowerCase(),
+    )
+  ) {
+    return "***";
+  }
+  return value;
+}
+
 export interface IJsonStringifyOptions {
-  replacer?: () => unknown;
+  replacer?: (key: string, value: unknown) => unknown;
   spaces?: number;
 }
