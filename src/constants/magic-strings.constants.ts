@@ -31,10 +31,7 @@ export const magicStrings = {
         qa: { base: "https://appqamentoorg.vercel.app" },
         custom: { base: processEnv.CUSTOM_URL },
       },
-      api: {
-        prod: { base: "" },
-        qa: { base: "" },
-      },
+      api: { mainnet: { base: "" }, testnet: { base: "" } },
     },
     [AppName.Governance]: {
       web: {
@@ -43,13 +40,13 @@ export const magicStrings = {
         custom: { base: processEnv.CUSTOM_URL },
       },
       api: {
-        prod: { base: processEnv.GOVERNANCE_PROD_API_URL },
-        qa: { base: processEnv.GOVERNANCE_QA_API_URL },
+        mainnet: { base: processEnv.GOVERNANCE_MAINNET_API_URL },
+        testnet: { base: processEnv.GOVERNANCE_TESTNET_API_URL },
       },
     },
     [AppName.SquidRouter]: {
       web: { prod: { base: "https://app.squidrouter.com" } },
-      api: { prod: { base: "" } },
+      api: { mainnet: { base: "" }, testnet: { base: "" } },
     },
   },
   chain: {
@@ -62,9 +59,11 @@ export const magicStrings = {
     abi: governanceAbi,
     testnet: {
       governorAddress: "0x23173Ac37b8E4e5a60d787aC543B3F51e8f398b4" as Address,
+      apiKey: processEnv.GOVERNANCE_TESTNET_API_KEY,
     },
     mainnet: {
       governorAddress: "0x47036d78bB3169b4F5560dD77BF93f4412A59852" as Address,
+      apiKey: processEnv.GOVERNANCE_MAINNET_API_KEY,
     },
     generateProposalData({
       shouldMarkToExecute: shouldMarkToExecute = false,
