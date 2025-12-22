@@ -31,10 +31,10 @@ export class EnvHelper {
   getBaseApiUrl(): string {
     if (this.isCustomUrl()) {
       return this.getApp() === AppName.AppMento
-        ? magicStrings.url["app-mento"].api.prod.base
-        : magicStrings.url["governance"].api.qa.base;
+        ? magicStrings.url["app-mento"].api.testnet.base
+        : magicStrings.url["governance"].api.testnet.base;
     }
-    return magicStrings.url[this.getApp()].api[this.getEnv()].base;
+    return magicStrings.url[this.getApp()].api[this.getChainType()].base;
   }
 
   getSeedPhrase(): string {
@@ -75,9 +75,9 @@ export class EnvHelper {
   }
 
   getGovernanceApiKey(): string {
-    return this.isProd()
-      ? processEnv.GOVERNANCE_PROD_API_KEY
-      : processEnv.GOVERNANCE_QA_API_KEY;
+    return this.isMainnet()
+      ? processEnv.GOVERNANCE_MAINNET_API_KEY
+      : processEnv.GOVERNANCE_TESTNET_API_KEY;
   }
 
   getChainDetails() {
