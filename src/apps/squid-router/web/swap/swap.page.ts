@@ -31,6 +31,14 @@ export class SwapPage extends BasePage {
 
   allChainsButton = new Button(this.ef.role("button", { name: "All Chains" }));
 
+  chainInput = new Input(this.ef.placeholder("Chain"));
+  chainListRoot = this.ef.class(
+    "tw-gap-squid-xxs tw-py-squid-xs tw-flex tw-flex-col",
+  );
+  chainList = {
+    celo: new Label(this.chainListRoot.locator(this.ef.text("Celo"))),
+  };
+
   approveButton = new Button(
     this.ef.role("button", { name: "Give permission to use tokens" }),
   );
@@ -43,10 +51,11 @@ export class SwapPage extends BasePage {
   yourTokensLabel = new Label(this.ef.text("Your tokens"));
 
   getTokenButtonByName(name: string, { exact = false } = {}): Button {
-    const isCelo = name === TokenSymbol.CELO;
-    // There are two CELO buttons
+    // There are several CELO and USDC buttons
+    const secondTokenButtons = [TokenSymbol.CELO, TokenSymbol.USDC] as string[];
+    const isSecondToken = secondTokenButtons.includes(name);
     return new Button(
-      this.ef.role("button", { name, exact }).nth(isCelo ? 2 : 0),
+      this.ef.role("button", { name, exact }).nth(isSecondToken ? 1 : 0),
     );
   }
 

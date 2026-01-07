@@ -115,14 +115,25 @@ export class SwapService extends BaseService {
     await this.page.tokenNameInput.enterText(tokenName);
   }
 
-  async selectToken({ token, isSellToken }: ISelectTokenArgs): Promise<void> {
+  async selectToken({
+    token,
+    isSellToken,
+    chainName = "Celo",
+  }: ISelectTokenArgs): Promise<void> {
     await this.openTokenPicker({ isSellToken });
+    await this.selectChain(chainName);
     await this.enterTokenName(token as string);
     await this.page.yourTokensLabel.waitForDisplayed(timeouts.m);
     const tokenButton = this.page.getTokenButtonByName(token as string);
     await tokenButton.waitForDisplayed(timeouts.xl);
     await tokenButton.click({ force: true });
     await this.page.allChainsButton.waitForDisappeared(timeouts.s);
+  }
+
+  async selectChain(chainName: string): Promise<void> {
+    await this.page.chainInput.enterText(chainName);
+    await this.page.chainList.celo.waitForDisplayed(timeouts.m);
+    await this.page.chainList.celo.click({ force: true });
   }
 
   async expectUpdatedBalance({
@@ -168,4 +179,5 @@ interface IFillAmountArgs {
 interface ISelectTokenArgs {
   token: TokenSymbol;
   isSellToken: boolean;
+  chainName?: string;
 }
