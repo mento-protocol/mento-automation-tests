@@ -9,79 +9,78 @@ const testCases = [
   // CELO
   {
     sellToken: TokenSymbol.CELO,
-    buyToken: TokenSymbol.cUSD,
+    buyToken: TokenSymbol.USDm,
   },
-  // cUSD
+  // USDm
   {
-    sellToken: TokenSymbol.cUSD,
-    buyToken: TokenSymbol.cEUR,
+    sellToken: TokenSymbol.USDm,
+    buyToken: TokenSymbol.EURm,
   },
   {
-    sellToken: TokenSymbol.cREAL,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.BRLm,
+    buyToken: TokenSymbol.USDm,
   },
 
   // USDT
   {
     sellToken: TokenSymbol["USD₮"],
-    buyToken: TokenSymbol.cUSD,
+    buyToken: TokenSymbol.USDm,
     disable: { reason: "Cannot get USDT address by mento sdk" },
   },
-  // cKES
+  // KESm
   {
-    sellToken: TokenSymbol.cKES,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.KESm,
+    buyToken: TokenSymbol.USDm,
   },
-  // PUSO
+  // PHPm
   {
-    sellToken: TokenSymbol.PUSO,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.PHPm,
+    buyToken: TokenSymbol.USDm,
   },
-  // cCOP
+  // COPm
   {
-    sellToken: TokenSymbol.cCOP,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.COPm,
+    buyToken: TokenSymbol.USDm,
   },
-  // eXOF
+  // XOFm
   {
-    sellToken: TokenSymbol.eXOF,
-    buyToken: TokenSymbol.cUSD,
-    disable: { reason: "No eXOF token" },
+    sellToken: TokenSymbol.XOFm,
+    buyToken: TokenSymbol.USDm,
   },
   // USDC
   {
     sellToken: TokenSymbol.USDC,
-    buyToken: TokenSymbol.cEUR,
+    buyToken: TokenSymbol.EURm,
   },
-  // cGHS
+  // GHSm
   {
-    sellToken: TokenSymbol.cGHS,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.GHSm,
+    buyToken: TokenSymbol.USDm,
   },
-  // cGBP
+  // GBPm
   {
-    sellToken: TokenSymbol.cGBP,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.GBPm,
+    buyToken: TokenSymbol.USDm,
   },
-  // cAUD
+  // AUDm
   {
-    sellToken: TokenSymbol.cAUD,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.AUDm,
+    buyToken: TokenSymbol.USDm,
   },
-  // cCHF
+  // CHFm
   {
-    sellToken: TokenSymbol.cCHF,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.CHFm,
+    buyToken: TokenSymbol.USDm,
   },
-  // cJPY
+  // JPYm
   {
-    sellToken: TokenSymbol.cJPY,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.JPYm,
+    buyToken: TokenSymbol.USDm,
   },
-  // cNGN
+  // NGNm
   {
-    sellToken: TokenSymbol.cNGN,
-    buyToken: TokenSymbol.cUSD,
+    sellToken: TokenSymbol.NGNm,
+    buyToken: TokenSymbol.USDm,
   },
 ];
 
