@@ -2,6 +2,7 @@ import { ElementFinderHelper } from "@helpers/element-finder/element-finder.help
 import { Button, ElementsList, Input, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
 import { LockAction } from "./voting-power.service";
+import { ElementAttribute } from "@helpers/element-finder/element-finder.helpet.types";
 
 export class VotingPowerPage extends BasePage {
   constructor(protected override ef: ElementFinderHelper) {
@@ -65,19 +66,29 @@ export class VotingPowerPage extends BasePage {
 
   staticElements = [this.headerLabel];
 
+  async getLock(root: Label): Promise<ILock> {
+    return {
+      root,
+      updateButton: new Button(
+        root.element.locator(this.ef.dataTestId("updateLockButton")),
+      ),
+      badgeLabel: new Label(
+        root.element.locator(this.ef.dataTestId("lockCardBadge")),
+      ),
+      amountLabel: new Label(
+        root.element.locator(
+          this.ef.custom({
+            attributeName: ElementAttribute.dataSlot,
+            attributeValue: "lock-card-amount",
+          }),
+        ),
+      ),
+    };
+  }
+
   async getAllLocks(): Promise<ILock[]> {
     const allLockCards = await this.allLockCards.getAll();
-    return allLockCards.map(root => {
-      return {
-        root,
-        updateButton: new Button(
-          root.element.locator(this.ef.dataTestId("updateLockButton")),
-        ),
-        badgeLabel: new Label(
-          root.element.locator(this.ef.dataTestId("lockCardBadge")),
-        ),
-      };
-    });
+    return Promise.all(allLockCards.map(root => this.getLock(root)));
   }
 
   async filterLocksByType(type: LockType, allLocks: ILock[]): Promise<ILock[]> {
@@ -89,17 +100,18 @@ export class VotingPowerPage extends BasePage {
     return filteredLocks;
   }
 
+  async filterLocksByAmount(allLocks: ILock[]): Promise<ILock[]> {
+    const filteredLocks: ILock[] = [];
+    for (const lock of allLocks) {
+      const amount = Number(await lock.amountLabel.getText());
+      amount >= 1 && filteredLocks.push(lock);
+    }
+    return filteredLocks;
+  }
+
   async getCurrentLockByIndex(index: number): Promise<ILock> {
     const root = new Label(this.ef.dataTestId(`lockCard_${index}`));
-    return {
-      root,
-      updateButton: new Button(
-        root.element.locator(this.ef.dataTestId("updateLockButton")),
-      ),
-      badgeLabel: new Label(
-        root.element.locator(this.ef.dataTestId("lockCardBadge")),
-      ),
-    };
+    return this.getLock(root);
   }
 
   async getCurrentLockByLockType(
@@ -114,18 +126,26 @@ export class VotingPowerPage extends BasePage {
       root: lock.root,
       updateButton: lock.updateButton,
       badgeLabel: lock.badgeLabel,
+      amountLabel: lock.amountLabel,
     };
   }
 
   async getCurrentLock({ index, type }: IGetCurrentLockParams): Promise<ILock> {
     const allLocks = await this.getAllLocks();
     const filteredLocks = await this.filterLocksByType(type, allLocks);
-    const lock = filteredLocks[index];
-    return {
-      root: lock.root,
-      updateButton: lock.updateButton,
-      badgeLabel: lock.badgeLabel,
-    };
+    const lock = index ? filteredLocks[index] : filteredLocks[0];
+    return this.getLock(lock.root);
+  }
+
+  async getExtendableLock({
+    type,
+    index,
+  }: IGetCurrentLockParams): Promise<ILock> {
+    const allLocks = await this.getAllLocks();
+    const typedLocks = await this.filterLocksByType(type, allLocks);
+    const extendableLocks = await this.filterLocksByAmount(typedLocks);
+    const lock = index ? extendableLocks[index] : extendableLocks[0];
+    return this.getLock(lock.root);
   }
 
   getConfirmationPopup(action: LockAction): IGetConfirmationPopup {
@@ -167,14 +187,15 @@ export interface IGetConfirmationPopup {
 }
 
 interface IGetCurrentLockParams {
-  index: number;
   type: LockType;
+  index?: number;
 }
 
 export interface ILock {
   root: Label;
   updateButton: Button;
   badgeLabel: Label;
+  amountLabel: Label;
 }
 
 export enum LockType {

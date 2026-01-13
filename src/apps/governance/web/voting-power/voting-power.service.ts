@@ -54,12 +54,14 @@ export class VotingPowerService extends BaseService {
     lockIndex = 0,
     updateAction = LockAction.topUp,
     lockType = LockType.Personal,
-  }: IUpdateLockArgs): Promise<void> {
+  }: IUpdateLockParams): Promise<void> {
     const shouldExtendPeriod =
       updateAction === LockAction.extend ||
       updateAction === LockAction.topUpAndExtend;
 
-    await this.openCurrentLock(lockIndex, lockType);
+    updateAction === LockAction.extend
+      ? await this.openExtendableLock(lockType, lockIndex)
+      : await this.openCurrentLock(lockType, lockIndex);
 
     if (shouldExtendPeriod) {
       log.debug("Extending lock period");
@@ -73,7 +75,8 @@ export class VotingPowerService extends BaseService {
       await this.delegate(delegateAddress, { isCreate: false });
     }
 
-    await this.updateLockModalPage.amountInput.enterText(lockAmount);
+    lockAmount &&
+      (await this.updateLockModalPage.amountInput.enterText(lockAmount));
     await this.updateLockModalPage.enterAmountButton.waitForDisappeared(
       timeouts.xs,
     );
@@ -90,8 +93,20 @@ export class VotingPowerService extends BaseService {
     await page.delegateAddressInput.enterText(delegateAddress);
   }
 
-  async openCurrentLock(lockIndex: number, lockType: LockType): Promise<void> {
+  async openCurrentLock(lockType: LockType, lockIndex?: number): Promise<void> {
     const lock = await this.page.getCurrentLock({
+      index: lockIndex,
+      type: lockType,
+    });
+    await lock.updateButton.click();
+    await this.updateLockModalPage.verifyIsOpen();
+  }
+
+  async openExtendableLock(
+    lockType: LockType,
+    lockIndex?: number,
+  ): Promise<void> {
+    const lock = await this.page.getExtendableLock({
       index: lockIndex,
       type: lockType,
     });
@@ -397,8 +412,8 @@ interface ICreateLockArgs {
   shouldExtendPeriod?: boolean;
 }
 
-interface IUpdateLockArgs {
-  lockAmount: number | string;
+interface IUpdateLockParams {
+  lockAmount?: number | string;
   delegateAddress?: string;
   lockIndex?: number;
   lockType?: LockType;
