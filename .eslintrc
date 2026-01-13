@@ -15,7 +15,7 @@
     "sourceType": "module",
     "requireConfigFile": false
   },
-  "plugins": ["prettier", "@typescript-eslint"],
+  "plugins": ["prettier", "@typescript-eslint", "unused-imports"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -67,7 +67,14 @@
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-inferrable-types": "warn",
     "@typescript-eslint/ban-ts-comment": "warn",
-    "no-empty-pattern": "off"
-    //    "unused-imports/no-unused-imports": "error"
+    "no-empty-pattern": "off",
+    "unused-imports/no-unused-imports": "error",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "CallExpression[callee.property.name='pause'][callee.object.type='MemberExpression'][callee.object.property.name='browser']",
+        "message": "this.browser.pause() is forbidden. Remove before committing."
+      }
+    ]
   }
 }
