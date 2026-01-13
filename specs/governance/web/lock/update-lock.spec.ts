@@ -332,7 +332,6 @@ suite({
 
         await app.votingPower.waitForLocks();
         await app.votingPower.updateLock({
-          lockAmount: 0,
           lockType: LockType.Personal,
           updateAction: LockAction.extend,
         });
@@ -373,7 +372,6 @@ suite({
 
         await app.votingPower.waitForLocks();
         await app.votingPower.updateLock({
-          lockAmount: 0,
           lockType: LockType.Delegated,
           updateAction: LockAction.extend,
         });

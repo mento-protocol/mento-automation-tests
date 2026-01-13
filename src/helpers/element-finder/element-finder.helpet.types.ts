@@ -7,6 +7,7 @@ export enum ElementAttribute {
   role = "role",
   title = "title",
   name = "name",
+  dataSlot = "data-slot",
 }
 
 export enum ElementTag {
