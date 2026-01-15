@@ -17,6 +17,8 @@ on:
         options:
           - "app-mento"
           - "governance"
+          - "squid-router"
+          - "open-ocean"
       SPECS_REGEX:
         description: "Specs regex (supports: Tags, Spec names, Test names)"
         required: true

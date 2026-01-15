@@ -294,49 +294,6 @@ export abstract class BaseElement {
       return false;
     }
   }
-
-  // async click2({
-  //   timeout = timeouts.xs,
-  //   force = false,
-  //   times,
-  //   retry = 1,
-  // }: IClickParams = {}): Promise<void> {
-  //   return retry
-  //     ? await waiterHelper.retry(async () => {
-  //         return await this.baseClick({ timeout, force, times });
-  //       }, retry)
-  //     : await this.baseClick({ timeout, force, times });
-  // }
-
-  // private async baseClick({
-  //   timeout = timeouts.xs,
-  //   throwError = true,
-  //   force = false,
-  //   times,
-  //   retry = 1,
-  // }: IClickParams = {}): Promise<void> {
-  //   try {
-  //     console.log("start");
-  //     if (await this.isEnabled({ timeout })) {
-  //       console.log("enabled");
-  //       return await this.element.click({ timeout, clickCount: times });
-  //     } else {
-  //       console.log("disabled");
-  //       if (force) {
-  //         console.log("force", force);
-  //         return await this.element.click({
-  //           timeout,
-  //           force,
-  //           clickCount: times,
-  //         });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     const errorMessage = `Can't click on '${this.element}' element.\nDetails: ${error.message}`;
-  //     if (throwError) throw new Error(errorMessage);
-  //     log.error(errorMessage);
-  //   }
-  // }
 }
 
 interface ILocatorOptions {
