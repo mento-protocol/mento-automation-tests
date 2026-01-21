@@ -36,24 +36,24 @@ const testCases = [
     toToken: Token.USDm,
     id: "T2511996c",
   },
-  // cKES
+  // KESm
   {
     fromToken: Token.KESm,
     toToken: Token.USDm,
     id: "Tbe02fb8d",
     fromAmount: "0.1",
   },
-  // PUSO
+  // PHPm
   {
     fromToken: Token.PHPm,
     toToken: Token.USDm,
     id: "T7d8911a6",
   },
-  // cCOP
+  // COPm
   {
     fromToken: Token.COPm,
     toToken: Token.USDm,
-    fromAmount: "45",
+    fromAmount: "1",
     id: "Ta2aa287f",
   },
   // USDC
@@ -85,7 +85,7 @@ const testCases = [
     ]),
     id: "T92258405",
   },
-  // cGHS
+  // GHSm
   {
     fromToken: Token.GHSm,
     toToken: retryDataHelper.getRandomToken(Token.GHSm, [
@@ -96,45 +96,45 @@ const testCases = [
     id: "T8da32b9f",
     fromAmount: "0.1",
   },
-  // cGBP
+  // GBPm
   {
     fromToken: Token.GBPm,
     toToken: Token.USDm,
     id: "T22f94bbb",
   },
-  // cZAR
+  // ZARm
   {
     fromToken: Token.ZARm,
     toToken: Token.USDm,
     id: "T4b1b444b",
     fromAmount: "0.1",
   },
-  // cCAD
+  // CADm
   {
     fromToken: Token.CADm,
     toToken: Token.USDm,
     id: "T0869d367",
   },
-  // cAUD
+  // AUDm
   {
     fromToken: Token.AUDm,
     toToken: Token.USDm,
     id: "T1d46dc17",
   },
-  // cCHF
+  // CHFm
   {
     fromToken: Token.CHFm,
     toToken: Token.USDm,
     id: "Tc750f6e5",
   },
-  // cNGN
+  // NGNm
   {
     fromToken: Token.NGNm,
     fromAmount: "0.50",
     toToken: Token.USDm,
     id: "T280cb27f",
   },
-  // cJPY
+  // JPYm
   {
     fromToken: Token.JPYm,
     toToken: Token.USDm,
