@@ -58,5 +58,11 @@ export class ProposalViewPage extends BasePage {
   voteStatusLabel = new Label(this.ef.dataTestId("voteStatus"));
   inVetoPeriodLabel = new Label(this.ef.text("In Veto Period"));
 
-  staticElements = [this.proposalTitleLabel, this.proposalStateLabel];
+  staticElements = [
+    this.proposalTitleLabel,
+    this.proposalStateLabel,
+    this.voteButtons.yes,
+    this.voteButtons.no,
+    this.voteButtons.abstain,
+  ];
 }
