@@ -76,7 +76,7 @@ export class MainGovernanceService extends BaseService {
     timeout: number = timeouts.m,
   ): Promise<void> {
     await this.waitForProposalByTitle(title, timeout);
-    await (await this.page.getProposalByTitle(title)).click();
+    await this.page.getProposalByTitle(title).click();
     await this.proposalView.verifyIsOpen();
   }
 

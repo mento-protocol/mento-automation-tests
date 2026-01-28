@@ -1,6 +1,9 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { Button, ElementsList, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
+import { loggerHelper } from "@helpers/logger/logger.helper";
+
+const log = loggerHelper.get("MainGovernancePage");
 
 export class MainGovernancePage extends BasePage {
   constructor(protected override ef: ElementFinderHelper) {
@@ -41,8 +44,14 @@ export class MainGovernancePage extends BasePage {
 
   allProposals = new ElementsList(Button, this.ef.dataTestId("proposal_"));
 
-  async getProposalByTitle(title: string): Promise<Button> {
-    return new Button(this.ef.dataTestId(`proposal_${title}`));
+  getProposalByTitle(title: string): Button {
+    try {
+      return new Button(this.ef.dataTestId(`proposal_${title}`));
+    } catch (error) {
+      const errorMessage = `Proposal with title '${title}' not found`;
+      log.error(errorMessage);
+      throw new Error(errorMessage);
+    }
   }
 
   staticElements = [
