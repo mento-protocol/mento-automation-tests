@@ -24,7 +24,9 @@ suite({
           executeTitleSuffix,
         );
 
-        await app.main.openProposalById(foundProposal.proposalId);
+        await app.main.openProposalById(foundProposal.proposalId, {
+          verifyOnPreviewProposalState: ProposalState.Succeeded,
+        });
         await app.proposalView.page.verifyIsOpen();
         await app.proposalView.waitForProposalState(ProposalState.Succeeded);
 

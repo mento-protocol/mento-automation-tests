@@ -99,11 +99,23 @@ export class ProposalViewService extends BaseService {
   async waitForTotalVotesToLoad(): Promise<boolean> {
     return waiterHelper.wait(
       async () => (await this.getTotalVotes()) > 0,
-      timeouts.m,
+      timeouts.minute * 2,
       {
         errorMessage: "Total votes are not loaded!",
       },
     );
+  }
+
+  async verifyActiveStateOnPreview(timeout = timeouts.xs): Promise<void> {
+    await Promise.all([
+      this.page.voteButtons.yes.waitForDisplayed(timeout),
+      this.page.voteButtons.no.waitForDisplayed(timeout),
+      this.page.voteButtons.abstain.waitForDisplayed(timeout),
+    ]);
+  }
+
+  async verifySucceededStateOnPreview(timeout = timeouts.xs): Promise<void> {
+    await this.page.queueForExecutionButton.waitForDisplayed(timeout);
   }
 
   async getUsedVoteOption(): Promise<Vote> {
