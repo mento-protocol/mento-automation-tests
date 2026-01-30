@@ -155,6 +155,10 @@ export class AssemblerHelper {
         ef: ElementFinderHelper,
         baseDependencies: IBaseWebDependencies,
       ) => {
+        const proposalView = new ProposalViewService({
+          page: new ProposalViewPage(ef),
+          ...baseDependencies,
+        });
         return {
           governance: {
             main: new MainGovernanceService({
@@ -166,7 +170,7 @@ export class AssemblerHelper {
               }),
               createProposalPage: new CreateProposalPage(ef),
               votingPowerPage: new VotingPowerPage(ef),
-              proposalView: new ProposalViewPage(ef),
+              proposalView,
             }),
             createProposal: new CreateProposalService({
               page: new CreateProposalPage(ef),
@@ -178,10 +182,7 @@ export class AssemblerHelper {
               updateLockModalPage: new UpdateLockModalPage(ef),
               ...baseDependencies,
             }),
-            proposalView: new ProposalViewService({
-              page: new ProposalViewPage(ef),
-              ...baseDependencies,
-            }),
+            proposalView,
           },
         };
       },

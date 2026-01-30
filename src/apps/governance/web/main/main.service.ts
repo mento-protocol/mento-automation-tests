@@ -7,10 +7,13 @@ import {
 import { MainGovernancePage } from "./main.page";
 import { CreateProposalPage } from "../create-proposal/create-proposal.page";
 import { timeouts } from "@constants/timeouts.constants";
-import { ProposalViewPage } from "../proposal-view/proposal-view.page";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { VotingPowerPage } from "../voting-power/voting-power.page";
 import { loggerHelper } from "@helpers/logger/logger.helper";
+import {
+  ProposalState,
+  ProposalViewService,
+} from "../proposal-view/proposal-view.service";
 
 const log = loggerHelper.get("MainGovernanceService");
 
@@ -19,7 +22,7 @@ export class MainGovernanceService extends BaseService {
   public override page: MainGovernancePage = null;
   public connectWalletModal: ConnectWalletModalService = null;
   public createProposalPage: CreateProposalPage = null;
-  public proposalView: ProposalViewPage = null;
+  public proposalView: ProposalViewService = null;
   public votingPowerPage: VotingPowerPage = null;
 
   constructor(args: IMainGovernanceServiceArgs) {
@@ -71,18 +74,43 @@ export class MainGovernanceService extends BaseService {
     await this.votingPowerPage.verifyIsOpen();
   }
 
+  async verifyProposalStateOnPreview({
+    verifyOnPreviewProposalState,
+    timeout = timeouts.xs,
+  }: IVerifyProposalStateOnPreview) {
+    switch (verifyOnPreviewProposalState) {
+      case ProposalState.Active:
+        return this.proposalView.verifyActiveStateOnPreview(timeout);
+      case ProposalState.Succeeded:
+        return this.proposalView.verifySucceededStateOnPreview(timeout);
+      default:
+        throw new Error(
+          `verifyProposalStateOnPreview: Unsupported state "${verifyOnPreviewProposalState}"`,
+        );
+    }
+  }
+
   async openProposalByTitle(
     title: string,
-    timeout: number = timeouts.m,
+    { verifyOnPreviewProposalState, timeout }: IVerifyProposalStateOnPreview,
   ): Promise<void> {
     await this.waitForProposalByTitle(title, timeout);
     await this.page.getProposalByTitle(title).click();
     await this.proposalView.verifyIsOpen();
+    if (verifyOnPreviewProposalState) {
+      await this.verifyProposalStateOnPreview({ verifyOnPreviewProposalState });
+    }
   }
 
-  async openProposalById(id: string): Promise<void> {
+  async openProposalById(
+    id: string,
+    { verifyOnPreviewProposalState }: IVerifyProposalStateOnPreview,
+  ): Promise<void> {
     await this.navigateToAppPage(`/proposals/${id}`);
     await this.proposalView.verifyIsOpen();
+    if (verifyOnPreviewProposalState) {
+      await this.verifyProposalStateOnPreview({ verifyOnPreviewProposalState });
+    }
   }
 
   async openContractAddressesSection(): Promise<void> {
@@ -141,10 +169,19 @@ export class MainGovernanceService extends BaseService {
   }
 }
 
+interface IVerifyProposalStateOnPreview {
+  verifyOnPreviewProposalState: VerifyOnPreviewProposalState;
+  timeout?: number;
+}
+
+type VerifyOnPreviewProposalState =
+  | ProposalState.Active
+  | ProposalState.Succeeded;
+
 export interface IMainGovernanceServiceArgs extends IBaseServiceArgs {
   page: MainGovernancePage;
   connectWalletModal: ConnectWalletModalService;
   createProposalPage: CreateProposalPage;
-  proposalView: ProposalViewPage;
+  proposalView: ProposalViewService;
   votingPowerPage: VotingPowerPage;
 }

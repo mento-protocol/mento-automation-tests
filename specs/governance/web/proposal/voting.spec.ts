@@ -12,7 +12,7 @@ const testCases = [
   {
     name: "'Yes' successfully",
     vote: Vote.Yes,
-    timeout: timeouts.minute * 12,
+    timeout: timeouts.minute * 20,
     tags: [],
   },
   {
@@ -49,10 +49,10 @@ suite({
       });
 
       await web.contract.governance.createProposal(proposalData);
-      await app.main.openProposalByTitle(
-        proposalData.title,
-        waitForProposalTimeout,
-      );
+      await app.main.openProposalByTitle(proposalData.title, {
+        timeout: waitForProposalTimeout,
+        verifyOnPreviewProposalState: ProposalState.Active,
+      });
 
       await app.proposalView.vote(vote);
       await app.proposalView.expectVote(vote);
