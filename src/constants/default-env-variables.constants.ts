@@ -1,6 +1,7 @@
-export const defaultEnvVariables = `APP=app-mento
-#APP=governance
-#APP=squid-router
+export const defaultEnvVariables = `APP_NAME=app-mento
+#APP_NAME=governance
+#APP_NAME=squid-router
+#APP_NAME=open-ocean
 ENV=prod
 #ENV=qa
 
