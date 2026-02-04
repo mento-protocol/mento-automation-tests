@@ -15,6 +15,7 @@ export class SquidConnectWalletModalService extends BaseService {
   }
 
   async selectWalletByName(name: WalletName): Promise<void> {
+    await this.page.walletList[name].waitForDisplayed(timeouts.s);
     return this.page.walletList[name].click({ timeout: timeouts.xxs });
   }
 
