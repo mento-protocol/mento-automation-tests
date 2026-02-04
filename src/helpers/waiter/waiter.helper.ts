@@ -134,6 +134,21 @@ export const waiterHelper = {
     }
     return actionCallback();
   },
+
+  async executeUntil<T>(
+    callback: () => Promise<T>,
+    timeoutMs: number,
+    errorMessage = "Operation timed out",
+  ): Promise<T> {
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => {
+        const message = `${errorMessage} after ${timeoutMs}ms`;
+        log.error(message);
+        reject(new Error(message));
+      }, timeoutMs);
+    });
+    return Promise.race([callback(), timeoutPromise]);
+  },
 };
 
 function hasTime(startTime: number, timeout: number): boolean {

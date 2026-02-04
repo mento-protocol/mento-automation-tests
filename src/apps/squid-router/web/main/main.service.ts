@@ -4,6 +4,7 @@ import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { MainSquidRouterPage } from "./main.page";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { SquidConnectWalletModalService } from "../squid-connect-wallet-modal/squid-connect-wallet-modal.service";
+import { timeouts } from "@constants/index";
 
 @ClassLog
 export class MainSquidRouterService extends BaseService {
@@ -28,6 +29,7 @@ export class MainSquidRouterService extends BaseService {
   }
 
   async connectWalletByName(walletName: WalletName): Promise<void> {
+    await this.page.connectWalletButton.waitForDisplayed(timeouts.s);
     await waiterHelper.retry(
       async () => {
         await this.openConnectWalletModal();
