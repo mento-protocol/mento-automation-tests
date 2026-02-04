@@ -36,7 +36,11 @@ export const waiterHelper = {
       continueWithException = resolveWhenNoException,
       errorMessage,
     } = options;
+
+    const maxRetries = Math.max(0, Math.min(retryCount, 100));
+    let remainingRetries = maxRetries;
     let caughtError: Error = null;
+
     do {
       try {
         const result = await callback();
@@ -49,8 +53,14 @@ export const waiterHelper = {
           break;
         }
       }
-      await this.logErrorAndSleep(errorMessage, caughtError, interval);
-    } while (retryCount--);
+      if (remainingRetries > 0) {
+        log.debug(
+          `Retry attempt ${maxRetries - remainingRetries + 1}/${maxRetries}`,
+        );
+        await this.logErrorAndSleep(errorMessage, caughtError, interval);
+      }
+    } while (remainingRetries-- > 0);
+
     throwError && logRetryFailedAndThrow(errorMessage, caughtError);
     log.warn(`${errorMessage}${caughtError ? `:${caughtError.message}` : ""}`);
   },
