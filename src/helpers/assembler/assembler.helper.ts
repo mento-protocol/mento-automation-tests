@@ -37,6 +37,14 @@ import { SquidConnectWalletModalPage } from "../../apps/squid-router/web/squid-c
 import { SwapService as SquidRouterSwapService } from "../../apps/squid-router/web/swap/swap.service";
 import { SwapPage as SquidRouterSwapPage } from "../../apps/squid-router/web/swap/swap.page";
 import { UpdateLockModalPage } from "../../apps/governance/web/voting-power/update-lock-modal.page";
+import { MainOpenOceanService } from "../../apps/open-ocean/web/main/main.service";
+import { MainOpenOceanPage } from "../../apps/open-ocean/web/main/main.page";
+import { OpenOceanWalletModalService } from "../../apps/open-ocean/web/open-ocean-wallet-modal/open-ocean-wallet-modal.service";
+import { OpenOceanWalletModalPage } from "../../apps/open-ocean/web/open-ocean-wallet-modal/open-ocean-wallet-modal.page";
+import { OpenOceanSwapService } from "../../apps/open-ocean/web/swap/swap.service";
+import { ConfirmOrderPopupPage } from "../../apps/open-ocean/web/swap/confirm-order-popup.page";
+import { ConfirmModalPage } from "../../apps/open-ocean/web/swap/confirm-modal.page";
+import { OpenOceanSwapPage } from "../../apps/open-ocean/web/swap/swap.page";
 
 /**
  * 🚀 Goal
@@ -207,6 +215,29 @@ export class AssemblerHelper {
           },
         };
       },
+      [AppName.OpenOcean]: (
+        ef: ElementFinderHelper,
+        baseDependencies: IBaseWebDependencies,
+      ) => {
+        return {
+          openOcean: {
+            main: new MainOpenOceanService({
+              page: new MainOpenOceanPage(ef),
+              ...baseDependencies,
+              connectWalletModal: new OpenOceanWalletModalService({
+                page: new OpenOceanWalletModalPage(ef),
+                ...baseDependencies,
+              }),
+            }),
+            swap: new OpenOceanSwapService({
+              page: new OpenOceanSwapPage(ef),
+              confirmModalPage: new ConfirmModalPage(ef),
+              confirmOrderPopupPage: new ConfirmOrderPopupPage(ef),
+              ...baseDependencies,
+            }),
+          },
+        };
+      },
     },
     api: {
       [AppName.AppMento]: () => {
@@ -222,6 +253,9 @@ export class AssemblerHelper {
       },
       [AppName.SquidRouter]: () => {
         return { squidRouter: {} };
+      },
+      [AppName.OpenOcean]: () => {
+        return { openOcean: {} };
       },
     },
   };
@@ -289,7 +323,11 @@ export interface ISquidRouterApi {
   appMento: never;
 }
 
-export type WebApp = IAppMentoWebApp | IGovernanceWebApp | ISquidRouterWebApp;
+export type WebApp =
+  | IAppMentoWebApp
+  | IGovernanceWebApp
+  | ISquidRouterWebApp
+  | IOpenOceanWebApp;
 
 export type ApiApp = IAppMentoApi | IGovernanceApi | ISquidRouterApi;
 
@@ -303,18 +341,33 @@ export interface IAppMentoWebApp {
   appMento: IAppMentoApp;
   governance?: never;
   squidRouter?: never;
+  openOcean?: never;
 }
 
 export interface IGovernanceWebApp {
   governance: IGovernanceApp;
   appMento?: never;
   squidRouter?: never;
+  openOcean?: never;
 }
 
 export interface ISquidRouterWebApp {
   squidRouter: ISquidRouterApp;
   appMento?: never;
   governance?: never;
+  openOcean?: never;
+}
+
+export interface IOpenOceanWebApp {
+  openOcean: IOpenOceanApp;
+  appMento?: never;
+  governance?: never;
+  squidRouter?: never;
+}
+
+export interface IOpenOceanApp {
+  main: MainOpenOceanService;
+  swap: OpenOceanSwapService;
 }
 
 export interface ISquidRouterApp {

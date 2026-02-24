@@ -48,6 +48,12 @@ export const magicStrings = {
       web: { prod: { base: "https://app.squidrouter.com" } },
       api: { mainnet: { base: "" }, testnet: { base: "" } },
     },
+    [AppName.OpenOcean]: {
+      web: {
+        prod: { base: "https://app.openocean.finance", swap: "swap/celo" },
+      },
+      api: { prod: { base: "" } },
+    },
   },
   chain: {
     testnet: { ...testnetDetails },
@@ -112,6 +118,12 @@ export const magicStrings = {
       return {
         webSpecs: `${this.root}/specs/squid-router/web`,
         apiSpecs: `${this.root}/specs/squid-router/api`,
+      };
+    },
+    get openOcean() {
+      return {
+        webSpecs: `${this.root}/specs/open-ocean/web`,
+        apiSpecs: `${this.root}/specs/open-ocean/api`,
       };
     },
   },
