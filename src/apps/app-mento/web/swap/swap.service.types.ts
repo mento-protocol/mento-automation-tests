@@ -36,7 +36,6 @@ export enum AmountType {
 
 export interface IFillFromOpts {
   sellAmount?: string;
-  buyAmount?: string;
   tokens?: ISelectTokensArgs;
   slippage?: Slippage;
   clicksOnSellTokenButton?: number;

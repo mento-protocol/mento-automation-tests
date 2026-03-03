@@ -12,8 +12,12 @@ export class ConfirmSwapPage extends BasePage {
   sellAmountLabel = new Label(this.ef.dataTestId("sellAmountLabel"));
   buyAmountLabel = new Label(this.ef.dataTestId("buyAmountLabel"));
 
-  sellUsdAmountLabel = new Label(this.ef.dataTestId("sellUsdAmountLabel"));
-  buyUsdAmountLabel = new Label(this.ef.dataTestId("buyUsdAmountLabel"));
+  sellUsdAmountLabel = new Label(
+    this.ef.dataTestId("sellUsdAmountLabel", { exact: false }).first(),
+  );
+  buyUsdAmountLabel = new Label(
+    this.ef.dataTestId("buyUsdAmountLabel", { exact: false }).first(),
+  );
 
   swapButton = new Button(this.ef.dataTestId("swapButton"));
   approveButton = new Button(this.ef.dataTestId("approveButton"));

@@ -3,7 +3,6 @@ import { defaultSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { TestTag } from "@constants/test.constants";
-import { AmountType } from "../../../../src/apps/app-mento/web/swap/swap.service.types";
 
 const exceedsTradingLimitAmount = "600000";
 const missingExceedsTradingLimitAmount = "6000000";
@@ -20,21 +19,20 @@ suite({
       testCaseId: "T2332ee03",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        await app.swap.fillForm({ sellAmount: defaultSwapAmount });
+        // TODO: Remove once a default tokens route is available
+        await app.swap.swapInputs();
+        await app.swap.fillForm({
+          sellAmount: defaultSwapAmount,
+          // TODO: Remove once a default tokens route is available
+          tokens: { buy: Token.GBPm },
+        });
         expect(await app.swap.isRateThere()).toBeTruthy();
-        const { beforeSwapRate, afterSwapRate } = await app.swap.swapInputs();
+        const { beforeSwapRate, afterSwapRate } = await app.swap.swapInputs({
+          shouldReturnRates: true,
+        });
         expect(beforeSwapRate).not.toEqual(afterSwapRate);
         await app.swap.proceedToConfirmation();
         expect(afterSwapRate).toEqual(await app.swap.confirm.getRate());
-      },
-    },
-    {
-      name: "The 'Sell' input is auto-calculating when 'Buy' is filled`",
-      testCaseId: "T9906952e",
-      test: async ({ web }) => {
-        const app = web.app.appMento;
-        await app.swap.fillForm({ buyAmount: "0.0001" });
-        expect(await app.swap.isAmountEmpty(AmountType.Sell)).toBeFalsy();
       },
     },
     {
@@ -61,8 +59,10 @@ suite({
         const maxBalance = (
           await app.main.getTokenBalanceByName(Token.CHFm)
         ).toString();
+        // TODO: Remove once a default tokens route is available
+        await app.swap.swapInputs();
         await app.swap.fillForm({
-          tokens: { sell: Token.CHFm, buy: Token.USDm },
+          tokens: { buy: Token.USDm },
         });
         await app.swap.useFullBalance();
         expect(await app.swap.getSellTokenAmount()).toEqual(maxBalance);
@@ -74,11 +74,12 @@ suite({
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        await app.swap.swapInputs({
-          shouldReturnRates: false,
-        });
+        // TODO: Remove once a default tokens route is available
+        await app.swap.swapInputs();
         await app.swap.fillForm({
           sellAmount: exceedsTradingLimitAmount,
+          // TODO: Remove once a default tokens route is available
+          tokens: { buy: Token.GBPm },
         });
         expect
           .soft(
@@ -95,8 +96,12 @@ suite({
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.appMento;
+        // TODO: Remove once a default tokens route is available
+        await app.swap.swapInputs();
         await app.swap.fillForm({
           sellAmount: missingExceedsTradingLimitAmount,
+          // TODO: Remove once a default tokens route is available
+          tokens: { buy: Token.GBPm },
         });
         expect
           .soft(
