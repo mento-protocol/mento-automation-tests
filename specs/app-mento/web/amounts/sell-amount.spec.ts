@@ -12,6 +12,11 @@ suite({
     const app = web.app.appMento;
     await app.main.connectWalletByName(WalletName.Metamask);
     await app.main.waitForBalanceToLoad({ shouldOpenSettings: true });
+    // TODO: Remove once a default tokens route is available
+    await app.swap.swapInputs();
+    await app.swap.fillForm({
+      tokens: { buy: Token.GBPm },
+    });
   },
   tests: [
     {
@@ -47,7 +52,7 @@ suite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         const celoBalance = await app.main.getTokenBalanceByName(Token.CELO);
-        await app.swap.fillForm({ buyAmount: celoBalance.toString() });
+        await app.swap.fillForm({ sellAmount: celoBalance.toString() });
         const highBuyAmount = await app.swap.getAmountByType(AmountType.Buy);
         await web.browser.refresh();
         await app.swap.fillForm({ sellAmount: highBuyAmount.toString() });

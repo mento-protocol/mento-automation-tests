@@ -27,7 +27,7 @@ suite({
             clicksOnSellTokenButton: 1,
           },
         });
-        await app.swap.swapInputs({ shouldReturnRates: false });
+        await app.swap.swapInputs();
         expect(await app.swap.getCurrentSellTokenName()).toEqual(Token.CELO);
         expect(await app.swap.getCurrentBuyTokenName()).toEqual(Token.BRLm);
       },
@@ -110,7 +110,7 @@ suite({
         test: async ({ web }: IExecution) => {
           const app = web.app.appMento;
           if (testCase.token === Token.USDm) {
-            await app.swap.swapInputs({ shouldReturnRates: false });
+            await app.swap.swapInputs();
           }
           await app.swap.fillForm({
             tokens: { sell: testCase.token },
