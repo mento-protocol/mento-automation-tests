@@ -133,7 +133,7 @@ export class MainAppMentoService extends BaseService {
   async waitForBalanceToLoad({
     shouldOpenSettings = false,
     shouldCloseSettings = false,
-    tokenToCheck = Token.CELO,
+    tokenToCheck = Token.USDm,
     throwError = true,
     shouldVerifyBalanceLoadingError = true,
   }: IWaitForBalanceToLoadOptions = {}): Promise<boolean> {

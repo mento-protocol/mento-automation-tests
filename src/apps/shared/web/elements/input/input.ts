@@ -19,6 +19,6 @@ export class Input extends BaseElement implements IInput {
         `Invalid text passed to enter: '${text}' with type '${typeof text}'`,
       );
     }
-    return this.element.fill(text.toString(), options);
+    return this.element.fill(text?.toString(), options);
   }
 }

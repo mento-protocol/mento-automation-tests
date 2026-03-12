@@ -3,14 +3,13 @@ import { getSwapAmount, Token } from "@constants/token.constants";
 import { suite } from "@helpers/suite/suite.helper";
 import { IExecution } from "@helpers/suite/suite.types";
 import { TestTag } from "@constants/test.constants";
-import { Slippage } from "../../../../src/apps/app-mento/web/swap/swap.service.types";
 import { envHelper } from "@helpers/env/env.helper";
 
 const isFork = envHelper.isFork();
 const defaultSwapAmount = getSwapAmount({ isFork });
 const tokens = {
-  from: Token.EURm,
-  to: Token.CELO,
+  from: Token.USDm,
+  to: Token.GBPm,
 };
 
 const testCases = [
@@ -24,12 +23,12 @@ const testCases = [
   },
   {
     name: `minimal (${tokens.from}/${tokens.to})`,
-    slippage: Slippage["0.5%"],
+    slippage: "0.1",
     id: "T0046ec8d",
   },
   {
     name: `max (${tokens.from}/${tokens.to})`,
-    slippage: Slippage["1.5%"],
+    slippage: "20",
     id: "Tb9505e3a",
   },
 ];
@@ -50,12 +49,15 @@ suite({
           const initialBalance = await app.main.getTokenBalanceByName(
             tokens.to,
           );
+          // TODO: Remove once a default tokens route is available
+          await app.swap.swapInputs();
           await app.swap.fillForm({
             slippage: testCase.slippage,
             tokens: {
               sell: tokens.from,
               buy: tokens.to,
-              clicksOnSellTokenButton: 1,
+              // TODO: Potentially enable this again
+              // clicksOnSellTokenButton: 1,
             },
             sellAmount: defaultSwapAmount,
           });

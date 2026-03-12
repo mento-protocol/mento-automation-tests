@@ -8,11 +8,11 @@ const isFork = envHelper.isFork();
 const defaultSwapAmount = getSwapAmount({ isFork });
 const pairs = {
   rejectApproval: {
-    from: Token.EURm,
-    to: Token.BRLm,
+    from: Token.PHPm,
+    to: Token.ZARm,
   },
   rejectSwap: {
-    from: Token.CELO,
+    from: Token.USDm,
     to: Token.BRLm,
   },
 };
@@ -34,6 +34,8 @@ suite({
           await app.main.getTokenBalanceByName(fromToken)
         ).toString();
 
+        // TODO: Remove once a default tokens route is available
+        await app.swap.swapInputs();
         await app.swap.fillForm({
           sellAmount: fromTokenBalance,
           tokens: { sell: fromToken, buy: toToken },
@@ -55,6 +57,8 @@ suite({
         const fromToken = pairs.rejectSwap.from;
         const toToken = pairs.rejectSwap.to;
 
+        // TODO: Remove once a default tokens route is available
+        await app.swap.swapInputs();
         await app.swap.fillForm({
           tokens: { sell: fromToken, buy: toToken },
           sellAmount: defaultSwapAmount,

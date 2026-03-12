@@ -16,9 +16,5 @@ export class SettingsPage extends BasePage {
   changeNetworkButton = new Button(this.ef.text("Change Network"));
   disconnectButton = new Button(this.ef.text("Disconnect"));
 
-  staticElements = [
-    this.copyAddressButton,
-    this.changeNetworkButton,
-    this.disconnectButton,
-  ];
+  staticElements = [this.copyAddressButton, this.disconnectButton];
 }

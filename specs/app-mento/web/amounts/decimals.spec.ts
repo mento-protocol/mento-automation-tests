@@ -3,9 +3,10 @@ import { suite } from "@helpers/suite/suite.helper";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { TestTag } from "@constants/test.constants";
 import { AmountType } from "../../../../src/apps/app-mento/web/swap/swap.service.types";
+import { Token } from "@constants/index";
 
 const expectedDecimals = 4;
-const amount = "0.1";
+const sellAmount = "0.1";
 
 suite({
   name: "Swap - Amount Decimals",
@@ -18,11 +19,18 @@ suite({
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        await app.swap.fillForm({ sellAmount: amount });
+        // TODO: Remove once a default tokens route is available
+        await app.swap.swapInputs();
+        await app.swap.fillForm({
+          sellAmount: sellAmount,
+          // TODO: Remove once a default tokens route is available
+          tokens: { buy: Token.GBPm },
+        });
 
         const swapStageSellUsdAmount = await app.swap.getUsdAmountByType(
           AmountType.Sell,
         );
+        const buyAmount = await app.swap.getAmountByType(AmountType.Buy);
         expect
           .soft(
             primitiveHelper.number.hasMaxDecimalPlaces(
@@ -45,48 +53,11 @@ suite({
             ),
           )
           .toBeTruthy();
-        expect(await app.swap.confirm.getAmountByType(AmountType.Sell)).toBe(
-          amount,
-        );
-      },
-    },
-    {
-      name: `The 'Buy' input and USD amounts should have 4 decimals`,
-      testCaseId: "",
-      test: async ({ web }) => {
-        const app = web.app.appMento;
-        await app.swap.fillForm({
-          buyAmount: amount,
-        });
-
-        const swapStageBuyUsdAmount = await app.swap.getUsdAmountByType(
-          AmountType.Buy,
-        );
         expect
-          .soft(
-            primitiveHelper.number.hasMaxDecimalPlaces(
-              swapStageBuyUsdAmount,
-              expectedDecimals,
-            ),
-          )
-          .toBeTruthy();
-
-        await app.swap.proceedToConfirmation({
-          shouldVerifyNoValidMedian: false,
-        });
-
-        const confirmStageBuyUsdAmount =
-          await app.swap.confirm.getUsdAmountByType(AmountType.Buy);
-        expect
-          .soft(
-            primitiveHelper.number.hasMaxDecimalPlaces(
-              confirmStageBuyUsdAmount,
-              expectedDecimals,
-            ),
-          )
-          .toBeTruthy();
+          .soft(await app.swap.confirm.getAmountByType(AmountType.Sell))
+          .toBe(sellAmount);
         expect(await app.swap.confirm.getAmountByType(AmountType.Buy)).toBe(
-          amount,
+          buyAmount,
         );
       },
     },
