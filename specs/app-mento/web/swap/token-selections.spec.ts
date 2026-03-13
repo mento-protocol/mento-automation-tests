@@ -1,14 +1,15 @@
 import { expect } from "@fixtures/test.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
-import { suite } from "@helpers/suite/suite.helper";
-import { IExecution } from "@helpers/suite/suite.types";
+import { testHelper } from "@helpers/test/test.helper";
+import { IExecution } from "@helpers/test/test.types";
 import { TestTag } from "@constants/test.constants";
 import { testSuites } from "@constants/test-suites.constant";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 
 const testCases = testSuites.swap.tokenSelections;
+const tokens = { sell: Token.USDm, buy: Token.ZARm };
 
-suite({
+testHelper.runSuite({
   name: "Swap - Token selections",
   tags: [TestTag.Regression, TestTag.Parallel],
   tests: [
@@ -20,22 +21,19 @@ suite({
         await app.swap.fillForm({
           sellAmount: defaultSwapAmount,
           waitForLoadedRate: false,
-          tokens: {
-            sell: Token.BRLm,
-            buy: Token.USDm,
-            clicksOnSellTokenButton: 1,
-          },
+          tokens,
         });
         await app.swap.swapInputs();
-        expect(await app.swap.getCurrentSellTokenName()).toEqual(Token.CELO);
-        expect(await app.swap.getCurrentBuyTokenName()).toEqual(Token.BRLm);
+        expect(await app.swap.getCurrentSellTokenName()).toEqual(tokens.buy);
+        expect(await app.swap.getCurrentBuyTokenName()).toEqual(tokens.sell);
       },
     },
     ...testCases.map(testCase => {
       return {
         name: `"${testCase.token}" token selections`,
         testCaseId: testCase.id,
-        disable: { reason: "Disabled until we have all token routes" },
+        // TODO: Enable once we have all token routes defined
+        disable: { reason: "Disabled until we have all token routes defined" },
         test: async ({ web }: IExecution) => {
           const app = web.app.appMento;
           if (testCase.token === Token.USDm) {

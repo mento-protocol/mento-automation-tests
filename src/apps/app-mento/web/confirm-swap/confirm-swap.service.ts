@@ -2,7 +2,7 @@ import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { ClassLog } from "@decorators/logger.decorators";
 import { loggerHelper } from "@helpers/logger/logger.helper";
-import { testUtils } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { ConfirmSwapPage } from "./confirm-swap.page";
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { AmountType } from "../swap/swap.service.types";
@@ -33,6 +33,7 @@ export class ConfirmSwapService extends BaseService {
     await this.page.approveButton.waitForDisplayed(timeouts.s);
     await this.page.approveButton.click({ timeout: timeouts.xxs });
     await this.metamask.confirmTransaction();
+    await this.metamask.confirmTransaction();
     await this.expectSuccessApprovalNotification();
   }
 
@@ -47,7 +48,7 @@ export class ConfirmSwapService extends BaseService {
 
   async verifyNoValidMedianCase(): Promise<void> {
     return (await this.isNoValidMedian())
-      ? testUtils.disableInRuntime(
+      ? testHelper.skipInRuntime(
           { reason: "No valid median to swap" },
           "'no valid median' case",
         )

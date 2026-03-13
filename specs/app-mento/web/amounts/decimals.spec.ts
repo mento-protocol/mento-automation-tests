@@ -1,14 +1,13 @@
 import { expect } from "@fixtures/test.fixture";
-import { suite } from "@helpers/suite/suite.helper";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { TestTag } from "@constants/test.constants";
 import { AmountType } from "../../../../src/apps/app-mento/web/swap/swap.service.types";
-import { Token } from "@constants/index";
+import { testHelper } from "@helpers/test/test.helper";
 
 const expectedDecimals = 4;
 const sellAmount = "0.1";
 
-suite({
+testHelper.runSuite({
   name: "Swap - Amount Decimals",
   tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
   beforeEach: async ({ web }) =>
@@ -19,12 +18,8 @@ suite({
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        // TODO: Remove once a default tokens route is available
-        await app.swap.swapInputs();
         await app.swap.fillForm({
           sellAmount: sellAmount,
-          // TODO: Remove once a default tokens route is available
-          tokens: { buy: Token.GBPm },
         });
 
         const swapStageSellUsdAmount = await app.swap.getUsdAmountByType(
@@ -39,9 +34,7 @@ suite({
             ),
           )
           .toBeTruthy();
-        await app.swap.proceedToConfirmation({
-          shouldVerifyNoValidMedian: false,
-        });
+        await app.swap.proceedToConfirmation();
 
         const confirmStageSellUsdAmount =
           await app.swap.confirm.getUsdAmountByType(AmountType.Sell);

@@ -38,12 +38,10 @@ export class SwapService extends BaseService {
     this.slippageModalPage = slippageModalPage;
   }
 
-  async proceedToConfirmation({
-    shouldVerifyNoValidMedian = true,
-  }: { shouldVerifyNoValidMedian?: boolean } = {}): Promise<void> {
-    shouldVerifyNoValidMedian && (await this.confirm.verifyNoValidMedianCase());
-
-    (await this.page.approveButton.isDisplayed())
+  async proceedToConfirmation(): Promise<void> {
+    (await this.page.approveButton.waitForDisplayed(timeouts.xxs, {
+      throwError: false,
+    }))
       ? await this.confirm.confirmApprovalTx()
       : await this.page.swapButton.click();
 

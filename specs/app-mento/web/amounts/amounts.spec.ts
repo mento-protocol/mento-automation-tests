@@ -1,11 +1,11 @@
 import { expect } from "@fixtures/test.fixture";
 import { defaultSwapAmount, Token } from "@constants/token.constants";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { TestTag } from "@constants/test.constants";
 
 const exceedsTradingLimitAmount = "600000";
-suite({
+testHelper.runSuite({
   name: "Swap - Amounts",
   tags: [TestTag.Regression, TestTag.Parallel],
   retries: 5,
@@ -18,12 +18,8 @@ suite({
       testCaseId: "T2332ee03",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        // TODO: Remove once a default tokens route is available
-        await app.swap.swapInputs();
         await app.swap.fillForm({
           sellAmount: defaultSwapAmount,
-          // TODO: Remove once a default tokens route is available
-          tokens: { buy: Token.GBPm },
         });
         expect(await app.swap.isRateThere()).toBeTruthy();
         const { beforeSwapRate, afterSwapRate } = await app.swap.swapInputs({
@@ -37,6 +33,7 @@ suite({
     {
       name: `Use max balance using '${Token.CELO}' as 'Sell'`,
       testCaseId: "Ta34f8bd6",
+      disable: { reason: "CELO route is not available yet" },
       test: async ({ web }) => {
         const app = web.app.appMento;
         const maxBalance = (
@@ -60,11 +57,7 @@ suite({
             shouldOpenSettings: true,
           })
         ).toString();
-        // TODO: Remove once a default tokens route is available
-        await app.swap.swapInputs();
-        await app.swap.fillForm({
-          tokens: { buy: Token.USDm },
-        });
+        await app.swap.fillForm({ tokens: { sell: Token.CHFm } });
         await app.swap.useFullBalance();
         expect(await app.swap.getSellTokenAmount()).toEqual(maxBalance);
         expect(await app.swap.isConsiderKeepNotificationThere()).toBeFalsy();
@@ -75,12 +68,8 @@ suite({
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        // TODO: Remove once a default tokens route is available
-        await app.swap.swapInputs();
         await app.swap.fillForm({
           sellAmount: exceedsTradingLimitAmount,
-          // TODO: Remove once a default tokens route is available
-          tokens: { buy: Token.GBPm },
         });
         expect
           .soft(

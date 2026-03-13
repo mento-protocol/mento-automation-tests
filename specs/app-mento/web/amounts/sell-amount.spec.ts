@@ -1,22 +1,17 @@
 import { TestTag } from "@constants/test.constants";
 import { Token } from "@constants/token.constants";
 import { expect } from "@fixtures/test.fixture";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { AmountType } from "../../../../src/apps/app-mento/web/swap/swap.service.types";
 import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
-suite({
+testHelper.runSuite({
   name: "Amounts - Sell",
   tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
   beforeEach: async ({ web }) => {
     const app = web.app.appMento;
     await app.main.connectWalletByName(WalletName.Metamask);
     await app.main.waitForBalanceToLoad({ shouldOpenSettings: true });
-    // TODO: Remove once a default tokens route is available
-    await app.swap.swapInputs();
-    await app.swap.fillForm({
-      tokens: { sell: Token.USDm, buy: Token.GBPm },
-    });
   },
   tests: [
     {
@@ -47,20 +42,22 @@ suite({
       },
     },
     {
-      name: "Fill the Sell field with an amount that is high",
+      name: "Fill the Sell field with high amount",
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        // TODO: Change back once a default tokens route is available
-        const usdmBalance = await app.main.getTokenBalanceByName(Token.USDm, {
+        const usdcBalance = await app.main.getTokenBalanceByName(Token.USDC, {
           shouldOpenSettings: true,
         });
+        // TODO: Replace to usdcBalance once a insufficient liquidity is not relevant
+        const highSellAmount = (usdcBalance / 2).toString();
         await app.swap.fillForm({
-          sellAmount: usdmBalance.toString(),
+          sellAmount: highSellAmount,
         });
-        const highBuyAmount = await app.swap.getAmountByType(AmountType.Buy);
         await web.browser.refresh();
-        await app.swap.fillForm({ sellAmount: highBuyAmount.toString() });
+        await app.swap.fillForm({
+          sellAmount: highSellAmount,
+        });
 
         expect.soft(await app.swap.isAmountEmpty(AmountType.Sell)).toBeFalsy();
         expect.soft(await app.swap.isProceedButtonThere()).toBeTruthy();

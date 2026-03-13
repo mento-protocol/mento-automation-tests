@@ -1,5 +1,5 @@
 import { TestTag } from "@constants/test.constants";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { expect } from "@fixtures/test.fixture";
 import {
@@ -8,7 +8,7 @@ import {
 } from "@constants/token.constants";
 import { envHelper } from "@helpers/env/env.helper";
 
-suite({
+testHelper.runSuite({
   name: "Lock - Create",
   tags: [TestTag.Regression, TestTag.Sequential],
   retries: 3,

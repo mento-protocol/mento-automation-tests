@@ -6,7 +6,7 @@ import { Token } from "@constants/token.constants";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/test.fixture";
-import { testUtils } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { MainAppMentoPage } from "./main.page";
 import {
@@ -162,7 +162,7 @@ export class MainAppMentoService extends BaseService {
 
   private async verifyErrorRetrievingBalances(): Promise<void> {
     return (await this.isErrorRetrievingBalances())
-      ? testUtils.disableInRuntime(
+      ? testHelper.skipInRuntime(
           {
             reason: "Error retrieving account balances",
           },

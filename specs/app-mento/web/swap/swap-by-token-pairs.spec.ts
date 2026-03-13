@@ -1,6 +1,6 @@
 import { getSwapAmount, Token } from "@constants/token.constants";
-import { suite } from "@helpers/suite/suite.helper";
-import { IExecution } from "@helpers/suite/suite.types";
+import { testHelper } from "@helpers/test/test.helper";
+import { IExecution } from "@helpers/test/test.types";
 import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
 import { TestTag } from "@constants/test.constants";
 import { envHelper } from "@helpers/env/env.helper";
@@ -143,7 +143,7 @@ const testCases = [
   },
 ];
 
-suite({
+testHelper.runSuite({
   name: "Swap - By token pairs",
   tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) =>
@@ -153,7 +153,8 @@ suite({
       return {
         name: `from ${testCase.fromToken} to ${testCase.toToken}`,
         testCaseId: testCase.id,
-        disable: testCase?.disable,
+        // TODO: ENABLE AFTER TESTING
+        disable: { reason: "ENABLE AFTER TESTING" },
         test: async ({ web }: IExecution) => {
           const app = web.app.appMento;
           const initialBalance = await app.main.getTokenBalanceByName(

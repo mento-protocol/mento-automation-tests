@@ -1,10 +1,10 @@
 import { TestTag } from "@constants/test.constants";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { magicStrings } from "@constants/index";
 import { ProposalState } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
 
-suite({
+testHelper.runSuite({
   name: "Proposal - Create",
   tags: [TestTag.Regression, TestTag.Sequential, TestTag.Smoke],
   beforeEach: async ({ web }) => {

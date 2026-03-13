@@ -25,8 +25,13 @@ export class SettingsService extends BaseService {
     return this.page.copyAddressButton.click();
   }
 
-  async openNetworkDetails(): Promise<void> {
-    return this.page.changeNetworkButton.click();
+  async openSwitchNetworkDialog({
+    shouldVerifyIsOpen = true,
+  }: {
+    shouldVerifyIsOpen?: boolean;
+  } = {}): Promise<void> {
+    await this.page.changeNetworkButton.click();
+    shouldVerifyIsOpen && (await this.switchNetworksPage.verifyIsOpen());
   }
 
   async switchNetwork(networkName: Network): Promise<void> {
