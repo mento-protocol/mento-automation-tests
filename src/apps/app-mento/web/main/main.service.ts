@@ -121,7 +121,7 @@ export class MainAppMentoService extends BaseService {
         const currentBalance = await this.getTokenBalanceByName(tokenName);
         return currentBalance > initialBalance;
       },
-      timeouts.xxl,
+      timeouts.xl,
       {
         throwError: false,
         interval: timeouts.xxs,
