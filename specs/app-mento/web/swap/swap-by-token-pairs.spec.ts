@@ -248,6 +248,9 @@ testHelper.runSuite({
             const initialBalance = await app.main.getTokenBalanceByName(
               testCase.token,
             );
+            if ((await app.swap.getCurrentBuyTokenName()) === sellToken) {
+              await app.swap.swapInputs();
+            }
             await app.swap.fillForm({
               tokens: {
                 sell: test.token,

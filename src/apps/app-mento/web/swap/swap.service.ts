@@ -145,6 +145,7 @@ export class SwapService extends BaseService {
     isSellTokenFirst = true,
   }: IFillFromOpts): Promise<void> {
     slippage && (await this.enterSlippage(slippage));
+    await this.handleMissingTokenToSelect(tokens.buy);
     await this.selectTokens({
       clicksOnSellTokenButton,
       isSellTokenFirst,
@@ -410,6 +411,16 @@ export class SwapService extends BaseService {
     });
     await this.selectTokenModalPage.verifyIsClosed();
     await this.page.getSelectedTokenLabel(token).waitForDisplayed(timeouts.xxs);
+  }
+
+  private async handleMissingTokenToSelect(
+    sellTokenToSelect: Token,
+  ): Promise<void> {
+    // Desired token is missing in selector because it's already selected.
+    // If current buy token matches sellToken to select, swap inputs first.
+    if ((await this.getCurrentBuyTokenName()) === sellTokenToSelect) {
+      await this.swapInputs();
+    }
   }
 
   private async selectTokens(args: ISelectTokensArgs): Promise<void> {
