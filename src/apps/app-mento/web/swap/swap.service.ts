@@ -17,7 +17,6 @@ import {
   ISwapInputsParams,
   ISwapServiceArgs,
   IWaitForLoadedRateParams,
-  Slippage,
 } from "./swap.service.types";
 import { envHelper } from "@helpers/env/env.helper";
 
@@ -39,12 +38,10 @@ export class SwapService extends BaseService {
     this.slippageModalPage = slippageModalPage;
   }
 
-  async proceedToConfirmation({
-    shouldVerifyNoValidMedian = true,
-  }: { shouldVerifyNoValidMedian?: boolean } = {}): Promise<void> {
-    shouldVerifyNoValidMedian && (await this.confirm.verifyNoValidMedianCase());
-
-    (await this.page.approveButton.isDisplayed())
+  async proceedToConfirmation(): Promise<void> {
+    (await this.page.approveButton.waitForDisplayed(timeouts.xxs, {
+      throwError: false,
+    }))
       ? await this.confirm.confirmApprovalTx()
       : await this.page.swapButton.click();
 
@@ -118,50 +115,48 @@ export class SwapService extends BaseService {
     }
   }
 
-  async chooseSlippage(
-    slippage: Slippage,
-    customSlippage?: string,
-  ): Promise<void> {
-    await this.openSlippageModal();
-    customSlippage?.length
-      ? await this.slippageModalPage.customSlippageInput.enterText(
-          customSlippage,
-        )
-      : await this.slippageModalPage.slippageButtons[slippage].click();
-    await this.slippageModalPage.confirmButton.click();
-    await this.slippageModalPage.verifyIsClosed();
+  async enterSlippage(slippage: string): Promise<void> {
+    await this.openSwapSettings();
+    await this.page.slippageInput.enterText(slippage);
   }
 
-  private async openSlippageModal(): Promise<void> {
-    await this.page.slippageButton.click({
-      force: true,
+  async enterDeadline(deadline: string): Promise<void> {
+    await this.openSwapSettings();
+    await this.page.deadlineInput.enterText(deadline);
+  }
+
+  private async openSwapSettings(): Promise<void> {
+    await this.page.swapSettingsButton.click({
+      // TODO: Potentially enable this again
+      // force: true,
       timeout: timeouts.s,
-      times: 2,
     });
-    await this.slippageModalPage.verifyIsOpen();
+    await this.page.slippageInput.waitForDisplayed(timeouts.s, {
+      errorMessage: "Swap settings dialog is not opened!",
+    });
   }
 
   async fillForm({
     slippage,
     sellAmount,
-    buyAmount,
     tokens,
     clicksOnSellTokenButton,
     waitForLoadedRate = true,
     isSellTokenFirst = true,
   }: IFillFromOpts): Promise<void> {
-    slippage && (await this.chooseSlippage(slippage));
+    slippage && (await this.enterSlippage(slippage));
+    await this.handleMissingTokenToSelect(tokens.buy);
     await this.selectTokens({
       clicksOnSellTokenButton,
       isSellTokenFirst,
       ...tokens,
     });
-    await this.fillAmounts(sellAmount, buyAmount);
+    sellAmount && (await this.fillAmount(sellAmount));
     waitForLoadedRate && (await this.waitForLoadedRate());
   }
 
   async swapInputs({
-    shouldReturnRates = true,
+    shouldReturnRates = false,
     clicksOnButton = 1,
   }: ISwapInputsParams = {}): Promise<ISwapInputs | undefined> {
     const beforeSwapRate = shouldReturnRates && (await this.getRate());
@@ -418,6 +413,16 @@ export class SwapService extends BaseService {
     await this.page.getSelectedTokenLabel(token).waitForDisplayed(timeouts.xxs);
   }
 
+  private async handleMissingTokenToSelect(
+    sellTokenToSelect: Token,
+  ): Promise<void> {
+    // Desired token is missing in selector because it's already selected.
+    // If current buy token matches sellToken to select, swap inputs first.
+    if ((await this.getCurrentBuyTokenName()) === sellTokenToSelect) {
+      await this.swapInputs();
+    }
+  }
+
   private async selectTokens(args: ISelectTokensArgs): Promise<void> {
     const { clicksOnSellTokenButton = 1, isSellTokenFirst = true } = args;
 
@@ -449,23 +454,11 @@ export class SwapService extends BaseService {
     }
   }
 
-  private async fillAmounts(
-    sellAmount: string,
-    buyAmount: string,
-  ): Promise<void> {
-    // TODO: Sort out why we need to click on the input before filling when it's only filling
-    sellAmount &&
-      (await this.page.sellAmountInput.click({
-        force: true,
-        timeout: timeouts.xs,
-      }));
-    sellAmount &&
-      (await this.page.sellAmountInput.enterText(sellAmount, { force: true }));
-    buyAmount && (await this.page.buyAmountInput.click({ force: true }));
-    buyAmount &&
-      (await this.page.buyAmountInput.enterText(buyAmount, {
-        force: true,
-        timeout: timeouts.xs,
-      }));
+  private async fillAmount(sellAmount: string): Promise<void> {
+    await this.page.sellAmountInput.click({
+      force: true,
+      timeout: timeouts.xs,
+    });
+    await this.page.sellAmountInput.enterText(sellAmount, { force: true });
   }
 }

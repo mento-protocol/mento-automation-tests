@@ -2,12 +2,11 @@ import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { ClassLog } from "@decorators/logger.decorators";
 import { loggerHelper } from "@helpers/logger/logger.helper";
-import { testUtils } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { ConfirmSwapPage } from "./confirm-swap.page";
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
 import { AmountType } from "../swap/swap.service.types";
 import { expect } from "@fixtures/test.fixture";
-import { envHelper } from "@helpers/env/env.helper";
 
 const log = loggerHelper.get("ConfirmSwapService");
 
@@ -34,21 +33,13 @@ export class ConfirmSwapService extends BaseService {
     await this.page.approveButton.waitForDisplayed(timeouts.s);
     await this.page.approveButton.click({ timeout: timeouts.xxs });
     await this.metamask.confirmTransaction();
+    await this.metamask.confirmTransaction();
     await this.expectSuccessApprovalNotification();
   }
 
   async confirmSwapTx({
     shouldExpectLoading = false,
   }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
-    await this.page.swapButton.waitForDisplayed(timeouts.s);
-    await waiterHelper.skipActionIf(
-      "verifyTradingSuspendedCase",
-      {
-        conditionName: envHelper.isFork.name,
-        condition: envHelper.isFork(),
-      },
-      async () => await this.verifyTradingSuspendedCase(),
-    );
     await this.page.swapButton.click({ timeout: timeouts.xxs });
     await this.metamask.confirmTransaction();
     if (shouldExpectLoading) await this.expectLoadingDuringTxConfirmation();
@@ -57,7 +48,7 @@ export class ConfirmSwapService extends BaseService {
 
   async verifyNoValidMedianCase(): Promise<void> {
     return (await this.isNoValidMedian())
-      ? testUtils.disableInRuntime(
+      ? testHelper.skipInRuntime(
           { reason: "No valid median to swap" },
           "'no valid median' case",
         )

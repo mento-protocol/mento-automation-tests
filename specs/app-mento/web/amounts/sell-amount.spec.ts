@@ -1,11 +1,11 @@
 import { TestTag } from "@constants/test.constants";
 import { Token } from "@constants/token.constants";
 import { expect } from "@fixtures/test.fixture";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { AmountType } from "../../../../src/apps/app-mento/web/swap/swap.service.types";
 import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
-suite({
+testHelper.runSuite({
   name: "Amounts - Sell",
   tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
   beforeEach: async ({ web }) => {
@@ -42,15 +42,22 @@ suite({
       },
     },
     {
-      name: "Fill the Sell field with an amount that is high",
+      name: "Fill the Sell field with high amount",
       testCaseId: "",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        const celoBalance = await app.main.getTokenBalanceByName(Token.CELO);
-        await app.swap.fillForm({ buyAmount: celoBalance.toString() });
-        const highBuyAmount = await app.swap.getAmountByType(AmountType.Buy);
+        const usdcBalance = await app.main.getTokenBalanceByName(Token.USDC, {
+          shouldOpenSettings: true,
+        });
+        // TODO: Replace to usdcBalance once a insufficient liquidity is not relevant
+        const highSellAmount = (usdcBalance / 2).toString();
+        await app.swap.fillForm({
+          sellAmount: highSellAmount,
+        });
         await web.browser.refresh();
-        await app.swap.fillForm({ sellAmount: highBuyAmount.toString() });
+        await app.swap.fillForm({
+          sellAmount: highSellAmount,
+        });
 
         expect.soft(await app.swap.isAmountEmpty(AmountType.Sell)).toBeFalsy();
         expect.soft(await app.swap.isProceedButtonThere()).toBeTruthy();

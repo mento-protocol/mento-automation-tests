@@ -1,178 +1,271 @@
 import { getSwapAmount, Token } from "@constants/token.constants";
-import { suite } from "@helpers/suite/suite.helper";
-import { IExecution } from "@helpers/suite/suite.types";
-import { retryDataHelper } from "@helpers/retry-data/retry-data.helper";
+import { testHelper } from "@helpers/test/test.helper";
+import { IExecution } from "@helpers/test/test.types";
 import { TestTag } from "@constants/test.constants";
 import { envHelper } from "@helpers/env/env.helper";
 
 const isFork = envHelper.isFork();
 const defaultSwapAmount = getSwapAmount({ isFork });
-const testCases = [
-  // CELO
-  {
-    fromToken: Token.CELO,
-    toToken: Token.USDm,
-    id: "Tb3ad24f0",
-    disable: { reason: "It's default pair for other tests" },
-  },
-  {
-    fromToken: Token.CELO,
-    toToken: Token.EURm,
-    id: "T3af02715",
-  },
-  {
-    fromToken: Token.CELO,
-    toToken: Token.BRLm,
-    id: "T2a476441",
-  },
-  {
-    fromToken: Token.CELO,
-    toToken: Token.XOFm,
-    id: "T13fb8467",
-  },
+
+const tests = [
   // USD₮
   {
-    fromToken: Token["USD₮"],
-    toToken: Token.USDm,
-    id: "T2511996c",
+    token: Token["USD₮"],
+    testCases: [
+      { token: Token.USDm, id: "T2511996c" },
+      { token: Token.PHPm },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CADm },
+      { token: Token.ZARm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.COPm },
+      { token: Token.BRLm },
+      { token: Token.GHSm },
+      { token: Token.NGNm },
+      { token: Token.KESm, amount: "0.1" },
+    ],
   },
   // KESm
   {
-    fromToken: Token.KESm,
-    toToken: Token.USDm,
-    id: "Tbe02fb8d",
-    fromAmount: "0.1",
+    token: Token.KESm,
+    amount: "0.1",
+    testCases: [
+      { token: Token.USDm, id: "Tbe02fb8d" },
+      { token: Token.PHPm },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CADm },
+      { token: Token.ZARm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.COPm },
+      { token: Token.BRLm },
+      { token: Token.GHSm },
+      { token: Token.NGNm },
+    ],
   },
-  // PHPm
   {
-    fromToken: Token.PHPm,
-    toToken: Token.USDm,
-    id: "T7d8911a6",
+    token: Token.PHPm,
+    testCases: [
+      { token: Token.USDm, id: "T7d8911a6" },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CADm },
+      { token: Token.ZARm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.COPm },
+      { token: Token.BRLm },
+      { token: Token.GHSm },
+      { token: Token.NGNm },
+    ],
   },
-  // COPm
   {
-    fromToken: Token.COPm,
-    toToken: Token.USDm,
-    fromAmount: "1",
-    id: "Ta2aa287f",
+    token: Token.COPm,
+    amount: "1",
+    testCases: [
+      { token: Token.USDm, id: "Ta2aa287f" },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CADm },
+      { token: Token.ZARm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.BRLm },
+      { token: Token.GHSm },
+      { token: Token.NGNm },
+    ],
   },
   // USDC
   {
-    fromToken: Token.USDC,
-    toToken: retryDataHelper.getRandomToken(Token.USDC, [
-      Token.EURm,
-      Token.USDm,
-      Token.BRLm,
-    ]),
-    id: "Ta9f2be1e",
+    token: Token.USDC,
+    testCases: [
+      { token: Token.USDm, id: "Ta9f2be1e" },
+      { token: Token.PHPm },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CADm },
+      { token: Token.ZARm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.COPm },
+      { token: Token.BRLm },
+      { token: Token.GHSm },
+      { token: Token.NGNm },
+      { token: Token.KESm },
+    ],
   },
   // axlUSDC
   {
-    fromToken: Token.axlUSDC,
-    toToken: retryDataHelper.getRandomToken(Token.axlUSDC, [
-      Token.EURm,
-      Token.USDm,
-      Token.BRLm,
-    ]),
-    id: "T635a15c9",
+    token: Token.axlUSDC,
+    testCases: [
+      { token: Token.USDm, id: "T635a15c9" },
+      { token: Token.PHPm },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CADm },
+      { token: Token.ZARm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.COPm },
+      { token: Token.BRLm },
+      { token: Token.GHSm },
+      { token: Token.NGNm },
+      { token: Token.KESm },
+    ],
   },
   // axlEUROC
   {
-    fromToken: Token.axlEUROC,
-    toToken: retryDataHelper.getRandomToken(Token.axlEUROC, [
-      Token.EURm,
-      Token.USDm,
-    ]),
-    id: "T92258405",
+    token: Token.axlEUROC,
+    testCases: [{ token: Token.USDm, id: "T92258405" }, { token: Token.EURm }],
   },
   // GHSm
   {
-    fromToken: Token.GHSm,
-    toToken: retryDataHelper.getRandomToken(Token.GHSm, [
-      Token.USDm,
-      Token.USDC,
-      Token["USD₮"],
-    ]),
-    id: "T8da32b9f",
-    fromAmount: "0.1",
+    token: Token.GHSm,
+    amount: "0.1",
+    testCases: [
+      { token: Token.USDm, id: "T8da32b9f" },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CADm },
+      { token: Token.ZARm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.BRLm },
+      { token: Token.NGNm },
+    ],
   },
   // GBPm
   {
-    fromToken: Token.GBPm,
-    toToken: Token.USDm,
-    id: "T22f94bbb",
+    token: Token.GBPm,
+    testCases: [
+      { token: Token.USDm, id: "T22f94bbb" },
+      { token: Token.PHPm },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CADm },
+      { token: Token.ZARm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.COPm },
+      { token: Token.BRLm },
+      { token: Token.GHSm },
+      { token: Token.NGNm },
+      { token: Token.KESm },
+    ],
   },
   // ZARm
   {
-    fromToken: Token.ZARm,
-    toToken: Token.USDm,
-    id: "T4b1b444b",
+    token: Token.ZARm,
     fromAmount: "0.1",
+    testCases: [
+      { token: Token.USDm, id: "T4b1b444b" },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CADm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.BRLm },
+      { token: Token.NGNm },
+    ],
   },
   // CADm
   {
-    fromToken: Token.CADm,
-    toToken: Token.USDm,
-    id: "T0869d367",
+    token: Token.CADm,
+    testCases: [
+      { token: Token.USDm, id: "T0869d367" },
+      { token: Token.XOFm },
+      { token: Token.AUDm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.BRLm },
+      { token: Token.NGNm },
+    ],
   },
   // AUDm
   {
-    fromToken: Token.AUDm,
-    toToken: Token.USDm,
-    id: "T1d46dc17",
+    token: Token.AUDm,
+    testCases: [
+      { token: Token.USDm, id: "T1d46dc17" },
+      { token: Token.XOFm },
+      { token: Token.CHFm },
+      { token: Token.JPYm },
+      { token: Token.BRLm },
+      { token: Token.NGNm },
+    ],
   },
   // CHFm
   {
-    fromToken: Token.CHFm,
-    toToken: Token.USDm,
-    id: "Tc750f6e5",
+    token: Token.CHFm,
+    testCases: [
+      { token: Token.USDm, id: "Tc750f6e5" },
+      { token: Token.XOFm },
+      { token: Token.JPYm },
+      { token: Token.BRLm },
+      { token: Token.NGNm },
+    ],
   },
   // NGNm
   {
-    fromToken: Token.NGNm,
+    token: Token.NGNm,
     fromAmount: "0.50",
-    toToken: Token.USDm,
-    id: "T280cb27f",
+    testCases: [
+      { token: Token.USDm, id: "T280cb27f" },
+      { token: Token.XOFm },
+      { token: Token.JPYm },
+      { token: Token.BRLm },
+    ],
   },
   // JPYm
   {
-    fromToken: Token.JPYm,
-    toToken: Token.USDm,
-    id: "T36d94360",
+    token: Token.JPYm,
     fromAmount: "0.1",
+    testCases: [
+      { token: Token.USDm, id: "T36d94360" },
+      { token: Token.XOFm },
+      { token: Token.BRLm },
+    ],
   },
 ];
 
-suite({
+testHelper.runSuite({
   name: "Swap - By token pairs",
   tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) =>
     await web.app.appMento.main.runSwapTestPreconditions({ isFork }),
   tests: [
-    ...testCases.map(testCase => {
-      return {
-        name: `from ${testCase.fromToken} to ${testCase.toToken}`,
-        testCaseId: testCase.id,
-        disable: testCase?.disable,
-        test: async ({ web }: IExecution) => {
-          const app = web.app.appMento;
-          const initialBalance = await app.main.getTokenBalanceByName(
-            testCase.toToken,
-          );
-          await app.swap.fillForm({
-            tokens: {
-              sell: testCase.fromToken,
-              buy: testCase.toToken,
-            },
-            sellAmount: testCase?.fromAmount || defaultSwapAmount,
-          });
-          await app.swap.start();
-          await app.main.expectIncreasedBalance({
-            initialBalance,
-            tokenName: testCase.toToken,
-          });
-        },
-      };
+    ...tests.flatMap(test => {
+      return test.testCases.map(testCase => {
+        const sellToken = test.token;
+        const buyToken = testCase.token;
+        return {
+          name: `from ${sellToken} to ${buyToken}`,
+          testCaseId: testCase.id,
+          test: async ({ web }: IExecution) => {
+            const app = web.app.appMento;
+            const initialBalance = await app.main.getTokenBalanceByName(
+              testCase.token,
+            );
+            if ((await app.swap.getCurrentBuyTokenName()) === sellToken) {
+              await app.swap.swapInputs();
+            }
+            await app.swap.fillForm({
+              tokens: {
+                sell: test.token,
+                buy: testCase.token,
+              },
+              sellAmount: testCase?.amount || test?.amount || defaultSwapAmount,
+            });
+            await app.swap.start();
+            await app.main.expectIncreasedBalance({
+              initialBalance,
+              tokenName: testCase.token,
+            });
+          },
+        };
+      });
     }),
   ],
 });

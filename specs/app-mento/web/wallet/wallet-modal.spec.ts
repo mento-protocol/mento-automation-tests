@@ -1,9 +1,9 @@
 import { TestTag } from "@constants/test.constants";
 import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/test.fixture";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 
-suite({
+testHelper.runSuite({
   name: "Wallet modal",
   tags: [TestTag.Regression, TestTag.Parallel],
   tests: [

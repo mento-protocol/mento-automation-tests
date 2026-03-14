@@ -1,8 +1,8 @@
 import { TestTag } from "@constants/test.constants";
 import { expect } from "@fixtures/test.fixture";
 import { envHelper } from "@helpers/env/env.helper";
-import { suite } from "@helpers/suite/suite.helper";
-import { IExecution } from "@helpers/suite/suite.types";
+import { testHelper } from "@helpers/test/test.helper";
+import { IExecution } from "@helpers/test/test.types";
 import { Network } from "../../../../src/apps/app-mento/web/settings/switch-networks.page";
 import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
@@ -10,7 +10,7 @@ const networkNameToSwitch = envHelper.isMainnet()
   ? Network.Sepolia
   : Network.Celo;
 
-suite({
+testHelper.runSuite({
   name: "Switch network",
   tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {

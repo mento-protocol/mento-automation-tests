@@ -1,5 +1,5 @@
 import { TestTag } from "@constants/test.constants";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { expect } from "@fixtures/test.fixture";
 import {
@@ -12,7 +12,7 @@ import { LockAction } from "../../../../src/apps/governance/web/voting-power/vot
 
 const lockAmount = 1;
 
-suite({
+testHelper.runSuite({
   name: "Lock - Update",
   tags: [TestTag.Regression, TestTag.Sequential],
   retries: 3,
