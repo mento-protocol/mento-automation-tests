@@ -146,7 +146,7 @@ export class SwapService extends BaseService {
     isSellTokenFirst = true,
   }: IFillFromOpts): Promise<void> {
     slippage && (await this.enterSlippage(slippage));
-    await this.handleMissingTokenToSelect(tokens.buy);
+    tokens && (await this.handleMissingTokenToSelect(tokens.sell));
     await this.selectTokens({
       clicksOnSellTokenButton,
       isSellTokenFirst,
