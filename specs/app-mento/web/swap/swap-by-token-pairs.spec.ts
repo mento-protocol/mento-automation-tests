@@ -241,7 +241,7 @@ testHelper.runSuite({
         const sellToken = test.token;
         const buyToken = testCase.token;
         return {
-          name: `from ${sellToken} to ${buyToken}`,
+          name: `${sellToken}/${buyToken}`,
           testCaseId: testCase.id,
           test: async ({ web }: IExecution) => {
             const app = web.app.appMento;

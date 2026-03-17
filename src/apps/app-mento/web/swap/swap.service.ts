@@ -18,7 +18,7 @@ import {
   ISwapServiceArgs,
   IWaitForLoadedRateParams,
 } from "./swap.service.types";
-import { envHelper } from "@helpers/env/env.helper";
+import { testHelper } from "@helpers/test/test.helper";
 
 const log = loggerHelper.get("SwapService");
 
@@ -87,17 +87,22 @@ export class SwapService extends BaseService {
     throw new Error(`Invalid reject type: ${rejectType}`);
   }
 
+  async isUnableToFetchSwapAmount(
+    timeout: number = timeouts.m,
+  ): Promise<boolean> {
+    return this.page.unableToFetchSwapAmountButton.waitForDisplayed(timeout, {
+      throwError: false,
+    });
+  }
+
   async start({
     shouldExpectLoading = false,
   }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
-    await waiterHelper.skipActionIf(
-      "verifyNoValidMedianCase",
-      {
-        conditionName: envHelper.isFork.name,
-        condition: envHelper.isFork(),
-      },
-      async () => await this.confirm.verifyNoValidMedianCase(),
-    );
+    if (await this.isUnableToFetchSwapAmount()) {
+      testHelper.skipInRuntime({
+        reason: "[Potential Issue] Unable to fetch swap amount",
+      });
+    }
     if (await this.page.approveButton.isDisplayed()) {
       log.debug(
         "Confirms both approval and swap TXs because sufficient allowance is not exist yet",

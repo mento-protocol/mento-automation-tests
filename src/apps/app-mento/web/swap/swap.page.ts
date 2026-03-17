@@ -33,6 +33,9 @@ export class SwapPage extends BasePage {
   loadingLabel = new Label(this.ef.dataTestId("loadingLabel"));
   swapButton = new Button(this.ef.dataTestId("swapButton"));
   approveButton = new Button(this.ef.dataTestId("approveButton"));
+  unableToFetchSwapAmountButton = new Label(
+    this.ef.text("Unable to fetch swap amount", { exact: false }).first(),
+  );
 
   sellUsdAmountLabel = new Label(this.ef.dataTestId("sellUsdAmountLabel"));
   buyUsdAmountLabel = new Label(this.ef.dataTestId("buyUsdAmountLabel"));
