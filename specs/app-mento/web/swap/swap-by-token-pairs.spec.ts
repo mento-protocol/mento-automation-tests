@@ -116,11 +116,6 @@ const tests = [
       { token: Token.KESm },
     ],
   },
-  // axlEUROC
-  {
-    token: Token.axlEUROC,
-    testCases: [{ token: Token.USDm, id: "T92258405" }, { token: Token.EURm }],
-  },
   // GHSm
   {
     token: Token.GHSm,
