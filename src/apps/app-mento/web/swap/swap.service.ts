@@ -87,22 +87,18 @@ export class SwapService extends BaseService {
     throw new Error(`Invalid reject type: ${rejectType}`);
   }
 
-  async isUnableToFetchSwapAmount(
-    timeout: number = timeouts.m,
-  ): Promise<boolean> {
-    return this.page.unableToFetchSwapAmountButton.waitForDisplayed(timeout, {
-      throwError: false,
-    });
+  async isUnableToFetchSwapAmount(): Promise<boolean> {
+    return this.page.unableToFetchSwapAmountButton.waitForDisplayed(
+      timeouts.s,
+      {
+        throwError: false,
+      },
+    );
   }
 
   async start({
     shouldExpectLoading = false,
   }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
-    if (await this.isUnableToFetchSwapAmount()) {
-      testHelper.skipInRuntime({
-        reason: "[Potential Issue] Unable to fetch swap amount",
-      });
-    }
     if (await this.page.approveButton.isDisplayed()) {
       log.debug(
         "Confirms both approval and swap TXs because sufficient allowance is not exist yet",
@@ -157,7 +153,15 @@ export class SwapService extends BaseService {
       ...tokens,
     });
     sellAmount && (await this.fillAmount(sellAmount));
-    waitForLoadedRate && (await this.waitForLoadedRate());
+    if (waitForLoadedRate) {
+      const isRateLoaded = await this.waitForLoadedRate();
+      if (!isRateLoaded) {
+        (await this.isUnableToFetchSwapAmount()) &&
+          testHelper.skipInRuntime({
+            reason: "[Potential Issue] Unable to fetch swap amount",
+          });
+      }
+    }
   }
 
   async swapInputs({
