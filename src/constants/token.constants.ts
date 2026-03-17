@@ -31,7 +31,7 @@ export const defaultSwapAmount = "0.01";
 
 export const forkSwapAmount = "50";
 
-export const getSwapAmount = ({
+export const getDefaultSwapAmount = ({
   isFork = false,
 }: {
   isFork?: boolean;

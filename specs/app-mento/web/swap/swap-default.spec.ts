@@ -1,10 +1,10 @@
 import { TestTag } from "@constants/test.constants";
-import { getSwapAmount, Token } from "@constants/token.constants";
+import { getDefaultSwapAmount, Token } from "@constants/token.constants";
 import { envHelper } from "@helpers/env/env.helper";
 import { testHelper } from "@helpers/test/test.helper";
 
 const isFork = envHelper.isFork();
-const swapAmount = getSwapAmount({ isFork });
+const swapAmount = getDefaultSwapAmount({ isFork });
 // TODO: Change to default tokens once CELO route is available
 const tokens = { sell: Token.USDm, buy: Token.GBPm };
 // Skip that assertion because loading is so fast on forks

@@ -1,11 +1,11 @@
-import { getSwapAmount, Token } from "@constants/token.constants";
+import { getDefaultSwapAmount, Token } from "@constants/token.constants";
 import { testHelper } from "@helpers/test/test.helper";
 import { IExecution } from "@helpers/test/test.types";
 import { TestTag } from "@constants/test.constants";
 import { envHelper } from "@helpers/env/env.helper";
 
 const isFork = envHelper.isFork();
-const defaultSwapAmount = getSwapAmount({ isFork });
+const defaultSwapAmount = getDefaultSwapAmount({ isFork });
 
 const tests = [
   // USD₮
@@ -159,7 +159,7 @@ const tests = [
   // ZARm
   {
     token: Token.ZARm,
-    fromAmount: "0.1",
+    amount: "0.1",
     testCases: [
       { token: Token.USDm, id: "T4b1b444b" },
       { token: Token.XOFm },
@@ -210,9 +210,8 @@ const tests = [
   // NGNm
   {
     token: Token.NGNm,
-    fromAmount: "0.50",
     testCases: [
-      { token: Token.USDm, id: "T280cb27f" },
+      { token: Token.USDm, amount: "0.50", id: "T280cb27f" },
       { token: Token.XOFm },
       { token: Token.JPYm },
       { token: Token.BRLm },
@@ -221,7 +220,7 @@ const tests = [
   // JPYm
   {
     token: Token.JPYm,
-    fromAmount: "0.1",
+    amount: "0.1",
     testCases: [
       { token: Token.USDm, id: "T36d94360" },
       { token: Token.XOFm },

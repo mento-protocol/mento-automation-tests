@@ -1,11 +1,11 @@
 import { expect } from "@fixtures/test.fixture";
-import { getSwapAmount, Token } from "@constants/token.constants";
+import { getDefaultSwapAmount, Token } from "@constants/token.constants";
 import { testHelper } from "@helpers/test/test.helper";
 import { TestTag } from "@constants/test.constants";
 import { envHelper } from "@helpers/env/env.helper";
 
 const isFork = envHelper.isFork();
-const defaultSwapAmount = getSwapAmount({ isFork });
+const defaultSwapAmount = getDefaultSwapAmount({ isFork });
 const pairs = {
   rejectApproval: {
     sell: Token.PHPm,
