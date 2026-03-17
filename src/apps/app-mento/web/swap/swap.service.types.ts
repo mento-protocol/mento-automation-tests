@@ -36,18 +36,11 @@ export enum AmountType {
 
 export interface IFillFromOpts {
   sellAmount?: string;
-  buyAmount?: string;
   tokens?: ISelectTokensArgs;
-  slippage?: Slippage;
+  slippage?: string;
   clicksOnSellTokenButton?: number;
   waitForLoadedRate?: boolean;
   isSellTokenFirst?: boolean;
-}
-
-export enum Slippage {
-  "0.5%" = "0.5%",
-  "1.0%" = "1.0%",
-  "1.5%" = "1.5%",
 }
 
 export interface ISelectTokensArgs {

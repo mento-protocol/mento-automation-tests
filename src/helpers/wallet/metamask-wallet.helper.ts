@@ -13,23 +13,13 @@ export class MetamaskHelper {
   }
 
   async connectWallet(): Promise<void> {
-    return waiterHelper.retry(
-      async () => {
-        await waiterHelper.executeUntil(
-          () => this.metamask.connectToDapp(),
-          timeouts.xl,
-          "Wallet connection timed out - MetaMask popup may not have appeared or is stuck",
-        );
-      },
-      2,
-      {
-        interval: timeouts.xs,
-        errorMessage: "Failed to connect wallet after multiple attempts",
-        throwError: true,
-        continueWithException: true,
-        resolveWhenNoException: true,
-      },
-    );
+    return waiterHelper.retry(async () => this.metamask.connectToDapp(), 3, {
+      interval: timeouts.xs,
+      errorMessage: "Failed to connect wallet after multiple attempts",
+      throwError: true,
+      continueWithException: true,
+      resolveWhenNoException: true,
+    });
   }
 
   async approveNewNetwork(): Promise<void> {

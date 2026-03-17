@@ -1,9 +1,9 @@
 import { TestTag } from "@constants/test.constants";
 import { testWalletAddresses } from "@constants/token.constants";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { TokenSymbol } from "@constants/token.constants";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
-import { IExecution } from "@helpers/suite/suite.types";
+import { IExecution } from "@helpers/test/test.types";
 
 const testCases = [
   // CELO
@@ -84,7 +84,7 @@ const testCases = [
   },
 ];
 
-suite({
+testHelper.runSuite({
   name: "Swap - By token pairs",
   tags: [TestTag.Regression],
   beforeEach: async ({ web }) =>

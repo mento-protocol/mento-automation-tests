@@ -1,10 +1,10 @@
 import { TestTag } from "@constants/test.constants";
 import { expect } from "@fixtures/test.fixture";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { governanceContractAddresses } from "@constants/governanceUrl.constants";
 import { Chain, envHelper } from "@helpers/env/env.helper";
-import { IExecution } from "@helpers/suite/suite.types";
+import { IExecution } from "@helpers/test/test.types";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
 const testCases = [
@@ -18,7 +18,7 @@ const chainName =
     ? "Celo Mainnet"
     : "Sepolia Testnet";
 
-suite({
+testHelper.runSuite({
   name: "Verify contract links",
   tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
   tests: [

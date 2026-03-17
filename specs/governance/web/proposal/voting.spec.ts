@@ -1,5 +1,5 @@
 import { magicStrings, TestTag, timeouts } from "@constants/index";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import {
   ProposalState,
@@ -27,7 +27,7 @@ const testCases = [
   },
 ];
 
-suite({
+testHelper.runSuite({
   name: "Proposal - Voting",
   tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {

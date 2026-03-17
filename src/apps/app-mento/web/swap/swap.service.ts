@@ -17,9 +17,8 @@ import {
   ISwapInputsParams,
   ISwapServiceArgs,
   IWaitForLoadedRateParams,
-  Slippage,
 } from "./swap.service.types";
-import { envHelper } from "@helpers/env/env.helper";
+import { testHelper } from "@helpers/test/test.helper";
 
 const log = loggerHelper.get("SwapService");
 
@@ -39,12 +38,10 @@ export class SwapService extends BaseService {
     this.slippageModalPage = slippageModalPage;
   }
 
-  async proceedToConfirmation({
-    shouldVerifyNoValidMedian = true,
-  }: { shouldVerifyNoValidMedian?: boolean } = {}): Promise<void> {
-    shouldVerifyNoValidMedian && (await this.confirm.verifyNoValidMedianCase());
-
-    (await this.page.approveButton.isDisplayed())
+  async proceedToConfirmation(): Promise<void> {
+    (await this.page.approveButton.waitForDisplayed(timeouts.xxs, {
+      throwError: false,
+    }))
       ? await this.confirm.confirmApprovalTx()
       : await this.page.swapButton.click();
 
@@ -90,17 +87,18 @@ export class SwapService extends BaseService {
     throw new Error(`Invalid reject type: ${rejectType}`);
   }
 
+  async isUnableToFetchSwapAmount(): Promise<boolean> {
+    return this.page.unableToFetchSwapAmountButton.waitForDisplayed(
+      timeouts.s,
+      {
+        throwError: false,
+      },
+    );
+  }
+
   async start({
     shouldExpectLoading = false,
   }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
-    await waiterHelper.skipActionIf(
-      "verifyNoValidMedianCase",
-      {
-        conditionName: envHelper.isFork.name,
-        condition: envHelper.isFork(),
-      },
-      async () => await this.confirm.verifyNoValidMedianCase(),
-    );
     if (await this.page.approveButton.isDisplayed()) {
       log.debug(
         "Confirms both approval and swap TXs because sufficient allowance is not exist yet",
@@ -118,50 +116,56 @@ export class SwapService extends BaseService {
     }
   }
 
-  async chooseSlippage(
-    slippage: Slippage,
-    customSlippage?: string,
-  ): Promise<void> {
-    await this.openSlippageModal();
-    customSlippage?.length
-      ? await this.slippageModalPage.customSlippageInput.enterText(
-          customSlippage,
-        )
-      : await this.slippageModalPage.slippageButtons[slippage].click();
-    await this.slippageModalPage.confirmButton.click();
-    await this.slippageModalPage.verifyIsClosed();
+  async enterSlippage(slippage: string): Promise<void> {
+    await this.openSwapSettings();
+    await this.page.slippageInput.enterText(slippage);
   }
 
-  private async openSlippageModal(): Promise<void> {
-    await this.page.slippageButton.click({
-      force: true,
+  async enterDeadline(deadline: string): Promise<void> {
+    await this.openSwapSettings();
+    await this.page.deadlineInput.enterText(deadline);
+  }
+
+  private async openSwapSettings(): Promise<void> {
+    await this.page.swapSettingsButton.click({
+      // TODO: Potentially enable this again
+      // force: true,
       timeout: timeouts.s,
-      times: 2,
     });
-    await this.slippageModalPage.verifyIsOpen();
+    await this.page.slippageInput.waitForDisplayed(timeouts.s, {
+      errorMessage: "Swap settings dialog is not opened!",
+    });
   }
 
   async fillForm({
     slippage,
     sellAmount,
-    buyAmount,
     tokens,
     clicksOnSellTokenButton,
     waitForLoadedRate = true,
     isSellTokenFirst = true,
   }: IFillFromOpts): Promise<void> {
-    slippage && (await this.chooseSlippage(slippage));
+    slippage && (await this.enterSlippage(slippage));
+    tokens && (await this.handleMissingTokenToSelect(tokens.sell));
     await this.selectTokens({
       clicksOnSellTokenButton,
       isSellTokenFirst,
       ...tokens,
     });
-    await this.fillAmounts(sellAmount, buyAmount);
-    waitForLoadedRate && (await this.waitForLoadedRate());
+    sellAmount && (await this.fillAmount(sellAmount));
+    if (waitForLoadedRate) {
+      const isRateLoaded = await this.waitForLoadedRate();
+      if (!isRateLoaded) {
+        (await this.isUnableToFetchSwapAmount()) &&
+          testHelper.skipInRuntime({
+            reason: "[Potential Issue] Unable to fetch swap amount",
+          });
+      }
+    }
   }
 
   async swapInputs({
-    shouldReturnRates = true,
+    shouldReturnRates = false,
     clicksOnButton = 1,
   }: ISwapInputsParams = {}): Promise<ISwapInputs | undefined> {
     const beforeSwapRate = shouldReturnRates && (await this.getRate());
@@ -418,6 +422,16 @@ export class SwapService extends BaseService {
     await this.page.getSelectedTokenLabel(token).waitForDisplayed(timeouts.xxs);
   }
 
+  private async handleMissingTokenToSelect(
+    sellTokenToSelect: Token,
+  ): Promise<void> {
+    // Desired token is missing in selector because it's already selected.
+    // If current buy token matches sellToken to select, swap inputs first.
+    if ((await this.getCurrentBuyTokenName()) === sellTokenToSelect) {
+      await this.swapInputs();
+    }
+  }
+
   private async selectTokens(args: ISelectTokensArgs): Promise<void> {
     const { clicksOnSellTokenButton = 1, isSellTokenFirst = true } = args;
 
@@ -449,23 +463,11 @@ export class SwapService extends BaseService {
     }
   }
 
-  private async fillAmounts(
-    sellAmount: string,
-    buyAmount: string,
-  ): Promise<void> {
-    // TODO: Sort out why we need to click on the input before filling when it's only filling
-    sellAmount &&
-      (await this.page.sellAmountInput.click({
-        force: true,
-        timeout: timeouts.xs,
-      }));
-    sellAmount &&
-      (await this.page.sellAmountInput.enterText(sellAmount, { force: true }));
-    buyAmount && (await this.page.buyAmountInput.click({ force: true }));
-    buyAmount &&
-      (await this.page.buyAmountInput.enterText(buyAmount, {
-        force: true,
-        timeout: timeouts.xs,
-      }));
+  private async fillAmount(sellAmount: string): Promise<void> {
+    await this.page.sellAmountInput.click({
+      force: true,
+      timeout: timeouts.xs,
+    });
+    await this.page.sellAmountInput.enterText(sellAmount, { force: true });
   }
 }

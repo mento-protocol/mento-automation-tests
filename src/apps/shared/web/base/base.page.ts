@@ -13,7 +13,9 @@ export abstract class BasePage {
 
   protected constructor(protected ef: ElementFinderHelper) {}
 
-  rateLabel = new Label(this.ef.dataTestId("rateLabel"));
+  rateLabel = new Label(
+    this.ef.dataTestId("rateLabel", { exact: false }).first(),
+  );
 
   async isOpen(options: IIsOpenOpts = {}): Promise<boolean> {
     let { retry = 0 } = options;

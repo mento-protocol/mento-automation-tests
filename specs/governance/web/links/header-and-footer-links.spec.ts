@@ -1,9 +1,9 @@
 import { TestTag } from "@constants/test.constants";
 import { expect } from "@fixtures/test.fixture";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { governanceHeaderAndFooterLinks } from "@constants/governanceUrl.constants";
-import { IExecution } from "@helpers/suite/suite.types";
+import { IExecution } from "@helpers/test/test.types";
 
 const testCases = [
   { name: "forum" },
@@ -15,7 +15,7 @@ const testCases = [
   { name: "privacyPolicy" },
 ];
 
-suite({
+testHelper.runSuite({
   name: "Verify header and footer links",
   tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
   tests: [

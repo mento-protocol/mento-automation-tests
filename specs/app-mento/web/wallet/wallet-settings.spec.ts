@@ -1,9 +1,9 @@
 import { TestTag } from "@constants/test.constants";
 import { expect } from "@fixtures/test.fixture";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
-suite({
+testHelper.runSuite({
   name: "Wallet Settings",
   tags: [TestTag.Regression, TestTag.Parallel],
   beforeEach: async ({ web }) => {
@@ -29,11 +29,11 @@ suite({
       },
     },
     {
-      name: "Open network details by 'Change address' button",
+      name: "Open switch network modal",
       testCaseId: "T2f5ab8c4",
       test: async ({ web }) => {
         const app = web.app.appMento;
-        await app.main.settings.openNetworkDetails();
+        await app.main.settings.openSwitchNetworkDialog();
         expect(
           await app.main.settings.switchNetworksPage.isOpen(),
         ).toBeTruthy();

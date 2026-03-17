@@ -26,11 +26,16 @@ export class SwapPage extends BasePage {
     this.ef.role("button", { name: "Select token to buy" }),
   );
   headerLabel = new Label(this.ef.text("Swap", { exact: false }).first());
-  slippageButton = new Button(this.ef.dataTestId("slippageButton"));
+  swapSettingsButton = new Button(this.ef.dataTestId("swapSettingsButton"));
+  slippageInput = new Input(this.ef.dataTestId("slippageInput"));
+  deadlineInput = new Input(this.ef.dataTestId("deadlineInput"));
   swapInputsButton = new Button(this.ef.dataTestId("swapInputsButton"));
   loadingLabel = new Label(this.ef.dataTestId("loadingLabel"));
   swapButton = new Button(this.ef.dataTestId("swapButton"));
   approveButton = new Button(this.ef.dataTestId("approveButton"));
+  unableToFetchSwapAmountButton = new Label(
+    this.ef.text("Unable to fetch swap amount", { exact: false }).first(),
+  );
 
   sellUsdAmountLabel = new Label(this.ef.dataTestId("sellUsdAmountLabel"));
   buyUsdAmountLabel = new Label(this.ef.dataTestId("buyUsdAmountLabel"));

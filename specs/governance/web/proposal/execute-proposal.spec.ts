@@ -1,11 +1,11 @@
 import { TestTag } from "@constants/test.constants";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { ProposalState } from "../../../../src/apps/governance/web/proposal-view/proposal-view.service";
 import { expect } from "@fixtures/test.fixture";
 import { executeTitleSuffix } from "@constants/index";
 
-suite({
+testHelper.runSuite({
   name: "Proposal - Execute",
   tags: [TestTag.Regression, TestTag.Sequential],
   beforeEach: async ({ web }) => {

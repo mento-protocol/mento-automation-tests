@@ -1,9 +1,9 @@
 import { TestTag } from "@constants/test.constants";
 import { expect } from "@fixtures/test.fixture";
-import { suite } from "@helpers/suite/suite.helper";
+import { testHelper } from "@helpers/test/test.helper";
 import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
-suite({
+testHelper.runSuite({
   name: "Connect Wallet",
   tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
   tests: [

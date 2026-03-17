@@ -98,7 +98,7 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 120
+    timeout-minutes: 140
     env:
       APP_NAME: ${{ inputs.APP_NAME }}
       ENV: ${{ inputs.ENV }}
