@@ -119,7 +119,6 @@ const tests = [
   // GHSm
   {
     token: Token.GHSm,
-    amount: "0.1",
     testCases: [
       { token: Token.USDm, id: "T8da32b9f" },
       { token: Token.XOFm },
