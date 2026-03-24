@@ -114,30 +114,20 @@ async function main() {
   const { chainId, chainName } = parseArgs();
   console.log(`🧮 Calculating automated swap tests costs on ${chainName}...\n`);
 
-  const [
-    swapByTokenPairsTestCases,
-    otherTestCases,
-    usdToEurRate,
-    mento,
-    allPairs,
-  ] = await Promise.all([
-    fetchSwapByTokenPairsTestCases(),
-    getOtherTestCases(),
-    fetchEURRate(),
-    setupMento(chainId),
-    setupMento(chainId).then(m => m.getTradablePairs()),
-  ]);
+  const [swapByTokenPairsTestCases, usdToEurRate, mento, allPairs] =
+    await Promise.all([
+      getSwapByTokenPairsTestCases(),
+      fetchEURRate(),
+      setupMento(chainId),
+      setupMento(chainId).then(m => m.getTradablePairs()),
+    ]);
 
   console.log(
-    `✅ Loaded ${swapByTokenPairsTestCases.length} swap-by-token-pairs + ${
-      otherTestCases.length
-    } other = ${
-      swapByTokenPairsTestCases.length + otherTestCases.length
-    } total test cases\n`,
+    `✅ Loaded ${swapByTokenPairsTestCases.length} swap-by-token-pairs = ${swapByTokenPairsTestCases.length} total test cases\n`,
   );
 
   const results = await processAllTests(
-    [...swapByTokenPairsTestCases, ...otherTestCases],
+    swapByTokenPairsTestCases,
     allPairs,
     mento,
     createProvider(chainId),
@@ -236,53 +226,113 @@ async function getTokenDecimals(
   }
 }
 
-async function fetchSwapByTokenPairsTestCases(): Promise<TestCase[]> {
+async function getSwapByTokenPairsTestCases(): Promise<TestCase[]> {
   try {
-    // Build path to the spec file from project root
     const specFilePath = join(
       process.cwd(),
       "specs/app-mento/web/swap/swap-by-token-pairs.spec.ts",
     );
 
     const content = readFileSync(specFilePath, "utf-8");
-    const match = content.match(/const testCases = \[([\s\S]*?)\];/);
-    if (!match) throw new Error("No testCases found");
 
-    const objects = match[1].match(/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g) || [];
-    return objects.map(parseTestCase).filter(Boolean) as TestCase[];
+    // Locate `const tests = [` and extract the full array via bracket matching
+    const testsStart = content.indexOf("const tests = [");
+    if (testsStart === -1) throw new Error("No tests array found in spec file");
+
+    const arrayOpenIdx = content.indexOf("[", testsStart);
+    const testsContent = extractBracketContent(content, arrayOpenIdx, "[", "]");
+    if (!testsContent) throw new Error("Failed to extract tests array content");
+
+    const testCases: TestCase[] = [];
+
+    for (const group of extractTopLevelObjects(testsContent, "{", "}")) {
+      // First `token:` in the group is the sell token
+      const sellTokenMatch = group.match(/token:\s*(Token\.\w+)/);
+      if (!sellTokenMatch) continue;
+      const sellToken = resolveToken(sellTokenMatch[1]);
+
+      // Group-level amount (if any) appears before `testCases:`
+      const testCasesKeyIdx = group.indexOf("testCases:");
+      const beforeTestCases =
+        testCasesKeyIdx !== -1 ? group.slice(0, testCasesKeyIdx) : group;
+      const groupAmount = beforeTestCases.match(
+        /amount:\s*["']([^"']+)["']/,
+      )?.[1];
+
+      if (testCasesKeyIdx === -1) continue;
+      const innerArrayOpenIdx = group.indexOf("[", testCasesKeyIdx);
+      if (innerArrayOpenIdx === -1) continue;
+      const innerContent = extractBracketContent(
+        group,
+        innerArrayOpenIdx,
+        "[",
+        "]",
+      );
+      if (!innerContent) continue;
+
+      for (const innerCase of extractTopLevelObjects(innerContent, "{", "}")) {
+        const buyTokenMatch = innerCase.match(/token:\s*(Token\.\w+)/);
+        if (!buyTokenMatch) continue;
+
+        testCases.push({
+          fromToken: sellToken,
+          toToken: resolveToken(buyTokenMatch[1]),
+          fromAmount:
+            innerCase.match(/amount:\s*["']([^"']+)["']/)?.[1] || groupAmount,
+        });
+      }
+    }
+
+    if (testCases.length === 0) throw new Error("No test cases parsed");
+    return testCases;
   } catch (error) {
     console.log("⚠️  Failed to read local spec file, using fallback");
     return getFallbackTests();
   }
 }
 
-function parseTestCase(obj: string): TestCase | null {
-  const fromMatch = obj.match(/fromToken:\s*(Token\.\w+)/);
-  const toMatch =
-    obj.match(/toToken:\s*(Token\.\w+)(?![^,}]*retryDataHelper)/) ||
-    obj.match(/toToken:\s*retryDataHelper[^[]*\[([^\]]+)\]/);
-  const amountMatch = obj.match(/fromAmount:\s*["']([^"']+)["']/);
+function extractBracketContent(
+  content: string,
+  startIdx: number,
+  open: string,
+  close: string,
+): string | null {
+  if (content[startIdx] !== open) return null;
+  let depth = 0;
+  for (let i = startIdx; i < content.length; i++) {
+    if (content[i] === open) depth++;
+    else if (content[i] === close) {
+      depth--;
+      if (depth === 0) return content.slice(startIdx + 1, i);
+    }
+  }
+  return null;
+}
 
-  if (!fromMatch) return null;
+function extractTopLevelObjects(
+  content: string,
+  open: string,
+  close: string,
+): string[] {
+  const objects: string[] = [];
+  let depth = 0;
+  let start = -1;
 
-  let toToken = "USDm";
-  if (toMatch) {
-    if (toMatch[0].includes("retryDataHelper")) {
-      const tokens = toMatch[1]?.match(/Token\.(\w+)/g);
-      toToken = tokens ? resolveToken(tokens[0]) : "USDm";
-    } else {
-      toToken = resolveToken(toMatch[1]);
+  for (let i = 0; i < content.length; i++) {
+    const char = content[i];
+    if (char === open) {
+      if (depth === 0) start = i;
+      depth++;
+    } else if (char === close) {
+      depth--;
+      if (depth === 0 && start !== -1) {
+        objects.push(content.slice(start, i + 1));
+        start = -1;
+      }
     }
   }
 
-  return {
-    fromToken: resolveToken(fromMatch[1]),
-    toToken,
-    fromAmount: amountMatch?.[1],
-    disable: obj.includes("disable:")
-      ? { reason: "Disabled in source" }
-      : undefined,
-  };
+  return objects;
 }
 
 function mapTokenToMentoSymbol(token: string): string {
@@ -296,26 +346,6 @@ function mapTokenToMentoSymbol(token: string): string {
 
 function resolveToken(token: string): string {
   return TOKEN_MAP[token] || token.replace("Token.", "");
-}
-
-function getOtherTestCases(): TestCase[] {
-  return [
-    {
-      fromToken: "EURm",
-      toToken: "CELO",
-      executionType: "swap-with-custom-slippage",
-    },
-    {
-      fromToken: "CELO",
-      toToken: "USDm",
-      executionType: "swap-by-amount-types",
-    },
-    {
-      fromToken: "CELO",
-      toToken: "USDm",
-      executionType: "swap-by-amount-types",
-    },
-  ];
 }
 
 function getFallbackTests(): TestCase[] {
