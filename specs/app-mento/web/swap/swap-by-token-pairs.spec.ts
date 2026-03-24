@@ -24,7 +24,7 @@ const tests = [
       { token: Token.BRLm },
       { token: Token.GHSm },
       { token: Token.NGNm },
-      { token: Token.KESm, amount: "0.1" },
+      { token: Token.KESm },
     ],
   },
   // KESm
