@@ -81,6 +81,7 @@ const testCases = [
   {
     sellToken: TokenSymbol.NGNm,
     buyToken: TokenSymbol.USDm,
+    amount: "0.1",
   },
 ];
 
@@ -92,7 +93,7 @@ testHelper.runSuite({
   tests: [
     ...testCases.map(testCase => {
       return {
-        name: `from ${testCase.sellToken} to ${testCase.buyToken}`,
+        name: `${testCase.sellToken}/${testCase.buyToken}`,
         testCaseId: "",
         disable: testCase?.disable,
         test: async ({ web }: IExecution) => {
@@ -114,7 +115,7 @@ testHelper.runSuite({
             sellToken,
             buyToken,
             isSellAmount: true,
-            amount: "0.001",
+            amount: testCase.amount || "0.001",
           });
           await app.swap.expectUpdatedBalance({
             shouldIncrease: false,
