@@ -108,7 +108,7 @@ export class SwapService extends BaseService {
       log.debug(
         "Confirms only swap TX because sufficient allowance already exists",
       );
-      await this.page.swapButton.click();
+      await this.page.swapButton.click({ timeout: timeouts.s });
       await this.confirm.page.verifyIsOpen();
       await this.confirm.confirmSwapTx({ shouldExpectLoading });
       await this.confirm.page.verifyIsClosed({ timeout: timeouts.s });
