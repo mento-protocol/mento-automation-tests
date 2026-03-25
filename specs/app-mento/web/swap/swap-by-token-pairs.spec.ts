@@ -208,7 +208,7 @@ const tests = [
       { token: Token.USDm, amount: "0.50", id: "T280cb27f" },
       { token: Token.XOFm },
       { token: Token.JPYm },
-      { token: Token.BRLm },
+      { token: Token.BRLm, amount: "0.1" },
     ],
   },
   // JPYm
