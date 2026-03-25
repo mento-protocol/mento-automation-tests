@@ -40,7 +40,7 @@ export class ConfirmSwapService extends BaseService {
   async confirmSwapTx({
     shouldExpectLoading = false,
   }: { shouldExpectLoading?: boolean } = {}): Promise<void> {
-    await this.page.swapButton.click({ timeout: timeouts.xxs });
+    await this.page.swapButton.click({ timeout: timeouts.s });
     await this.metamask.confirmTransaction();
     if (shouldExpectLoading) await this.expectLoadingDuringTxConfirmation();
     await this.expectSuccessSwapNotification();
