@@ -1,4 +1,4 @@
-import { TestDetails } from "playwright/types/test";
+import { TestDetails } from "@playwright/test";
 
 import {
   IDisable,
