@@ -9,16 +9,16 @@
 ## Pre-requisites
 
 - [node.js](https://nodejs.org/en) >= 22.14.0
-- [npm](https://nodejs.org/en) >= 10.5.0
+- [pnpm](https://pnpm.io/installation) >= 10.33.0
 - [Foundry](https://book.getfoundry.sh/getting-started/installation) (optional, for fork testing with Anvil)
 
 ## Pre-conditions
 
-1. Execute `npm install`.
-2. Execute `npm run install-playwright`.
+1. Execute `pnpm install`.
+2. Execute `pnpm run install-playwright`.
 3. Fill the `SEED_PHRASE`, and `WALLET_PASSWORD` variables.
 4. Specify the `IS_MAINNET` variable (ensure you re-built synpress cache when changing a chain by this flag!).
-5. Execute `npm run build-synpress-cache`.
+5. Execute `pnpm run build-synpress-cache`.
 
 ### Installation
 
@@ -35,7 +35,7 @@ brew install foundry
 
 ## Environment Variables
 
-#### .env file creates automatically via "postinstall" on `npm install` command execution
+#### .env file creates automatically via "postinstall" on `pnpm install` command execution
 
 | Variable                   | Example                       | Description                                                                                                                          |
 | -------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -56,21 +56,21 @@ brew install foundry
 
 ## Local test/s execution by mods:
 
-- _**headed**_ - with opening browser (command can be shortened to `npm t`)
+- _**headed**_ - with opening browser (command can be shortened to `pnpm t`)
 
-`npm run test`
+`pnpm run test`
 
 - _**ui**_ - with opening browser in specified app with all devtools, traces, and other playwright features
 
-`npm run test:ui`
+`pnpm run test:ui`
 
 - _**debug**_ - with opening browser and specified debug app to pause/resume test
 
-`npm run test:debug`
+`pnpm run test:debug`
 
 - _**headless**_ - without opening browser and other playwright features
 
-`npm run test:headless`
+`pnpm run test:headless`
 
 ## CI test/s execution by the "Specific Test Run" trigger:
 
@@ -95,11 +95,11 @@ make mainnet-fork-setup
 3. Build synpress cache on a fork:
 
 ```bash
-npm run build-synpress-cache
+pnpm run build-synpress-cache
 ```
 
 4. Run tests:
 
 ```bash
-npm test
+pnpm run test
 ```

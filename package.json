@@ -4,16 +4,16 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "npm run verify-env-config && playwright test",
-    "test:ui": "npm run verify-env-config && playwright test --ui",
-    "test:debug": "npm run verify-env-config && playwright test --debug",
+    "test": "pnpm run verify-env-config && playwright test",
+    "test:ui": "pnpm run verify-env-config && playwright test --ui",
+    "test:debug": "pnpm run verify-env-config && playwright test --debug",
     "linter": "eslint . --ext .ts",
     "lint:staged": "eslint '*.ts' --fix",
     "lint": "eslint 'src/**/*.{js,ts}'",
-    "codeCheck": "tsc && npm run linter",
-    "build-synpress-cache": "npx synpress src/wallet-setups --force",
+    "codeCheck": "tsc && pnpm run linter",
+    "build-synpress-cache": "pnpm exec synpress src/wallet-setups --force",
     "verify-env-config": "tsx src/tools/verify-env-config.tool.ts",
-    "install-playwright": "npx playwright install --with-deps",
+    "install-playwright": "pnpm exec playwright install --with-deps",
     "prepare": "husky install",
     "postinstall": "tsx src/tools/default-env-vars.tool.ts",
     "calculate-swap-tests-costs": "tsx src/tools/calculate-swap-tests-costs.tool.ts",
@@ -23,6 +23,7 @@
     "blockexplorer:stop": "docker stop otterscan && docker rm otterscan",
     "fork:prepare-data": "tsx src/tools/prepare-fork-data.tool.ts"
   },
+  "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=22.14.0"
   },
