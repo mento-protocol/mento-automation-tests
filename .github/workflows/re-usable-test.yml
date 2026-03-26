@@ -137,6 +137,7 @@ jobs:
           node-version: 22.14.0
 
       - name: Install Make
+        if: ${{ inputs.IS_FORK == 'true' }}
         run: |
           apt-get update
           apt-get install -y make
