@@ -8,7 +8,7 @@
 
 ## Pre-requisites
 
-- [node.js](https://nodejs.org/en) >= 20.11.1
+- [node.js](https://nodejs.org/en) >= 22.14.0
 - [npm](https://nodejs.org/en) >= 10.5.0
 - [Foundry](https://book.getfoundry.sh/getting-started/installation) (optional, for fork testing with Anvil)
 

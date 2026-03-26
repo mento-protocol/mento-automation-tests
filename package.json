@@ -24,7 +24,7 @@
     "fork:prepare-data": "tsx src/tools/prepare-fork-data.tool.ts"
   },
   "engines": {
-    "node": ">=20.11.1"
+    "node": ">=22.14.0"
   },
   "dependencies": {
     "@celo/contractkit": "^10.0.1",
@@ -42,7 +42,7 @@
     "@testomatio/reporter": "1.5.3",
     "@mento-protocol/mento-sdk": "^1.19.0",
     "@types/lodash": "4.14.202",
-    "@types/node": "20.14.5",
+    "@types/node": "22.14.0",
     "@types/yargs-parser": "^21.0.3",
     "@typescript-eslint/eslint-plugin": "6.0.0",
     "@typescript-eslint/parser": "6.0.0",
