@@ -125,10 +125,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
       - name: Install Node
         uses: actions/setup-node@v4
         with:
-          cache: npm
+          cache: pnpm
           node-version: 22.14.0
 
       - name: Install Make
@@ -145,13 +150,13 @@ jobs:
           echo "$HOME/.foundry/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Verify env config
-        run: npm run verify-env-config
+        run: pnpm run verify-env-config
 
       - name: Code-Check
-        run: npm run codeCheck
+        run: pnpm run codeCheck
 
       - name: Setup fork
         if: ${{ inputs.IS_FORK == 'true' }}
@@ -169,7 +174,7 @@ jobs:
         with:
           timeout_minutes: 3
           max_attempts: 3
-          command: xvfb-run npm run build-synpress-cache
+          command: xvfb-run pnpm run build-synpress-cache
 
       - name: Set current datetime
         run: |
@@ -178,7 +183,7 @@ jobs:
 
       - name: Run tests
         id: test-run
-        run: xvfb-run npm run test
+        run: xvfb-run pnpm run test
         env:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
