@@ -3,6 +3,7 @@ import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { TestTag } from "@constants/test.constants";
 import { AmountType } from "../../../../src/apps/app-mento/web/swap/swap.service.types";
 import { testHelper } from "@helpers/test/test.helper";
+import { Token } from "@constants/token.constants";
 
 const expectedDecimals = 4;
 const sellAmount = "0.1";
@@ -19,6 +20,7 @@ testHelper.runSuite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.swap.fillForm({
+          tokens: { sell: Token.USDm, buy: Token.CADm },
           sellAmount: sellAmount,
         });
 
