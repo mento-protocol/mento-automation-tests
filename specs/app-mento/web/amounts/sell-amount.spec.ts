@@ -52,6 +52,7 @@ testHelper.runSuite({
         // TODO: Replace to usdcBalance once a insufficient liquidity is not relevant
         const highSellAmount = (usdcBalance / 2).toString();
         await app.swap.fillForm({
+          tokens: { sell: Token.USDm, buy: Token.CADm },
           sellAmount: highSellAmount,
         });
         await web.browser.refresh();

@@ -19,6 +19,7 @@ testHelper.runSuite({
       test: async ({ web }) => {
         const app = web.app.appMento;
         await app.swap.fillForm({
+          tokens: { sell: Token.USDm, buy: Token.CADm },
           sellAmount: defaultSwapAmount,
         });
         expect(await app.swap.isRateThere()).toBeTruthy();
