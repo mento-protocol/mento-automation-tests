@@ -24,7 +24,7 @@ testHelper.runSuite({
         const initialBalance = await app.main.getTokenBalanceByName(tokens.buy);
         await app.swap.fillForm({ sellAmount: swapAmount, tokens });
         await app.swap.start({ shouldExpectLoading });
-        await app.main.expectIncreasedBalance({
+        await app.main.expectUpdatedBalanceOnUi({
           initialBalance,
           tokenName: tokens.buy,
         });

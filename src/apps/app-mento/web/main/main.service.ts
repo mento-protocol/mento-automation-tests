@@ -190,7 +190,7 @@ export class MainAppMentoService extends BaseService {
     );
   }
 
-  async expectIncreasedBalance({
+  async expectUpdatedBalanceOnUi({
     initialBalance,
     tokenName,
   }: IWaitForBalanceToChangeArgs): Promise<void> {

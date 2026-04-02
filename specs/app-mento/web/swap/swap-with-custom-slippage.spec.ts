@@ -1,5 +1,9 @@
 import { expect } from "@fixtures/test.fixture";
-import { getDefaultSwapAmount, Token } from "@constants/token.constants";
+import {
+  getDefaultSwapAmount,
+  testWalletAddresses,
+  Token,
+} from "@constants/token.constants";
 import { testHelper } from "@helpers/test/test.helper";
 import { IExecution } from "@helpers/test/test.types";
 import { TestTag } from "@constants/test.constants";
@@ -41,11 +45,13 @@ testHelper.runSuite({
         name: `perform with '${testCase.name}' slippage (${tokens.sell}/${tokens.buy})`,
         testCaseId: testCase.id,
         disable: testCase?.disable,
-        test: async ({ web }: IExecution) => {
+        test: async ({ web, contractHelper }: IExecution) => {
           const app = web.app.appMento;
-          const initialBalance = await app.main.getTokenBalanceByName(
-            tokens.buy,
-          );
+          const initialBalance =
+            await contractHelper.governance.getBalanceByTokenSymbol({
+              walletAddress: testWalletAddresses.main,
+              tokenSymbol: tokens.buy,
+            });
 
           await app.swap.fillForm({
             slippage: testCase.slippage,
@@ -53,7 +59,7 @@ testHelper.runSuite({
           });
           expect.soft(await app.swap.isRateThere()).toBeTruthy();
           await app.swap.start();
-          await app.main.expectIncreasedBalance({
+          await app.main.expectUpdatedBalanceOnUi({
             tokenName: tokens.buy,
             initialBalance,
           });

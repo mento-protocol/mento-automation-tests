@@ -2,10 +2,8 @@ import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { loggerHelper } from "@helpers/logger/logger.helper";
 import { ClassLog } from "@decorators/logger.decorators";
-import { expect } from "@fixtures/test.fixture";
 import { SwapPage } from "./swap.page";
 import { BaseService, IBaseServiceArgs } from "@shared/web/base/base.service";
-import { Address } from "viem";
 import { TokenSymbol } from "@mento-protocol/mento-sdk";
 
 const log = loggerHelper.get("SwapService");
@@ -135,45 +133,6 @@ export class SwapService extends BaseService {
     await this.page.chainList.celo.waitForDisplayed(timeouts.m);
     await this.page.chainList.celo.click({ force: true });
   }
-
-  async expectUpdatedBalance({
-    walletAddress,
-    tokenSymbol,
-    initialBalance,
-    shouldIncrease,
-  }: IExpectUpdatedBalanceArgs): Promise<void> {
-    let currentBalance = null;
-    await waiterHelper.retry(
-      async () => {
-        currentBalance = await this.contract.governance.getBalanceByTokenSymbol(
-          {
-            walletAddress,
-            tokenSymbol,
-          },
-        );
-        return shouldIncrease
-          ? currentBalance > initialBalance
-          : currentBalance < initialBalance;
-      },
-      3,
-      {
-        interval: timeouts.s,
-        errorMessage: `Balance hasn't ${
-          shouldIncrease ? "increased" : "decreased"
-        }`,
-      },
-    );
-    shouldIncrease
-      ? expect.soft(currentBalance).toBeGreaterThan(initialBalance)
-      : expect.soft(currentBalance).toBeLessThan(initialBalance);
-  }
-}
-
-interface IExpectUpdatedBalanceArgs {
-  initialBalance: number;
-  walletAddress: Address;
-  tokenSymbol: TokenSymbol;
-  shouldIncrease: boolean;
 }
 
 interface ISwapServiceArgs extends IBaseServiceArgs {

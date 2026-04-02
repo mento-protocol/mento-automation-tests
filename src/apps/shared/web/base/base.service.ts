@@ -1,4 +1,6 @@
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
+import { Address } from "viem";
+import { TokenSymbol } from "@mento-protocol/mento-sdk";
 
 import { BrowserHelper } from "@helpers/browser/browser.helper";
 import { envHelper } from "@helpers/env/env.helper";
@@ -80,6 +82,38 @@ export class BaseService {
       },
     );
   }
+
+  async expectUpdatedBalance({
+    walletAddress,
+    tokenSymbol,
+    initialBalance,
+    shouldIncrease,
+  }: IExpectUpdatedBalanceArgs): Promise<void> {
+    let currentBalance = null;
+    await waiterHelper.retry(
+      async () => {
+        currentBalance = await this.contract.governance.getBalanceByTokenSymbol(
+          {
+            walletAddress,
+            tokenSymbol,
+          },
+        );
+        return shouldIncrease
+          ? currentBalance > initialBalance
+          : currentBalance < initialBalance;
+      },
+      3,
+      {
+        interval: timeouts.s,
+        errorMessage: `Balance hasn't ${
+          shouldIncrease ? "increased" : "decreased"
+        }`,
+      },
+    );
+    shouldIncrease
+      ? expect.soft(currentBalance).toBeGreaterThan(initialBalance)
+      : expect.soft(currentBalance).toBeLessThan(initialBalance);
+  }
 }
 
 export interface IBaseServiceArgs {
@@ -88,4 +122,11 @@ export interface IBaseServiceArgs {
   metamask?: MetamaskHelper;
   celoScan?: CeloScanService;
   contract?: ContractHelper;
+}
+
+interface IExpectUpdatedBalanceArgs {
+  initialBalance: number;
+  walletAddress: Address;
+  tokenSymbol: TokenSymbol;
+  shouldIncrease: boolean;
 }

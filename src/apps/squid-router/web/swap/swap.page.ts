@@ -1,7 +1,7 @@
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
 import { Button, Input, Label } from "@shared/web/elements/index";
 import { BasePage } from "@shared/web/base/base.page";
-import { TokenSymbol } from "@constants/index";
+import { Token } from "@constants/index";
 
 export class SwapPage extends BasePage {
   constructor(protected override ef: ElementFinderHelper) {
@@ -52,7 +52,7 @@ export class SwapPage extends BasePage {
 
   getTokenButtonByName(name: string, { exact = false } = {}): Button {
     // There are several CELO and USDC buttons
-    const secondTokenButtons = [TokenSymbol.CELO, TokenSymbol.USDC] as string[];
+    const secondTokenButtons = [Token.CELO, Token.USDC] as string[];
     const isSecondToken = secondTokenButtons.includes(name);
     return new Button(
       this.ef.role("button", { name, exact }).nth(isSecondToken ? 1 : 0),
