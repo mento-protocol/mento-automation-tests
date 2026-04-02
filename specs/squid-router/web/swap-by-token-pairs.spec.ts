@@ -1,86 +1,86 @@
 import { TestTag } from "@constants/test.constants";
 import { testWalletAddresses } from "@constants/token.constants";
 import { testHelper } from "@helpers/test/test.helper";
-import { TokenSymbol } from "@constants/token.constants";
+import { Token } from "@constants/token.constants";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { IExecution } from "@helpers/test/test.types";
 
 const testCases = [
   // CELO
   {
-    sellToken: TokenSymbol.CELO,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.CELO,
+    buyToken: Token.USDm,
   },
   // USDm
   {
-    sellToken: TokenSymbol.USDm,
-    buyToken: TokenSymbol.EURm,
+    sellToken: Token.USDm,
+    buyToken: Token.EURm,
   },
   {
-    sellToken: TokenSymbol.BRLm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.BRLm,
+    buyToken: Token.USDm,
   },
 
   // USDT
   {
-    sellToken: TokenSymbol["USD₮"],
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token["USD₮"],
+    buyToken: Token.USDm,
     disable: { reason: "Cannot get USDT address by mento sdk" },
   },
   // KESm
   {
-    sellToken: TokenSymbol.KESm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.KESm,
+    buyToken: Token.USDm,
   },
   // PHPm
   {
-    sellToken: TokenSymbol.PHPm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.PHPm,
+    buyToken: Token.USDm,
   },
   // COPm
   {
-    sellToken: TokenSymbol.COPm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.COPm,
+    buyToken: Token.USDm,
   },
   // XOFm
   {
-    sellToken: TokenSymbol.XOFm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.XOFm,
+    buyToken: Token.USDm,
   },
   // USDC
   {
-    sellToken: TokenSymbol.USDC,
-    buyToken: TokenSymbol.EURm,
+    sellToken: Token.USDC,
+    buyToken: Token.EURm,
   },
   // GHSm
   {
-    sellToken: TokenSymbol.GHSm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.GHSm,
+    buyToken: Token.USDm,
   },
   // GBPm
   {
-    sellToken: TokenSymbol.GBPm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.GBPm,
+    buyToken: Token.USDm,
   },
   // AUDm
   {
-    sellToken: TokenSymbol.AUDm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.AUDm,
+    buyToken: Token.USDm,
   },
   // CHFm
   {
-    sellToken: TokenSymbol.CHFm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.CHFm,
+    buyToken: Token.USDm,
   },
   // JPYm
   {
-    sellToken: TokenSymbol.JPYm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.JPYm,
+    buyToken: Token.USDm,
   },
   // NGNm
   {
-    sellToken: TokenSymbol.NGNm,
-    buyToken: TokenSymbol.USDm,
+    sellToken: Token.NGNm,
+    buyToken: Token.USDm,
     amount: "0.1",
   },
 ];
