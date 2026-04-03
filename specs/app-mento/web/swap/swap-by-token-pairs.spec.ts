@@ -10,7 +10,7 @@ const swapAmount = "0.001";
 const tests = [
   // USD₮
   {
-    token: Token["USD₮"],
+    token: Token.USD_,
     testCases: [
       { token: Token.USDm, id: "T2511996c" },
       { token: Token.EURm },
