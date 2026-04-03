@@ -3,7 +3,7 @@ import { expect } from "@fixtures/test.fixture";
 import { testHelper } from "@helpers/test/test.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { governanceContractAddresses } from "@constants/governanceUrl.constants";
-import { Chain, envHelper } from "@helpers/env/env.helper";
+import { ChainType, envHelper } from "@helpers/env/env.helper";
 import { IExecution } from "@helpers/test/test.types";
 import { WalletName } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
@@ -13,10 +13,7 @@ const testCases = [
   { name: "timelock" },
   { name: "veMento" },
 ];
-const chainName =
-  envHelper.getChainName() === Chain.Mainnet
-    ? "Celo Mainnet"
-    : "Sepolia Testnet";
+const chainName = envHelper.getChainName();
 
 testHelper.runSuite({
   name: "Verify contract links",
@@ -28,7 +25,7 @@ testHelper.runSuite({
       test: async ({ web }: IExecution) => {
         const app = web.app.governance;
         const mainnetContractAddress =
-          governanceContractAddresses[Chain.Mainnet][testCase.name];
+          governanceContractAddresses[ChainType.Mainnet][testCase.name];
 
         await app.main.openContractAddressesSection();
         const newTabPage = await app.main.browser.getNewTabPage({

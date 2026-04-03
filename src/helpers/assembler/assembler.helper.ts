@@ -135,8 +135,8 @@ export class AssemblerHelper {
               settings: new SettingsService({
                 page: new SettingsPage(ef),
                 ...baseDependencies,
-                switchNetworksPage: new SwitchNetworksPage(ef),
               }),
+              switchNetworksPage: new SwitchNetworksPage(ef),
             }),
             swap: new SwapService({
               page: new SwapPage(ef),

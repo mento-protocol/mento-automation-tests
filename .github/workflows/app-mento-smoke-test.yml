@@ -12,6 +12,11 @@ on:
         description: "Mainnet test run flag"
         required: false
         default: "false"
+      CHAIN_NAME:
+        type: string
+        description: "Chain name"
+        required: false
+        default: "Celo"
       IS_FORK:
         type: string
         description: "Fork mode test run flag"
@@ -52,6 +57,7 @@ jobs:
       IS_PARALLEL_RUN: "false"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
+      CHAIN_NAME: ${{ inputs.CHAIN_NAME }}
       IS_FORK: ${{ inputs.IS_FORK }}
       HTML_REPORT_NAME: ${{ inputs.HTML_REPORT_NAME }}
       HTML_REPORT_GENERATION: "onFailure"

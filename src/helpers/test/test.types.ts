@@ -1,6 +1,7 @@
 import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
 import { IApi, IWeb } from "../assembler/assembler.helper";
 import { ContractHelper } from "@helpers/contract/contract.helper";
+import { ChainType, ChainName } from "@helpers/env/env.helper";
 
 export interface IExecution {
   web?: IWeb;
@@ -35,5 +36,6 @@ export interface IDisable {
   reason: string;
   link?: string;
   env?: string;
-  chain?: string;
+  chainType?: ChainType;
+  chainName?: ChainName;
 }

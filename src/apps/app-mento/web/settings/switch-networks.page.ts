@@ -1,5 +1,6 @@
-import { magicStrings } from "@constants/magic-strings.constants";
 import { ElementFinderHelper } from "@helpers/element-finder/element-finder.helper";
+import { ElementAttribute } from "@helpers/element-finder/element-finder.helpet.types";
+import { ChainName } from "@helpers/env/env.helper";
 import { BasePage } from "@shared/web/base/base.page";
 import { Button, Label } from "@shared/web/elements/index";
 
@@ -8,30 +9,34 @@ export class SwitchNetworksPage extends BasePage {
     super(ef);
   }
 
-  headerLabel = new Label(this.ef.text("Switch Networks"));
-  closeButton = new Button(
-    this.ef.class(
-      "iekbcc0 iekbcc9 ju367v4 ju367va0 ju367vc6 ju367vs ju367vt ju367vv ju367vff ju367va ju367v2b ju367v2q ju367v8u ju367v94 _12cbo8i3 ju367v8r _12cbo8i5 _12cbo8i7",
-    ),
+  networkPopover = new Label(
+    this.ef.custom({
+      attributeName: ElementAttribute.dataSlot,
+      attributeValue: "dropdown-menu-content",
+    }),
   );
 
   networkButtons = {
-    [Network.Celo]: new Button(
-      this.ef.dataTestId(
-        `rk-chain-option-${magicStrings.chain.mainnet.chainId}`,
+    [ChainName.Celo]: new Button(
+      this.networkPopover.element.locator(
+        this.ef.text(ChainName.Celo, { exact: true }),
       ),
     ),
-    [Network.Sepolia]: new Button(
-      this.ef.dataTestId(
-        `rk-chain-option-${magicStrings.chain.testnet.chainId}`,
+    [ChainName.Monad]: new Button(
+      this.networkPopover.element.locator(
+        this.ef.text(ChainName.Monad, { exact: true }),
       ),
+    ),
+    [ChainName.CeloSepolia]: new Button(
+      this.networkPopover.element.locator(this.ef.text(ChainName.CeloSepolia)),
+    ),
+    [ChainName.MonadTestnet]: new Button(
+      this.networkPopover.element.locator(this.ef.text(ChainName.MonadTestnet)),
     ),
   };
 
-  staticElements = [this.headerLabel];
-}
-
-export enum Network {
-  Celo = "Celo",
-  Sepolia = "Sepolia",
+  staticElements = [
+    this.networkButtons[ChainName.Celo],
+    this.networkButtons[ChainName.Monad],
+  ];
 }

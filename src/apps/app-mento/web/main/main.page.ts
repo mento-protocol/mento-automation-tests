@@ -17,6 +17,8 @@ export class MainAppMentoPage extends BasePage {
     }),
   );
 
+  changeNetworkButton = new Button(this.ef.dataTestId("change-network-button"));
+
   walletSettingsButton = new Button(
     this.ef.text("0x", { exact: false }).nth(1),
   );

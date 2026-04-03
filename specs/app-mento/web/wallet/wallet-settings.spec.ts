@@ -29,17 +29,6 @@ testHelper.runSuite({
       },
     },
     {
-      name: "Open switch network modal",
-      testCaseId: "T2f5ab8c4",
-      test: async ({ web }) => {
-        const app = web.app.appMento;
-        await app.main.settings.openSwitchNetworkDialog();
-        expect(
-          await app.main.settings.switchNetworksPage.isOpen(),
-        ).toBeTruthy();
-      },
-    },
-    {
       name: "Disconnect Wallet",
       testCaseId: "Tf4dbe31c",
       test: async ({ web }) => {

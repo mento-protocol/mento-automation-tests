@@ -16,6 +16,7 @@ const {
   WALLET_PASSWORD,
   APP_NAME,
   IS_FORK,
+  CHAIN_NAME,
 } = processEnv;
 
 export class EnvHelper {
@@ -51,23 +52,28 @@ export class EnvHelper {
   }
 
   getApp(): AppName {
-    return APP_NAME as AppName;
+    return {
+      [AppName.AppMento]: AppName.AppMento,
+      [AppName.Governance]: AppName.Governance,
+      [AppName.SquidRouter]: AppName.SquidRouter,
+    }[APP_NAME];
   }
 
-  getChainName(): string {
-    return this.isMainnet()
-      ? magicStrings.chain.mainnet.name
-      : magicStrings.chain.testnet.name;
+  getChainName(): ChainName {
+    return {
+      [ChainName.Celo]: ChainName.Celo,
+      [ChainName.CeloSepolia]: ChainName.CeloSepolia,
+      [ChainName.Monad]: ChainName.Monad,
+      [ChainName.MonadTestnet]: ChainName.MonadTestnet,
+    }[CHAIN_NAME];
   }
 
-  getChainType(): string {
-    return this.isMainnet() ? "mainnet" : "testnet";
+  getChainType(): ChainType {
+    return this.isMainnet() ? ChainType.Mainnet : ChainType.Testnet;
   }
 
   getChainId(): number {
-    return this.isMainnet()
-      ? magicStrings.chain.mainnet.chainId
-      : magicStrings.chain.testnet.chainId;
+    return magicStrings.chain[this.getChainName()][this.getChainType()].chainId;
   }
 
   getGovernorAddress(): Address {
@@ -81,23 +87,31 @@ export class EnvHelper {
   }
 
   getChainDetails() {
-    if (this.isFork()) {
-      return this.isMainnet()
-        ? magicStrings.chain.mainnetFork
-        : magicStrings.chain.testnetFork;
-    }
-    return this.isMainnet()
-      ? magicStrings.chain.mainnet
-      : magicStrings.chain.testnet;
+    const chainName = this.getChainName();
+    const chainType = this.getChainType();
+    return this.isFork()
+      ? magicStrings.chain[chainName].fork[chainType]
+      : magicStrings.chain[chainName][chainType];
   }
 
   getRpcUrl(): string {
-    if (this.isFork()) {
-      return this.isMainnet()
-        ? magicStrings.chain.mainnetFork.rpcUrl
-        : magicStrings.chain.testnetFork.rpcUrl;
-    }
-    return magicStrings.chain[this.getChainType()].rpcUrl;
+    return this.getChainDetails().rpcUrl;
+  }
+
+  getChainToSwitch(): { type: ChainType; name: ChainName } {
+    const chains = [
+      { type: ChainType.Mainnet, name: ChainName.Celo },
+      { type: ChainType.Testnet, name: ChainName.CeloSepolia },
+      { type: ChainType.Mainnet, name: ChainName.Monad },
+      { type: ChainType.Testnet, name: ChainName.MonadTestnet },
+    ];
+    const currentChainName = this.getChainName();
+    const currentChainType = this.getChainType();
+    return chains.find(
+      chain =>
+        !chain.name.includes(currentChainName) &&
+        chain.type === currentChainType,
+    );
   }
 
   isCI(): boolean {
@@ -121,9 +135,16 @@ export class EnvHelper {
   }
 }
 
-export enum Chain {
+export enum ChainType {
   Mainnet = "mainnet",
   Testnet = "testnet",
+}
+
+export enum ChainName {
+  Celo = "Celo",
+  CeloSepolia = "Celo Sepolia Testnet",
+  Monad = "Monad",
+  MonadTestnet = "Monad Testnet",
 }
 
 export const envHelper = new EnvHelper();

@@ -41,6 +41,14 @@ on:
         options:
           - "true"
           - "false"
+      CHAIN_NAME:
+        type: choice
+        description: "Chain name"
+        required: false
+        default: "Celo"
+        options:
+          - "Celo"
+          - "Monad"
 
 jobs:
   app_mento_regression_test:

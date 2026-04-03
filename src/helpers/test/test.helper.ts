@@ -87,8 +87,11 @@ class TestHelper {
 
   private isDisabled(disable: IDisable): boolean {
     if (!disable) return false;
-    if (disable.chain) {
-      return disable.chain === envHelper.getChainName() ? true : false;
+    if (disable.chainType) {
+      return disable.chainType === envHelper.getChainType();
+    }
+    if (disable.chainName) {
+      return disable.chainName === envHelper.getChainName();
     }
     if (!disable.env) return true;
     return disable.env === envHelper.getEnv();
@@ -109,10 +112,10 @@ class TestHelper {
         type: "🌐 Environment",
         description: disable?.env,
       });
-    disable?.chain &&
+    disable?.chainType &&
       testFixture.info().annotations.push({
         type: "⛓️‍💥 Chain",
-        description: disable?.chain,
+        description: disable?.chainType,
       });
   }
 

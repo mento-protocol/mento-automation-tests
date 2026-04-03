@@ -3,19 +3,36 @@ import { AppName } from "./apps.constants";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { processEnv } from "@helpers/processEnv/processEnv.helper";
 import { governanceAbi } from "./abi.constants";
+import { ChainType } from "@helpers/env/env.helper";
 
+enum ChainName {
+  Celo = "Celo",
+  Monad = "Monad",
+}
 export const executeTitleSuffix = "(To Execute)";
-const mainnetDetails = {
+const celoMainnetDetails = {
   name: "Celo",
   rpcUrl: "https://forno.celo.org",
   chainId: 42220,
   symbol: "CELO",
 };
-const testnetDetails = {
+const celoTestnetDetails = {
   name: "Celo Sepolia",
   rpcUrl: "https://forno.celo-sepolia.celo-testnet.org",
   chainId: 11142220,
   symbol: "CELO",
+};
+const monadMainnetDetails = {
+  name: "Monad",
+  rpcUrl: "https://rpc.monad.xyz",
+  chainId: 143,
+  symbol: "MON",
+};
+const monadTestnetDetails = {
+  name: "Monad Testnet",
+  rpcUrl: "https://testnet-rpc.monad.xyz/",
+  chainId: 10143,
+  symbol: "MON",
 };
 
 export const magicStrings = {
@@ -50,10 +67,34 @@ export const magicStrings = {
     },
   },
   chain: {
-    testnet: { ...testnetDetails },
-    mainnet: { ...mainnetDetails },
-    mainnetFork: { ...mainnetDetails, rpcUrl: "http://localhost:8545" },
-    testnetFork: { ...testnetDetails, rpcUrl: "http://localhost:8545" },
+    [ChainName.Celo]: {
+      [ChainType.Mainnet]: { ...celoMainnetDetails },
+      [ChainType.Testnet]: { ...celoTestnetDetails },
+      fork: {
+        [ChainType.Mainnet]: {
+          ...celoMainnetDetails,
+          rpcUrl: "http://localhost:8545",
+        },
+        [ChainType.Testnet]: {
+          ...celoTestnetDetails,
+          rpcUrl: "http://localhost:8545",
+        },
+      },
+    },
+    [ChainName.Monad]: {
+      [ChainType.Mainnet]: { ...monadMainnetDetails },
+      [ChainType.Testnet]: { ...monadTestnetDetails },
+      fork: {
+        [ChainType.Mainnet]: {
+          ...monadMainnetDetails,
+          rpcUrl: "http://localhost:8545",
+        },
+        [ChainType.Testnet]: {
+          ...monadTestnetDetails,
+          rpcUrl: "http://localhost:8545",
+        },
+      },
+    },
   },
   governance: {
     abi: governanceAbi,
