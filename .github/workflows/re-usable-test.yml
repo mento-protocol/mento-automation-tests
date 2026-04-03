@@ -44,6 +44,10 @@ on:
         required: false
         default: "false"
         type: string
+      CHAIN_NAME:
+        description: "Chain name"
+        required: false
+        type: string
       IS_FORK:
         description: "Fork mode test run flag"
         required: false
@@ -109,6 +113,7 @@ jobs:
       IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
+      CHAIN_NAME: ${{ inputs.CHAIN_NAME }}
       IS_FORK: ${{ inputs.IS_FORK }}
       HTML_REPORT_NAME: ${{ inputs.HTML_REPORT_NAME }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}

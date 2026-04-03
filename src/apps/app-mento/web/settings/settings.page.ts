@@ -13,8 +13,8 @@ export class SettingsPage extends BasePage {
   }
 
   copyAddressButton = new Button(this.ef.text("Copy Address"));
-  changeNetworkButton = new Button(this.ef.dataTestId("change-network-button"));
   disconnectButton = new Button(this.ef.text("Disconnect"));
+  testnetModeCheckbox = new Button(this.ef.text("Testnet Mode"));
 
   staticElements = [this.copyAddressButton, this.disconnectButton];
 }

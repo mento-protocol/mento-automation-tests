@@ -24,11 +24,11 @@ export abstract class BasePage {
       shouldWaitForExist = false,
       shouldLog = true,
     } = options;
-    const isDisplayedPromises = this.staticElements.map(element =>
-      shouldWaitForExist
+    const isDisplayedPromises = this.staticElements.map(element => {
+      return shouldWaitForExist
         ? element.waitForExist(timeout, { throwError: false, shouldLog })
-        : element.waitForDisplayed(timeout, { throwError: false, shouldLog }),
-    );
+        : element.waitForDisplayed(timeout, { throwError: false, shouldLog });
+    });
 
     do {
       const result = promiseHelper.allTrue(isDisplayedPromises);

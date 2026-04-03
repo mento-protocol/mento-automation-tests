@@ -14,6 +14,8 @@ import {
   WalletName,
 } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { SettingsService } from "../settings/settings.service";
+import { SwitchNetworksPage } from "../settings/switch-networks.page";
+import { ChainName } from "@helpers/env/env.helper";
 
 const log = loggerHelper.get("MainAppMentoService");
 
@@ -22,13 +24,15 @@ export class MainAppMentoService extends BaseService {
   public override page: MainAppMentoPage = null;
   public connectWalletModal: ConnectWalletModalService = null;
   public settings: SettingsService = null;
+  public switchNetworksPage: SwitchNetworksPage = null;
 
   constructor(args: IMainServiceArgs) {
-    const { page, connectWalletModal, settings } = args;
+    const { page, connectWalletModal, settings, switchNetworksPage } = args;
     super(args);
     this.page = page;
     this.connectWalletModal = connectWalletModal;
     this.settings = settings;
+    this.switchNetworksPage = switchNetworksPage;
   }
 
   async enableForkMode(): Promise<void> {
@@ -68,10 +72,44 @@ export class MainAppMentoService extends BaseService {
     await this.settings.page.verifyIsClosed();
   }
 
-  async openSwitchNetwork(): Promise<void> {
-    await this.openSettings();
-    await this.settings.page.changeNetworkButton.click();
-    await this.settings.switchNetworksPage.verifyIsOpen();
+  async openSwitchNetworkPopover(): Promise<void> {
+    await this.page.changeNetworkButton.click();
+    await this.switchNetworksPage.verifyIsOpen();
+  }
+
+  async getCurrentChainName(): Promise<ChainName> {
+    const currentUrl = await this.browser.getCurrentPageUrl();
+    if (currentUrl.includes("sepolia")) return ChainName.CeloSepolia;
+    if (currentUrl.includes("celo")) return ChainName.Celo;
+    if (currentUrl.includes("monad-testnet")) return ChainName.MonadTestnet;
+    if (currentUrl.includes("monad")) return ChainName.Monad;
+    throw new Error(`Unknown network: ${currentUrl}`);
+  }
+
+  async switchNetwork({
+    networkName,
+    shouldEnableTestnetMode = false,
+  }: ISwitchNetworkParams): Promise<void> {
+    if (shouldEnableTestnetMode) await this.enableTestnetMode();
+    await this.openSwitchNetworkPopover();
+    await this.switchNetworksPage.networkButtons[networkName].click();
+    await this.metamask.approveNewNetwork();
+    await this.metamask.approveSwitchNetwork();
+    await this.switchNetworksPage.verifyIsClosed();
+  }
+
+  async waitForNetwork({
+    chainName,
+    timeout = timeouts.s,
+    throwError = true,
+  }: IWaitForNetworkParams): Promise<void> {
+    await waiterHelper.wait(
+      async () => {
+        return (await this.getCurrentChainName()) === chainName;
+      },
+      timeout,
+      { throwError },
+    );
   }
 
   async openAppWithConnectedWallet(
@@ -88,6 +126,19 @@ export class MainAppMentoService extends BaseService {
     await this.openConnectWalletModalFromHeader();
     await this.connectWalletModal.selectWalletByName(walletName);
     await this.metamask.connectWallet();
+  }
+
+  async isTestnetModeEnabled(): Promise<boolean> {
+    return this.settings.page.testnetModeCheckbox.isChecked();
+  }
+
+  async enableTestnetMode(): Promise<void> {
+    await this.openSettings();
+    if (await this.isTestnetModeEnabled()) {
+      log.debug("Testnet mode is already enabled!");
+      return;
+    }
+    await this.settings.page.testnetModeCheckbox.click();
   }
 
   async isWalletConnected(): Promise<boolean> {
@@ -234,4 +285,16 @@ export interface IMainServiceArgs extends IBaseServiceArgs {
   page: MainAppMentoPage;
   connectWalletModal: ConnectWalletModalService;
   settings: SettingsService;
+  switchNetworksPage: SwitchNetworksPage;
+}
+
+interface ISwitchNetworkParams {
+  networkName: ChainName;
+  shouldEnableTestnetMode?: boolean;
+}
+
+interface IWaitForNetworkParams {
+  chainName: ChainName;
+  timeout?: number;
+  throwError?: boolean;
 }

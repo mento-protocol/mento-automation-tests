@@ -37,14 +37,16 @@ const DAILY_CONFIG = {
   highFrequencyTests: 5,
 };
 const CHAIN_NAMES: Record<number, string> = {
-  [magicStrings.chain.mainnet.chainId]: magicStrings.chain.mainnet.name,
-  [magicStrings.chain.testnet.chainId]: magicStrings.chain.testnet.name,
+  [magicStrings.chain.Celo.mainnet.chainId]:
+    magicStrings.chain.Celo.mainnet.name,
+  [magicStrings.chain.Celo.testnet.chainId]:
+    magicStrings.chain.Celo.testnet.name,
 };
 const CHAIN_NAME_TO_ID: Record<string, number> = {
-  celo: magicStrings.chain.mainnet.chainId,
-  sepolia: magicStrings.chain.testnet.chainId,
+  celo: magicStrings.chain.Celo.mainnet.chainId,
+  sepolia: magicStrings.chain.Celo.testnet.chainId,
 };
-const DEFAULT_CHAIN_ID = magicStrings.chain.mainnet.chainId;
+const DEFAULT_CHAIN_ID = magicStrings.chain.Celo.mainnet.chainId;
 const DEFAULT_TEST_AMOUNT = "0.01";
 const DEFAULT_USD_TO_EUR_RATE = 0.85;
 const TOKEN_MAP: Record<string, string> = {

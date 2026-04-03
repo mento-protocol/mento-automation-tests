@@ -31,6 +31,7 @@ interface IProcessEnvHelper {
   IS_MAINNET: string;
   WORKERS_COUNT: string;
   IS_FORK: string;
+  CHAIN_NAME: string;
 }
 
 export const processEnv = process.env as unknown as IProcessEnvHelper;

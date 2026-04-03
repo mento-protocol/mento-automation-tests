@@ -63,6 +63,7 @@ jobs:
       APP_NAME: ${{ needs.define-app.outputs.app-name }}
       ENV: "prod"
       IS_MAINNET: "false"
+      CHAIN_NAME: "Celo"
       IS_FORK: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"
@@ -79,6 +80,7 @@ jobs:
       APP_NAME: ${{ needs.define-app.outputs.app-name }}
       ENV: "prod"
       IS_MAINNET: "false"
+      CHAIN_NAME: "Celo"
       IS_FORK: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"
@@ -95,6 +97,7 @@ jobs:
       APP_NAME: ${{ needs.define-app.outputs.app-name }}
       ENV: "prod"
       IS_MAINNET: "true"
+      CHAIN_NAME: "Celo"
       IS_FORK: "false"
       HTML_REPORT_NAME: "pr-healthcheck"
       TESTOMAT_REPORT_GENERATION: "false"
