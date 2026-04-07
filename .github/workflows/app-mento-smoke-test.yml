@@ -8,20 +8,20 @@ on:
         description: "Custom base url to run tests against different URLs"
         required: true
       IS_MAINNET:
-        type: string
+        type: boolean
         description: "Mainnet test run flag"
         required: false
-        default: "false"
+        default: false
       CHAIN_NAME:
         type: string
         description: "Chain name"
         required: false
         default: "Celo"
       IS_FORK:
-        type: string
+        type: boolean
         description: "Fork mode test run flag"
         required: false
-        default: "false"
+        default: false
       TESTOMATIO_TITLE:
         type: string
         description: "Test run title"

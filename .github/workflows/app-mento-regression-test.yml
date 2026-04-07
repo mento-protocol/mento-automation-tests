@@ -15,32 +15,23 @@ on:
           - "false"
           - "onFailure"
       TESTOMAT_REPORT_GENERATION:
-        type: choice
+        type: boolean
         description: "Testomat test run report generation"
-        default: "true"
-        options:
-          - "true"
-          - "false"
+        default: true
       CUSTOM_URL:
         description: "Custom base url to run tests against different URLs"
         required: false
         type: string
       IS_FORK:
-        type: choice
+        type: boolean
         description: "Fork mode test run flag"
         required: false
-        default: "false"
-        options:
-          - "true"
-          - "false"
+        default: false
       IS_MAINNET:
-        type: choice
+        type: boolean
         description: "Mainnet test run flag"
         required: false
-        default: "false"
-        options:
-          - "true"
-          - "false"
+        default: false
       CHAIN_NAME:
         type: choice
         description: "Chain name"
