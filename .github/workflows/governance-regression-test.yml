@@ -19,16 +19,16 @@ on:
           - "true"
           - "false"
           - "onFailure"
-      IS_FORK:
-        description: "Use Fork Mode"
-        type: boolean
-        required: false
-        default: false
       TESTOMAT_REPORT_GENERATION:
         description: "Generate Testomat Report"
         type: boolean
         required: false
         default: true
+      IS_FORK:
+        description: "Use Fork Mode"
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   app_governance_regression_test:

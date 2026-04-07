@@ -10,6 +10,10 @@ on:
         options:
           - "app-mento"
           - "governance"
+      SPECS_REGEX:
+        description: "Tests (file-name, @tag, Test Name)"
+        type: string
+        required: true
       CHAIN_NAME:
         description: "Chain Name"
         required: false
@@ -30,10 +34,6 @@ on:
         options:
           - "prod"
           - "qa"
-      SPECS_REGEX:
-        description: "Tests (file-name, @tag, Test Name)"
-        type: string
-        required: true
       SPECS_DIR:
         description: "Test Directory (/swap)"
         type: string

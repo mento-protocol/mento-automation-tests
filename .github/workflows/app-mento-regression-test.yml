@@ -27,6 +27,11 @@ on:
           - "true"
           - "false"
           - "onFailure"
+      TESTOMAT_REPORT_GENERATION:
+        description: "Generate Testomat Report"
+        type: boolean
+        required: false
+        default: true
       IS_MAINNET:
         description: "Use Mainnet"
         type: boolean
@@ -37,11 +42,6 @@ on:
         type: boolean
         required: false
         default: false
-      TESTOMAT_REPORT_GENERATION:
-        description: "Generate Testomat Report"
-        type: boolean
-        required: false
-        default: true
 
 jobs:
   app_mento_regression_test:
