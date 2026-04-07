@@ -52,7 +52,7 @@ export class SelectTokenModalPage extends BasePage {
       [Token.USDC]: new Button(
         this.ef.dataTestId("tokenOption_USDC", { exact: false }),
       ),
-      [Token["USD₮"]]: new Button(
+      [Token.USD_]: new Button(
         this.ef.dataTestId("tokenOption_USD₮", { exact: false }),
       ),
       [Token.axlUSDC]: new Button(

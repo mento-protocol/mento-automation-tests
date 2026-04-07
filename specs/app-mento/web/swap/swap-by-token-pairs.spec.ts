@@ -264,10 +264,7 @@ testHelper.runSuite({
                 tokenSymbol: buyToken,
               });
             await app.swap.fillForm({
-              tokens: {
-                sell: sellToken,
-                buy: buyToken,
-              },
+              tokens: { sell: sellToken, buy: buyToken },
               sellAmount: swapAmount,
             });
             await app.swap.start();
