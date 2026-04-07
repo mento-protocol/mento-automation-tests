@@ -1,4 +1,4 @@
-name: "[Squid-Router] Sequential Regression Test Run"
+name: "[Squid-Router] Regression Test Run"
 
 on:
   schedule:
@@ -6,20 +6,19 @@ on:
   workflow_dispatch:
     inputs:
       HTML_REPORT_GENERATION:
+        description: "Should generate HTML report?"
         type: choice
-        description: "HTML report generation"
+        required: false
         default: "onFailure"
         options:
           - "true"
           - "false"
           - "onFailure"
       TESTOMAT_REPORT_GENERATION:
-        type: choice
-        description: "Testomat test run report generation"
-        default: "true"
-        options:
-          - "true"
-          - "false"
+        description: "Should generate Testomat report?"
+        type: boolean
+        required: false
+        default: true
 
 jobs:
   test:

@@ -6,40 +6,42 @@ on:
     - cron: "0 4 * * 1-5"
   workflow_dispatch:
     inputs:
-      HTML_REPORT_GENERATION:
-        type: choice
-        description: "HTML report generation"
-        default: "onFailure"
-        options:
-          - "true"
-          - "false"
-          - "onFailure"
-      TESTOMAT_REPORT_GENERATION:
-        type: boolean
-        description: "Testomat test run report generation"
-        default: true
-      CUSTOM_URL:
-        description: "Custom base url to run tests against different URLs"
-        required: false
-        type: string
-      IS_FORK:
-        type: boolean
-        description: "Fork mode test run flag"
-        required: false
-        default: false
-      IS_MAINNET:
-        type: boolean
-        description: "Mainnet test run flag"
-        required: false
-        default: false
       CHAIN_NAME:
-        type: choice
         description: "Chain name"
+        type: choice
         required: false
         default: "Celo"
         options:
           - "Celo"
           - "Monad"
+      CUSTOM_URL:
+        description: "Custom environment url"
+        required: false
+        type: string
+      HTML_REPORT_GENERATION:
+        description: "Should generate HTML report?"
+        type: choice
+        required: false
+        default: "onFailure"
+        options:
+          - "true"
+          - "false"
+          - "onFailure"
+      IS_MAINNET:
+        description: "Should use mainnet?"
+        type: boolean
+        required: false
+        default: false
+      IS_FORK:
+        description: "Should use fork mode?"
+        type: boolean
+        required: false
+        default: false
+      TESTOMAT_REPORT_GENERATION:
+        description: "Should generate Testomat report?"
+        type: boolean
+        required: false
+        default: true
 
 jobs:
   app_mento_regression_test:

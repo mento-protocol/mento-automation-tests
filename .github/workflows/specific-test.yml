@@ -3,61 +3,71 @@ name: Specific Test Run
 on:
   workflow_dispatch:
     inputs:
-      ENV:
-        description: "Environment name"
-        required: true
-        type: choice
-        options:
-          - "prod"
-          - "qa"
       APP_NAME:
         description: "App name"
-        required: true
         type: choice
+        required: true
         options:
           - "app-mento"
           - "governance"
+      CHAIN_NAME:
+        description: "Chain name"
+        required: false
+        type: choice
+        default: "Celo"
+        options:
+          - "Celo"
+          - "Monad"
+      CUSTOM_URL:
+        description: "Custom environment url"
+        type: string
+        required: false
+      ENV:
+        description: "Environment name"
+        type: choice
+        required: false
+        default: "prod"
+        options:
+          - "prod"
+          - "qa"
       SPECS_REGEX:
-        description: "Specs regex (supports: Tags, Spec names, Test names)"
+        description: "Specs regex (e.g., tags, spec or test names)"
+        type: string
         required: true
       SPECS_DIR:
-        description: "Specs dir"
+        description: "Specs directory"
+        type: string
         required: false
         default: ""
+
       HTML_REPORT_GENERATION:
+        description: "Should generate HTML report?"
         type: choice
-        description: "HTML report generation"
+        required: false
         default: "onFailure"
         options:
           - "true"
           - "false"
           - "onFailure"
       TESTOMAT_REPORT_GENERATION:
+        description: "Should generate Testomat report?"
         type: boolean
-        description: "Testomat test run report generation"
+        required: false
         default: true
       IS_PARALLEL_RUN:
+        description: "Should use parallel mode?"
         type: boolean
-        description: "Parallel run flag of running tests"
-        default: false
-      CUSTOM_URL:
-        description: "Custom base url to run tests against different URLs"
         required: false
-        type: string
-      IS_MAINNET:
-        type: boolean
-        description: "Mainnet test run flag"
         default: false
-      CHAIN_NAME:
-        type: choice
-        description: "Chain name"
-        default: "Celo"
-        options:
-          - "Celo"
-          - "Monad"
-      IS_FORK:
+      IS_MAINNET:
+        description: "Should use mainnet?"
         type: boolean
-        description: "Fork mode test run flag"
+        required: false
+        default: false
+      IS_FORK:
+        description: "Should use fork mode?"
+        type: boolean
+        required: false
         default: false
 jobs:
   test:

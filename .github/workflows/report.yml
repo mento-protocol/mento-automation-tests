@@ -4,13 +4,13 @@ on:
   workflow_call:
     inputs:
       NAME:
-        description: "The name of the HTML report"
+        description: "Report name"
         type: string
         required: false
         default: "playwright-report"
     outputs:
       url:
-        description: "The Report URL"
+        description: "Report URL"
         value: ${{ jobs.report.outputs.url }}
     secrets:
       GCP_SA_KEY:

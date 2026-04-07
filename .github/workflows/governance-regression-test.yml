@@ -6,35 +6,29 @@ on:
     - cron: "0 4 * * 1-5" # Monday to Friday at 4:00 AM UTC
   workflow_dispatch:
     inputs:
+      CUSTOM_URL:
+        description: "Custom environment url"
+        required: false
+        type: string
       HTML_REPORT_GENERATION:
+        description: "Should generate HTML report?"
         type: choice
-        description: "HTML report generation"
+        required: false
         default: "onFailure"
         options:
           - "true"
           - "false"
           - "onFailure"
-      TESTOMAT_REPORT_GENERATION:
-        type: boolean
-        description: "Testomat test run report generation"
-        default: true
-      CUSTOM_URL:
-        description: "Custom base url to run tests against different URLs"
-        required: false
-        type: string
       IS_FORK:
+        description: "Should use fork mode?"
         type: boolean
-        description: "Fork mode test run flag"
         required: false
         default: false
-      CHAIN_NAME:
-        type: choice
-        description: "Chain name"
+      TESTOMAT_REPORT_GENERATION:
+        description: "Should generate Testomat report?"
+        type: boolean
         required: false
-        default: "Celo"
-        options:
-          - "Celo"
-          - "Monad"
+        default: true
 
 jobs:
   app_governance_regression_test:
