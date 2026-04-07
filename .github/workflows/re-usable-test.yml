@@ -5,97 +5,99 @@ on:
   workflow_call:
     inputs:
       APP_NAME:
-        description: "App name"
+        description: "App Name"
+        type: string
         required: true
-        type: string
       ENV:
-        description: "Env name of app"
-        required: false
+        description: "Environment Name"
         type: string
+        required: false
         default: "prod"
       SPECS_REGEX:
-        description: "Specs regex (supports: Tags, Spec names, Test names)"
+        description: "Tests (file-name, @tag, Test Name)"
+        type: string
         required: true
-        type: string
       EXCLUDE_SPECS_REGEX:
-        description: "Exclude specs regex (supports: Tags, Spec names, Test names)"
-        required: false
+        description: "Exclude Tests (file-name, @tag, Test Name)"
         type: string
+        required: false
+
       SPECS_TYPE:
-        description: "Specs type (supports: web, api)"
-        required: false
+        description: "Test Type (web, api)"
         type: string
+        required: false
         default: "web"
       SPECS_DIR:
-        description: "Specs dir"
-        required: false
+        description: "Test Directory (/swap)"
         type: string
+        required: false
       IS_PARALLEL_RUN:
-        description: "Parallel run flag of running tests"
+        description: "Use Parallel Mode"
+        type: boolean
         required: false
-        default: "false"
-        type: string
+        default: false
       CUSTOM_URL:
-        description: "Custom base url to run tests against different URLs"
-        required: false
+        description: "Custom Environment URL"
         type: string
+        required: false
       IS_MAINNET:
-        description: "Mainnet test run flag"
+        description: "Use Mainnet"
+        type: boolean
         required: false
-        default: "false"
-        type: string
+        default: false
       CHAIN_NAME:
-        description: "Chain name"
+        description: "Chain Name"
+        type: string
         required: false
         default: "Celo"
-        type: string
       IS_FORK:
-        description: "Fork mode test run flag"
+        description: "Use Fork Mode"
+        type: boolean
         required: false
-        default: "false"
-        type: string
+        default: false
       HTML_REPORT_NAME:
-        description: "HTML report name"
-        required: false
+        description: "HTML Report Name"
         type: string
+        required: false
+
       HTML_REPORT_GENERATION:
-        description: "HTML report generation"
+        description: "Generate HTML Report"
+        type: string
         required: false
         default: "onFailure"
-        type: string
       TESTOMAT_REPORT_GENERATION:
-        description: "Testomat test run report generation"
+        description: "Generate Testomat Report"
+        type: boolean
         required: false
-        default: "true"
-        type: string
+        default: true
       TESTOMATIO_TITLE:
-        description: "Title of test run in the Testomat"
-        required: false
+        description: "Testomat Test Run Title"
         type: string
+        required: false
       NOTIFICATION_MESSAGE:
-        description: "Notification message for Discord"
-        required: false
+        description: "Notification Message"
         type: string
+        required: false
 
     secrets:
       E2E_TEST_SEED_PHRASE:
-        description: "Seed phrase to import wallet"
+        description: "Seed Phrase"
         required: true
       E2E_TEST_WALLET_PASSWORD:
-        description: "Wallet password to login to wallet"
+        description: "Wallet Password"
         required: true
       TESTOMAT_API_KEY:
-        description: "API key to sync with Testomat account"
+        description: "Testomat API Key"
         required: true
       DISCORD_TEST_RUN_WEBHOOK_ID:
         required: true
       DISCORD_TEST_RUN_WEBHOOK_TOKEN:
         required: true
       E2E_TEST_GCP_SA_KEY:
-        description: "Google Cloud Service Account key JSON"
+        description: "Google Cloud Service Account Key JSON"
         required: true
       GOVERNANCE_TESTNET_API_KEY:
-        description: "Governance QA API key"
+        description: "Governance QA API Key"
         required: false
       GOVERNANCE_TESTNET_API_URL:
         description: "Governance QA API URL"
@@ -131,7 +133,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install pnpm
+      - name: Install PNPM
         uses: pnpm/action-setup@v4
         with:
           version: 10.33.0
@@ -159,13 +161,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Verify env config
+      - name: Verify Env Configuration
         run: pnpm run verify-env-config
 
-      - name: Code-Check
+      - name: Code Check
         run: pnpm run codeCheck
 
-      - name: Setup fork
+      - name: Setup Fork
         if: ${{ inputs.IS_FORK == 'true' }}
         shell: bash
         run: |
@@ -175,7 +177,7 @@ jobs:
             make testnet-fork-setup
           fi
 
-      - name: Build Synpress cache
+      - name: Build Synpress Cache
         id: synpress-cache
         uses: nick-fields/retry@v3
         with:
@@ -183,18 +185,18 @@ jobs:
           max_attempts: 3
           command: xvfb-run pnpm run build-synpress-cache
 
-      - name: Set current datetime
+      - name: Set Current Datetime
         run: |
           CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
           echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
 
-      - name: Run tests
+      - name: Run Tests
         id: test-run
         run: xvfb-run pnpm run test
         env:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
-      - name: Upload HTML report
+      - name: Upload HTML Report
         if: ${{ steps.test-run.outcome != 'skipped' && ((inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure')) }}
         uses: actions/upload-artifact@v4
         with:

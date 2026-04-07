@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       CUSTOM_URL:
-        description: "Custom environment url"
+        description: "Custom Environment URL"
         required: false
         type: string
       HTML_REPORT_GENERATION:
-        description: "Should generate HTML report?"
+        description: "Generate HTML Report"
         type: choice
         required: false
         default: "onFailure"
@@ -20,12 +20,12 @@ on:
           - "false"
           - "onFailure"
       IS_FORK:
-        description: "Should use fork mode?"
+        description: "Use Fork Mode"
         type: boolean
         required: false
         default: false
       TESTOMAT_REPORT_GENERATION:
-        description: "Should generate Testomat report?"
+        description: "Generate Testomat Report"
         type: boolean
         required: false
         default: true

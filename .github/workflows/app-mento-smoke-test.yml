@@ -5,11 +5,11 @@ on:
     inputs:
       CUSTOM_URL:
         type: string
-        description: "Custom base url to run tests against different URLs"
+        description: "Custom Environment URL"
         required: true
       IS_MAINNET:
         type: boolean
-        description: "Mainnet test run flag"
+        description: "Use Mainnet"
         required: false
         default: false
       CHAIN_NAME:
@@ -19,17 +19,17 @@ on:
         default: "Celo"
       IS_FORK:
         type: boolean
-        description: "Fork mode test run flag"
+        description: "Use Fork Mode"
         required: false
         default: false
       TESTOMATIO_TITLE:
         type: string
-        description: "Test run title"
+        description: "Testomat Test Run Title"
         required: false
         default: "[App-Mento] Smoke"
       HTML_REPORT_NAME:
         type: string
-        description: "HTML report name"
+        description: "HTML Report Name"
         required: false
         default: "smoke-app-mento"
     secrets:

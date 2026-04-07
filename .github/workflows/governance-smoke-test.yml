@@ -4,27 +4,27 @@ on:
   workflow_call:
     inputs:
       CUSTOM_URL:
+        description: "Custom Environment URL"
         type: string
-        description: "Custom base url to run tests against different URLs"
         required: true
       IS_MAINNET:
-        type: string
-        description: "Mainnet test run flag"
+        description: "Use Mainnet"
+        type: boolean
         required: false
-        default: "false"
+        default: false
       IS_FORK:
-        type: string
-        description: "Fork mode test run flag"
+        description: "Use Fork Mode"
+        type: boolean
         required: false
-        default: "false"
+        default: false
       TESTOMATIO_TITLE:
+        description: "Testomat Test Run Title"
         type: string
-        description: "Test run title"
         required: false
         default: "[Governance] Smoke"
       HTML_REPORT_NAME:
+        description: "HTML Report Name"
         type: string
-        description: "HTML report name"
         required: false
         default: "smoke-governance"
     secrets:

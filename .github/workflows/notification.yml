@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       JOB_STATUS:
-        description: "Job status"
+        description: "Job Status"
         required: true
         type: string
       MESSAGE:

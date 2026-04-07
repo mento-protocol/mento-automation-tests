@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       APP_NAME:
-        description: "App name"
+        description: "App Name"
         type: choice
         required: true
         options:
           - "app-mento"
           - "governance"
       CHAIN_NAME:
-        description: "Chain name"
+        description: "Chain Name"
         required: false
         type: choice
         default: "Celo"
@@ -19,11 +19,11 @@ on:
           - "Celo"
           - "Monad"
       CUSTOM_URL:
-        description: "Custom environment url"
+        description: "Custom Environment URL"
         type: string
         required: false
       ENV:
-        description: "Environment name"
+        description: "Environment Name"
         type: choice
         required: false
         default: "prod"
@@ -31,17 +31,17 @@ on:
           - "prod"
           - "qa"
       SPECS_REGEX:
-        description: "Test/s (e.g., file-name, @tag, Test Name)"
+        description: "Tests (file-name, @tag, Test Name)"
         type: string
         required: true
       SPECS_DIR:
-        description: "Test directory (e.g., /swap)"
+        description: "Test Directory (/swap)"
         type: string
         required: false
         default: ""
 
       HTML_REPORT_GENERATION:
-        description: "Should generate HTML report?"
+        description: "Generate HTML Report"
         type: choice
         required: false
         default: "onFailure"
@@ -50,22 +50,22 @@ on:
           - "false"
           - "onFailure"
       TESTOMAT_REPORT_GENERATION:
-        description: "Should generate Testomat report?"
+        description: "Generate Testomat Report"
         type: boolean
         required: false
         default: true
       IS_PARALLEL_RUN:
-        description: "Should use parallel mode?"
+        description: "Use Parallel Mode"
         type: boolean
         required: false
         default: false
       IS_MAINNET:
-        description: "Should use mainnet?"
+        description: "Use Mainnet"
         type: boolean
         required: false
         default: false
       IS_FORK:
-        description: "Should use fork mode?"
+        description: "Use Fork Mode"
         type: boolean
         required: false
         default: false
