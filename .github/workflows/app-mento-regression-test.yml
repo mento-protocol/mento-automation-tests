@@ -79,6 +79,7 @@ jobs:
       IS_PARALLEL_RUN: ${{ matrix.is_parallel_run }}
       IS_MAINNET: ${{ inputs.IS_MAINNET || 'true' }}
       IS_FORK: ${{ inputs.IS_FORK }}
+      CHAIN_NAME: ${{ inputs.CHAIN_NAME || 'Celo' }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: ${{ matrix.html_report_name }}
       TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
