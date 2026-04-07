@@ -31,11 +31,11 @@ on:
           - "prod"
           - "qa"
       SPECS_REGEX:
-        description: "Specs regex (e.g., tags, spec or test names)"
+        description: "Test/s (e.g., file-name, @tag, Test Name)"
         type: string
         required: true
       SPECS_DIR:
-        description: "Specs directory"
+        description: "Test directory (e.g., /swap)"
         type: string
         required: false
         default: ""
