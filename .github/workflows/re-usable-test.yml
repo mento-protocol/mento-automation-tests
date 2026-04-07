@@ -47,6 +47,7 @@ on:
       CHAIN_NAME:
         description: "Chain name"
         required: false
+        default: "Celo"
         type: string
       IS_FORK:
         description: "Fork mode test run flag"
