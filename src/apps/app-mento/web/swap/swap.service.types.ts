@@ -41,6 +41,7 @@ export interface IFillFromOpts {
   clicksOnSellTokenButton?: number;
   waitForLoadedRate?: boolean;
   isSellTokenFirst?: boolean;
+  shouldIgnoreUI?: boolean;
 }
 
 export interface ISelectTokensArgs {
