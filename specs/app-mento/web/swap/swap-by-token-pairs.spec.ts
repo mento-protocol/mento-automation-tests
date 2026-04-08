@@ -266,6 +266,7 @@ testHelper.runSuite({
             await app.swap.fillForm({
               tokens: { sell: sellToken, buy: buyToken },
               sellAmount: swapAmount,
+              shouldIgnoreUI: true,
             });
             await app.swap.start();
             await app.main.expectUpdatedBalance({

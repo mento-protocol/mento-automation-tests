@@ -19,6 +19,7 @@ import {
   IWaitForLoadedRateParams,
 } from "./swap.service.types";
 import { testHelper } from "@helpers/test/test.helper";
+import { envHelper } from "@helpers/env/env.helper";
 
 const log = loggerHelper.get("SwapService");
 
@@ -144,15 +145,20 @@ export class SwapService extends BaseService {
     clicksOnSellTokenButton,
     waitForLoadedRate = true,
     isSellTokenFirst = true,
+    shouldIgnoreUI = false,
   }: IFillFromOpts): Promise<void> {
+    if (shouldIgnoreUI) {
+      await this.fillFormWithoutUI({ tokens, sellAmount });
+    } else {
+      tokens && (await this.handleMissingTokenToSelect(tokens.sell));
+      await this.selectTokens({
+        clicksOnSellTokenButton,
+        isSellTokenFirst,
+        ...tokens,
+      });
+      sellAmount && (await this.fillAmount(sellAmount));
+    }
     slippage && (await this.enterSlippage(slippage));
-    tokens && (await this.handleMissingTokenToSelect(tokens.sell));
-    await this.selectTokens({
-      clicksOnSellTokenButton,
-      isSellTokenFirst,
-      ...tokens,
-    });
-    sellAmount && (await this.fillAmount(sellAmount));
     if (waitForLoadedRate) {
       const isRateLoaded = await this.waitForLoadedRate();
       if (!isRateLoaded) {
@@ -420,6 +426,19 @@ export class SwapService extends BaseService {
     });
     await this.selectTokenModalPage.verifyIsClosed();
     await this.page.getSelectedTokenLabel(token).waitForDisplayed(timeouts.xxs);
+  }
+
+  private async fillFormWithoutUI({
+    tokens,
+    sellAmount,
+  }: {
+    tokens: ISelectTokensArgs;
+    sellAmount: string;
+  }): Promise<void> {
+    const baseUrl = envHelper.getBaseWebUrl();
+    const chain = envHelper.getChainName().toLowerCase();
+    const url = `${baseUrl}/swap/${chain}?from=${tokens.sell}&to=${tokens.buy}&amount=${sellAmount}`;
+    await this.browser.openUrl(url);
   }
 
   private async handleMissingTokenToSelect(
