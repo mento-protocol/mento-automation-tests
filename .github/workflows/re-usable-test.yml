@@ -130,74 +130,28 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
+      - name: Install
+        uses: ./.github/actions/install
         with:
-          version: 10.33.0
+          is_fork: "${{ inputs.IS_FORK }}"
 
-      - name: Install Node
-        uses: actions/setup-node@v4
+      - name: Validate
+        uses: ./.github/actions/validate
+
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
-          cache: pnpm
-          node-version: 22.14.0
+          is_fork: "${{ inputs.IS_FORK }}"
+          is_mainnet: "${{ inputs.IS_MAINNET }}"
 
-      - name: Install Make
-        if: ${{ inputs.IS_FORK == 'true' }}
-        run: |
-          apt-get update
-          apt-get install -y make
-
-      - name: Install Foundry
-        if: ${{ inputs.IS_FORK == 'true' }}
-        run: |
-          curl -L https://foundry.paradigm.xyz | bash
-          export PATH="$HOME/.foundry/bin:$PATH"
-          foundryup
-          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Verify Env Configuration
-        run: pnpm run verify-env-config
-
-      - name: Code Check
-        run: pnpm run codeCheck
-
-      - name: Setup Fork
-        if: ${{ inputs.IS_FORK == 'true' }}
-        shell: bash
-        run: |
-          if [ "${{ inputs.IS_MAINNET }}" = "true" ]; then
-            make mainnet-fork-setup
-          else
-            make testnet-fork-setup
-          fi
-
-      - name: Build Synpress Cache
-        id: synpress-cache
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 3
-          max_attempts: 3
-          command: xvfb-run pnpm run build-synpress-cache
-
-      - name: Set Current Datetime
-        run: |
-          CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
-          echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
-
-      - name: Run Tests
-        id: test-run
+      - name: Test
+        id: test
         run: xvfb-run pnpm run test
         env:
           TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
 
       - name: Upload HTML Report
-        if: ${{ steps.test-run.outcome != 'skipped' && ((inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure')) }}
+        if: ${{ steps.test.outcome != 'skipped' && ((inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure')) }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.HTML_REPORT_NAME }}

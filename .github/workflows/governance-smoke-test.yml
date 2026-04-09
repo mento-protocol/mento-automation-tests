@@ -85,10 +85,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Verify env config
-        run: pnpm run verify-env-config
+        run: pnpm run verify:env-config
 
       - name: Code-Check
-        run: pnpm run codeCheck
+        run: pnpm run verify:code
 
       - name: Setup fork
         if: ${{ inputs.IS_FORK == 'true' }}

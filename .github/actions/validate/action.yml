@@ -1,0 +1,13 @@
+name: Validate
+description: Verify environment configuration and run code checks
+
+runs:
+  using: composite
+  steps:
+    - name: Verify Env Configuration
+      shell: bash
+      run: pnpm run verify:env-config
+
+    - name: Code Check
+      shell: bash
+      run: pnpm run verify:code

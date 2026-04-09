@@ -1,0 +1,39 @@
+name: Setup
+description: Fork setup, Synpress cache build, and job datetime for test runs
+
+inputs:
+  is_fork:
+    description: Run fork setup (make mainnet/testnet)
+    required: false
+    default: "false"
+  is_mainnet:
+    description: Use mainnet fork setup when is_fork is true
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Fork
+      if: ${{ inputs.is_fork == 'true' }}
+      shell: bash
+      run: |
+        if [ "${{ inputs.is_mainnet }}" = "true" ]; then
+          make mainnet-fork-setup
+        else
+          make testnet-fork-setup
+        fi
+
+    - name: Build Synpress Cache
+      id: synpress-cache
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 3
+        max_attempts: 3
+        command: xvfb-run pnpm run build:synpress-cache
+
+    - name: Set Current Datetime
+      shell: bash
+      run: |
+        CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
+        echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
