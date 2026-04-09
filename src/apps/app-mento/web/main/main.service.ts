@@ -15,7 +15,7 @@ import {
 } from "@shared/web/connect-wallet-modal/connect-wallet-modal.service";
 import { SettingsService } from "../settings/settings.service";
 import { SwitchNetworksPage } from "../settings/switch-networks.page";
-import { ChainName } from "@helpers/env/env.helper";
+import { ChainName, envHelper } from "@helpers/env/env.helper";
 
 const log = loggerHelper.get("MainAppMentoService");
 
@@ -126,13 +126,34 @@ export class MainAppMentoService extends BaseService {
     await this.openConnectWalletModalFromHeader();
     await this.connectWalletModal.selectWalletByName(walletName);
     await this.metamask.connectWallet();
+    !envHelper.isMainnet() && (await this.overrideToTestnet());
+  }
+
+  // When your wallet has only testnet, it still points to mainnet by default
+  // This method overrides it to testnet to be able to ignore UI for testing on testnet
+  async overrideToTestnet() {
+    await this.enableTestnetMode({ shouldIgnoreUI: true });
+    const currentUrl = await this.browser.getCurrentPageUrl();
+    const newUrl = currentUrl.includes("celo")
+      ? currentUrl.replace("celo", "celo-sepolia")
+      : currentUrl.replace("monad", "monad-testnet");
+    log.debug(`Overriding to testnet: ${newUrl}`);
+    await this.browser.openUrl(newUrl);
   }
 
   async isTestnetModeEnabled(): Promise<boolean> {
     return this.settings.page.testnetModeCheckbox.isChecked();
   }
 
-  async enableTestnetMode(): Promise<void> {
+  async enableTestnetMode({
+    shouldIgnoreUI = false,
+  }: { shouldIgnoreUI?: boolean } = {}): Promise<void> {
+    if (shouldIgnoreUI) {
+      return this.browser.setLocalStorage({
+        key: "mento:testnet-mode",
+        value: "true",
+      });
+    }
     await this.openSettings();
     if (await this.isTestnetModeEnabled()) {
       log.debug("Testnet mode is already enabled!");
