@@ -130,6 +130,9 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Install
         uses: ./.github/actions/install
         with:
