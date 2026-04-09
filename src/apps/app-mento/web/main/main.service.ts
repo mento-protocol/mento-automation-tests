@@ -6,7 +6,6 @@ import { Token } from "@constants/token.constants";
 import { waiterHelper } from "@helpers/waiter/waiter.helper";
 import { timeouts } from "@constants/timeouts.constants";
 import { expect } from "@fixtures/test.fixture";
-import { testHelper } from "@helpers/test/test.helper";
 import { primitiveHelper } from "@helpers/primitive/primitive.helper";
 import { MainAppMentoPage } from "./main.page";
 import {
@@ -207,7 +206,6 @@ export class MainAppMentoService extends BaseService {
     shouldCloseSettings = false,
     tokenToCheck = Token.USDm,
     throwError = true,
-    shouldVerifyBalanceLoadingError = true,
   }: IWaitForBalanceToLoadOptions = {}): Promise<boolean> {
     shouldOpenSettings && (await this.openSettings());
     const isBalanceLoaded = waiterHelper.wait(
@@ -215,9 +213,6 @@ export class MainAppMentoService extends BaseService {
         const result = await this.settings.page
           .getTokenBalanceLabelByName(tokenToCheck)
           .isDisplayed();
-        if (!result && shouldVerifyBalanceLoadingError) {
-          await this.verifyErrorRetrievingBalances();
-        }
         result && log.info("Balance is loaded successfully!");
         return result;
       },
@@ -230,36 +225,6 @@ export class MainAppMentoService extends BaseService {
     );
     shouldCloseSettings && (await this.closeWalletSettings());
     return isBalanceLoaded;
-  }
-
-  private async verifyErrorRetrievingBalances(): Promise<void> {
-    return (await this.isErrorRetrievingBalances())
-      ? testHelper.skipInRuntime(
-          {
-            reason: "Error retrieving account balances",
-          },
-          "'Error retrieving account balances' case",
-        )
-      : log.debug("Error retrieving account balances is not defined");
-  }
-
-  private async isErrorRetrievingBalances({
-    retryCount = 1,
-  }: IsErrorRetrievingBalances = {}): Promise<boolean> {
-    return waiterHelper.retry(
-      async () => {
-        return this.browser.hasConsoleErrorsMatchingText(
-          "Failed to retrieve balances",
-        );
-      },
-      retryCount,
-      {
-        interval: timeouts.xxxxs,
-        throwError: false,
-        continueWithException: true,
-        errorMessage: "Checking for a 'error retrieving account balances' case",
-      },
-    );
   }
 
   async expectUpdatedBalanceOnUi({
@@ -283,7 +248,6 @@ interface IWaitForBalanceToLoadOptions {
   tokenToCheck?: Token;
   shouldOpenSettings?: boolean;
   shouldCloseSettings?: boolean;
-  shouldVerifyBalanceLoadingError?: boolean;
   throwError?: boolean;
 }
 
@@ -296,10 +260,6 @@ interface IGetTokenBalanceByNameOpts {
   shouldOpenSettings?: boolean;
   shouldCloseSettings?: boolean;
   throwError?: boolean;
-}
-
-interface IsErrorRetrievingBalances {
-  retryCount?: number;
 }
 
 export interface IMainServiceArgs extends IBaseServiceArgs {
