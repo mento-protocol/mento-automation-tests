@@ -5,7 +5,6 @@ import { testHelper } from "@helpers/test/test.helper";
 
 const isFork = envHelper.isFork();
 const swapAmount = getDefaultSwapAmount({ isFork });
-// TODO: Change to default tokens once CELO route is available
 const tokens = { sell: Token.USDm, buy: Token.GBPm };
 // Skip that assertion because loading is so fast on forks
 const shouldExpectLoading = isFork ? false : true;
