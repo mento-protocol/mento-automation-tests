@@ -43,101 +43,23 @@ on:
         required: true
 
 jobs:
-  smoke-test:
-    timeout-minutes: 60
-    env:
-      APP_NAME: "governance"
-      ENV: "qa"
-      SPECS_TYPE: "web"
+  test:
+    uses: ./.github/workflows/re-usable-test.yml
+    with:
+      APP_NAME: governance
+      ENV: qa
       SPECS_REGEX: "@smoke"
-      IS_PARALLEL_RUN: "false"
+      SPECS_TYPE: web
+      IS_PARALLEL_RUN: false
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       IS_MAINNET: ${{ inputs.IS_MAINNET }}
       IS_FORK: ${{ inputs.IS_FORK }}
       HTML_REPORT_NAME: ${{ inputs.HTML_REPORT_NAME }}
-      HTML_REPORT_GENERATION: "onFailure"
-      TESTOMAT_REPORT_GENERATION: "true"
-      SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
-      WALLET_PASSWORD: ${{ secrets.E2E_TEST_WALLET_PASSWORD }}
-      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.48.2-jammy
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          repository: "mento-protocol/mento-automation-tests"
-          ref: "main"
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.33.0
-
-      - name: Node install
-        uses: actions/setup-node@v4
-        with:
-          cache: pnpm
-          node-version: 22.14.0
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Verify env config
-        run: pnpm run verify:env-config
-
-      - name: Code-Check
-        run: pnpm run verify:code
-
-      - name: Setup fork
-        if: ${{ inputs.IS_FORK == 'true' }}
-        run: |
-          if [ "${{ inputs.IS_MAINNET }}" == "true" ]; then
-            make mainnet-fork-setup
-          else
-            make testnet-fork-setup
-          fi
-
-      - name: Build Synpress cache
-        run: xvfb-run pnpm exec synpress src/wallet-setups
-
-      - name: Set current datetime
-        run: |
-          CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
-          echo "CURRENT_DATETIME=$CURRENT_DATETIME" >> $GITHUB_ENV
-
-      - name: Run tests
-        run: xvfb-run pnpm run test
-        env:
-          TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
-
-      - name: Upload HTML report
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.HTML_REPORT_NAME }}
-          path: artifacts/reports/${{ inputs.HTML_REPORT_NAME }}/
-          retention-days: 30
-
-  report:
-    needs: smoke-test
-    if: failure()
-    uses: ./.github/workflows/report.yml
-    with:
-      NAME: "smoke-governance"
-    secrets:
-      GCP_SA_KEY: ${{ secrets.E2E_TEST_GCP_SA_KEY }}
-
-  notification:
-    needs: [smoke-test, report]
-    if: failure()
-    uses: ./.github/workflows/notification.yml
-    with:
-      JOB_STATUS: ${{ needs.smoke-test.result }}
-      MESSAGE: "[Governance] Smoke by ${{ github.actor }}"
-      JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      REPORT_URL: ${{ needs.report.outputs.url }}
-    secrets:
-      DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
-      DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}
+      HTML_REPORT_GENERATION: onFailure
+      TESTOMAT_REPORT_GENERATION: true
+      TESTOMATIO_TITLE: ${{ inputs.TESTOMATIO_TITLE }}
+      NOTIFICATION_MESSAGE: "[Governance] Smoke"
+      CHECKOUT_REPOSITORY: mento-protocol/mento-automation-tests
+      CHECKOUT_REF: main
+      JOB_TIMEOUT_MINUTES: 60
+    secrets: inherit

@@ -79,6 +79,22 @@ on:
         type: string
         required: false
 
+      CHECKOUT_REPOSITORY:
+        description: "Repository to checkout (owner/name). Empty checks out the triggering repository."
+        type: string
+        required: false
+        default: ""
+      CHECKOUT_REF:
+        description: "Branch, tag, or SHA when CHECKOUT_REPOSITORY is set. Empty uses that repo default branch."
+        type: string
+        required: false
+        default: ""
+      JOB_TIMEOUT_MINUTES:
+        description: "Max minutes for the test job"
+        type: number
+        required: false
+        default: 140
+
     secrets:
       E2E_TEST_SEED_PHRASE:
         description: "Seed Phrase"
@@ -105,7 +121,7 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 140
+    timeout-minutes: ${{ inputs.JOB_TIMEOUT_MINUTES }}
     env:
       APP_NAME: ${{ inputs.APP_NAME }}
       ENV: ${{ inputs.ENV }}
@@ -130,8 +146,22 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy
     steps:
-      - name: Checkout
+      - name: Checkout (workflow repository)
+        if: ${{ inputs.CHECKOUT_REPOSITORY == '' }}
         uses: actions/checkout@v4
+
+      - name: Checkout (custom repository)
+        if: ${{ inputs.CHECKOUT_REPOSITORY != '' && inputs.CHECKOUT_REF == '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.CHECKOUT_REPOSITORY }}
+
+      - name: Checkout (custom repository and ref)
+        if: ${{ inputs.CHECKOUT_REPOSITORY != '' && inputs.CHECKOUT_REF != '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.CHECKOUT_REPOSITORY }}
+          ref: ${{ inputs.CHECKOUT_REF }}
 
       - name: Install
         uses: ./.github/actions/install
