@@ -67,6 +67,6 @@ jobs:
       TESTOMATIO_TITLE: ${{ inputs.TESTOMATIO_TITLE }}
       NOTIFICATION_MESSAGE: "[App-Mento] Smoke"
       CHECKOUT_REPOSITORY: mento-protocol/mento-automation-tests
-      CHECKOUT_REF: refactor/ci-workflows
+      CHECKOUT_REF: main
       JOB_TIMEOUT_MINUTES: 60
     secrets: inherit
