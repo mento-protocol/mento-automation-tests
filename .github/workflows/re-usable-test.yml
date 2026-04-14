@@ -146,9 +146,18 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.48.2-jammy
     steps:
-      - name: Checkout (workflow repository)
-        if: ${{ inputs.CHECKOUT_REPOSITORY == '' }}
+      # When workflow runs from another repo (e.g. frontend calling smoke), github.repository is the
+      # caller — plain checkout would clone the wrong tree and ./.github/actions/* would not exist.
+      - name: Checkout (mento-automation-tests — same repo or fork)
+        if: ${{ inputs.CHECKOUT_REPOSITORY == '' && github.event.repository.name == 'mento-automation-tests' }}
         uses: actions/checkout@v4
+
+      - name: Checkout (mento-automation-tests — external caller)
+        if: ${{ inputs.CHECKOUT_REPOSITORY == '' && github.event.repository.name != 'mento-automation-tests' }}
+        uses: actions/checkout@v4
+        with:
+          repository: mento-protocol/mento-automation-tests
+          ref: ${{ inputs.CHECKOUT_REF != '' && inputs.CHECKOUT_REF || 'main' }}
 
       - name: Checkout (custom repository)
         if: ${{ inputs.CHECKOUT_REPOSITORY != '' && inputs.CHECKOUT_REF == '' }}
