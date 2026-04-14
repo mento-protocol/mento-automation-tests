@@ -50,7 +50,7 @@ on:
 jobs:
   test:
     # Fully qualified path so nested workflow_call resolves from this repo when invoked by another repo
-    uses: mento-protocol/mento-automation-tests/.github/workflows/re-usable-test.yml@main
+    uses: mento-protocol/mento-automation-tests/.github/workflows/re-usable-test.yml@refactor/ci-workflows
     with:
       APP_NAME: app-mento
       ENV: prod
