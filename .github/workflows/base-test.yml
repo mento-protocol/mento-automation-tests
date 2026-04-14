@@ -1,5 +1,5 @@
-# Re-usable workflow to build all test's workflows
-name: "Re-usable Test Workflow"
+# Base workflow for test runs (install, validate, setup, test, report, notification)
+name: "Base Test Workflow"
 
 on:
   workflow_call:

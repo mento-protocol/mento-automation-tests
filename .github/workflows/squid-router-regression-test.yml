@@ -23,7 +23,7 @@ on:
 jobs:
   test:
     name: "[Squid-Router] Sequential Regression Test Run"
-    uses: ./.github/workflows/re-usable-test.yml
+    uses: ./.github/workflows/base-test.yml
     with:
       APP_NAME: "squid-router"
       ENV: "prod"
