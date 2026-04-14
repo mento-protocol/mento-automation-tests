@@ -15,10 +15,10 @@
 ## Pre-conditions
 
 1. Execute `pnpm install`.
-2. Execute `pnpm run install-playwright`.
+2. Execute `pnpm run install:playwright`.
 3. Fill the `SEED_PHRASE`, and `WALLET_PASSWORD` variables.
 4. Specify the `IS_MAINNET` variable (ensure you re-built synpress cache when changing a chain by this flag!).
-5. Execute `pnpm run build-synpress-cache`.
+5. Execute `pnpm run build:synpress-cache`.
 
 ### Installation
 
@@ -68,9 +68,7 @@ brew install foundry
 
 `pnpm run test:debug`
 
-- _**headless**_ - without opening browser and other playwright features
-
-`pnpm run test:headless`
+- _**headless**_ - use `pnpm run test` or `pnpm exec playwright test`; headed vs headless follows your Playwright config and CLI flags (`--headed`, etc.)
 
 ## CI test/s execution by the "Specific Test Run" trigger:
 
@@ -95,7 +93,7 @@ make mainnet-fork-setup
 3. Build synpress cache on a fork:
 
 ```bash
-pnpm run build-synpress-cache
+pnpm run build:synpress-cache
 ```
 
 4. Run tests:

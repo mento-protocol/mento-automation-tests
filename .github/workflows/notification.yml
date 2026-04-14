@@ -4,19 +4,19 @@ on:
   workflow_call:
     inputs:
       JOB_STATUS:
-        description: "Test job status"
+        description: "Job Status"
         required: true
         type: string
       MESSAGE:
-        description: "Notification message"
+        description: "Notification Message"
         required: true
         type: string
       JOB_URL:
-        description: "Test job URL"
+        description: "Job URL"
         required: true
         type: string
       REPORT_URL:
-        description: "Playwright Report URL"
+        description: "Report URL"
         required: false
         type: string
         default: ""

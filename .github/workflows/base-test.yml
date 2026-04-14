@@ -1,0 +1,223 @@
+# Base workflow for test runs (install, validate, setup, test, report, notification)
+name: "Base Test Workflow"
+
+on:
+  workflow_call:
+    inputs:
+      APP_NAME:
+        description: "App Name"
+        type: string
+        required: true
+      ENV:
+        description: "Environment Name"
+        type: string
+        required: false
+        default: "prod"
+      SPECS_REGEX:
+        description: "Tests (file-name, @tag, Test Name)"
+        type: string
+        required: true
+      EXCLUDE_SPECS_REGEX:
+        description: "Exclude Tests (file-name, @tag, Test Name)"
+        type: string
+        required: false
+
+      SPECS_TYPE:
+        description: "Test Type (web, api)"
+        type: string
+        required: false
+        default: "web"
+      SPECS_DIR:
+        description: "Test Directory (/swap)"
+        type: string
+        required: false
+      IS_PARALLEL_RUN:
+        description: "Use Parallel Mode"
+        type: boolean
+        required: false
+        default: false
+      CUSTOM_URL:
+        description: "Custom Environment URL"
+        type: string
+        required: false
+      IS_MAINNET:
+        description: "Use Mainnet"
+        type: boolean
+        required: false
+        default: false
+      CHAIN_NAME:
+        description: "Chain Name"
+        type: string
+        required: false
+        default: "Celo"
+      IS_FORK:
+        description: "Use Fork Mode"
+        type: boolean
+        required: false
+        default: false
+      HTML_REPORT_NAME:
+        description: "HTML Report Name"
+        type: string
+        required: false
+
+      HTML_REPORT_GENERATION:
+        description: "Generate HTML Report"
+        type: string
+        required: false
+        default: "onFailure"
+      TESTOMAT_REPORT_GENERATION:
+        description: "Generate Testomat Report"
+        type: boolean
+        required: false
+        default: true
+      TESTOMATIO_TITLE:
+        description: "Testomat Test Run Title"
+        type: string
+        required: false
+      NOTIFICATION_MESSAGE:
+        description: "Notification Message"
+        type: string
+        required: false
+
+      CHECKOUT_REPOSITORY:
+        description: "Repository to checkout (owner/name). Empty checks out the triggering repository."
+        type: string
+        required: false
+        default: ""
+      CHECKOUT_REF:
+        description: "Branch, tag, or SHA when CHECKOUT_REPOSITORY is set. Empty uses that repo default branch."
+        type: string
+        required: false
+        default: ""
+      JOB_TIMEOUT_MINUTES:
+        description: "Max minutes for the test job"
+        type: number
+        required: false
+        default: 140
+
+    secrets:
+      E2E_TEST_SEED_PHRASE:
+        description: "Seed Phrase"
+        required: true
+      E2E_TEST_WALLET_PASSWORD:
+        description: "Wallet Password"
+        required: true
+      TESTOMAT_API_KEY:
+        description: "Testomat API Key"
+        required: true
+      DISCORD_TEST_RUN_WEBHOOK_ID:
+        required: true
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN:
+        required: true
+      E2E_TEST_GCP_SA_KEY:
+        description: "Google Cloud Service Account Key JSON"
+        required: true
+      GOVERNANCE_TESTNET_API_KEY:
+        description: "Governance QA API Key"
+        required: false
+      GOVERNANCE_TESTNET_API_URL:
+        description: "Governance QA API URL"
+        required: false
+
+jobs:
+  test:
+    timeout-minutes: ${{ inputs.JOB_TIMEOUT_MINUTES }}
+    env:
+      APP_NAME: ${{ inputs.APP_NAME }}
+      ENV: ${{ inputs.ENV }}
+      SPECS_TYPE: ${{ inputs.SPECS_TYPE }}
+      SPECS_REGEX: ${{ inputs.SPECS_REGEX }}
+      EXCLUDE_SPECS_REGEX: ${{ inputs.EXCLUDE_SPECS_REGEX }}
+      SPECS_DIR: ${{ inputs.SPECS_DIR }}
+      IS_PARALLEL_RUN: ${{ inputs.IS_PARALLEL_RUN }}
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      IS_MAINNET: ${{ inputs.IS_MAINNET }}
+      CHAIN_NAME: ${{ inputs.CHAIN_NAME }}
+      IS_FORK: ${{ inputs.IS_FORK }}
+      HTML_REPORT_NAME: ${{ inputs.HTML_REPORT_NAME }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION }}
+      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION }}
+      SEED_PHRASE: ${{ secrets.E2E_TEST_SEED_PHRASE }}
+      WALLET_PASSWORD: ${{ secrets.E2E_TEST_WALLET_PASSWORD }}
+      TESTOMAT_API_KEY: ${{ secrets.TESTOMAT_API_KEY }}
+      GOVERNANCE_TESTNET_API_KEY: ${{ secrets.GOVERNANCE_TESTNET_API_KEY }}
+      GOVERNANCE_TESTNET_API_URL: ${{ secrets.GOVERNANCE_TESTNET_API_URL }}
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.48.2-jammy
+    steps:
+      # When workflow runs from another repo (e.g. frontend calling smoke), github.repository is the
+      # caller — plain checkout would clone the wrong tree and ./.github/actions/* would not exist.
+      - name: Checkout (mento-automation-tests — same repo or fork)
+        if: ${{ inputs.CHECKOUT_REPOSITORY == '' && github.event.repository.name == 'mento-automation-tests' }}
+        uses: actions/checkout@v4
+
+      - name: Checkout (mento-automation-tests — external caller)
+        if: ${{ inputs.CHECKOUT_REPOSITORY == '' && github.event.repository.name != 'mento-automation-tests' }}
+        uses: actions/checkout@v4
+        with:
+          repository: mento-protocol/mento-automation-tests
+          ref: ${{ inputs.CHECKOUT_REF != '' && inputs.CHECKOUT_REF || 'main' }}
+
+      - name: Checkout (custom repository)
+        if: ${{ inputs.CHECKOUT_REPOSITORY != '' && inputs.CHECKOUT_REF == '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.CHECKOUT_REPOSITORY }}
+
+      - name: Checkout (custom repository and ref)
+        if: ${{ inputs.CHECKOUT_REPOSITORY != '' && inputs.CHECKOUT_REF != '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.CHECKOUT_REPOSITORY }}
+          ref: ${{ inputs.CHECKOUT_REF }}
+
+      - name: Install
+        uses: ./.github/actions/install
+        with:
+          is_fork: "${{ inputs.IS_FORK }}"
+
+      - name: Validate
+        uses: ./.github/actions/validate
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          is_fork: "${{ inputs.IS_FORK }}"
+          is_mainnet: "${{ inputs.IS_MAINNET }}"
+
+      - name: Test
+        id: test
+        run: xvfb-run pnpm run test
+        env:
+          TESTOMATIO_TITLE: "${{ inputs.TESTOMATIO_TITLE }} by ${{ github.actor }} at: ${{ env.CURRENT_DATETIME }}"
+
+      - name: Upload HTML Report
+        if: ${{ steps.test.outcome != 'skipped' && ((inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure')) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.HTML_REPORT_NAME }}
+          path: artifacts/reports/${{ inputs.HTML_REPORT_NAME }}/
+          retention-days: 30
+
+  report:
+    needs: test
+    if: ${{ (inputs.HTML_REPORT_GENERATION == 'true') || (failure() && inputs.HTML_REPORT_GENERATION == 'onFailure') }}
+    uses: ./.github/workflows/report.yml
+    with:
+      NAME: ${{ inputs.HTML_REPORT_NAME }}
+    secrets:
+      GCP_SA_KEY: ${{ secrets.E2E_TEST_GCP_SA_KEY }}
+
+  notification:
+    needs: [test, report]
+    if: failure()
+    uses: ./.github/workflows/notification.yml
+    with:
+      JOB_STATUS: ${{ needs.test.result }}
+      MESSAGE: "${{ inputs.NOTIFICATION_MESSAGE }} by ${{ github.actor }}"
+      JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      REPORT_URL: ${{ needs.report.outputs.url }}
+    secrets:
+      DISCORD_TEST_RUN_WEBHOOK_ID: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_ID }}
+      DISCORD_TEST_RUN_WEBHOOK_TOKEN: ${{ secrets.DISCORD_TEST_RUN_WEBHOOK_TOKEN }}

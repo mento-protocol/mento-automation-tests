@@ -5,9 +5,9 @@
  * Calculate costs needed for token swap tests
  *
  * Usage:
- * - Default (Celo mainnet): yarn calculateTestEUR
- * - Specific chain: yarn calculateTestEUR --chain=alfajores
- * - Specific chainId: yarn calculateTestEUR --chainId=44787
+ * - Default (Celo mainnet): pnpm run calculate:swap-tests-costs
+ * - Specific chain: pnpm run calculate:swap-tests-costs -- --chain=alfajores
+ * - Specific chainId: pnpm run calculate:swap-tests-costs -- --chainId=44787
  */
 
 import { utils, providers, Contract, BigNumber } from "ethers";

@@ -1,0 +1,42 @@
+name: Install
+description: Setup Node/pnpm, optional fork tooling, and install dependencies. Run actions/checkout in a prior workflow step (required for container jobs before any local ./.github/actions/* step).
+
+inputs:
+  is_fork:
+    description: Install make and Foundry for fork mode
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Install PNPM
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.33.0
+
+    - name: Install Node
+      uses: actions/setup-node@v4
+      with:
+        cache: pnpm
+        node-version: 22.14.0
+
+    - name: Install Make
+      if: ${{ inputs.is_fork == 'true' }}
+      shell: bash
+      run: |
+        apt-get update
+        apt-get install -y make
+
+    - name: Install Foundry
+      if: ${{ inputs.is_fork == 'true' }}
+      shell: bash
+      run: |
+        curl -L https://foundry.paradigm.xyz | bash
+        export PATH="$HOME/.foundry/bin:$PATH"
+        foundryup
+        echo "$HOME/.foundry/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
