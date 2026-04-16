@@ -61,13 +61,13 @@ jobs:
       ENV: "prod"
       SPECS_REGEX: ${{ matrix.specs_regex }}
       EXCLUDE_SPECS_REGEX: ${{ matrix.exclude_specs_regex }}
-      IS_PARALLEL_RUN: ${{ matrix.is_parallel_run }}
-      IS_MAINNET: ${{ matrix.is_mainnet }}
+      IS_PARALLEL_RUN: ${{ fromJSON(toJSON(matrix.is_parallel_run == 'true')) }}
+      IS_MAINNET: ${{ fromJSON(toJSON(matrix.is_mainnet == 'true')) }}
       CHAIN_NAME: ${{ matrix.chain_name }}
-      IS_FORK: ${{ inputs.IS_FORK }}
+      IS_FORK: ${{ fromJSON(toJSON(inputs.IS_FORK || false)) }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: ${{ matrix.html_report_name }}
-      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
+      TESTOMAT_REPORT_GENERATION: ${{ fromJSON(toJSON(inputs.TESTOMAT_REPORT_GENERATION != false)) }}
       TESTOMATIO_TITLE: ${{ matrix.testomatio_title }}
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
       NOTIFICATION_MESSAGE: ${{ matrix.notification_message }}
