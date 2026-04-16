@@ -1,4 +1,4 @@
-# Regression Test Run using matrix strategy to run tests sequentialy and parallelly
+# Regression via sequential and parallel modes
 name: "[App-Mento] Regression Test Run"
 
 on:
@@ -36,7 +36,7 @@ on:
         description: "Use Mainnet"
         type: boolean
         required: false
-        default: false
+        default: true
       IS_FORK:
         description: "Use Fork Mode"
         type: boolean
@@ -44,39 +44,40 @@ on:
         default: false
 
 jobs:
-  app_mento_regression_test:
-    name: "[App-Mento] ${{ matrix.name }} Regression Test Run"
+  app_mento_regression_sequential:
+    name: "[App-Mento] Sequential Regression Test Run"
     uses: ./.github/workflows/base-test.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: "Sequential"
-            specs_regex: "@regression,@sequential"
-            exclude_specs_regex: "@parallel"
-            is_parallel_run: "false"
-            html_report_name: "app-mento-sequential-regression"
-            testomatio_title: "[App-Mento] Sequential-Regression"
-            notification_message: "[App-Mento] Sequential-Regression"
-          - name: "Parallel"
-            specs_regex: "@regression,@parallel"
-            exclude_specs_regex: "@sequential"
-            is_parallel_run: "true"
-            html_report_name: "app-mento-parallel-regression"
-            testomatio_title: "[App-Mento] Parallel-Regression"
-            notification_message: "[App-Mento] Parallel-Regression"
     with:
       APP_NAME: "app-mento"
-      SPECS_REGEX: ${{ matrix.specs_regex }}
-      EXCLUDE_SPECS_REGEX: ${{ matrix.exclude_specs_regex }}
-      IS_PARALLEL_RUN: ${{ fromJSON(toJSON(matrix.is_parallel_run == 'true')) }}
-      IS_MAINNET: ${{ fromJSON(toJSON(inputs.IS_MAINNET || true)) }}
-      IS_FORK: ${{ fromJSON(toJSON(inputs.IS_FORK || false)) }}
+      SPECS_REGEX: "@regression,@sequential"
+      EXCLUDE_SPECS_REGEX: "@parallel"
+      IS_PARALLEL_RUN: false
+      IS_MAINNET: ${{ github.event_name == 'schedule' || inputs.IS_MAINNET }}
+      IS_FORK: ${{ github.event_name == 'workflow_dispatch' && inputs.IS_FORK || false }}
       CHAIN_NAME: ${{ inputs.CHAIN_NAME || 'Celo' }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
-      HTML_REPORT_NAME: ${{ matrix.html_report_name }}
-      TESTOMAT_REPORT_GENERATION: ${{ fromJSON(toJSON(inputs.TESTOMAT_REPORT_GENERATION != false)) }}
-      TESTOMATIO_TITLE: ${{ matrix.testomatio_title }}
+      HTML_REPORT_NAME: "app-mento-sequential-regression"
+      TESTOMAT_REPORT_GENERATION: ${{ github.event_name == 'schedule' || inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMATIO_TITLE: "[App-Mento] Sequential-Regression"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
-      NOTIFICATION_MESSAGE: ${{ matrix.notification_message }}
+      NOTIFICATION_MESSAGE: "[App-Mento] Sequential-Regression"
+    secrets: inherit
+
+  app_mento_regression_parallel:
+    name: "[App-Mento] Parallel Regression Test Run"
+    uses: ./.github/workflows/base-test.yml
+    with:
+      APP_NAME: "app-mento"
+      SPECS_REGEX: "@regression,@parallel"
+      EXCLUDE_SPECS_REGEX: "@sequential"
+      IS_PARALLEL_RUN: true
+      IS_MAINNET: ${{ github.event_name == 'schedule' || inputs.IS_MAINNET }}
+      IS_FORK: ${{ github.event_name == 'workflow_dispatch' && inputs.IS_FORK || false }}
+      CHAIN_NAME: ${{ inputs.CHAIN_NAME || 'Celo' }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
+      HTML_REPORT_NAME: "app-mento-parallel-regression"
+      TESTOMAT_REPORT_GENERATION: ${{ github.event_name == 'schedule' || inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMATIO_TITLE: "[App-Mento] Parallel-Regression"
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      NOTIFICATION_MESSAGE: "[App-Mento] Parallel-Regression"
     secrets: inherit

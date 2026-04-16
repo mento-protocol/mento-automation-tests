@@ -1,4 +1,4 @@
-# Regression Test Run using matrix strategy to run tests sequentialy and parallelly
+# Regression via sequential and parallel modes
 name: "[Governance] Regression Test Run"
 
 on:
@@ -31,44 +31,42 @@ on:
         default: false
 
 jobs:
-  app_governance_regression_test:
-    name: "[Governance] ${{ matrix.name }} Regression Test Run"
+  governance_regression_sequential:
+    name: "[Governance] Sequential Regression Test Run"
     uses: ./.github/workflows/base-test.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: "Sequential"
-            specs_regex: "@regression,@sequential"
-            exclude_specs_regex: "@parallel"
-            is_parallel_run: "false"
-            is_mainnet: "false"
-            chain_name: "Celo"
-            html_report_name: "governance-sequential-regression"
-            testomatio_title: "[Governance] Sequential-Regression"
-            notification_message: "[Governance] Sequential-Regression"
-          - name: "Parallel"
-            specs_regex: "@regression,@parallel"
-            exclude_specs_regex: "@sequential"
-            is_parallel_run: "true"
-            is_mainnet: "false"
-            chain_name: "Celo"
-            html_report_name: "governance-parallel-regression"
-            testomatio_title: "[Governance] Parallel-Regression"
-            notification_message: "[Governance] Parallel-Regression"
     with:
       APP_NAME: "governance"
       ENV: "prod"
-      SPECS_REGEX: ${{ matrix.specs_regex }}
-      EXCLUDE_SPECS_REGEX: ${{ matrix.exclude_specs_regex }}
-      IS_PARALLEL_RUN: ${{ fromJSON(toJSON(matrix.is_parallel_run == 'true')) }}
-      IS_MAINNET: ${{ fromJSON(toJSON(matrix.is_mainnet == 'true')) }}
-      CHAIN_NAME: ${{ matrix.chain_name }}
-      IS_FORK: ${{ fromJSON(toJSON(inputs.IS_FORK || false)) }}
+      SPECS_REGEX: "@regression,@sequential"
+      EXCLUDE_SPECS_REGEX: "@parallel"
+      IS_PARALLEL_RUN: false
+      IS_MAINNET: false
+      CHAIN_NAME: "Celo"
+      IS_FORK: ${{ github.event_name == 'workflow_dispatch' && inputs.IS_FORK || false }}
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
-      HTML_REPORT_NAME: ${{ matrix.html_report_name }}
-      TESTOMAT_REPORT_GENERATION: ${{ fromJSON(toJSON(inputs.TESTOMAT_REPORT_GENERATION != false)) }}
-      TESTOMATIO_TITLE: ${{ matrix.testomatio_title }}
+      HTML_REPORT_NAME: "governance-sequential-regression"
+      TESTOMAT_REPORT_GENERATION: ${{ github.event_name == 'schedule' || inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMATIO_TITLE: "[Governance] Sequential-Regression"
       CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
-      NOTIFICATION_MESSAGE: ${{ matrix.notification_message }}
+      NOTIFICATION_MESSAGE: "[Governance] Sequential-Regression"
+    secrets: inherit
+
+  governance_regression_parallel:
+    name: "[Governance] Parallel Regression Test Run"
+    uses: ./.github/workflows/base-test.yml
+    with:
+      APP_NAME: "governance"
+      ENV: "prod"
+      SPECS_REGEX: "@regression,@parallel"
+      EXCLUDE_SPECS_REGEX: "@sequential"
+      IS_PARALLEL_RUN: true
+      IS_MAINNET: false
+      CHAIN_NAME: "Celo"
+      IS_FORK: ${{ github.event_name == 'workflow_dispatch' && inputs.IS_FORK || false }}
+      HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
+      HTML_REPORT_NAME: "governance-parallel-regression"
+      TESTOMAT_REPORT_GENERATION: ${{ github.event_name == 'schedule' || inputs.TESTOMAT_REPORT_GENERATION }}
+      TESTOMATIO_TITLE: "[Governance] Parallel-Regression"
+      CUSTOM_URL: ${{ inputs.CUSTOM_URL }}
+      NOTIFICATION_MESSAGE: "[Governance] Parallel-Regression"
     secrets: inherit

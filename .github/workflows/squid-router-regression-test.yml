@@ -28,13 +28,13 @@ jobs:
       APP_NAME: "squid-router"
       ENV: "prod"
       SPECS_REGEX: "@regression"
-      IS_PARALLEL_RUN: "false"
-      IS_MAINNET: "true"
+      IS_PARALLEL_RUN: false
+      IS_MAINNET: true
       CHAIN_NAME: "Celo"
-      IS_FORK: "false"
+      IS_FORK: false
       HTML_REPORT_GENERATION: ${{ inputs.HTML_REPORT_GENERATION || 'onFailure' }}
       HTML_REPORT_NAME: "squid-router-sequential-regression"
-      TESTOMAT_REPORT_GENERATION: ${{ inputs.TESTOMAT_REPORT_GENERATION || 'true' }}
+      TESTOMAT_REPORT_GENERATION: ${{ github.event_name == 'schedule' || inputs.TESTOMAT_REPORT_GENERATION }}
       TESTOMATIO_TITLE: "[Squid-Router] Sequential-Regression"
       NOTIFICATION_MESSAGE: "[Squid-Router] Sequential-Regression"
     secrets: inherit
