@@ -60,12 +60,17 @@ export class EnvHelper {
   }
 
   getChainName(): ChainName {
-    return {
-      [ChainName.Celo]: ChainName.Celo,
-      [ChainName.CeloSepolia]: ChainName.CeloSepolia,
-      [ChainName.Monad]: ChainName.Monad,
-      [ChainName.MonadTestnet]: ChainName.MonadTestnet,
-    }[CHAIN_NAME];
+    if (!this.isMainnet()) {
+      return {
+        [ChainName.Celo]: ChainName.CeloSepolia,
+        [ChainName.Monad]: ChainName.MonadTestnet,
+      }[CHAIN_NAME];
+    }
+    return CHAIN_NAME as ChainName;
+  }
+
+  getChainConfigKey(): ChainName {
+    return CHAIN_NAME as ChainName;
   }
 
   getChainType(): ChainType {
@@ -73,7 +78,8 @@ export class EnvHelper {
   }
 
   getChainId(): number {
-    return magicStrings.chain[this.getChainName()][this.getChainType()].chainId;
+    return magicStrings.chain[this.getChainConfigKey()][this.getChainType()]
+      .chainId;
   }
 
   getGovernorAddress(): Address {
@@ -87,11 +93,19 @@ export class EnvHelper {
   }
 
   getChainDetails() {
-    const chainName = this.getChainName();
+    const chainKey = this.getChainConfigKey();
     const chainType = this.getChainType();
     return this.isFork()
-      ? magicStrings.chain[chainName].fork[chainType]
-      : magicStrings.chain[chainName][chainType];
+      ? magicStrings.chain[chainKey].fork[chainType]
+      : magicStrings.chain[chainKey][chainType];
+  }
+
+  getChainSlug(): string {
+    const family = this.getChainConfigKey();
+    if (this.isMainnet()) {
+      return family === ChainName.Celo ? "celo" : "monad";
+    }
+    return family === ChainName.Celo ? "celo-sepolia" : "monad-testnet";
   }
 
   getRpcUrl(): string {

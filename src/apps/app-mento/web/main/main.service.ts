@@ -125,6 +125,7 @@ export class MainAppMentoService extends BaseService {
     await this.openConnectWalletModalFromHeader();
     await this.connectWalletModal.selectWalletByName(walletName);
     await this.metamask.connectWallet();
+    console.info(1);
     !envHelper.isMainnet() && (await this.overrideToTestnet());
   }
 
@@ -137,7 +138,7 @@ export class MainAppMentoService extends BaseService {
       ? currentUrl.replace("celo", "celo-sepolia")
       : currentUrl.replace("monad", "monad-testnet");
     log.debug(`Overriding to testnet: ${newUrl}`);
-    await waiterHelper.waitForAnimation();
+    await waiterHelper.sleep(timeouts.xxs);
     await this.browser.openUrl(newUrl);
   }
 
