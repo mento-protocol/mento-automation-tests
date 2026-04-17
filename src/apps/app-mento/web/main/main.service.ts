@@ -125,7 +125,6 @@ export class MainAppMentoService extends BaseService {
     await this.openConnectWalletModalFromHeader();
     await this.connectWalletModal.selectWalletByName(walletName);
     await this.metamask.connectWallet();
-    console.info(1);
     !envHelper.isMainnet() && (await this.overrideToTestnet());
   }
 
