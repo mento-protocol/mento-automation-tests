@@ -436,8 +436,8 @@ export class SwapService extends BaseService {
     sellAmount: string;
   }): Promise<void> {
     const baseUrl = envHelper.getBaseWebUrl();
-    const chain = envHelper.getChainName().toLowerCase();
-    const url = `${baseUrl}/swap/${chain}?from=${tokens.sell}&to=${tokens.buy}&amount=${sellAmount}`;
+    const chainSlug = envHelper.getChainSlug();
+    const url = `${baseUrl}/swap/${chainSlug}?from=${tokens.sell}&to=${tokens.buy}&amount=${sellAmount}`;
     await this.browser.openUrl(url);
   }
 

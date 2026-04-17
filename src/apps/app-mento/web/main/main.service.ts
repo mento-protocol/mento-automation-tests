@@ -137,7 +137,7 @@ export class MainAppMentoService extends BaseService {
       ? currentUrl.replace("celo", "celo-sepolia")
       : currentUrl.replace("monad", "monad-testnet");
     log.debug(`Overriding to testnet: ${newUrl}`);
-    await waiterHelper.waitForAnimation();
+    await waiterHelper.sleep(timeouts.xxxs);
     await this.browser.openUrl(newUrl);
   }
 

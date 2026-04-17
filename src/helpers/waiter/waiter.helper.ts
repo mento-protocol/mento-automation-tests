@@ -27,15 +27,14 @@ export const waiterHelper = {
   async retry<T>(
     callback: () => Promise<T>,
     retryCount: number,
-    options: IRetryOptions = {},
-  ): Promise<T> {
-    const {
+    {
       interval = timeouts.xxxs,
       throwError = true,
       resolveWhenNoException = false,
       continueWithException = resolveWhenNoException,
       errorMessage,
-    } = options;
+    }: IRetryOptions = {},
+  ): Promise<T> {
     let caughtError: Error = null;
     do {
       try {
