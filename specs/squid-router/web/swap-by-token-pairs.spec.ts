@@ -101,12 +101,12 @@ testHelper.runSuite({
           const { sellToken, buyToken } = testCase;
 
           const initialSellBalance =
-            await web.contract.governance.getBalanceByTokenSymbol({
+            await web.contract.governance.getRawBalanceByTokenSymbol({
               walletAddress: testWalletAddresses.main,
               tokenSymbol: sellToken,
             });
           const initialBuyBalance =
-            await web.contract.governance.getBalanceByTokenSymbol({
+            await web.contract.governance.getRawBalanceByTokenSymbol({
               walletAddress: testWalletAddresses.main,
               tokenSymbol: buyToken,
             });

@@ -89,18 +89,17 @@ export class BaseService {
     initialBalance,
     shouldIncrease,
   }: IExpectUpdatedBalanceArgs): Promise<void> {
-    let currentBalance = null;
+    let currentBalanceWei = 0n;
     await waiterHelper.retry(
       async () => {
-        currentBalance = await this.contract.governance.getBalanceByTokenSymbol(
-          {
+        currentBalanceWei =
+          await this.contract.governance.getRawBalanceByTokenSymbol({
             walletAddress,
             tokenSymbol,
-          },
-        );
+          });
         return shouldIncrease
-          ? currentBalance > initialBalance
-          : currentBalance < initialBalance;
+          ? currentBalanceWei > initialBalance
+          : currentBalanceWei < initialBalance;
       },
       3,
       {
@@ -111,8 +110,8 @@ export class BaseService {
       },
     );
     shouldIncrease
-      ? expect.soft(currentBalance).toBeGreaterThan(initialBalance)
-      : expect.soft(currentBalance).toBeLessThan(initialBalance);
+      ? expect.soft(currentBalanceWei).toBeGreaterThan(initialBalance)
+      : expect.soft(currentBalanceWei).toBeLessThan(initialBalance);
   }
 }
 
@@ -125,7 +124,7 @@ export interface IBaseServiceArgs {
 }
 
 interface IExpectUpdatedBalanceArgs {
-  initialBalance: number;
+  initialBalance: bigint;
   walletAddress: Address;
   tokenSymbol: TokenSymbol;
   shouldIncrease: boolean;

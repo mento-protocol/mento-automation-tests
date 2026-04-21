@@ -259,7 +259,7 @@ testHelper.runSuite({
           test: async ({ web, contractHelper }: IExecution) => {
             const app = web.app.appMento;
             const initialBalance =
-              await contractHelper.governance.getBalanceByTokenSymbol({
+              await contractHelper.governance.getRawBalanceByTokenSymbol({
                 walletAddress: testWalletAddresses.main,
                 tokenSymbol: buyToken,
               });

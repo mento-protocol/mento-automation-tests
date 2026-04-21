@@ -43,6 +43,20 @@ export class BaseContract {
     }
   }
 
+  async getRawBalanceByTokenSymbol({
+    walletAddress,
+    tokenSymbol,
+  }: IGetBalanceByTokenSymbolParams): Promise<bigint> {
+    const tokenAddress = await this.getTokenAddress(tokenSymbol);
+    const contract = new ethers.Contract(
+      tokenAddress,
+      this.getErc20Abi(),
+      this.provider,
+    );
+    const rawBalance = await contract.balanceOf(walletAddress);
+    return BigInt(rawBalance.toString());
+  }
+
   async getBalanceByTokenSymbol({
     walletAddress,
     tokenSymbol,
