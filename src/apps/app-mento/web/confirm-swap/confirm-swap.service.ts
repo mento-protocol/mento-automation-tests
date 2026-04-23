@@ -121,31 +121,27 @@ export class ConfirmSwapService extends BaseService {
   }
 
   async expectSuccessApprovalNotification(): Promise<void> {
-    expect
-      .soft(
-        await this.page.approveCompleteNotificationLabel.waitForDisplayed(
-          timeouts.xl,
-          {
-            errorMessage: "Approve tx notification is not displayed",
-            throwError: false,
-          },
-        ),
-      )
-      .toBeTruthy();
+    expect(
+      await this.page.approveCompleteNotificationLabel.waitForDisplayed(
+        timeouts.xl,
+        {
+          errorMessage: "Approve tx notification is not displayed",
+          throwError: false,
+        },
+      ),
+    ).toBeTruthy();
   }
 
   async expectSuccessSwapNotification(): Promise<void> {
-    expect
-      .soft(
-        await this.page.swapCompleteNotificationLabel.waitForDisplayed(
-          timeouts.m,
-          {
-            errorMessage: "Swap tx notification is not displayed",
-            throwError: false,
-          },
-        ),
-      )
-      .toBeTruthy();
+    expect(
+      await this.page.swapCompleteNotificationLabel.waitForDisplayed(
+        timeouts.m,
+        {
+          errorMessage: "Swap tx notification is not displayed",
+          throwError: false,
+        },
+      ),
+    ).toBeTruthy();
   }
 
   async expectLoadingDuringTxConfirmation(): Promise<void> {
