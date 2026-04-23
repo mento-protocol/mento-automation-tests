@@ -1,4 +1,4 @@
-name: "[AQA] PR Healthcheck"
+name: "PR Healthcheck Test Run"
 
 on: push
 
@@ -53,7 +53,6 @@ jobs:
             echo "specs-regex=connect-wallet" >> $GITHUB_OUTPUT
           fi
   test:
-    name: "Test"
     needs: [define-app, define-specs]
     uses: ./.github/workflows/base-test.yml
     with:
