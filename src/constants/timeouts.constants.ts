@@ -4,10 +4,10 @@ const { TEST_RUN_TIMEOUT, TEST_TIMEOUT } = processEnv;
 
 export const timeouts = {
   get test(): number {
-    return Number(TEST_TIMEOUT) ?? timeouts.minute * 3;
+    return readTimeoutMs(TEST_TIMEOUT, timeouts.minute * 3);
   },
   get testRun(): number {
-    return Number(TEST_RUN_TIMEOUT) ?? timeouts.minute * 120;
+    return readTimeoutMs(TEST_RUN_TIMEOUT, timeouts.minute * 120);
   },
   get isOpenPage(): number {
     return this.l;
@@ -32,3 +32,14 @@ export const timeouts = {
   minute: 60_000,
   hour: 60 * 60_000,
 };
+
+function readTimeoutMs(raw: string | undefined, fallbackMs: number): number {
+  if (raw == null || String(raw).trim() === "") {
+    return fallbackMs;
+  }
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallbackMs;
+  }
+  return parsed;
+}
