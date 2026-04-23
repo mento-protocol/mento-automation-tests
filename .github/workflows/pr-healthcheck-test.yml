@@ -1,4 +1,4 @@
-name: "[AQA] PR Healthcheck"
+name: "PR Healthcheck Test Run"
 
 on: push
 
@@ -52,51 +52,15 @@ jobs:
             echo "Using the default 'connect-wallet' spec to validate the PR"
             echo "specs-regex=connect-wallet" >> $GITHUB_OUTPUT
           fi
-
-  test-governance:
-    name: "Governance"
+  test:
+    name: "Test"
     needs: [define-app, define-specs]
-    if: ${{ needs.define-app.outputs.app-name == 'governance' }}
     uses: ./.github/workflows/base-test.yml
     with:
       SPECS_REGEX: ${{ needs.define-specs.outputs.specs-regex }}
-      APP_NAME: ${{ needs.define-app.outputs.app-name }}
+      APP_NAME: ${{ needs.define-app.outputs.app-name || 'app-mento' }}
       ENV: "prod"
       IS_MAINNET: false
-      CHAIN_NAME: "Celo"
-      IS_FORK: false
-      HTML_REPORT_NAME: "pr-healthcheck"
-      TESTOMAT_REPORT_GENERATION: false
-      NOTIFICATION_MESSAGE: "[AQA] PR Healthcheck"
-    secrets: inherit
-
-  test-app-mento:
-    name: "App-Mento"
-    needs: [define-app, define-specs]
-    if: ${{ needs.define-app.outputs.app-name == 'app-mento' || needs.define-app.outputs.app-name == '' }}
-    uses: ./.github/workflows/base-test.yml
-    with:
-      SPECS_REGEX: ${{ needs.define-specs.outputs.specs-regex }}
-      APP_NAME: ${{ needs.define-app.outputs.app-name }}
-      ENV: "prod"
-      IS_MAINNET: false
-      CHAIN_NAME: "Celo"
-      IS_FORK: false
-      HTML_REPORT_NAME: "pr-healthcheck"
-      TESTOMAT_REPORT_GENERATION: false
-      NOTIFICATION_MESSAGE: "[AQA] PR Healthcheck"
-    secrets: inherit
-
-  test-squid-router:
-    name: "Squid-Router"
-    needs: [define-app, define-specs]
-    if: ${{ needs.define-app.outputs.app-name == 'squid-router' }}
-    uses: ./.github/workflows/base-test.yml
-    with:
-      SPECS_REGEX: ${{ needs.define-specs.outputs.specs-regex }}
-      APP_NAME: ${{ needs.define-app.outputs.app-name }}
-      ENV: "prod"
-      IS_MAINNET: true
       CHAIN_NAME: "Celo"
       IS_FORK: false
       HTML_REPORT_NAME: "pr-healthcheck"
