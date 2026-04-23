@@ -16,6 +16,8 @@ import { GraphQLClient } from "@helpers/api/graphql/graphql.client";
 
 const synpressFixture = testWithSynpress(metaMaskFixtures(basicSetup));
 
+console.info("1");
+
 export const testFixture = synpressFixture.extend<IApplicationFixtures>({
   metamaskHelper: async ({ metamask }, use) => {
     const metamaskHelper = new MetamaskHelper(metamask);
