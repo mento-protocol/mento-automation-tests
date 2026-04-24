@@ -3,8 +3,6 @@ import { expect } from "@fixtures/test.fixture";
 import { testHelper } from "@helpers/test/test.helper";
 import { WalletName } from "../../../../src/apps/shared/web/connect-wallet-modal/connect-wallet-modal.service";
 
-console.info("1");
-
 testHelper.runSuite({
   name: "Connect Wallet",
   tags: [TestTag.Regression, TestTag.Parallel, TestTag.Smoke],
