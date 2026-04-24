@@ -65,8 +65,8 @@ class TestHelper {
             tag: tags,
             ...this.getDisableDetailsOnStart(disable),
           },
-          async ({ web, metamaskHelper, contractHelper }) =>
-            await test({ web, metamaskHelper, contractHelper }),
+          async ({ web, metamaskHelper, api, contractHelper }) =>
+            await test({ web, metamaskHelper, api, contractHelper }),
         )
       : testFixture(
           testName,
@@ -85,7 +85,7 @@ class TestHelper {
     testFixture.skip(true, `Please check the disable details above ⬆️`);
   }
 
-  private isDisabled(disable: IDisable): boolean {
+  private isDisabled(disable?: IDisable): boolean {
     if (!disable) return false;
     if (disable.chainType) {
       return disable.chainType === envHelper.getChainType();
@@ -119,7 +119,10 @@ class TestHelper {
       });
   }
 
-  private getDisableDetailsOnStart(disable: IDisable): TestDetails {
+  private getDisableDetailsOnStart(disable?: IDisable): TestDetails {
+    if (!disable) {
+      return { annotation: [] };
+    }
     return {
       annotation: [
         {

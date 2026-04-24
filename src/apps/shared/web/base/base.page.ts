@@ -31,7 +31,7 @@ export abstract class BasePage {
     });
 
     do {
-      const result = promiseHelper.allTrue(isDisplayedPromises);
+      const result = await promiseHelper.allTrue(isDisplayedPromises);
       if (result) {
         return result;
       }
@@ -46,7 +46,7 @@ export abstract class BasePage {
       return element.waitForDisappeared(timeout, { throwError: false });
     });
     do {
-      const result = promiseHelper.allTrue(isDisplayedPromises);
+      const result = await promiseHelper.allTrue(isDisplayedPromises);
       if (result) {
         return result;
       }

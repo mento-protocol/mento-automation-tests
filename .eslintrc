@@ -2,7 +2,6 @@
   "env": {
     "browser": true,
     "es2021": true,
-    "mocha": true,
     "node": true,
     "es2020": true
   },
@@ -15,10 +14,11 @@
     "sourceType": "module",
     "requireConfigFile": false
   },
-  "plugins": ["prettier", "@typescript-eslint", "unused-imports"],
+  "plugins": ["prettier", "@typescript-eslint", "unused-imports", "playwright"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:playwright/recommended",
     "prettier"
   ],
   "rules": {
