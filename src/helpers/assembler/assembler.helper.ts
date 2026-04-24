@@ -64,12 +64,12 @@ import { UpdateLockModalPage } from "../../apps/governance/web/voting-power/upda
 export class AssemblerHelper {
   private readonly appName = envHelper.getApp();
 
-  private readonly elementFinder: ElementFinderHelper = null;
-  private readonly browserHelper: BrowserHelper = null;
-  private readonly metamaskHelper: MetamaskHelper = null;
-  private readonly contractHelper: ContractHelper = null;
-  private readonly httpClient: HttpClient = null;
-  private readonly graphqlClient: GraphQLClient = null;
+  private readonly elementFinder?: ElementFinderHelper;
+  private readonly browserHelper?: BrowserHelper;
+  private readonly metamaskHelper?: MetamaskHelper;
+  private readonly contractHelper?: ContractHelper;
+  private readonly httpClient?: HttpClient;
+  private readonly graphqlClient?: GraphQLClient;
 
   constructor({
     elementFinder,
@@ -89,27 +89,45 @@ export class AssemblerHelper {
 
   //❗️ Assembling WEB only for a specified app by 'APP_NAME' variable in .env
   async web(): Promise<IWeb> {
+    const { elementFinder, browserHelper, metamaskHelper, contractHelper } =
+      this;
+    if (
+      !elementFinder ||
+      !browserHelper ||
+      !metamaskHelper ||
+      !contractHelper
+    ) {
+      throw new Error(
+        "AssemblerHelper.web() requires elementFinder, browserHelper, metamaskHelper, and contractHelper",
+      );
+    }
     const baseDependencies: IBaseWebDependencies = {
-      browser: this.browserHelper,
-      metamask: this.metamaskHelper,
-      contract: this.contractHelper,
+      browser: browserHelper,
+      metamask: metamaskHelper,
+      contract: contractHelper,
       celoScan: new CeloScanService({
-        page: new CeloScanPage(this.elementFinder),
-        metamask: this.metamaskHelper,
-        browser: this.browserHelper,
+        page: new CeloScanPage(elementFinder),
+        metamask: metamaskHelper,
+        browser: browserHelper,
       }),
     };
     return {
       ...baseDependencies,
-      app: this.apps.web[this.appName](this.elementFinder, baseDependencies),
+      app: this.apps.web[this.appName](elementFinder, baseDependencies),
     };
   }
 
   //❗️ Assembling API only for a specified app by 'APP_NAME' variable in .env
   async api(): Promise<IApi> {
+    const { httpClient, graphqlClient } = this;
+    if (!httpClient || !graphqlClient) {
+      throw new Error(
+        "AssemblerHelper.api() requires httpClient and graphqlClient",
+      );
+    }
     const baseDependencies: IBaseApiDependencies = {
-      httpClient: this.httpClient,
-      graphqlClient: this.graphqlClient,
+      httpClient,
+      graphqlClient,
     };
     return {
       ...baseDependencies,

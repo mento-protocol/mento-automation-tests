@@ -18,10 +18,6 @@ export class GraphQLClient {
     return this.sendRequest<T>(args);
   }
 
-  async mutate<T>(args: IGraphQLRequestArgs): Promise<IGraphQLResponse<T>> {
-    return this.sendRequest<T>(args);
-  }
-
   private async sendRequest<T>({
     url,
     query,

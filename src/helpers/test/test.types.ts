@@ -1,14 +1,7 @@
-import { MetamaskHelper } from "@helpers/wallet/metamask-wallet.helper";
-import { IApi, IWeb } from "../assembler/assembler.helper";
-import { ContractHelper } from "@helpers/contract/contract.helper";
+import type { IApplicationFixtures } from "@fixtures/test.fixture";
 import { ChainType, ChainName } from "@helpers/env/env.helper";
 
-export interface IExecution {
-  web?: IWeb;
-  api?: IApi;
-  metamaskHelper?: MetamaskHelper;
-  contractHelper?: ContractHelper;
-}
+export type IExecution = IApplicationFixtures;
 
 export interface ISuiteArgs {
   name: string;

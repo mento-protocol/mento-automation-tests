@@ -1,6 +1,20 @@
 name: "PR Healthcheck Test Run"
 
-on: push
+concurrency:
+  group: pr-healthcheck-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - ".gitignore"
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - ".gitignore"
 
 jobs:
   define-app:
@@ -9,16 +23,22 @@ jobs:
     outputs:
       app-name: ${{ steps.extract-app-name.outputs.app-name }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
       - name: Define App
         id: extract-app-name
         run: |
-          if [[ "${{ github.event.head_commit.message }}" =~ @app-mento ]]; then
+          MSG=$(git -c core.quotePath=false log -1 --pretty=%B)
+          if [[ "$MSG" =~ @app-mento ]]; then
             echo "Using the @app-mento tag to run app-mento tests"
             echo "app-name=app-mento" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event.head_commit.message }}" =~ @governance ]]; then
+          elif [[ "$MSG" =~ @governance ]]; then
             echo "Using the @governance tag to run governance tests"
             echo "app-name=governance" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event.head_commit.message }}" =~ @squid-router ]]; then
+          elif [[ "$MSG" =~ @squid-router ]]; then
             echo "Using the @squid-router tag to run squid-router tests"
             echo "app-name=squid-router" >> $GITHUB_OUTPUT
           else
@@ -26,25 +46,32 @@ jobs:
             echo "Using the default 'app-mento' app to validate the PR"
             echo "app-name=app-mento" >> $GITHUB_OUTPUT
           fi
+
   define-specs:
     name: "Define Specs Regex"
     runs-on: ubuntu-latest
     outputs:
       specs-regex: ${{ steps.extract-specs-regex.outputs.specs-regex }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
       - name: Define Specs Regex
         id: extract-specs-regex
         run: |
-          if [[ "${{ github.event.head_commit.message }}" =~ __@regression__ ]]; then
+          MSG=$(git -c core.quotePath=false log -1 --pretty=%B)
+          if [[ "$MSG" =~ __@regression__ ]]; then
             echo "Using the @regression tag to run regression tests"
             echo "specs-regex=@regression" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event.head_commit.message }}" =~ __@smoke__ ]]; then
+          elif [[ "$MSG" =~ __@smoke__ ]]; then
             echo "Using the @smoke tag to run smoke tests"
             echo "specs-regex=@smoke" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event.head_commit.message }}" =~ __@full__ ]]; then
+          elif [[ "$MSG" =~ __@full__ ]]; then
             echo "Using the @full tag to run all the tests"
             echo "specs-regex=.*" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event.head_commit.message }}" =~ __([^_]+)__ ]]; then
+          elif [[ "$MSG" =~ __([^_]+)__ ]]; then
             echo "Using the parsed specs regex to run specific tests: ${BASH_REMATCH[1]}"
             echo "specs-regex=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
           else
@@ -52,6 +79,7 @@ jobs:
             echo "Using the default 'connect-wallet' spec to validate the PR"
             echo "specs-regex=connect-wallet" >> $GITHUB_OUTPUT
           fi
+
   test:
     name: "Test"
     needs: [define-app, define-specs]

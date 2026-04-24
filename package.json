@@ -2,7 +2,7 @@
   "name": "mento-automation-tests",
   "type": "module",
   "version": "1.0.0",
-  "description": "",
+  "description": "Playwright and Synpress end-to-end tests for Mento Protocol applications",
   "scripts": {
     "test": "pnpm run verify:env-config && playwright test",
     "test:ui": "pnpm run verify:env-config && playwright test --ui",
@@ -20,8 +20,8 @@
     "blockexplorer:stop": "docker stop otterscan && docker rm otterscan",
     "fork:prepare-data": "tsx src/tools/prepare-fork-data.tool.ts",
     "linter": "eslint . --ext .ts",
-    "lint:staged": "eslint '*.ts' --fix",
-    "lint": "eslint 'src/**/*.{js,ts}'"
+    "lint:staged": "lint-staged",
+    "lint": "pnpm run linter"
   },
   "packageManager": "pnpm@10.33.0",
   "engines": {
@@ -34,7 +34,6 @@
     "hardhat": "^2.25.0",
     "lodash": "4.17.21",
     "log4js": "6.9.1",
-    "prettier": "2.8.8",
     "tsx": "4.19.2"
   },
   "devDependencies": {
@@ -47,9 +46,10 @@
     "@types/yargs-parser": "^21.0.3",
     "@typescript-eslint/eslint-plugin": "6.0.0",
     "@typescript-eslint/parser": "6.0.0",
-    "eslint": "8.39.0",
+    "eslint": "8.57.1",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-playwright": "^1.8.3",
     "eslint-plugin-unused-imports": "3.0.0",
     "husky": "8.0.3",
     "lint-staged": "13.2.1",
