@@ -6,6 +6,13 @@
 
 ### Here you can find more detailed overview of [test automation](https://www.notion.so/mentolabs/Test-Automation-12da2148cc5c8010bae9cf8150e5c13f)
 
+## Documentation
+
+| Resource                           | Description                                             |
+| ---------------------------------- | ------------------------------------------------------- |
+| [docs/README.md](docs/README.md)   | Index of all technical docs in this repo                |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | PR healthcheck tags, hooks, Dependabot, TypeScript note |
+
 ## Pre-requisites
 
 - [node.js](https://nodejs.org/en) >= 22.14.0
@@ -56,9 +63,7 @@ brew install foundry
 
 ## Local test/s execution by mods:
 
-- _**headed**_ - with opening browser (command can be shortened to `pnpm t`)
-
-`pnpm run test`
+- _**headed**_ — default CLI run: `pnpm run test` or the short alias `pnpm t`
 
 - _**ui**_ - with opening browser in specified app with all devtools, traces, and other playwright features
 
