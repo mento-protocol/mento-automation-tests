@@ -33,8 +33,13 @@ export class SwapPage extends BasePage {
   loadingLabel = new Label(this.ef.dataTestId("loadingLabel"));
   swapButton = new Button(this.ef.dataTestId("swapButton"));
   approveButton = new Button(this.ef.dataTestId("approveButton"));
+  // V3 surfaces an unfetchable swap rate either as the legacy inline
+  // "Unable to fetch swap amount" text or as a "Trading temporarily paused..."
+  // toast (reference rate unavailable / no valid median / trading suspended).
   unableToFetchSwapAmountButton = new Label(
-    this.ef.text("Unable to fetch swap amount", { exact: false }).first(),
+    this.ef
+      .text(/Unable to fetch swap amount|Trading temporarily paused/i)
+      .first(),
   );
 
   sellUsdAmountLabel = new Label(this.ef.dataTestId("sellUsdAmountLabel"));
